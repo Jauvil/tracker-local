@@ -209,8 +209,10 @@ class Ability
 
 
         # Teacher
-        can [:read],Teacher, { id: user.id }  #maybe not needed
-        #can [:edit, :sections_list], Teacher, { user.has_permission?('manage_subject_admin')}
+        can [:read],
+          Teacher, 
+          { id: user.id }  #maybe not needed
+        
 
         # User
         can [:read, :change_password, :edit, :update, :profile, :sections_list, :account_activity_report, :staff_listing, :dashboard],
