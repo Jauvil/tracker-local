@@ -389,9 +389,11 @@ class Ability
       if user.has_permission?('subject_admin')
         if user.school_id.present? && user.school_id > 0
           can [:section_outcomes],
-            Section, { subject: { school_id: user.school_id } }
+            Section, 
+            { subject: { school_id: user.school_id } }
           can [:read, :create, :update, :subject_admin, :edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
-            Subject, { school_id: user.school_id }
+            Subject, 
+            { school_id: user.school_id }
         end
 
       end
