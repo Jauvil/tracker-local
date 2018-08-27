@@ -210,9 +210,11 @@ class Ability
 
         # Teacher
         can [:read],
-          Teacher, 
+
+          Teacher,
           { id: user.id }  #maybe not needed
-        
+
+        #can [:edit, :sections_list], Teacher, { user.has_permission?('manage_subject_admin')}
 
         # User
         can [:read, :change_password, :edit, :update, :profile, :sections_list, :account_activity_report, :staff_listing, :dashboard],
@@ -389,10 +391,10 @@ class Ability
       if user.has_permission?('subject_admin')
         if user.school_id.present? && user.school_id > 0
           can [:section_outcomes],
-            Section, 
+            Section,
             { subject: { school_id: user.school_id } }
           can [:read, :create, :update, :subject_admin, :edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
-            Subject, 
+            Subject,
             { school_id: user.school_id }
         end
 

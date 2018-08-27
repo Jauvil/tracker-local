@@ -163,7 +163,8 @@ describe "User can change password", js:true do
       student_email = @student.email
 
       page.find('#modal_popup #modal-body button', text: 'Close').click
-
+      sleep 20
+      save_and_open_page
       page.find("#main-container header .dropdown-toggle").click
       page.find("#main-container header .dropdown-menu-right a[href='/users/sign_out']").click
 

@@ -209,7 +209,7 @@ describe "Subjects Sections Listing", js:true do
         page.should_not have_css("#sect_#{@section1_2.id}")
         page.should_not have_css("#sect_#{@section1_3.id}")
       end
-        
+
       # click on right arrow should minimize subject
       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
       page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
@@ -291,9 +291,9 @@ describe "Subjects Sections Listing", js:true do
         Rails.logger.debug("+++ should have line number")
         page.should have_selector("#section_line_number", value: "#{@section1_2.line_number}")
         page.fill_in 'section_line_number', :with => 'Changed Section ID'
-        # within('#section_message') do
-        #   page.should have_content(@section1_2.message)
-        # end
+        within('#section_message') do
+          page.should have_content(@section1_2.message)
+        end
         page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
         Rails.logger.debug("+++ click save")
         page.click_button('Save')
@@ -301,9 +301,10 @@ describe "Subjects Sections Listing", js:true do
       end
 
       Rails.logger.debug("+++ out of popup")
-      # sleep 10
+      sleep 20
+      save_and_open_page
       within("tr#sect_#{@section1_2.id}") do
-        page.should have_content('Changed Section ID')
+        page.should have_content("Changed Section ID")
       end
 
       # user should see add section icon
@@ -335,7 +336,7 @@ describe "Subjects Sections Listing", js:true do
     #   page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
     #   page.should_not have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
     end
-    
+
     Rails.logger.debug("+++ end has_valid_subjects_listing")
 
   end # def has_valid_subjects_listing

@@ -54,7 +54,7 @@ gem 'zip-zip'         # provides compatibility for rubyzip pre 1.0 (for selenium
 # gem 'i18n-js', '2.1.2'
 gem 'gretel', '~> 3.0.7'    # breadcrumbs
 
-gem 'letter_opener', group: :development # Opens emails in new window in development.
+#gem 'letter_opener', group: :development # Opens emails in new window in development.
 
 #need this until we upgrade passenger gem. See: http://stackoverflow.com/questions/15076887/failed-to-build-gem-native-extension-ruby-2-0-upgrade-fastthread
 
@@ -67,7 +67,14 @@ gem 'rack-cache', '1.6.1'
 gem 'devise', '3.0.0'
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem 'rspec-rails', '2.14.0'
+  gem 'rspec-mocks', '2.14.2'
+  gem 'rspec-expectations', '2.14.0'
+  gem 'rspec-core', '2.14.4'
+  gem 'letter_opener', '1.1.2'
+  gem 'launchy', '2.3.0'
+  gem 'addressable', '2.3.5'
+  gem 'sshkit', '1.3.0'
   gem 'capybara', '1.1.2'
   gem 'factory_girl_rails', require: false
   gem 'guard-rspec'
@@ -78,7 +85,7 @@ end
 
 group :development do
   #gem 'bullet'
-  gem 'capistrano', '~> 3.0'
-  gem 'capistrano-rails', '~> 1.1'
-  gem 'capistrano-rvm'
+  gem 'capistrano', '3.0.1'
+  gem 'capistrano-rails', '1.1.0'
+  gem 'capistrano-rvm', '0.0.3'
 end
