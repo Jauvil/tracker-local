@@ -98,7 +98,7 @@ describe "School Admin Dashboard", js:true do
       page.should have_css('div.prof-rating-bar', text: '9')
       page.should have_css('div.nyp-rating-bar', text: '9')
       page.should have_css('div.unrated-rating-bar', text: '9')
-      # make sure first entry is Subject 1    #known issue
+      # make sure first entry is Subject 1
       subject_nodes = all('tbody td.subject-link a').map(&:text)
       subject_nodes[0].should == @subject.name
     end

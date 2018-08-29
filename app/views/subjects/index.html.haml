@@ -80,17 +80,21 @@
                     .clearfix
                       %a.toggle-tbody.pull-left{href: "javascript:void(0)", id: "subj_header_#{subj.id}_a"}
                         %i.fa.fa-caret-down.fa-lg
+
                       %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                         %strong.pull-left.lmargin5="#{disc.name} : #{subj.name}"
                   %td.text-center
                     - if can? :create, Section
                       %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section'}
                         %i.fa.fa-lg.fa-plus
+
                     %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                       %i.fa.fa-dashboard.fa-lg
-                    - if can? :edit, subj
-                      %a.edit-subject{data: {target: "#modal_popup", toggle: 'modal', url: edit_subject_path(subj.id, format: :js)}, title: 'Edit Subject'}
+
+                    - if can?(:edit, subj)
+                      %a.edit-subject{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: edit_subject_path(subj.id), title: 'Edit Subject'}
                         %i.fa.fa-lg.fa-edit
+
                     - if can?(:subject_admin, Subject) || can?(:edit_subject_outcomes, subj)
                       %a.assign-los{href: edit_subject_outcomes_subject_path(subj.id), title: 'Edit Subject Outcomes'}
                         %i.fa.fa-lg.fa-lightbulb-o
