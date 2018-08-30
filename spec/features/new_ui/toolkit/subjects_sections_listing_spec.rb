@@ -12,6 +12,7 @@ describe "Subjects Sections Listing", js:true do
     @teacher1 = @subject1.subject_manager
     @discipline = @subject1.discipline
 
+
     load_test_section(@section1_1, @teacher1)
 
     @section1_2 = FactoryGirl.create :section, subject: @subject1
@@ -40,7 +41,7 @@ describe "Subjects Sections Listing", js:true do
       sign_in(@teacher1)
       #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
     end
-    it { has_valid_subjects_listing(false, true) }
+    it { has_valid_subjects_listing(false, false) }
   end
 
   describe "as school administrator" do
@@ -97,11 +98,13 @@ describe "Subjects Sections Listing", js:true do
 
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(@test_user.id == @subject1.subject_manager_id ||
-      @test_user.has_permission?('subject_admin') ||
-      @test_user.has_permission?('manage_subject_admin') ||
+      @test_user.role_symbols.include?('school_administrator'.to_sym) ||
       @test_user.role_symbols.include?('system_administrator'.to_sym)
       # School administrators must be given subject administrator to see this
       # (@test_user.role_symbols.include?('school_administrator'.to_sym) && @test_user.school_id == @school1.id)
+      #@test_user.id == @subject1.subject_manager_id ||
+      # @test_user.has_permission?('subject_admin')
+      # @test_user.has_permission?('manage_subject_admin')
     )
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit_subject_outcomes']")
     else
@@ -109,7 +112,7 @@ describe "Subjects Sections Listing", js:true do
       page.should have_css("a[data-url='/subjects/#{@subject1.id}/view_subject_outcomes']")
     end
     if(@test_user.id == @subject2.subject_manager_id ||
-      @test_user.has_permission?('subject_admin') ||
+      @test_user.role_symbols.include?('school_administrator'.to_sym) ||
       @test_user.role_symbols.include?('system_administrator'.to_sym)
       # School administrators must be given subject administrator to see this
       # (@test_user.role_symbols.include?('school_administrator'.to_sym) && @test_user.school_id == @school1.id)
@@ -253,57 +256,65 @@ describe "Subjects Sections Listing", js:true do
 
           page.click_button('Save')
           Rails.logger.debug("+++ done with popup")
-          sleep 20
+          Rails.logger.debug("+++ get details of new subject")
+          sleep 2
         end
-          Rails.logger.debug("+++ check after save")
-          within("subj_header_#{subj.id}") do
-            page.should have_content("Discipline 1 : NewSubj")
-          end
+          # Rails.logger.debug("+++ check after save")
+          # within("subj_header_#{@subject1.id}") do
+          #   page.should have_content("Discipline 1 : NewSubj")
+          # end
       end
+      Rails.logger.debug("+++ edit subject")
+      # click on edit subject should show edit subject popup
+      page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
+      find("a[href='/subjects/#{@subject1.id}/edit']").click
+      Rails.logger.debug("+++ edit subject popup")
+      within('#modal-body') do
+        Rails.logger.debug("+++ Edit Subject popup")
+        within('h3') do
+          sleep 3
+          page.should have_content("Edit Subject - #{@subject1.name}")
+        end
+        within('.edit_subject') do
+          #find the properties for NAME and DISCIPLINE to update subject
+          page.click_button('Save')
+          Rails.logger.debug("+++ update & save subject")
+          Rails.logger.debug("+++ done with popup")
+        end
+      end
+
     end
-    #   Rails.logger.debug("+++ look for (find) edit url")
-    #   # click on edit subject should show edit subject popup
-    #   page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
-    #   find("a[href='/subjects/#{@subject1.id}/edit']").click
-    #   Rails.logger.debug("+++ found edit?")
-    #   within('#modal-body') do
-    #     Rails.logger.debug("+++ Edit Subject popup")
-    #     within('h3') do
-    #       page.should have_content("Edit Subject - #{@subject1.name}")
-    #     end
-    #   end
-    # else
-    #   page.should_not have_css("a#add-subject")
-    #   page.should_not have_css("a[data-url='/subjects/#{@subject1.id}/edit.js']")
+
 
     if (can_create_section)
-      save_and_open_page
+      # save_and_open_page
       Rails.logger.debug("+++ can_create_section")
 
-      find("a#collapse-all-tbodies").click
-      page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
-      page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
+       find("a#collapse-all-tbodies").click
+       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
+       page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
 
-      #find("a#subj_header_#{@subject1.id}_a").click
-      Rails.logger.debug("+++ found subject?")
+       find("a#subj_header_#{@subject1.id}_a").click
+       Rails.logger.debug("+++ found subject?")
 
       # click on edit section should show edit section popup
-      page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-      find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
+       page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
+       find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
 
       within("tr#sect_#{@section1_2.id}") do
         page.should have_content(@section1_2.line_number)
       end
 
-      within('#modal-body') do
-        Rails.logger.debug("+++ in popup")
-        within('h2') do
-          # if(can_create_subject)
-          #   page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
-          # else
-            page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
-          # end
-        end
+       within('#modal-body') do
+      #   Rails.logger.debug("+++ in popup")
+         within('h2') do
+      #     # if(can_create_subject)
+      #     #   page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
+      #     # else
+             page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
+             sleep 10
+      #     # end
+         end
         Rails.logger.debug("+++ should have line number name")
         within('#section_line_number') do
           page.should_not have_content(@section1_2.subject.name)
@@ -316,51 +327,50 @@ describe "Subjects Sections Listing", js:true do
         #   page.should have_content(@section1_2.message)
         # end
         page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
-        Rails.logger.debug("+++ click save")
 
+        Rails.logger.debug("+++ click save")
         page.click_button('Save')
         Rails.logger.debug("+++ done with popup")
       end
 
-      Rails.logger.debug("+++ out of popup")
-      within("tr#sect_#{@section1_2.id}") do
+        Rails.logger.debug("+++ out of popup")
+        within("tr#sect_#{@section1_2.id}") do
 
         page.should have_content("Changed")
       end
 
       # user should see add section icon
+      Rails.logger.debug("+++ Start create new section")
       page.should have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
       Rails.logger.debug("+++ to click new section")
       find("a[href='/sections/new?subject_id=#{@subject1.id}']").click
       Rails.logger.debug("+++ clicked new section")
 
-    #   # click on add section should show add section popup
+      # click on add section should show add section popup
     #   # Rails.logger.debug("*** subj_header_#{@section1_2.subject.id}")
-    #   # find("subj_header_#{@section1_2.subject.id} a.add-section").click
-    #   # within('#modal-body') do
-    #   #   within('h3') do
-    #   #     page.should have_content("Add Section")
-    #   #   end
-    #   #   # within('#section_line_number') do
-    #   #   #   page.should_not have_content(@section1_2.subject.name)
-    #   #   # end
-    #   #   # page.should have_selector("#section_line_number", value: "#{@section1_2.line_number}")
-    #   #   # page.fill_in 'section_line_number', :with => 'Changed Section ID'
-    #   #   # within('#section_message') do
-    #   #   #   page.should have_content(@section1_2.message)
-    #   #   # end
-    #   #   # page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
-    #   #   # page.click_button('Save')
+      # find("subj_header_#{@section1_2.subject.id} a.add-section").click
+     within('#modal-body') do
+        Rails.logger.debug("+++ inside create Section popup")
+        within('h3') do
+          page.should have_content("Section")
+        end
+        page.should have_selector("#section_line_number", value: "#{@section1_2.line_number}")
+        page.fill_in 'section_line_number', :with => 'NewClass'
+        Rails.logger.debug("new section id #{@section1_2.line_number}")
+
+        page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
+        Rails.logger.debug("section school year #{@section1_2.school_year.name}")
+        sleep 5
+        page.click_button('Save')
+        Rails.logger.debug("+++ done creating new section")
+        # save should go back to section listing
     #   # end
-    #   # # save should go back to section listing
+    #   #
     # else
     #   page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
     #   page.should_not have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
+      end
     end
-
     Rails.logger.debug("+++ end has_valid_subjects_listing")
-
   end # def has_valid_subjects_listing
-
-
 end

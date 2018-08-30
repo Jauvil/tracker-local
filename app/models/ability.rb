@@ -160,8 +160,8 @@ class Ability
             School,
             { id: user.school_id }
 
-        # Section
-        can [:create, :new_enrollment, :new_evidence, :new_section_outcome,
+        # Section   #took out :create
+        can [:new_enrollment, :new_evidence, :new_section_outcome,
              :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :section_outcomes, :index, :section_attendance],
             Section,
             { teaching_assignments: {teacher_id: user.id }}
@@ -341,7 +341,7 @@ class Ability
         # note teacher has following abilities for parents, so does school admin need these?: :create, :read, :update, :dashboard, :security, :index, :new,
 
         # Subject
-        can [:read, :view_subject_outcomes, :proficiency_bars, :progress_meters],
+        can [:create, :update, :edit, :read, :edit_subject_outcomes, :proficiency_bars, :progress_meters],
             Subject,
             { school_id: user.school_id }
         can [:new], Subject
@@ -389,27 +389,26 @@ class Ability
       #########################################################################
       # permission based abilities:
       # note school authorization must be done elsewhere
-      if user.has_permission?('subject_admin')
-        if user.school_id.present? && user.school_id > 0
-          can [:section_outcomes],
-            Section,
-            { subject: { school_id: user.school_id } }
-          can [:read, :create, :update, :subject_admin, :edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
-            Subject,
-            { school_id: user.school_id }
-        end
 
-      end
+      # all permissions given to school adminstrator
 
-      if user.has_permission?('manage_subject_admin')
-        if user.school_id.present? && user.school_id > 0
-          can [:edit, :sections_list],
-            User,
-              { teacher: {school_id: user.school_id} }
-        end
+      # if user.has_permission?('subject_admin')
+      #   if user.school_id.present? && user.school_id > 0
+      #     can [:section_outcomes],
+      #       Section, { subject: { school_id: user.school_id } }
+      #     can [:read, :create, :update, :subject_admin, :edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
+      #       Subject, { school_id: user.school_id }
+      #   end
 
-      end
+      # end
 
+      # if user.has_permission?('manage_subject_admin')
+      #   if user.school_id.present? && user.school_id > 0
+      #     can [:edit, :sections_list],
+      #       User,
+      #         { teacher: {school_id: user.school_id} }
+      #   end
+      # end
 
       #########################################################################
       # added last, so this system admin role's rights overrides all others above
