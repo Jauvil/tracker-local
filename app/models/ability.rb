@@ -200,10 +200,10 @@ class Ability
 
 
         # Subject
-        can [:read],
+        can [:read, :view_subject_outcomes],
             Subject,
             { school_id: user.school_id }
-        can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
+        can [:edit_subject_outcomes, :update_subject_outcomes],
             Subject,
             { subject_manager_id: user.id }
           # The ability to Edit_subject_outcomes, etc is also determined by User table. See below.
