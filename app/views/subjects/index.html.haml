@@ -84,7 +84,8 @@
                       %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                         %strong.pull-left.lmargin5="#{disc.name} : #{subj.name}"
                   %td.text-center
-                    - if can?(:create, Section) || can?(:subject_manager, subj)
+
+                    - if can?(:create, Section)
                       %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section'}
                         %i.fa.fa-lg.fa-plus
 

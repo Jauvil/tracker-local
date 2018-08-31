@@ -41,7 +41,7 @@ describe "Subjects Sections Listing", js:true do
       sign_in(@teacher1)
       #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
     end
-    it { has_valid_subjects_listing(false, false) }
+    it { has_valid_subjects_listing(false, true) }
   end
 
   describe "as school administrator" do
@@ -98,6 +98,7 @@ describe "Subjects Sections Listing", js:true do
 
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(@test_user.id == @subject1.subject_manager_id ||
+      #ToDO create user.has_role?
       @test_user.role_symbols.include?('school_administrator'.to_sym) ||
       @test_user.role_symbols.include?('system_administrator'.to_sym)
       # School administrators must be given subject administrator to see this
@@ -256,10 +257,10 @@ describe "Subjects Sections Listing", js:true do
           Rails.logger.debug("+++ get details of new subject")
           sleep 2
         end
-          # Rails.logger.debug("+++ check after save")
-          # within("subj_header_#{@subject1.id}") do
-          #   page.should have_content("Discipline 1 : NewSubj")
-          # end
+        Rails.logger.debug("+++ check after save")
+        within("subj_header_#{@subject1.id}") do
+          page.should have_content("Discipline 1 : NewSubj")
+        end
       end
       Rails.logger.debug("+++ edit subject")
       # click on edit subject should show edit subject popup
@@ -329,10 +330,8 @@ describe "Subjects Sections Listing", js:true do
         page.click_button('Save')
         Rails.logger.debug("+++ done with popup")
       end
-
-        Rails.logger.debug("+++ out of popup")
-        within("tr#sect_#{@section1_2.id}") do
-
+      Rails.logger.debug("+++ out of popup")
+      within("tr#sect_#{@section1_2.id}") do
         page.should have_content("Changed")
       end
 
@@ -344,7 +343,7 @@ describe "Subjects Sections Listing", js:true do
       Rails.logger.debug("+++ clicked new section")
 
       # click on add section should show add section popup
-    #   # Rails.logger.debug("*** subj_header_#{@section1_2.subject.id}")
+      # Rails.logger.debug("*** subj_header_#{@section1_2.subject.id}")
       # find("subj_header_#{@section1_2.subject.id} a.add-section").click
      within('#modal-body') do
         Rails.logger.debug("+++ inside create Section popup")

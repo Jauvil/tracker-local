@@ -160,9 +160,9 @@ class Ability
             School,
             { id: user.school_id }
 
-        # Section   #took out :create
+        # Section
         can [:create, :new_enrollment, :new_evidence, :new_section_outcome,
-             :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :section_outcomes, :index, :section_attendance],
+             :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :index, :section_attendance],
             Section,
             { teaching_assignments: {teacher_id: user.id }}
 
@@ -170,6 +170,7 @@ class Ability
         can [:new, :create], Section,
             { subject: { subject_manager_id: user.id }}
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
+        # This will be turned on & off by Teachers Edit Outcomes Flags
         can [:edit, :section_outcomes],
             Section,
             { subject: { school_id: user.school_id } }
@@ -214,8 +215,6 @@ class Ability
 
           Teacher,
           { id: user.id }  #maybe not needed
-
-        #can [:edit, :sections_list], Teacher, { user.has_permission?('manage_subject_admin')}
 
         # User
         can [:read, :change_password, :edit, :update, :profile, :sections_list, :account_activity_report, :staff_listing, :dashboard],
@@ -304,17 +303,21 @@ class Ability
              :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome,
              :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout,
              :student_info_handout_by_grade, :progress_rpt_gen, :class_dashboard, :edit_section_message,
-             :exp_col_all_evid, :list_enrollments, :remove_enrollment, :enter_bulk, :update_bulk,
-             :section_outcomes, :new, :create, :section_attendance],
+             :exp_col_all_evid, :list_enrollments, :remove_enrollment, :enter_bulk, :update_bulk, :new, :create, :section_attendance],
           Section,
           { subject: {school_id: user.school_id }}
         can [:new], Section
 
         # SectionOutcome
-        can [:create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
+        can [:edit_subject_outcomes, :update_subject_outcomes, :create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
             SectionOutcome,
             { section: { subject: { school_id: user.school_id } } }
+
         can [:new], SectionOutcome
+
+        can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
+        SectionOutcome,
+        {section: { subject: { subject_manager_id: user.id }}}
 
         # SubjectOutcome
         can [:create, :show, :update],
@@ -341,9 +344,10 @@ class Ability
         # note teacher has following abilities for parents, so does school admin need these?: :create, :read, :update, :dashboard, :security, :index, :new,
 
         # Subject
-        can [:create, :update, :edit, :read, :edit_subject_outcomes, :proficiency_bars, :progress_meters],
+        can [:read, :create, :update, :edit_subject_outcomes, :view_subject_outcomes, :proficiency_bars, :progress_meters],
             Subject,
             { school_id: user.school_id }
+
         can [:new], Subject
 
         # Teacher

@@ -107,7 +107,7 @@
                         %i.fa.fa-lg.fa-check
                     -#  - if can?(:sections_list, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
                     -#   %a{href: "/users/#{s.id}/sections_list", title: 'Staff Sections List'}
-                         %i.fa.fa-lg.fa-check
+                    -#  %i.fa.fa-lg.fa-check
                   %td.text-center
                     - if can?(:show, s)
                       %a{data: {target: "#modal_popup", toggle: 'modal', url: user_path(s.id, format: :js)}, title: 'View Staff User Information'}
