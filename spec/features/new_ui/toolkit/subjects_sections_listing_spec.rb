@@ -235,9 +235,6 @@ describe "Subjects Sections Listing", js:true do
       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
       page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
 
-      # if (can_create_subject)
-      #   # click on add subject should show add subject popup
-
     end # within("#page-content") do
 
     if (can_create_subject)

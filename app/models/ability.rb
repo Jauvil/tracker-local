@@ -169,8 +169,8 @@ class Ability
         # teachers can create new sections in their school for any subject
         can [:new, :create], Section,
             { subject: { subject_manager_id: user.id }}
-        # all teachers can see all section outcomes for their school (same as subject outcomes)
-        can [:section_outcomes],
+        # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
+        can [:edit, :section_outcomes],
             Section,
             { subject: { school_id: user.school_id } }
 

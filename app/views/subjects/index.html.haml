@@ -84,18 +84,9 @@
                       %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                         %strong.pull-left.lmargin5="#{disc.name} : #{subj.name}"
                   %td.text-center
-                    - if can? :create || can?(:subject_manager), Section
+                    - if can? :create, Section
                       %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section'}
                         %i.fa.fa-lg.fa-plus
-
-                    - if @is_subject_manager
- .row
-   .col-md-12
-     .sectioned-list
-       .row.header-row
-         %h4.text-center
-           %a{:href => "/sections/new?subject_id#{@section.subject_id}"}='Add New Section'
-
 
                     %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                       %i.fa.fa-dashboard.fa-lg
