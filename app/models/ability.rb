@@ -161,12 +161,12 @@ class Ability
             { id: user.school_id }
 
         # Section   #took out :create
-        can [:new_enrollment, :new_evidence, :new_section_outcome,
+        can [:create, :new_enrollment, :new_evidence, :new_section_outcome,
              :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :section_outcomes, :index, :section_attendance],
             Section,
             { teaching_assignments: {teacher_id: user.id }}
 
-        # teachers can create new sections in their school for any subject
+        # teachers can create new section in their school for any subject
         can [:new, :create], Section,
             { subject: { subject_manager_id: user.id }}
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
