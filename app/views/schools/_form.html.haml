@@ -44,11 +44,10 @@
 - #     %span.ui-error="#{@errors[f] if @errors[f].present?}"
 %fieldset.input-group
   %label.col-sm-5.control-label='Subject Manager:'
-  %input{type: 'hidden', name: "school[flag_pars][#{School::USERNAME_FROM_EMAIL}]", value: 'false'}
-  %input.pull-left{:name => "school[flag_pars][#{School::USERNAME_FROM_EMAIL}]", :type => "checkbox", checked: @school.has_flag?(School::USERNAME_FROM_EMAIL)}
+  %input{type: 'hidden', name: "school[flag_pars][#{School::SUBJECT_MANAGER}]", value: 'false'}
+  %input.pull-left{:name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
   %label.checkbox-right-label.pull-left="Yes"
-  %span.ui-error="#{@errors[School::USERNAME_FROM_EMAIL] if @errors[School::USERNAME_FROM_EMAIL].present?}"
-
+  %span.ui-error="#{@errors[School::SUBJECT_MANAGER] if @errors[School::SUBJECT_MANAGER].present?}"
 %fieldset.input-group
   %label.col-sm-5.control-label='Surname:'
   %input#use-family-name{type: 'hidden', name: "school[flag_pars][#{School::USE_FAMILY_NAME}]", value: 'false'}

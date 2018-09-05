@@ -14,6 +14,9 @@
       %span.col-sm-6.control-label='Marking Periods:'
       %span#school-marking-periods.col-sm-6.value=@school.marking_periods
     .row
+      %span.col-sm-6.control-label='Subject Manager:'
+      %span#allow-subject-mgr.col-sm-6.value=@school.has_flag?(School::SUBJECT_MANAGER)
+    .row
       %span.col-sm-6.control-label='Use Family Name:'
       %span#school-use-family-name.col-sm-6.value=@school.has_flag?(School::USE_FAMILY_NAME)
     .row
