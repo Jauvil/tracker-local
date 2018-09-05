@@ -134,6 +134,7 @@ class Ability
 
       #########################################################################
       if user.teacher?
+
         # Enrollment
         can [:show, :create, :update],
             Enrollment,
@@ -161,17 +162,16 @@ class Ability
             { id: user.school_id }
 
         # Section
-        can [:create, :new_enrollment, :new_evidence, :new_section_outcome,
-             :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :index, :section_attendance],
+        can [:new, :create, :new_enrollment, :new_evidence, :new_section_outcome, :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome, :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout, :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid, :list_enrollments, :remove_enrollment, :index, :section_attendance],
             Section,
             { teaching_assignments: {teacher_id: user.id }}
 
         # teachers can create new section in their school for any subject
-        can [:new, :create], Section,
-            { subject: { subject_manager_id: user.id }}
+        can [:new, :create], Section
+
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
         # This will be turned on & off by Teachers Edit Outcomes Flags
-        can [:edit, :section_outcomes],
+        can [:class_dashboard, :edit, :section_outcomes],
             Section,
             { subject: { school_id: user.school_id } }
 
@@ -179,6 +179,7 @@ class Ability
         can [:create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
             SectionOutcome,
             {section_id: user.teacher.teaching_assignments.pluck(:section_id) }
+
         can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
             SectionOutcome,
             {section: { subject: { subject_manager_id: user.id }}}
@@ -212,7 +213,6 @@ class Ability
 
         # Teacher
         can [:read],
-
           Teacher,
           { id: user.id }  #maybe not needed
 
@@ -314,10 +314,6 @@ class Ability
             { section: { subject: { school_id: user.school_id } } }
 
         can [:new], SectionOutcome
-
-        can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
-        SectionOutcome,
-        {section: { subject: { subject_manager_id: user.id }}}
 
         # SubjectOutcome
         can [:create, :show, :update],

@@ -23,7 +23,7 @@ class SubjectsController < ApplicationController
     if @school.school_year_id
       @sections = Section.where school_year_id: @school.school_year_id
     else
-      
+
       @sections = []
     end
     # note this does not preread teaching assignments
@@ -110,7 +110,8 @@ class SubjectsController < ApplicationController
       @subject.errors.add(:discipline_id, I18n.translate('errors.cant_be_blank')) if !@subject.discipline_id # to get error onto form
       # @subject.errors.add(:subject_manager_id, I18n.translate('errors.cant_be_blank')) if !@subject.subject_manager_id # to get error onto form
       if saved && @subject.errors.count == 0
-        format.html { redirect_to(@subject.school, :notice => 'Subject was successfully created.') }
+        #format.html { redirect_to(@subject.school, :notice => 'Subject was successfully created.') }
+        format.html { render :action => "index" }
         format.js
       else
         format.html { render :action => "new" }

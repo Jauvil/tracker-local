@@ -377,13 +377,10 @@ describe "Rollover School Year", js:true do
       if sys_admin
         find("a[href='/subjects/#{@subject2_1.id}/edit_subject_outcomes']").click
         assert_equal("/subjects/#{@subject2_1.id}/edit_subject_outcomes", current_path)
-        save_and_open_page
         page.should have_content(@subject2_1.name)
         page.should have_content("Edit Learning Outcomes for:")
       else
         find("a[data-url='/subjects/#{@subject2_1.id}/view_subject_outcomes']").click
-        sleep 20
-        save_and_open_page
         page.should have_content("View Learning Outcomes for:")
       end
       within('table#current_los') do
@@ -404,8 +401,6 @@ describe "Rollover School Year", js:true do
         find("a[data-url='/subjects/#{@s2_subj_art_2.id}/view_subject_outcomes']").click
       end
     end
-    sleep 20
-    save_and_open_page
     page.should have_content("Edit Learning Outcomes for:")
     within('table#current_los') do
       page.should have_content("Old School Info 01")

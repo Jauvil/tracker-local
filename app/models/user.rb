@@ -79,6 +79,11 @@ class User < ActiveRecord::Base
   #   ['manage_subject_admin', 'subject_admin'].include?(perm.to_s)
   # end
 
+  #ToDO create user.has_role?
+  def has_role?(perm)
+    ['school_administrator', 'system_administrator'].include?(perm.to_s)
+  end
+
   def has_permission?(perm)
     (self.permissions || '').split(',').include?(perm.to_s)
   end
