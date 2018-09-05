@@ -292,36 +292,6 @@ describe "Subjects Sections Listing", js:true do
     if (can_create_section)
       Rails.logger.debug("+++ can_create_section")
 
-      # user should see add section icon
-      Rails.logger.debug("+++ Start create new section")
-      page.should have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
-      Rails.logger.debug("+++ to click new section")
-      find("a[href='/sections/new?subject_id=#{@subject1.id}']").click
-      Rails.logger.debug("+++ clicked new section")
-
-      # click on add section should show add section popup
-      # Rails.logger.debug("*** subj_header_#{@section1_2.subject.id}")
-      # find("subj_header_#{@section1_2.subject.id} a.add-section").click
-      within('#modal-body') do
-        Rails.logger.debug("+++ inside create Section popup")
-        within('h3') do
-          page.should have_content("Section")
-        end
-        page.should have_selector("#section_line_number", value: "#{@section1_2.line_number}")
-        page.fill_in 'section_line_number', :with => 'NewClass'
-        Rails.logger.debug("new section id #{@section1_2.line_number}")
-
-        page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
-        Rails.logger.debug("section school year #{@section1_2.school_year.name}")
-        page.click_button('Save')
-        Rails.logger.debug("+++ done creating new section")
-        # save should go back to section listing
-        # end
-        #
-        # else
-        # page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-        # page.should_not have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
-      end
 
        find("a#collapse-all-tbodies").click
        page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
@@ -368,6 +338,7 @@ describe "Subjects Sections Listing", js:true do
       within("tr#sect_#{@section1_2.id}") do
         page.should have_content("Changed")
       end
+
 
     end
     Rails.logger.debug("+++ end has_valid_subjects_listing")
