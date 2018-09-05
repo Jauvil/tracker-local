@@ -11,7 +11,8 @@ class School < ActiveRecord::Base
   USER_BY_FIRST_LAST = 'user_by_first_last'
   GRADE_IN_SUBJECT_NAME = 'grade_in_subject_name'
   USERNAME_FROM_EMAIL = 'username_from_email'
-  VALID_FLAGS = [USE_FAMILY_NAME, USER_BY_FIRST_LAST, GRADE_IN_SUBJECT_NAME, USERNAME_FROM_EMAIL]
+  SUBJECT_MANAGER = 'subject_manager'
+  VALID_FLAGS = [USE_FAMILY_NAME, USER_BY_FIRST_LAST, GRADE_IN_SUBJECT_NAME, USERNAME_FROM_EMAIL, SUBJECT_MANAGER]
 
   attr_accessible :name, :acronym, :city, :marking_periods, :school_year, :flag_pars
 

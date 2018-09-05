@@ -167,7 +167,17 @@ class Ability
             { teaching_assignments: {teacher_id: user.id }}
 
         # teachers can create new section in their school for any subject
-        can [:new, :create], Section
+        can [:new],
+          Section
+
+        can [:create],
+          Section,
+          { subject: { school_id: user.school_id } }
+
+        can [:create],
+          Section,
+          { subject: { subject_manager_id: user.id }}
+
 
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
         # This will be turned on & off by Teachers Edit Outcomes Flags
