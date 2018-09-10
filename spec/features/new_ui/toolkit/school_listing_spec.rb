@@ -204,12 +204,14 @@ describe "School Listing", js:true do
       page.should have_css('#school-city', text: @school1.city)
       if role == :system_administrator
         within('#school-marking-periods') { page.should have_content(@school1.marking_periods) }
+        within('#allow-subject-mgr') { page.should have_content(@school1.has_flag?(School::SUBJECT_MANAGER)) }
         within('#school-use-family-name') { page.should have_content(@school1.has_flag?(School::USE_FAMILY_NAME)) }
         within('#school-sort-by') { page.should have_content(@school1.has_flag?(School::USER_BY_FIRST_LAST)) }
         within('#school-grade-in-subject') { page.should have_content(@school1.has_flag?(School::GRADE_IN_SUBJECT_NAME)) }
         within('#username-from-email') { page.should have_content(@school1.has_flag?(School::USERNAME_FROM_EMAIL)) }
       else
         page.should_not have_css('#school-marking-periods')
+        page.should_not have_css('#allow-subject-mgr')
         page.should_not have_css('#school-use-family-name')
         page.should_not have_css('#school-sort-by')
         page.should_not have_css('#school-grade-in-subject')
@@ -356,11 +358,15 @@ describe "School Listing", js:true do
     page.should have_content("Edit School")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_school_#{@school1.id}") do
+        sleep 10
+        Rails.logger.debug("+++ checkedbox")
         # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
         page.fill_in 'school_name', :with => 'Changed School Name'
         page.fill_in 'school_acronym', :with => 'CHANGED'
         page.fill_in 'school_city', :with => 'Changed City'
         page.fill_in 'school_marking_periods', :with => '6'
+        find_field("school[flag_pars][subject_manager]").value.should == 'on'
+        find("input[name='school[flag_pars][subject_manager]']").set(false)
         find_field("school[flag_pars][use_family_name]").value.should == 'on'
         find("input[name='school[flag_pars][use_family_name]']").set(false)
         find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
@@ -382,12 +388,14 @@ describe "School Listing", js:true do
     find("a[data-url='/schools/#{@school1.id}/edit.js'] i.fa-edit").click
     page.should have_content("Edit School")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
+      sleep 10
       page.should have_css('input#school_name')
       find_field("school_name").value.should_not == @school2.name
       find_field("school_name").value.should == 'Changed School Name'
       find_field("school_acronym").value.should == 'CHANGED'
       find_field("school_city").value.should == 'Changed City'
       find_field("school_marking_periods").value.should == '6'
+      find_field("school[flag_pars][subject_manager]").value.should == 'on'
       find_field("school[flag_pars][use_family_name]").value.should == 'on'
       find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
       find_field("school[flag_pars][grade_in_subject_name]").value.should == 'on'

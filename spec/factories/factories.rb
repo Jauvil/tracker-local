@@ -111,7 +111,7 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
   end
 
@@ -125,7 +125,7 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
   end
 
@@ -139,7 +139,7 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
   end
 
