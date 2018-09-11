@@ -81,7 +81,6 @@ describe "Server Configuration Maintenance", js:true do
 
   def cannot_see_server_config
     Rails.logger.debug(" +++ start cannot_see_server_config")
-    sleep 5
     visit system_administrator_path(@system_administrator.id)
     assert_not_equal(current_path, "/system_administrators/#{@system_administrator.id}")
     assert_equal(current_path, @home_page)
@@ -98,10 +97,10 @@ describe "Server Configuration Maintenance", js:true do
     Rails.logger.debug(" +++ after picking school go to system_maintenance")
     page.find("#sidebar li#side-sys-maint a[href='/system_administrators/system_maintenance']").click
     Rails.logger.debug(" +++ from system_maintenance to home")
-    visit @home_page
-    Rails.logger.debug(" +++ from home /server_configs/1")
-    Rails.logger.debug(" +++ /server_configs/1")
-    page.find("#overall a[href='/server_configs/1']").click
+    # visit @home_page
+    # Rails.logger.debug(" +++ from home /server_configs/1")
+    # Rails.logger.debug(" +++ /server_configs/1")
+    # page.find("#overall a[href='/server_configs/1']").click
     sleep 30
 
     Rails.logger.debug(" +++ home ")
