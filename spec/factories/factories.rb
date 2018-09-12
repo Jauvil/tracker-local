@@ -108,14 +108,13 @@ FactoryGirl.define do
     after(:create) do |school|
       school_year = FactoryGirl.create(:school_year, school: school)
       school.current_school_year=school_year
-      school.subject_manager = true
       school.save
   end
     trait :arabic do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
     trait :us do
-      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,grade_in_subject_name'
     end
   end
 
@@ -134,7 +133,7 @@ FactoryGirl.define do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
     trait :us do
-      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,grade_in_subject_name'
     end
   end
 
@@ -151,7 +150,7 @@ FactoryGirl.define do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
     trait :us do
-      flags   'subject_manager,use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'subject_manager,grade_in_subject_name'
     end
   end
 
