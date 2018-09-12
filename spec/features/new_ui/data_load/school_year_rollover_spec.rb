@@ -380,6 +380,7 @@ describe "Rollover School Year", js:true do
         page.should have_content(@subject2_1.name)
         page.should have_content("Edit Learning Outcomes for:")
       else
+        # this is for school admins
         find("a[data-url='/subjects/#{@subject2_1.id}/view_subject_outcomes']").click
         page.should have_content("View Learning Outcomes for:")
       end

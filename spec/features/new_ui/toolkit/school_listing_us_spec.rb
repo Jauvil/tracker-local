@@ -323,6 +323,7 @@ require 'spec_helper'
             page.should have_css("a[href='/schools/#{@training_school.id}'] i.fa-building-o")
             page.should have_css("a[href='/schools/#{@training_school.id}/dashboard'] i.fa-dashboard")
             page.should have_css("a[data-url='/schools/#{@training_school.id}/edit.js'] i.fa-edit")
+            save_and_open_page
             page.should have_css("a.dim[id='rollover-#{@training_school.id}'][href='javascript:void(0)'] i.fa-forward")
             page.should have_css("a[href='/subject_outcomes/upload_lo_file'] i.fa-lightbulb-o")
           elsif (role == :researcher)

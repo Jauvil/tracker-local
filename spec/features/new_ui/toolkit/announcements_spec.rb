@@ -129,8 +129,6 @@ describe "Announcements", js:true do
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      sleep 20
-      save_and_open_page
       announcements.length.should == 3
 
       #############################################
