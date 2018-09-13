@@ -323,7 +323,6 @@ require 'spec_helper'
             page.should have_css("a[href='/schools/#{@training_school.id}'] i.fa-building-o")
             page.should have_css("a[href='/schools/#{@training_school.id}/dashboard'] i.fa-dashboard")
             page.should have_css("a[data-url='/schools/#{@training_school.id}/edit.js'] i.fa-edit")
-            save_and_open_page
             page.should have_css("a.dim[id='rollover-#{@training_school.id}'][href='javascript:void(0)'] i.fa-forward")
             page.should have_css("a[href='/subject_outcomes/upload_lo_file'] i.fa-lightbulb-o")
           elsif (role == :researcher)
@@ -358,8 +357,7 @@ require 'spec_helper'
     page.should have_content("Edit School")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_school_#{@school3.id}") do
-        sleep 15
-        Rails.logger.debug("+++ checkedbox")
+        sleep 7
         # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
         page.fill_in 'school_name', :with => 'Changed School Name'
         page.fill_in 'school_acronym', :with => 'CHANGED'

@@ -21,7 +21,6 @@ describe "Server Configuration Maintenance", js:true do
 
   end
 
-
   describe "as teacher" do
     before do
       sign_in(@teacher)

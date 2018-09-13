@@ -371,8 +371,11 @@ describe "Rollover School Year", js:true do
 
     # confirm @subject2_1 exists and has learning outcomes
     visit subjects_path()
+    Rails.logger.debug("*** visit subjects_path")
+    sleep 60
     page.should have_css("tbody#subj_header_#{@subject2_1.id}")
     within("tbody#subj_header_#{@subject2_1.id}") do
+      sleep 20
       page.should have_content(@subject2_1.name)
       if sys_admin
         find("a[href='/subjects/#{@subject2_1.id}/edit_subject_outcomes']").click
