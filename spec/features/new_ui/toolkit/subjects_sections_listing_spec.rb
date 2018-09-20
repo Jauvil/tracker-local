@@ -100,8 +100,8 @@ describe "Subjects Sections Listing", js:true do
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
       # ToDO create user.has_role?
-      (this_user.has_role?('school_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('system_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # this_user.id == @subject1.subject_manager_id ||
       # this_user.has_permission?('subject_admin')
@@ -113,8 +113,8 @@ describe "Subjects Sections Listing", js:true do
       page.should have_css("a[data-url='/subjects/#{@subject1.id}/view_subject_outcomes']")
     end
     if(this_user.id == (@subject2.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.role_symbols.include?('school_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.role_symbols.include?('system_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # (this_user.role_symbols.include?('school_administrator'.to_sym) && this_user.school_id == @school1.id)
     )
