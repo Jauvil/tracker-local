@@ -96,7 +96,7 @@
                       %a.edit-subject{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: edit_subject_path(subj.id), title: 'Edit Subject'}
                         %i.fa.fa-lg.fa-edit
 
-                    - if can?(:edit_subject_outcomes, subj)
+                    - if subj.editable?(can?(:edit_subject_outcomes, subj))
                       %a.assign-los{href: edit_subject_outcomes_subject_path(subj.id), title: 'Edit Subject Outcomes'}
                         %i.fa.fa-lg.fa-lightbulb-o
                     - else

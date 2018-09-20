@@ -153,4 +153,8 @@ class Subject < ActiveRecord::Base
     return (grade_semester_split.length > 0) ? grade_semester_split[0] : ''
   end
 
+  def editable?(can_edit)
+    can_edit && self.school.has_flag?(School::SUBJECT_MANAGER) && ServerConfig.first.try(:allow_subject_mgr)
+  end
+
 end

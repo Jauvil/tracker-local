@@ -109,7 +109,7 @@ FactoryGirl.define do
       school_year = FactoryGirl.create(:school_year, school: school)
       school.current_school_year=school_year
       school.save
-  end
+    end
     trait :arabic do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
@@ -362,7 +362,14 @@ FactoryGirl.define do
   factory :server_config do
     # support_team        "Tracker Support Team"
     # school_support_team "School IT Support Team"
+
     # server_name         "Tracker System"
     # web_server_name     "PARLO Tracker Web Server"
+    trait :arabic do
+      flags
+    end
+    trait :us do
+      flags  :allow_subject_mgr
+    end
   end
 end

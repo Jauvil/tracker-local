@@ -43,7 +43,7 @@
 - #     %label.checkbox-right-label.pull-left=School::VALID_FLAGS_VALUES[ix]
 - #     %span.ui-error="#{@errors[f] if @errors[f].present?}"
 %fieldset.input-group
-  %label.col-sm-5.control-label='Allow Subject Manager:'
+  %label.col-sm-5.control-label='Allow Subject Managers:'
   %input{type: 'hidden', name: "school[flag_pars][subject_manager]", value: 'false'}
   %input.pull-left{:name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
   %label.checkbox-right-label.pull-left="Yes"
