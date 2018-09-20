@@ -365,11 +365,11 @@ FactoryGirl.define do
 
     # server_name         "Tracker System"
     # web_server_name     "PARLO Tracker Web Server"
-    trait :arabic do
-      flags
-    end
-    trait :us do
-      flags  :allow_subject_mgr
-    end
+    # trait :arabic do
+    #   flags
+    # end
+    # trait :us do
+    #   flags  :allow_subject_mgr
+    # end
   end
 end

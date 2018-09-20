@@ -99,20 +99,13 @@ describe "Subjects Sections Listing", js:true do
 
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      #ToDO create user.has_role?
-      #  this_user.has_role?('school_administratorn') ||
-      #  this_user.has_role?('system_administrator')
-       (this_user.role_symbols.include?('school_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-       (this_user.role_symbols.include?('system_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+      # ToDO create user.has_role?
+      (this_user.has_role?('school_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.has_role?('system_administrator'.to_sym) && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
-      # (this_user.role_symbols.include?('school_administrator'.to_sym) && this_user.school_id == @school1.id)
-      #this_user.id == @subject1.subject_manager_id ||
+      # this_user.id == @subject1.subject_manager_id ||
       # this_user.has_permission?('subject_admin')
       # this_user.has_permission?('manage_subject_admin')
-      # In order for teacher to Edit Subject Outcomes the
-      # 1) Subject Subject Manager selected
-      # 2) School Allow Subject Mangers flag is TRUE
-      # 3) Server Config Allow Subject Managers flag is TRUE
     )
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit_subject_outcomes']")
     else
@@ -281,6 +274,7 @@ describe "Subjects Sections Listing", js:true do
         end
         within('.edit_subject') do
           #find the properties for NAME and DISCIPLINE to update subject
+          sleep 10
           select('Discipline 12', from: 'subject-discipline-id')
           page.fill_in 'subject-name', :with => 'Subname'
           page.click_button('Save')
