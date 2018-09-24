@@ -1,7 +1,7 @@
 # school_listing_spec.rb
 require 'spec_helper'
 
-  describe "School Listing", js:true do
+describe "School Listing", js:true do
   before (:each) do
     # @section = FactoryGirl.create :section
     # @school = @section.school

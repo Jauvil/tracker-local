@@ -45,7 +45,7 @@
 %fieldset.input-group
   %label.col-sm-5.control-label='Allow Subject Managers:'
   %input{type: 'hidden', name: "school[flag_pars][subject_manager]", value: 'false'}
-  %input.pull-left{:name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
+  %input.pull-left{:disable => true, :name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
   %label.checkbox-right-label.pull-left="Yes"
   %span.ui-error="#{@errors[School::SUBJECT_MANAGER] if @errors[School::SUBJECT_MANAGER].present?}"
 %fieldset.input-group

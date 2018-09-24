@@ -1,7 +1,116 @@
 # school_listing_spec.rb
 require 'spec_helper'
 
-  describe "School Listing", js:true do
+describe "School Listing", js:true do
+  describe "US System" do
+    before (:each) do
+      # @section = FactoryGirl.create :section
+      # @school = @section.school
+      # @teacher = FactoryGirl.create :teacher, school: @school
+      # @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      # load_test_section(@section, @teacher)
+
+      create_and_load_us_model_school
+
+      # @school1
+      @school1 = FactoryGirl.create :school_current_year, :us
+      @teacher1 = FactoryGirl.create :teacher, school: @school1
+      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @section1_2 = FactoryGirl.create :section, subject: @subject1
+      @section1_3 = FactoryGirl.create :section, subject: @subject1
+      @discipline = @subject1.discipline
+      load_test_section(@section1_1, @teacher1)
+
+      # @school2
+      @school2 = FactoryGirl.create :school_prior_year, :arabic
+      @teacher2_1 = FactoryGirl.create :teacher, school: @school2
+      @subject2_1 = FactoryGirl.create :subject, school: @school2, subject_manager: @teacher2_1
+      @section2_1_1 = FactoryGirl.create :section, subject: @subject2_1
+      @section2_1_2 = FactoryGirl.create :section, subject: @subject2_1
+      @section2_1_3 = FactoryGirl.create :section, subject: @subject2_1
+
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher1)
+        @home_page = "/teachers/#{@teacher1.id}"
+      end
+      it { has_valid_school_navigations(:teacher) }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_schools_summary(:school_administrator) }
+      it { has_valid_school_navigations(:school_administrator) }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school1)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_nav_to_schools_page(true) }
+      it { has_valid_schools_summary(:researcher) }
+      it { has_valid_school_navigations(:researcher) }
+    end
+
+    describe "as researcher with no school selected" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_nav_to_schools_page(false) }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school1)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_nav_to_schools_page(true) }
+      it { has_valid_schools_summary(:system_administrator)}
+      it { has_valid_school_navigations(:system_administrator) }
+      it { valid_edit_school }
+    end
+
+    describe "as system administrator with no school selected" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_nav_to_schools_page(false) }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_valid_school_navigations(:student) }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_valid_school_navigations(:parent) }
+    end
+  end
+
+  describe "Egypt System" do
     before (:each) do
       # @section = FactoryGirl.create :section
       # @school = @section.school
@@ -107,34 +216,35 @@ require 'spec_helper'
       end
       it { has_valid_school_navigations(:parent) }
     end
+  end
 
-    ##################################################
-    # test methods
+  ##################################################
+  # test methods
 
-    def has_nav_to_schools_page(school_assigned)
-      # only for system_administrators and researchers
-      if !school_assigned
-        # confirm school is not assigned
-        within("#head-current-school") do
-          page.should have_content("Select a School")
-          page.should_not have_content("Switch School")
-        end
-      end
-      page.should have_css("li#side-schools")
-      find('li#side-schools a').click
-      page.should have_css("a[href='/schools/#{@school2.id}']")
-      find("a[href='/schools/#{@school2.id}']").click
-
-      # confirm school is set
+  def has_nav_to_schools_page(school_assigned)
+    # only for system_administrators and researchers
+    if !school_assigned
+      # confirm school is not assigned
       within("#head-current-school") do
-        page.should_not have_content("Select a School")
-        within("span[title='Current School']") do
-          page.should have_content(@school2.name)
-        end
-        page.should have_css("a[href='/schools'] i.fa-list-ul")
-        page.should have_css("a[href='/schools/#{@school2.id}'] i.fa-building-o")
-        page.should have_css("a[href='/schools/#{@school2.id}/dashboard'] i.fa-dashboard")
+        page.should have_content("Select a School")
+        page.should_not have_content("Switch School")
       end
+    end
+    page.should have_css("li#side-schools")
+    find('li#side-schools a').click
+    page.should have_css("a[href='/schools/#{@school2.id}']")
+    find("a[href='/schools/#{@school2.id}']").click
+
+    # confirm school is set
+    within("#head-current-school") do
+      page.should_not have_content("Select a School")
+      within("span[title='Current School']") do
+        page.should have_content(@school2.name)
+      end
+      page.should have_css("a[href='/schools'] i.fa-list-ul")
+      page.should have_css("a[href='/schools/#{@school2.id}'] i.fa-building-o")
+      page.should have_css("a[href='/schools/#{@school2.id}/dashboard'] i.fa-dashboard")
+    end
 
       # has valid school summary page
       assert_equal("/schools/#{@school2.id}", current_path)
