@@ -123,6 +123,7 @@ describe "Server Configuration Maintenance", js:true do
       fill_in('support_email', with: '')
       fill_in('support_team', with: '')
       fill_in('school_support_team', with: '')
+      # All systems see the Manual Curriculum flag
       find_field("config[allow_subject_mgr]").value.should == 'on'
       find("input[name='config[allow_subject_mgr]']").set(true)
       find("input[name='config[allow_subject_mgr]']").set(false)

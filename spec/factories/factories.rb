@@ -362,7 +362,6 @@ FactoryGirl.define do
   factory :server_config do
     # support_team        "Tracker Support Team"
     # school_support_team "School IT Support Team"
-
     # server_name         "Tracker System"
     # web_server_name     "PARLO Tracker Web Server"
     # trait :arabic do

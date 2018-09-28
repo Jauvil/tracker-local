@@ -323,6 +323,7 @@ class Ability
         can [:new], Section
 
         # SectionOutcome
+        # ToDo Check for Edit_subject_outcomes action on Sectionoutcome controller
         can [:edit_subject_outcomes, :update_subject_outcomes, :create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
             SectionOutcome,
             { section: { subject: { school_id: user.school_id } } }
@@ -354,6 +355,7 @@ class Ability
         # note teacher has following abilities for parents, so does school admin need these?: :create, :read, :update, :dashboard, :security, :index, :new,
 
         # Subject
+        # ToDo Check for Edit_subject_outcomes action on Subject controller
         can [:read, :create, :update, :edit_subject_outcomes, :view_subject_outcomes, :proficiency_bars, :progress_meters],
             Subject,
             { school_id: user.school_id }

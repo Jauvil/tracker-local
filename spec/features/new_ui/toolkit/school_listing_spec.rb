@@ -23,7 +23,7 @@ describe "School Listing", js:true do
       load_test_section(@section1_1, @teacher1)
 
       # @school2
-      @school2 = FactoryGirl.create :school_prior_year, :arabic
+      @school2 = FactoryGirl.create :school_prior_year, :us
       @teacher2_1 = FactoryGirl.create :teacher, school: @school2
       @subject2_1 = FactoryGirl.create :subject, school: @school2, subject_manager: @teacher2_1
       @section2_1_1 = FactoryGirl.create :section, subject: @subject2_1
