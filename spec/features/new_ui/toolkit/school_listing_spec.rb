@@ -437,7 +437,7 @@ describe "School Listing", js:true do
               page.should have_css("a[href='/schools/#{@training_school.id}'] i.fa-building-o")
               page.should have_css("a[href='/schools/#{@training_school.id}/dashboard'] i.fa-dashboard")
               page.should have_css("a[data-url='/schools/#{@training_school.id}/edit.js'] i.fa-edit")
-              #page.should have_css("a.dim[id='rollover-#{@training_school.id}'][href='javascript:void(0)'] i.fa-forward")
+              page.should have_css("a[id='rollover-#{@training_school.id}'][href='/schools/#{@training_school.id}/new_year_rollover'] i.fa-forward")
               page.should have_css("a[href='/subject_outcomes/upload_lo_file'] i.fa-lightbulb-o")
             elsif (role == :researcher)
               page.should have_css("a[href='/schools/#{@school2.id}'] i.fa-building-o")
@@ -473,8 +473,9 @@ describe "School Listing", js:true do
         within("form#edit_school_#{@school1.id}") do
           Rails.logger.debug("+++ checkedbox")
           # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
-          page.fill_in 'school_name', :with => 'Changed School Name'
+          page.fill_in 'school_name', :with => 'Changed-School-Name'
           page.fill_in 'school_acronym', :with => 'CHANGED'
+          sleep 10
           page.fill_in 'school_city', :with => 'Changed City'
           page.fill_in 'school_marking_periods', :with => '4'
           if (ServerConfig.first.try(:allow_subject_mgr) != true)
@@ -506,7 +507,7 @@ describe "School Listing", js:true do
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
         page.should have_css('input#school_name')
         find_field("school_name").value.should_not == @school2.name
-        find_field("school_name").value.should == 'Changed School Name'
+        find_field("school_name").value.should == 'Changed-School-Name'
         sleep 5
         find_field("school_acronym").value.should == 'CHANGED'
         find_field("school_city").value.should == 'Changed City'
