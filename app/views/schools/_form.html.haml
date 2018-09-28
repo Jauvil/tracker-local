@@ -34,6 +34,14 @@
   %span.ui-required{title: 'Required'}='*'
   %span.ui-error="#{@errors[:marking_periods] if @errors[:marking_periods].present?}"
 
+- if ServerConfig.first.try(:allow_subject_mgr) == true
+  %fieldset.input-group
+    %label.col-sm-5.control-label='Allow Subject Managers:'
+    %input{type: 'hidden', name: "school[flag_pars][subject_manager]", value: 'false'}
+    %input.pull-left{:disable => true, :name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
+    %label.checkbox-right-label.pull-left="Yes"
+    %span.ui-error="#{@errors[School::SUBJECT_MANAGER] if @errors[School::SUBJECT_MANAGER].present?}"
+
 - # attempt to loop through school flags - gets error: ajaxError error: ReferenceError: School is not defined
 - # - School::VALID_FLAGS.each_with_index do |f, ix|
 - #   %fieldset.input-group
@@ -42,12 +50,7 @@
 - #     %input.pull-left{:name => "school[flag_pars][#{f}]", :type => "checkbox", checked: @school.has_flag?(f)}
 - #     %label.checkbox-right-label.pull-left=School::VALID_FLAGS_VALUES[ix]
 - #     %span.ui-error="#{@errors[f] if @errors[f].present?}"
-%fieldset.input-group
-  %label.col-sm-5.control-label='Allow Subject Managers:'
-  %input{type: 'hidden', name: "school[flag_pars][subject_manager]", value: 'false'}
-  %input.pull-left{:disable => true, :name => "school[flag_pars][#{School::SUBJECT_MANAGER}]", :type => "checkbox", checked: @school.has_flag?(School::SUBJECT_MANAGER)}
-  %label.checkbox-right-label.pull-left="Yes"
-  %span.ui-error="#{@errors[School::SUBJECT_MANAGER] if @errors[School::SUBJECT_MANAGER].present?}"
+
 %fieldset.input-group
   %label.col-sm-5.control-label='Surname:'
   %input#use-family-name{type: 'hidden', name: "school[flag_pars][#{School::USE_FAMILY_NAME}]", value: 'false'}

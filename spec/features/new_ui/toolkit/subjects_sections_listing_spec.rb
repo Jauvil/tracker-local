@@ -11,11 +11,11 @@ describe "Subjects Sections Listing", js:true do
       # @subject1 = @section1_1.subject
       # @school1 = @section1_1.school
       @school1 = FactoryGirl.create :school, :us
-      @subject1 = FactoryGirl.create :subject, school: @school1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @teacher1 = @subject1.subject_manager
+      @teacher1 = FactoryGirl.create :teacher, school: @school1
+      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
+      @teacher3 = FactoryGirl.create :teacher, school: @school1
       @discipline = @subject1.discipline
-
+      @section1_1 = FactoryGirl.create :section, subject: @subject1
 
       load_test_section(@section1_1, @teacher1)
 
@@ -24,7 +24,7 @@ describe "Subjects Sections Listing", js:true do
       @section1_3 = FactoryGirl.create :section, subject: @subject1
       @ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
+      @subject2 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
       @section2_1 = FactoryGirl.create :section, subject: @subject2
       @section2_2 = FactoryGirl.create :section, subject: @subject2
       @section2_3 = FactoryGirl.create :section, subject: @subject2
@@ -36,19 +36,29 @@ describe "Subjects Sections Listing", js:true do
       @section3_1 = FactoryGirl.create :section, subject: @subject3
       @section3_2 = FactoryGirl.create :section, subject: @subject3
       @section3_3 = FactoryGirl.create :section, subject: @subject3
-      @teacher2 = @subject1.subject_manager
+      @teacher2 = @subject3.subject_manager
+      @teacher4 = FactoryGirl.create :teacher, school: @school2
+      @discipline3 = @subject3.discipline
       #@section3_1 = FactoryGirl.create :section
       #@subject3 = @section3_1.subject
       #@school2 = @section3_1.school
 
     end
 
-    describe "as assigned teacher" do
+    describe "as subject manager teacher" do
       before do
         sign_in(@teacher1)
         #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
+    end
+
+    describe "as Regular teacher" do
+      before do
+        sign_in(@teacher3)
+        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+      end
+      it { has_valid_subjects_listing(@teacher3, false, true) }
     end
 
     describe "as school administrator" do
@@ -100,10 +110,11 @@ describe "Subjects Sections Listing", js:true do
       # @subject1 = @section1_1.subject
       # @school1 = @section1_1.school
       @school1 = FactoryGirl.create :school, :arabic
-      @subject1 = FactoryGirl.create :subject, school: @school1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @teacher1 = @subject1.subject_manager
+      @teacher1 = FactoryGirl.create :teacher, school: @school1
+      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
+      @teacher3 = FactoryGirl.create :teacher, school: @school1
       @discipline = @subject1.discipline
+      @section1_1 = FactoryGirl.create :section, subject: @subject1
 
 
       load_test_section(@section1_1, @teacher1)
@@ -113,7 +124,7 @@ describe "Subjects Sections Listing", js:true do
       @section1_3 = FactoryGirl.create :section, subject: @subject1
       @ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, school: @school1
+      @subject2 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
       @section2_1 = FactoryGirl.create :section, subject: @subject2
       @section2_2 = FactoryGirl.create :section, subject: @subject2
       @section2_3 = FactoryGirl.create :section, subject: @subject2
@@ -126,18 +137,27 @@ describe "Subjects Sections Listing", js:true do
       @section3_2 = FactoryGirl.create :section, subject: @subject3
       @section3_3 = FactoryGirl.create :section, subject: @subject3
       @teacher2 = @subject1.subject_manager
+      @teacher4 = FactoryGirl.create :teacher, school: @school2
       #@section3_1 = FactoryGirl.create :section
       #@subject3 = @section3_1.subject
       #@school2 = @section3_1.school
 
     end
 
-    describe "as assigned teacher" do
+    describe "as Subject Manager teacher" do
       before do
         sign_in(@teacher1)
         #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
+    end
+
+    describe "as Regular teacher" do
+      before do
+        sign_in(@teacher3)
+        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+      end
+      it { has_valid_subjects_listing(@teacher3, false, true) }
     end
 
     describe "as school administrator" do
@@ -193,38 +213,39 @@ describe "Subjects Sections Listing", js:true do
   def has_valid_subjects_listing(this_user, can_create_subject, can_create_section)
     Rails.logger.debug("+++ school1.id #{@school1.id}")
     Rails.logger.debug("+++ check subject1 created #{@subject1}")
+    Rails.logger.debug("+++ check subject2 created #{@subject2}")
+    Rails.logger.debug("+++ section1-1 #{@section1_1}")
+    Rails.logger.debug("+++ section2-1 #{@section2_1}")
     Rails.logger.debug("+++ start has_valid_subjects")
     visit subjects_path
 
+
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      # ToDO create user.has_role?
       (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
       (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # this_user.id == @subject1.subject_manager_id ||
       # this_user.has_permission?('subject_admin')
       # this_user.has_permission?('manage_subject_admin')
-    )
-      save_and_open_page
-      sleep 20
+      )
+      Rails.logger.debug("+++ try to see VIEW SUBJECT OUTCOMES")
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit_subject_outcomes']")
     else
-      save_and_open_page
-      page.should_not have_css("a[href='/subjects/#{@subject1.id}/edit_subject_outcomes']")
       page.should have_css("a[data-url='/subjects/#{@subject1.id}/view_subject_outcomes']")
     end
 
-    if(this_user.id == (@subject2.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school2.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school2.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school2.has_flag?(School::SUBJECT_MANAGER))
+    Rails.logger.debug("+++ try to SUBJECT 2 OUTCOMES")
+    if(this_user.id == (@subject2.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # (this_user.role_symbols.include?('school_administrator'.to_sym) && this_user.school_id == @school1.id)
     )
+      Rails.logger.debug("+++ try to see subj 2 VIEW SUBJECT OUTCOMES")
       page.should have_css("a[href='/subjects/#{@subject2.id}/edit_subject_outcomes']")
     else
       page.should have_css("a[data-url='/subjects/#{@subject2.id}/view_subject_outcomes']")
-      page.should_not have_css("a[href='/subjects/#{@subject2.id}/edit_subject_outcomes']")
     end
     # note: subject3 is in a different school, so would not be shown
     page.should_not have_css("a[href='/subjects/#{@subject3.id}/edit_subject_outcomes']")
@@ -250,6 +271,7 @@ describe "Subjects Sections Listing", js:true do
     #   page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/section_outcomes.js']")
     #   page.should_not have_css("a[data-url='/sections/#{@section1_3.id}/section_outcomes.js']")
     # end
+
     # all users should be able to view section outcomes (since they can see subject outcomes)
     page.should have_css("a[data-url='/sections/#{@section1_1.id}/section_outcomes.js']")
     page.should have_css("a[data-url='/sections/#{@section1_2.id}/section_outcomes.js']")
@@ -264,7 +286,7 @@ describe "Subjects Sections Listing", js:true do
       page.should have_css("a[href='/subjects/#{@subject1.id}'] i.fa-dashboard")
     end
 
-
+    Rails.logger.debug("+++ page-content")
     within("#page-content") do
       page.should have_content('Subjects / Sections Listing')
       page.should_not have_content("#{@subject3.discipline.name} : #{@subject3.name}")
@@ -351,11 +373,9 @@ describe "Subjects Sections Listing", js:true do
           page.should have_content('Create Subject')
         end
         within('#new_subject') do
-          sleep 10
-          select('Discipline 1', from: 'subject-discipline-id')
-
+          select(@discipline.name[1], from: 'subject-discipline-id')
           page.fill_in 'subject[name]', :with => 'Newsubj'
-
+          sleep 10
           page.click_button('Save')
         end
         Rails.logger.debug("+++ popup closed")
@@ -363,30 +383,31 @@ describe "Subjects Sections Listing", js:true do
 
       Rails.logger.debug("+++ back to Subjects list page")
       Rails.logger.debug("+++ check if NEW subject exist")
-      page.should have_content("Newsubj")
+      #page.should have_content("Newsubj")
+
+      # if user is a regular teacher can not perform Edit Subject
 
       Rails.logger.debug("+++ start editing subject")
       # click on edit subject should show edit subject popup
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
-      find("a[href='/subjects/#{@subject2.id}/edit']").click
+      find("a[href='/subjects/#{@subject1.id}/edit']").click
       Rails.logger.debug("+++ edit subject popup")
       within('#modal-body') do
         Rails.logger.debug("+++ Edit Subject popup")
         within('h3') do
-          page.should have_content("Edit Subject - #{@subject2.name}")
+          page.should have_content("Edit Subject - #{@subject1.name}")
         end
         within('.edit_subject') do
           #find the properties for NAME and DISCIPLINE to update subject
-          sleep 10
-          select('Discipline 2', from: 'subject-discipline-id')
+          select(@discipline.name[2], from: 'subject-discipline-id')
           page.fill_in 'subject-name', :with => 'Subname'
+          sleep 10
           page.click_button('Save')
           Rails.logger.debug("+++ update & save new subject")
           Rails.logger.debug("+++ done with popup")
         end
       end
       Rails.logger.debug("+++ check for EDITED subject")
-      page.should have_content("Discipline 2")
       page.should have_content("Subname")
     end
 
@@ -394,54 +415,73 @@ describe "Subjects Sections Listing", js:true do
     if (can_create_section)
       Rails.logger.debug("+++ can_create_section")
 
+      find("a#collapse-all-tbodies").click
+      page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
+      page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
+      #find("a#subj_header_#{@subject1.id}_a").click
+      find("a#expand-all-tbodies").click
+      Rails.logger.debug("+++ found subject?")
 
-       find("a#collapse-all-tbodies").click
-       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
-       page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
-
-       find("a#subj_header_#{@subject1.id}_a").click
-       Rails.logger.debug("+++ found subject?")
+      Rails.logger.debug("+++ create section")
+      # create section
+      page.should have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
+      find("a[href='/sections/new?subject_id=#{@subject1.id}']").click
+      within("#modal_content") do
+        within("h2.h1") do
+          page.should have_content("Create Section")
+        end
+        within('.block-content-full') do
+          page.fill_in 'section[line_number]', :with => 'Newsect'
+        end
+        sleep 10
+        page.click_button('Save')
+      end
 
       # click on edit section should show edit section popup
-       page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-       find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
+      page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
+      find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
 
       within("tr#sect_#{@section1_2.id}") do
         page.should have_content(@section1_2.line_number)
       end
 
-       within('#modal-body') do
-      #   Rails.logger.debug("+++ in popup")
-         within('h2') do
-      #     # if(can_create_subject)
-      #     #   page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
-      #     # else
-             page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
-      #     # end
-         end
+      within('#modal-body') do
+        # Rails.logger.debug("+++ in popup")
+        #  within('h2') do
+        #      if(can_create_subject)
+        #        page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
+        #      else
+        #        page.should have_content("Edit Section: Subname - CLASS 83")
+        #        page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
+        #      end
+        #  end
+
         Rails.logger.debug("+++ should have line number name")
         within('#section_line_number') do
           page.should_not have_content(@section1_2.subject.name)
         end
         Rails.logger.debug("+++ should have line number")
-        page.should have_selector("#section_line_number", value: "#{@section1_2.line_number}")
+        page.should have_selector("#section_line_number", value: "#{@section1_3.line_number}")
         page.fill_in 'section[line_number]', :with => 'Changed'
         # within('#section_message') do
         #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
         #   page.should have_content(@section1_2.message)
         # end
-        page.should have_selector("#section_school_year_id", value: "#{@section1_2.school_year.name}")
-
+        page.should have_selector("#section_school_year_id", value: "#{@section1_3.school_year.name}")
+        sleep 10
         Rails.logger.debug("+++ click save")
         page.click_button('Save')
         Rails.logger.debug("+++ done with popup")
       end
+
       Rails.logger.debug("+++ out of popup")
       within("tr#sect_#{@section1_2.id}") do
-        page.should have_content("Changed")
+        if (this_user == @teacher3)
+          page.should_not have_content("Changed")
+        else
+          page.should have_content("Changed")
+        end
       end
-
-
     end
     Rails.logger.debug("+++ end has_valid_subjects_listing")
   end # def has_valid_subjects_listing

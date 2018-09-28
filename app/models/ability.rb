@@ -178,10 +178,9 @@ class Ability
           Section,
           { subject: { school_id: user.school_id } }
 
-        can [:create],
+        can [:create, :edit],
           Section,
           { subject: { subject_manager_id: user.id }}
-
 
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
         # This will be turned on & off by Teachers Edit Outcomes Flags

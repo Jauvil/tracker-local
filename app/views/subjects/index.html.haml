@@ -100,7 +100,7 @@
                       %a.assign-los{href: edit_subject_outcomes_subject_path(subj.id), title: 'Edit Subject Outcomes'}
                         %i.fa.fa-lg.fa-lightbulb-o
                     - else
-                      %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', url: view_subject_outcomes_subject_path(subj.id, format: :js)}, title: 'View Subject Outcomes popup'}
+                      %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', remote: true, url: view_subject_outcomes_subject_path(subj.id, format: :js), remote: true}, title: 'View Subject Outcomes popup'}
                         %i.fa.fa-lg.fa-lightbulb-o
 
                     -# - if can?(:subject_admin, Subject) || can?(:edit_subject_outcomes, subj)
