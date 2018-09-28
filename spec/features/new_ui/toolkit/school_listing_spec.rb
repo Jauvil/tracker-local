@@ -313,7 +313,11 @@ describe "School Listing", js:true do
         page.should have_css('#school-city', text: @school1.city)
         if role == :system_administrator
           within('#school-marking-periods') { page.should have_content(@school1.marking_periods) }
-          within('#allow-subject-mgr') { page.should have_content(@school1.has_flag?(School::SUBJECT_MANAGER)) }
+          if (ServerConfig.first.try(:allow_subject_mgr) != true)
+            page.should_not have_content("Allow Subject Managers")
+          else
+            within('#allow-subject-mgr') { page.should have_content(@school1.has_flag?(School::SUBJECT_MANAGER)) }
+          end
           within('#school-use-family-name') { page.should have_content(@school1.has_flag?(School::USE_FAMILY_NAME)) }
           within('#school-sort-by') { page.should have_content(@school1.has_flag?(School::USER_BY_FIRST_LAST)) }
           within('#school-grade-in-subject') { page.should have_content(@school1.has_flag?(School::GRADE_IN_SUBJECT_NAME)) }
@@ -433,7 +437,7 @@ describe "School Listing", js:true do
               page.should have_css("a[href='/schools/#{@training_school.id}'] i.fa-building-o")
               page.should have_css("a[href='/schools/#{@training_school.id}/dashboard'] i.fa-dashboard")
               page.should have_css("a[data-url='/schools/#{@training_school.id}/edit.js'] i.fa-edit")
-              page.should have_css("a.dim[id='rollover-#{@training_school.id}'][href='javascript:void(0)'] i.fa-forward")
+              #page.should have_css("a.dim[id='rollover-#{@training_school.id}'][href='javascript:void(0)'] i.fa-forward")
               page.should have_css("a[href='/subject_outcomes/upload_lo_file'] i.fa-lightbulb-o")
             elsif (role == :researcher)
               page.should have_css("a[href='/schools/#{@school2.id}'] i.fa-building-o")
@@ -467,15 +471,18 @@ describe "School Listing", js:true do
       page.should have_content("Edit School")
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
         within("form#edit_school_#{@school1.id}") do
-          sleep 20
           Rails.logger.debug("+++ checkedbox")
           # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
           page.fill_in 'school_name', :with => 'Changed School Name'
           page.fill_in 'school_acronym', :with => 'CHANGED'
           page.fill_in 'school_city', :with => 'Changed City'
           page.fill_in 'school_marking_periods', :with => '4'
-          find_field("school[flag_pars][subject_manager]").value.should == 'on'
-          find("input[name='school[flag_pars][subject_manager]']").set(false)
+          if (ServerConfig.first.try(:allow_subject_mgr) != true)
+            page.should_not have_content("Allow Subject Managers")
+          else
+            find_field("school[flag_pars][subject_manager]").value.should == 'on'
+            find("input[name='school[flag_pars][subject_manager]']").set(false)
+          end
           find_field("school[flag_pars][use_family_name]").value.should == 'on'
           find("input[name='school[flag_pars][use_family_name]']").set(false)
           find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
@@ -500,10 +507,15 @@ describe "School Listing", js:true do
         page.should have_css('input#school_name')
         find_field("school_name").value.should_not == @school2.name
         find_field("school_name").value.should == 'Changed School Name'
+        sleep 5
         find_field("school_acronym").value.should == 'CHANGED'
         find_field("school_city").value.should == 'Changed City'
         find_field("school_marking_periods").value.should == '4'
-        find_field("school[flag_pars][subject_manager]").value.should == 'on'
+        if (ServerConfig.first.try(:allow_subject_mgr) != true)
+          page.should_not have_content("Allow Subject Managers")
+        else
+          find_field("school[flag_pars][subject_manager]").value.should == 'on'
+        end
         find_field("school[flag_pars][use_family_name]").value.should == 'on'
         find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
         find_field("school[flag_pars][grade_in_subject_name]").value.should == 'on'

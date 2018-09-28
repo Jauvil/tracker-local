@@ -134,7 +134,6 @@ class Ability
 
       #########################################################################
       if user.teacher?
-
         # Enrollment
         can [:show, :create, :update],
             Enrollment,

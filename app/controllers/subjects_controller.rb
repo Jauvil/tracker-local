@@ -23,7 +23,6 @@ class SubjectsController < ApplicationController
     if @school.school_year_id
       @sections = Section.where school_year_id: @school.school_year_id
     else
-
       @sections = []
     end
     # note this does not preread teaching assignments

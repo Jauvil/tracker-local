@@ -92,13 +92,11 @@ describe "Server Configuration Maintenance", js:true do
     # ensure that system admins are quickly warned and can quickly fix a missing server configuration record.
 
     # confirm that sys admin home page has a warning about server config table
-
     Rails.logger.debug(" +++ start server_config")
     page.should have_css('#overall #sys-admin-links #server-config span.ui-error')
 
     #confirm that viewing at the server config record automatically creates one
     page.find('#overall #sys-admin-links #server-config a').click
-
     within('#breadcrumb-flash-msgs') do
       page.should have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
     end
@@ -107,7 +105,7 @@ describe "Server Configuration Maintenance", js:true do
     visit system_administrator_path(@system_administrator.id)
     page.should_not have_css('#overall #sys-admin-links #server-config span.ui-error')
 
-    #################################################
+    ##################################################
     # edit the server config record and confirm all required fields must be filled in
 
     # bring up edit server configuration record

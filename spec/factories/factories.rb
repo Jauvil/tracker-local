@@ -118,8 +118,6 @@ FactoryGirl.define do
     end
   end
 
-
-
   factory :school_current_year, class: School do
     school_common_attributes
     #automagically set the school year for this school
