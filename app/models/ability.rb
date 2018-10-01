@@ -322,7 +322,7 @@ class Ability
         can [:new], Section
 
         # SectionOutcome
-        # ToDo Check for Edit_subject_outcomes action on Sectionoutcome controller
+        # ToDo Check for Edit_subject_outcomes action on section_outcomes controller
         can [:edit_subject_outcomes, :update_subject_outcomes, :create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
             SectionOutcome,
             { section: { subject: { school_id: user.school_id } } }
@@ -355,7 +355,7 @@ class Ability
 
         # Subject
         # ToDo Check for Edit_subject_outcomes action on Subject controller
-        can [:read, :create, :update, :edit_subject_outcomes, :view_subject_outcomes, :proficiency_bars, :progress_meters],
+        can [:read, :create, :update, :edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes, :proficiency_bars, :progress_meters],
             Subject,
             { school_id: user.school_id }
 

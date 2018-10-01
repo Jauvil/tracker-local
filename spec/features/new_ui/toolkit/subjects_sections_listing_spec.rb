@@ -211,14 +211,7 @@ describe "Subjects Sections Listing", js:true do
   end
 
   def has_valid_subjects_listing(this_user, can_create_subject, can_create_section)
-    Rails.logger.debug("+++ school1.id #{@school1.id}")
-    Rails.logger.debug("+++ check subject1 created #{@subject1}")
-    Rails.logger.debug("+++ check subject2 created #{@subject2}")
-    Rails.logger.debug("+++ section1-1 #{@section1_1}")
-    Rails.logger.debug("+++ section2-1 #{@section2_1}")
-    Rails.logger.debug("+++ start has_valid_subjects")
     visit subjects_path
-
 
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
@@ -391,9 +384,7 @@ describe "Subjects Sections Listing", js:true do
       # click on edit subject should show edit subject popup
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
       find("a[href='/subjects/#{@subject1.id}/edit']").click
-      Rails.logger.debug("+++ edit subject popup")
       within('#modal-body') do
-        Rails.logger.debug("+++ Edit Subject popup")
         within('h3') do
           page.should have_content("Edit Subject - #{@subject1.name}")
         end
@@ -404,7 +395,6 @@ describe "Subjects Sections Listing", js:true do
           sleep 10
           page.click_button('Save')
           Rails.logger.debug("+++ update & save new subject")
-          Rails.logger.debug("+++ done with popup")
         end
       end
       Rails.logger.debug("+++ check for EDITED subject")
@@ -438,47 +428,48 @@ describe "Subjects Sections Listing", js:true do
       end
 
       # click on edit section should show edit section popup
-      page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-      find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
+      # Teacher 3 (Regular Teacher) don't have permission to Edit sections
+      Rails.logger.debug("+++ Start editing section")
+      if (this_user == @teacher3)
+        page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
+      else
+        page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
+        find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
 
-      within("tr#sect_#{@section1_2.id}") do
-        page.should have_content(@section1_2.line_number)
-      end
-
-      within('#modal-body') do
-        # Rails.logger.debug("+++ in popup")
-        #  within('h2') do
-        #      if(can_create_subject)
-        #        page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
-        #      else
-        #        page.should have_content("Edit Section: Subname - CLASS 83")
-        #        page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
-        #      end
-        #  end
-
-        Rails.logger.debug("+++ should have line number name")
-        within('#section_line_number') do
-          page.should_not have_content(@section1_2.subject.name)
+        within("tr#sect_#{@section1_2.id}") do
+          page.should have_content(@section1_2.line_number)
         end
-        Rails.logger.debug("+++ should have line number")
-        page.should have_selector("#section_line_number", value: "#{@section1_3.line_number}")
-        page.fill_in 'section[line_number]', :with => 'Changed'
-        # within('#section_message') do
-        #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
-        #   page.should have_content(@section1_2.message)
-        # end
-        page.should have_selector("#section_school_year_id", value: "#{@section1_3.school_year.name}")
-        sleep 10
-        Rails.logger.debug("+++ click save")
-        page.click_button('Save')
-        Rails.logger.debug("+++ done with popup")
-      end
 
-      Rails.logger.debug("+++ out of popup")
-      within("tr#sect_#{@section1_2.id}") do
-        if (this_user == @teacher3)
-          page.should_not have_content("Changed")
-        else
+        within('#modal-body') do
+          # Rails.logger.debug("+++ in popup")
+          #  within('h2') do
+          #      if(can_create_subject)
+          #        page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
+          #      else
+          #        page.should have_content("Edit Section: Subname - CLASS 83")
+          #        page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
+          #      end
+          #  end
+
+          Rails.logger.debug("+++ should have line number name")
+          within('#section_line_number') do
+            page.should_not have_content(@section1_2.subject.name)
+          end
+          Rails.logger.debug("+++ should have line number")
+          page.should have_selector("#section_line_number", value: "#{@section1_3.line_number}")
+          page.fill_in 'section[line_number]', :with => 'Changed'
+          # within('#section_message') do
+          #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
+          #   page.should have_content(@section1_2.message)
+          # end
+          page.should have_selector("#section_school_year_id", value: "#{@section1_3.school_year.name}")
+          sleep 10
+          Rails.logger.debug("+++ click save")
+          page.click_button('Save')
+          Rails.logger.debug("+++ done with popup")
+        end
+        Rails.logger.debug("+++ out of popup")
+        within("tr#sect_#{@section1_2.id}") do
           page.should have_content("Changed")
         end
       end
