@@ -180,6 +180,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
+        sleep 20
         within("tr#user_#{@teacher.id}") do
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
@@ -225,7 +226,7 @@ describe "Staff Listing", js:true do
             page.should_not have_content('counselor')
           end
         end
-      end    
+      end
     end
     # teachers and counselors cannot edit other user's information
     # researchers cannot edit any user's information
