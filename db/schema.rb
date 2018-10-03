@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160615141521) do
+ActiveRecord::Schema.define(:version => 20180905144713) do
 
   create_table "announcements", :force => true do |t|
     t.text     "content"
@@ -349,6 +349,7 @@ ActiveRecord::Schema.define(:version => 20160615141521) do
     t.string   "web_server_name",     :default => "PARLO Tracker Web Server"
     t.datetime "created_at",                                                    :null => false
     t.datetime "updated_at",                                                    :null => false
+    t.boolean  "allow_subject_mgr",   :default => false
   end
 
   create_table "subject_outcomes", :force => true do |t|

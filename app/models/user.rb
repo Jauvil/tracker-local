@@ -75,8 +75,12 @@ class User < ActiveRecord::Base
 
   # Permissions
   # List of valid permissions are in here!
-  def valid_permission?(perm)
-    ['manage_subject_admin', 'subject_admin'].include?(perm.to_s)
+  # def valid_permission?(perm)
+  #   ['manage_subject_admin', 'subject_admin'].include?(perm.to_s)
+  # end
+
+  def has_role?(perm)
+    ['school_administrator', 'system_administrator'].include?(perm.to_s)
   end
 
   def has_permission?(perm)

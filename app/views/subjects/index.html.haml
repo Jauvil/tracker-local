@@ -83,22 +83,25 @@
                       %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                         %strong.pull-left.lmargin5="#{disc.name} : #{subj.name}"
                   %td.text-center
-                    - if can? :create, Section
+                    - if can?(:create, Section)
                       %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section'}
                         %i.fa.fa-lg.fa-plus
                     %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                       %i.fa.fa-dashboard.fa-lg
-                    - if can? :edit, subj
-                      %a.edit-subject{data: {target: "#modal_popup", toggle: 'modal', url: edit_subject_path(subj.id, format: :js)}, title: 'Edit Subject'}
+                    - if can?(:edit, subj)
+                      %a.edit-subject{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: edit_subject_path(subj.id), title: 'Edit Subject'}
                         %i.fa.fa-lg.fa-edit
-                    - if can?(:subject_admin, Subject) || can?(:edit_subject_outcomes, subj)
+                    - if subj.editable?(can?(:edit_subject_outcomes, subj))
                       %a.assign-los{href: edit_subject_outcomes_subject_path(subj.id), title: 'Edit Subject Outcomes'}
                         %i.fa.fa-lg.fa-lightbulb-o
+                    - else
+                      %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', remote: true, url: view_subject_outcomes_subject_path(subj.id, format: :js), remote: true}, title: 'View Subject Outcomes popup'}
+                        %i.fa.fa-lg.fa-lightbulb-o
+                    -# - if can?(:subject_admin, Subject) || can?(:edit_subject_outcomes, subj)
+                    -#   %a.assign-los{href: edit_subject_outcomes_subject_path(subj.id), title: 'Edit Subject Outcomes'}
+                    -#     %i.fa.fa-lg.fa-lightbulb-o
                       / %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', url: edit_subject_outcomes_subject_path(subj.id, format: :js)}, title: 'Edit Subject Outcomes popup'}
                       /   %i.fa.fa-lg.fa-lightbulb-o
-                    - else
-                      %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', url: view_subject_outcomes_subject_path(subj.id, format: :js)}, title: 'View Subject Outcomes popup'}
-                        %i.fa.fa-lg.fa-lightbulb-o
               %tbody.tbody-body{id: "subj_body_#{subj.id}"}
                 - subj.sections.each do |s|
                   - if s.school_year_id == @school.school_year_id
@@ -117,7 +120,7 @@
                               =t.full_name
                       %td.sect-students=s.active_students.count
                       %td.text-center
-                        - if can?(:show, s)
+                        - if can?(:class_dashboard, s)
                           %a{href: "#{class_dashboard_section_path(s.id)}", title: 'Section Dashboard'}
                             %i.fa.fa-dashboard.fa-lg
                           %a{href: "#{section_path(s.id)}", title: 'Tracker Page'}

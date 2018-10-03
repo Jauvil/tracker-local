@@ -24,7 +24,6 @@ describe "Disciplines Maintenance", js:true do
 
   end
 
-
   describe "as teacher" do
     before do
       sign_in(@teacher)
@@ -216,7 +215,7 @@ describe "Disciplines Maintenance", js:true do
       end
     end
     assert_not_equal('', new_d_id)
-    
+
     # click the edit button for the newly created discipline
     within("tr#d_#{new_d_id}") do
       find("a[data-url='/disciplines/#{new_d_id}/edit.js']").click

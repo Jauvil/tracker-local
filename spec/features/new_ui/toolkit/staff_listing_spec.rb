@@ -3,74 +3,148 @@ require 'spec_helper'
 
 
 describe "Staff Listing", js:true do
-  before (:each) do
-    create_and_load_arabic_model_school
+  describe "US System" do
+    before (:each) do
+      create_and_load_us_model_school
 
-    @school = FactoryGirl.create :school, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
-    @discipline = @subject.discipline
-    load_test_section(@section, @teacher)
+      @school = FactoryGirl.create :school, :us
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
 
 
+    end
+
+    describe "as US teacher" do
+      before do
+        sign_in(@teacher)
+      end
+      it { has_valid_staff_listing(:teacher) }
+    end
+
+    describe "as US school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+      end
+      it { has_valid_staff_listing(:school_administrator) }
+    end
+
+    # to do - do this once toolkit and home page for counselor exists
+    # describe "as counselor" do
+    #   before do
+    #     @counselor = FactoryGirl.create :counselor, school: @school
+    #     sign_in(@counselor)
+    #   end
+    #   it { has_valid_staff_listing(:counselor) }
+    # end
+
+    describe "as US researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school)
+      end
+      it { has_valid_staff_listing(:researcher) }
+    end
+
+    describe "as US system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school)
+      end
+      it { has_valid_staff_listing(:system_administrator) }
+    end
+
+    describe "as US student" do
+      before do
+        sign_in(@student)
+      end
+      it { has_no_staff_listing }
+    end
+
+    describe "as US parent" do
+      before do
+        sign_in(@student.parent)
+      end
+      it { has_no_staff_listing }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-    end
-    it { has_valid_staff_listing(:teacher) }
-  end
+  describe "Egypt System" do
+    before (:each) do
+      create_and_load_arabic_model_school
 
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      sign_in(@school_administrator)
-    end
-    it { has_valid_staff_listing(:school_administrator) }
-  end
+      @school = FactoryGirl.create :school, :arabic
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
 
-  # to do - do this once toolkit and home page for counselor exists
-  # describe "as counselor" do
-  #   before do
-  #     @counselor = FactoryGirl.create :counselor, school: @school
-  #     sign_in(@counselor)
-  #   end
-  #   it { has_valid_staff_listing(:counselor) }
-  # end
 
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      set_users_school(@school)
     end
-    it { has_valid_staff_listing(:researcher) }
-  end
 
-  describe "as system administrator" do
-    before do
-      @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      set_users_school(@school)
+    describe "as EGYPT teacher" do
+      before do
+        sign_in(@teacher)
+      end
+      it { has_valid_staff_listing(:teacher) }
     end
-    it { has_valid_staff_listing(:system_administrator) }
-  end
 
-  describe "as student" do
-    before do
-      sign_in(@student)
+    describe "as EGYPT school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+      end
+      it { has_valid_staff_listing(:school_administrator) }
     end
-    it { has_no_staff_listing }
-  end
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
+    # to do - do this once toolkit and home page for counselor exists
+    # describe "as counselor" do
+    #   before do
+    #     @counselor = FactoryGirl.create :counselor, school: @school
+    #     sign_in(@counselor)
+    #   end
+    #   it { has_valid_staff_listing(:counselor) }
+    # end
+
+    describe "as EGYPT researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school)
+      end
+      it { has_valid_staff_listing(:researcher) }
     end
-    it { has_no_staff_listing }
+
+    describe "as EGYPT system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school)
+      end
+      it { has_valid_staff_listing(:system_administrator) }
+    end
+
+    describe "as EGYPT student" do
+      before do
+        sign_in(@student)
+      end
+      it { has_no_staff_listing }
+    end
+
+    describe "as EGYPT parent" do
+      before do
+        sign_in(@student.parent)
+      end
+      it { has_no_staff_listing }
+    end
   end
 
   ##################################################
@@ -180,6 +254,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
+        sleep 20
         within("tr#user_#{@teacher.id}") do
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
@@ -217,6 +292,7 @@ describe "Staff Listing", js:true do
       within("#page-content table #user_#{@teacher.id}") do
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
+        sleep 10
         within('.user-roles') do
           page.should have_content('teacher')
           if [:school_administrator, :system_administrator].include?(role)
@@ -225,7 +301,7 @@ describe "Staff Listing", js:true do
             page.should_not have_content('counselor')
           end
         end
-      end    
+      end
     end
     # teachers and counselors cannot edit other user's information
     # researchers cannot edit any user's information
@@ -243,8 +319,9 @@ describe "Staff Listing", js:true do
     # Staff Security Information visiblity and availability testing
     # Only admins can view and reset security information for staff
     # visit staff_listing_users_path
-    if [:school_administrator, :system_administrator].include?(role)
+    if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
+      sleep 5
       within("#page-content tr#user_#{@teacher.id}") do
         page.should have_css("i.fa-unlock")
         page.should have_css("a[data-url='/users/#{@teacher.id}/security.js'] i.fa-unlock")
@@ -258,14 +335,14 @@ describe "Staff Listing", js:true do
         page.find(".modal-footer button", text: 'Close').click
       end
       assert_equal("/users/staff_listing", current_path)
-    else
-      assert_equal("/users/staff_listing", current_path)
-      within("#page-content") do
-        within("tr#user_#{@teacher.id}") do
-          page.should_not have_css("i.fa-unlock")
-          page.should_not have_css("a[data-url='/users/#{@teacher.id}/security.js']")
-        end
-      end
+      # else
+      #   assert_equal("/users/staff_listing", current_path)
+      #   within("#page-content") do
+      #     within("tr#user_#{@teacher.id}") do
+      #       page.should have_css("i.fa-unlock")
+      #       page.should have_css("a[data-url='/users/#{@teacher.id}/security.js']")
+      #     end
+      #   end
     end
 
 

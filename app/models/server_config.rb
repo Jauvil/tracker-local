@@ -9,4 +9,10 @@ class ServerConfig < ActiveRecord::Base
   validates :server_name, presence: true, on: :update # use default on create
   validates :web_server_name, presence: true, on: :update # use default on create
 
+
+  def has_role?(perm)
+    ['subject_manager'].include?(perm.to_s)
+  end
+
+
 end

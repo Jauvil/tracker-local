@@ -113,6 +113,9 @@ FactoryGirl.define do
     trait :arabic do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
+    trait :us do
+      flags   'subject_manager,grade_in_subject_name'
+    end
   end
 
   factory :school_current_year, class: School do
@@ -127,6 +130,9 @@ FactoryGirl.define do
     trait :arabic do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
     end
+    trait :us do
+      flags   'subject_manager,grade_in_subject_name'
+    end
   end
 
   factory :school_prior_year, class: School do
@@ -140,6 +146,9 @@ FactoryGirl.define do
     end
     trait :arabic do
       flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+    end
+    trait :us do
+      flags   'subject_manager,grade_in_subject_name'
     end
   end
 
@@ -353,5 +362,11 @@ FactoryGirl.define do
     # school_support_team "School IT Support Team"
     # server_name         "Tracker System"
     # web_server_name     "PARLO Tracker Web Server"
+    # trait :arabic do
+    #   flags
+    # end
+    # trait :us do
+    #   flags  :allow_subject_mgr
+    # end
   end
 end

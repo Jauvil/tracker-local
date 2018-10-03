@@ -34,7 +34,7 @@ Tracker2::Application.configure do
   config.active_support.deprecation = :stderr
 
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+    Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
 
   # # sets all logs to stdout (including active record sql statements)

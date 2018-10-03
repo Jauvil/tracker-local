@@ -9,6 +9,10 @@
   .row
     %span.col-sm-6.control-label='City / Town:'
     %span#school-city.col-sm-6.value=@school.city
+  - if ServerConfig.first.try(:allow_subject_mgr)
+    .row
+      %span.col-sm-6.control-label='Allow Subject Managers:'
+      %span#allow-subject-mgr.col-sm-6.value=@school.has_flag?(School::SUBJECT_MANAGER)
   - if can? :see_school_flags, @school
     .row
       %span.col-sm-6.control-label='Marking Periods:'

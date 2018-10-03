@@ -102,15 +102,18 @@
                     %a{href: "/users/#{s.id}", title: 'Staff Dashboard'}
                       %i.fa.fa-lg.fa-dashboard
                   %td
-                    - if can?(:sections_list, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
+                    - if can?(:sections_list, s)
                       %a{href: "/users/#{s.id}/sections_list", title: 'Staff Sections List'}
                         %i.fa.fa-lg.fa-check
+                    -#  - if can?(:sections_list, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
+                    -#   %a{href: "/users/#{s.id}/sections_list", title: 'Staff Sections List'}
+                    -#  %i.fa.fa-lg.fa-check
                   %td.text-center
-                    - if can?(:show, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
+                    - if can?(:show, s)
                       %a{data: {target: "#modal_popup", toggle: 'modal', url: user_path(s.id, format: :js)}, title: 'View Staff User Information'}
                         %i.fa.fa-lg.fa-ellipsis-h
                   %td.text-center
-                    - if can?(:edit, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
+                    - if can?(:edit, s)
                       %a{data: {target: "#modal_popup", toggle: 'modal', url: edit_user_path(s.id, format: :js)}, title: 'Edit Staff User Information'}
                         %i.fa.fa-lg.fa-edit
                   %td.text-center

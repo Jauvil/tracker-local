@@ -47,6 +47,12 @@
                 %input.col-sm-5{id: 'school_support_team', name: 'config[school_support_team]', value: @server_config.school_support_team}
                 %span.ui-required{title: 'Required'}='*'
                 %span.ui-error="#{@errors[:school_support_team] if @errors[:school_support_team].present?}"
+              %fieldset#allow-subject-mgr.input-group
+                %label.col-sm-4.control-label='Manual Curriculum:'
+                %input{type: 'hidden', name: 'config[allow_subject_mgr]', value: 'false'}
+                %input.pull-left{id: 'allow_subject_mgr', name: 'config[allow_subject_mgr]', :type => "checkbox", checked: @server_config.allow_subject_mgr }
+                %label.checkbox-right-label.pull-left="Yes"
+                %span.ui-error="#{@errors[:allow_subject_mgr] if @errors[:allow_subject_mgr].present?}"
               %fieldset#server-url.input-group
                 %label.col-sm-4.control-label='Server URL:'
                 %input.col-sm-5{id: 'server_url', name: 'config[server_url]', value: @server_config.server_url}

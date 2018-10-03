@@ -84,7 +84,6 @@ describe "School Admin Dashboard", js:true do
     assert_equal("/school_administrators/#{@school_administrator.id}", current_path)
 
     # Note overall lo counts should == prof bar counts for each color
-    
     within("#overall") do
       page.should have_content('9 - High Performance')
       page.should have_content('9 - Proficient')
