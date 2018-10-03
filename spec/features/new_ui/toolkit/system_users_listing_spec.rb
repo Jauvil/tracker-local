@@ -181,7 +181,6 @@ describe "System Users Listing", js:true do
     end
     assert_not_equal('', new_system_user_id)
 
-
     ##############################
     # edit the newly created system user
 
