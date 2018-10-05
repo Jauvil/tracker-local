@@ -54,7 +54,7 @@
                   %td=e.section.line_number
                   %td=e.section.teaching_assignments.first.teacher.full_name if e.section.teaching_assignments.present? && e.section.teaching_assignments.first.teacher.present?
                   %td
-                    - if can?(:show, e) 
+                    - if can?(:show, e)
                       %a{href: "/enrollments/#{e.id}"}
                         %i.fa.fa-lg.fa-check
             %tbody.tbody-header.show-tbody{class: (true ? 'show-tbody-body' : '' )}
@@ -71,7 +71,7 @@
                   %td=e.section.line_number
                   %td=e.section.teaching_assignments.first.teacher.full_name if e.section.teaching_assignments.present?
                   %td
-                    - if can?(:show, e) 
+                    - if can?(:show, e)
                       %a{href: "/enrollments/#{e.id}"}
                         %i.fa.fa-lg.fa-check
 

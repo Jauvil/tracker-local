@@ -173,7 +173,7 @@ module LoadSectionHelper
   def create_model_school
     Rails.logger.debug("***** create_model_school")
     # this needs to be run before any other schools are created, so the ID is 1
-    @model_school = FactoryGirl.create :school_current_year, marking_periods:"2", name: 'Model School', acronym: 'MOD'
+    @model_school = FactoryGirl.create :school_current_year, marking_periods:"2", name: 'Model School', acronym: 'MOD', server_config: ServerConfig.first.try(:allow_subject_mgr) == true
   end
 
   def create_us_model_school

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe "Subjects Sections Listing", js:true do
   describe "US System" do
     before (:each) do
-
+      # @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
       # two subjects in @school1
       # @section1_1 = FactoryGirl.create :section
       # @subject1 = @section1_1.subject
@@ -48,7 +48,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as subject manager teacher" do
       before do
         sign_in(@teacher1)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
     end
@@ -56,7 +56,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Regular teacher" do
       before do
         sign_in(@teacher3)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher3, false, true) }
     end
@@ -104,7 +104,7 @@ describe "Subjects Sections Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
-
+      # @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
       # two subjects in @school1
       # @section1_1 = FactoryGirl.create :section
       # @subject1 = @section1_1.subject
@@ -147,7 +147,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Subject Manager teacher" do
       before do
         sign_in(@teacher1)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
     end
@@ -155,7 +155,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Regular teacher" do
       before do
         sign_in(@teacher3)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher3, false, true) }
     end
