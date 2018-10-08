@@ -187,14 +187,14 @@ class Ability
           Section,
           { subject: { school_id: user.school_id } }
 
-        # SectionOutcome
-        can [:create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
-            SectionOutcome,
-            {section_id: user.teacher.teaching_assignments.pluck(:section_id) }
-
-        can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
-            SectionOutcome,
-            {section: { subject: { subject_manager_id: user.id }}}
+        # SectionOutcome Is this needed?
+        # can [:create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
+        #     SectionOutcome,
+        #     {section_id: user.teacher.teaching_assignments.pluck(:section_id) }
+        #
+        # can [:edit_subject_outcomes, :update_subject_outcomes, :view_subject_outcomes],
+        #     SectionOutcome,
+        #     {section: { subject: { subject_manager_id: user.id }}}
 
         # SectionOutcomeRating
         can [:create, :update],
@@ -226,7 +226,7 @@ class Ability
         # Teacher
         can [:read],
           Teacher,
-          { id: user.id }  #maybe not needed
+          { id: user.id }  #maybe not needed duplicate?
 
         # User
         can [:read, :change_password, :edit, :update, :profile, :sections_list, :account_activity_report, :staff_listing, :dashboard],
@@ -323,7 +323,8 @@ class Ability
 
         # SectionOutcome
         # ToDo Check for Edit_subject_outcomes action on section_outcomes controller
-        can [:edit_subject_outcomes, :update_subject_outcomes, :create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
+        # :edit_subject_outcomes, :update_subject_outcomes,
+        can [:create, :show, :sort, :update, :evidences_left, :evidences_right, :toggle_marking_period],
             SectionOutcome,
             { section: { subject: { school_id: user.school_id } } }
 
