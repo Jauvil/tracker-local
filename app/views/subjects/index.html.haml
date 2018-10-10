@@ -43,7 +43,7 @@
       %a#bulk-enter-teaching-assignments.btn.btn-sm.btn-primary{ href: enter_bulk_teaching_assignments_path(), title: 'Bulk Enter Teaching Assignments'}
         %i.fa.fa-lg.fa-user
         %i.fa.fa-lg.fa-stack-overflow
-    - if can? :create, Enrollment
+    - if can? :enter_bulk, Enrollment
       %a#bulk-enter-enrollments.btn.btn-sm.btn-primary{ href: enter_bulk_enrollments_path(), title: 'Bulk Enter Student Assignments'}
         %i.fa.fa-lg.fa-users
         %i.fa.fa-lg.fa-stack-overflow

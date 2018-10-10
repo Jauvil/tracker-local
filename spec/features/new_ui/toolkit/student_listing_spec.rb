@@ -32,7 +32,32 @@ describe "Student Listing", js:true do
       # Assign a deactivated teacher to duplicate the bug can not display student sections if teacher is deactivated.
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section2_1, teacher: @teacher2
 
+
       @student_grad   = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
+
+
+      # create school with Three sections in Year 1
+      # two sections with unassigned teachers
+      @school5 = FactoryGirl.create :school_prior_year, :us
+      @teacher5 = FactoryGirl.create :teacher, school: @school5
+      @subject5 = FactoryGirl.create :subject, school: @school5, subject_manager: @teacher5
+      @section5_1 = FactoryGirl.create :section, subject: @subject5
+      @ta5_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher5, section: @section5_1
+      @section5_2 = FactoryGirl.create :section, subject: @subject5
+      @section5_3 = FactoryGirl.create :section, subject: @subject5
+      @discipline = @subject5.discipline
+
+      # switch to year 2 for @school1
+      @current_school_year = FactoryGirl.create :current_school_year, school: @school5
+      @school5.school_year_id = @current_school_year.id
+      @school5.save
+
+      # regular setup for Year 2
+
+      @section6_1 = FactoryGirl.create :section, subject: @subject5
+      load_test_section(@section6_1, @teacher5)
+      @section6_2 = FactoryGirl.create :section, subject: @subject5
+      @section6_3 = FactoryGirl.create :section, subject: @subject5
 
     end
 
@@ -184,6 +209,8 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
     visit students_path
+    save_and_open_page
+    sleep 120
     assert_equal("/students", current_path)
     within("#page-content") do
       page.should have_content("All Students for: #{@school1.name}")

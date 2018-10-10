@@ -13,7 +13,7 @@ describe "SchoolYearManagementSpec" do
     @old_enrollment = create :enrollment, student: @student, section: @old_section
     @enrollment = create :enrollment, student: @student, section: @section
   end
-  
+
   context "displays the correct sections on a student's dashboard" do
     before do
       sign_in @student

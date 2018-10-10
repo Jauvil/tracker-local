@@ -393,7 +393,7 @@ class Student < User
           # grade levels are valid (allowing for grade level to also be year of graduation year)
           self.errors.add(:grade_level, 'Grade level is too large')
           grade_level_error = true
-        end 
+        end
       end
     rescue
       Rails.logger.error("ERROR: is_grade_level_valid? school (#{self.school_id.inspect}) find error.")

@@ -212,7 +212,14 @@ describe "Subjects Sections Listing", js:true do
 
   def has_valid_subjects_listing(this_user, can_create_subject, can_create_section)
     visit subjects_path
-
+    Rails.logger.debug("+++ test enter_bulk button")
+    if :researcher || :teacher
+      page.should_not have_css("a[href='enrollments/enter_bulk']")
+    else
+      page.should have_css("a[href='enrollments/enter_bulk']")
+    end
+    Rails.logger.debug("+++ passed enter_bulk button test")
+    sleep 5
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
       (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
