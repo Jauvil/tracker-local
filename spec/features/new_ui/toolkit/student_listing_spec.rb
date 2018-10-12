@@ -53,7 +53,6 @@ describe "Student Listing", js:true do
 
       # # regular setup for Year 2
       @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
-      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section5_1, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -158,7 +157,6 @@ describe "Student Listing", js:true do
 
       # # regular setup for Year 2
       @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
-      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section5_1, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -231,6 +229,7 @@ describe "Student Listing", js:true do
   end
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
+
     Rails.logger.debug("+++ Inside current year school")
     visit students_path
     assert_equal("/students", current_path)
@@ -255,7 +254,7 @@ describe "Student Listing", js:true do
       end
       Rails.logger.debug("student #{@student.inspect}")
       Rails.logger.debug("+++ students list")
-      sleep 1
+
       within("tr#student_#{@student.id}") do
         page.should have_content("#{@student.last_name}") if can_create
         page.should_not have_content("#{@student.last_name}") if !can_create
@@ -329,10 +328,7 @@ describe "Student Listing", js:true do
         page.should have_content("Section")
         page.should have_content("Teacher")
       end
-      Rails.logger.debug("+++ confirm student sections list No error")
-      Rails.logger.debug("enrollment2 #{enrollment_s2.inspect}")
-      Rails.logger.debug("enrollment2 #{enrollment.inspect}")
-      sleep 3
+      Rails.logger.debug("+++ confirm student sections list page")
       # within("tr#enrollment_#{enrollment_s2.id}")
       within(".tbody-body") do
         if can_see_all
@@ -378,30 +374,12 @@ describe "Student Listing", js:true do
       Rails.logger.debug("enrollment #{enrollment.inspect}")
       if can_see_all
         find("a[href='/enrollments/#{@enrollment_s2.id}']").click
+        assert_equal("/enrollments/#{@enrollment_s2.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
         assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
       end
-
-
-      # within("tr#enrollment_#{enrollment_s2.id}")
-      # within(".tbody-body") do
-      #   if can_see_all
-      #     page.should have_css("a[href='/enrollments/#{ @enrollment_s2.id}']")
-      #     find("a[href='/enrollments/#{enrollment.id}']").click
-      #     visit("/students/#{student.id}/sections_list")
-      #     assert_equal("/students/#{student.id}/sections_list", current_path)
-      #     within("tr#enrollment_#{enrollment.id}") do
-      #       page.should have_css("a[href='/enrollments/#{enrollment.id}']")
-      #       find("a[href='/enrollments/#{enrollment.id}']").click
-      #     end
-      #     assert_equal("/enrollments/#{enrollment.id}", current_path)
-      #   else
-      #     # should not see link to tracker page for section not teaching that section
-      #     page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
-      #   end
-      # end
     end
   end
 
