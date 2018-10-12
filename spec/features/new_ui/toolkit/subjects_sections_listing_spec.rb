@@ -213,10 +213,26 @@ describe "Subjects Sections Listing", js:true do
   def has_valid_subjects_listing(this_user, can_create_subject, can_create_section)
     visit subjects_path
     Rails.logger.debug("+++ test enter_bulk button")
-    if :researcher || :teacher
-      page.should_not have_css("a[href='enrollments/enter_bulk']")
-    else
-      page.should have_css("a[href='enrollments/enter_bulk']")
+
+    within(".header-block") do
+      page.should have_css("a[id='collapse-all-tbodies'][href='javascript:void(0)'] i.fa-caret-right")
+      page.should have_css("a[id='expand-all-tbodies'][href='javascript:void(0)'] i.fa-caret-down")
+      page.should have_css("a[id='filter-button'][href='javascript:void(0)'] i.fa-filter")
+      page.should have_css("a[id='print-button'][href='javascript:void(0)'] i.fa-print")
+      page.should have_css("a[id='download-button'][href='javascript:void(0)'] i.fa-download")
+      if :researcher || :teacher
+        page.should_not have_css("a[href='enrollments/enter_bulk']")
+        page.should_not have_css("a[href='sections/enter_bulk']")
+        page.should_not have_css("a[href='teaching_assignments/enter_bulk']")
+        page.should_not have_css("a[href='enrollments/enter_bulk']")
+        page.should_not have_css("a.dim[id='rollover-#{@school1.id}'][href='javascript:void(0)'] i.fa-forward")
+      else
+        page.should have_css("a[data-url='subjects/new.js']")
+        page.should have_css("a[href='sections/enter_bulk']")
+        page.should have_css("a[href='teaching_assignments/enter_bulk']")
+        page.should have_css("a[href='enrollments/enter_bulk']")
+        page.should have_css("a.dim[id='rollover-#{@school1.id}'][href='javascript:void(0)'] i.fa-forward")
+      end
     end
     Rails.logger.debug("+++ passed enter_bulk button test")
     sleep 5

@@ -36,24 +36,24 @@ describe "Student Listing", js:true do
       @student_grad   = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
 
 
-      # create school with Three sections in Year 1
-      # two sections with unassigned teachers
-      @school5 = FactoryGirl.create :school_prior_year, :us
-      @teacher5 = FactoryGirl.create :teacher, school: @school5
-      @subject5 = FactoryGirl.create :subject, school: @school5, subject_manager: @teacher5
+      # # # :school_prior_year
+      @teacher5 = FactoryGirl.create :teacher, school: @school1, active: false
+      @teacher6 = FactoryGirl.create :teacher, school: @school1
+      @subject5 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher5
       @section5_1 = FactoryGirl.create :section, subject: @subject5
-      @ta5_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher5, section: @section5_1
       @section5_2 = FactoryGirl.create :section, subject: @subject5
       @section5_3 = FactoryGirl.create :section, subject: @subject5
+      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
-
+      @student_prev_year   = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', grade_level: 2018
       # switch to year 2 for @school1
-      @current_school_year = FactoryGirl.create :current_school_year, school: @school5
-      @school5.school_year_id = @current_school_year.id
-      @school5.save
+      @current_school_year = FactoryGirl.create :current_school_year, school: @school1
+      @school1.school_year_id = @current_school_year.id
+      @school1.save
 
-      # regular setup for Year 2
-
+      # # regular setup for Year 2
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
+      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section5_1, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -141,6 +141,29 @@ describe "Student Listing", js:true do
 
       @student_grad   = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
 
+      # # # :school_prior_year
+      @teacher5 = FactoryGirl.create :teacher, school: @school1, active: false
+      @teacher6 = FactoryGirl.create :teacher, school: @school1
+      @subject5 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher5
+      @section5_1 = FactoryGirl.create :section, subject: @subject5
+      @section5_2 = FactoryGirl.create :section, subject: @subject5
+      @section5_3 = FactoryGirl.create :section, subject: @subject5
+      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
+      @discipline = @subject5.discipline
+      @student_prev_year   = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', grade_level: 2018
+      # switch to year 2 for @school1
+      @current_school_year = FactoryGirl.create :current_school_year, school: @school1
+      @school1.school_year_id = @current_school_year.id
+      @school1.save
+
+      # # regular setup for Year 2
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
+      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section5_1, student: @student_prev_year
+      @section6_1 = FactoryGirl.create :section, subject: @subject5
+      load_test_section(@section6_1, @teacher5)
+      @section6_2 = FactoryGirl.create :section, subject: @subject5
+      @section6_3 = FactoryGirl.create :section, subject: @subject5
+
     end
 
     describe "as teacher" do
@@ -208,14 +231,31 @@ describe "Student Listing", js:true do
   end
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
+    Rails.logger.debug("+++ Inside current year school")
     visit students_path
-    save_and_open_page
-    sleep 120
     assert_equal("/students", current_path)
     within("#page-content") do
-      page.should have_content("All Students for: #{@school1.name}")
-      page.should have_css("tr#student_#{@student.id}")
-      page.should_not have_css("tr#student_#{@student.id}.deactivated")
+      within(".header-block")do
+        page.should have_content("All Students for: #{@school1.name}")
+      end
+      # graduated student should be deactivated
+      within("tr#student_#{@student_grad.id}.deactivated") do
+        page.should have_content("#{@student_grad.last_name}") if can_create
+        within('td.user-grade-level') do
+          page.should have_content("#{@student_grad.grade_level}") if can_create
+        end
+      end
+      Rails.logger.debug("+++ grad student deactivated test passed")
+      within(".titled-table")do
+        page.should have_content("Student ID")
+        page.should have_content("Family/Last Name")
+        page.should have_content("Given/First Name")
+        page.should have_content("Student Email")
+        Rails.logger.debug("+++ Table Titles verified")
+      end
+      Rails.logger.debug("student #{@student.inspect}")
+      Rails.logger.debug("+++ students list")
+      sleep 1
       within("tr#student_#{@student.id}") do
         page.should have_content("#{@student.last_name}") if can_create
         page.should_not have_content("#{@student.last_name}") if !can_create
@@ -246,18 +286,13 @@ describe "Student Listing", js:true do
         page.should have_css("i.fa-undo") if can_deactivate && @student_transferred.active == false
         page.should_not have_css("i.fa-undo") if !can_deactivate && @student_transferred.active == false
       end
-      # graduated student should be deactivated
-      within("tr#student_#{@student_grad.id}.deactivated") do
-        page.should have_content("#{@student_grad.last_name}") if can_create
-        within('td.user-grade-level') do
-          page.should have_content("#{@student_grad.grade_level}") if can_create
-        end
-      end
     end # within("#page-content") do
+
     can_see_student_dashboard(@student)
     visit students_path
     assert_equal("/students", current_path)
     can_see_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
+    can_see_prior_year_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
     visit students_path
     assert_equal("/students", current_path)
     #can_reset_student_password(@student) if !read_only # note: tested more completely in password_change_spec.rb
@@ -283,22 +318,91 @@ describe "Student Listing", js:true do
       find("a[href='/students/#{student.id}/sections_list']").click
     end
     assert_equal("/students/#{student.id}/sections_list", current_path)
-    within("tr#enrollment_#{enrollment_s2.id}") do
-      if can_see_all
-        page.should have_css("a[href='/enrollments/#{enrollment_s2.id}']")
-        find("a[href='/enrollments/#{enrollment_s2.id}']").click
-        visit("/students/#{student.id}/sections_list")
-        assert_equal("/students/#{student.id}/sections_list", current_path)
-      else
-        # should not see link to tracker page for section not teaching that section
-        page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
+    within("#page-content")do
+      within(".header-block")do
+        within("h2.h1.page-title")do
+          page.should have_content("All Sections for student: ")
+        end
+      end
+      within(".table-title")do
+        page.should have_content("Subject")
+        page.should have_content("Section")
+        page.should have_content("Teacher")
+      end
+      Rails.logger.debug("+++ confirm student sections list No error")
+      Rails.logger.debug("enrollment2 #{enrollment_s2.inspect}")
+      Rails.logger.debug("enrollment2 #{enrollment.inspect}")
+      sleep 3
+      # within("tr#enrollment_#{enrollment_s2.id}")
+      within(".tbody-body") do
+        if can_see_all
+          page.should have_css("a[href='/enrollments/#{enrollment.id}']")
+          find("a[href='/enrollments/#{enrollment.id}']").click
+          visit("/students/#{student.id}/sections_list")
+          assert_equal("/students/#{student.id}/sections_list", current_path)
+          within("tr#enrollment_#{enrollment.id}") do
+            page.should have_css("a[href='/enrollments/#{enrollment.id}']")
+            find("a[href='/enrollments/#{enrollment.id}']").click
+          end
+          assert_equal("/enrollments/#{enrollment.id}", current_path)
+        else
+          # should not see link to tracker page for section not teaching that section
+          page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
+        end
+        visit students_path
+        assert_equal("/students", current_path)
       end
     end
-    within("tr#enrollment_#{enrollment.id}") do
-      page.should have_css("a[href='/enrollments/#{enrollment.id}']")
-      find("a[href='/enrollments/#{enrollment.id}']").click
+  end
+
+  def can_see_prior_year_student_sections(student, enrollment, enrollment_s2, can_see_all)
+
+    Rails.logger.debug("+++ start can_see_prior_year_student_sections")
+    within("tr#student_#{@student_prev_year.id}") do
+      page.should have_css("a[href='/students/#{@student_prev_year.id}/sections_list']")
+      find("a[href='/students/#{@student_prev_year.id}/sections_list']").click
     end
-    assert_equal("/enrollments/#{enrollment.id}", current_path)
+    assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
+    within("#page-content")do
+      within(".header-block")do
+        within("h2.h1.page-title")do
+          page.should have_content("All Sections for student: ")
+        end
+      end
+      within(".table-title")do
+        page.should have_content("Subject")
+        page.should have_content("Section")
+        page.should have_content("Teacher")
+      end
+      Rails.logger.debug("+++ confirmed student sections list page No error")
+      Rails.logger.debug("enrollment #{enrollment.inspect}")
+      if can_see_all
+        find("a[href='/enrollments/#{@enrollment_s2.id}']").click
+        page.should have_content("Evidence Statistics")
+        page.should have_content("Overall Learning Outcome Performance")
+      else
+        assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
+      end
+
+
+      # within("tr#enrollment_#{enrollment_s2.id}")
+      # within(".tbody-body") do
+      #   if can_see_all
+      #     page.should have_css("a[href='/enrollments/#{ @enrollment_s2.id}']")
+      #     find("a[href='/enrollments/#{enrollment.id}']").click
+      #     visit("/students/#{student.id}/sections_list")
+      #     assert_equal("/students/#{student.id}/sections_list", current_path)
+      #     within("tr#enrollment_#{enrollment.id}") do
+      #       page.should have_css("a[href='/enrollments/#{enrollment.id}']")
+      #       find("a[href='/enrollments/#{enrollment.id}']").click
+      #     end
+      #     assert_equal("/enrollments/#{enrollment.id}", current_path)
+      #   else
+      #     # should not see link to tracker page for section not teaching that section
+      #     page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
+      #   end
+      # end
+    end
   end
 
   def can_reset_student_password(student)
@@ -474,8 +578,5 @@ describe "Student Listing", js:true do
       page.should have_content("#{@school1.acronym}_new2".downcase)
       page.find('button').click
     end
-
   end
-
-
 end

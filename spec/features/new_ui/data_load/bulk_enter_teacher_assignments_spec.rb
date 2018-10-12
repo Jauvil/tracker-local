@@ -88,7 +88,7 @@ describe "Bulk Enter Teacher Assignments", js:true do
   end
 
   def valid_bulk_enter_teacher_assignments
-
+    sleep 180
     # confirm on Year 2
     visit schools_path()
     within("tr#school-#{@school1.id} td.school-year") do
