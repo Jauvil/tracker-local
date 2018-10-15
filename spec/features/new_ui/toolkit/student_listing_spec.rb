@@ -354,6 +354,7 @@ describe "Student Listing", js:true do
   def can_see_prior_year_student_sections(student, enrollment, enrollment_s2, can_see_all)
 
     Rails.logger.debug("+++ start can_see_prior_year_student_sections")
+    sleep 20
     within("tr#student_#{@student_prev_year.id}") do
       page.should have_css("a[href='/students/#{@student_prev_year.id}/sections_list']")
       find("a[href='/students/#{@student_prev_year.id}/sections_list']").click
@@ -372,6 +373,7 @@ describe "Student Listing", js:true do
       end
       Rails.logger.debug("+++ confirmed student sections list page No error")
       Rails.logger.debug("enrollment #{enrollment.inspect}")
+      sleep 20
       if can_see_all
         find("a[href='/enrollments/#{@enrollment_s2.id}']").click
         assert_equal("/enrollments/#{@enrollment_s2.id}", current_path)
