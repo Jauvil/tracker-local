@@ -18,8 +18,8 @@
 %fieldset.input-group#email
   %label.col-sm-5.control-label='Student Email:'
   %input{id: 'student_email', name: 'student[email]', value: @student.email}
-  - if @school.has_flag?(School::USERNAME_FROM_EMAIL)
-    %span.ui-required{title: 'Required'}='*'
+
+  %span.ui-required{title: 'Required'}='*'
   %span.ui-error="#{@errors[:email] if @errors[:email].present?}"
 %fieldset.input-group#grade-level
   %label.col-sm-5.control-label='Grade Level:'
