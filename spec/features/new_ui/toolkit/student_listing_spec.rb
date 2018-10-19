@@ -171,7 +171,7 @@ describe "Student Listing", js:true do
       @section6_3 = FactoryGirl.create :section, subject: @subject5
 
       # Student enrolled in previous & current sections
-      @teacher7 = FactoryGirl.create :teacher, school: @school1, active: false
+      @teacher7 = FactoryGirl.create :teacher, school: @school1, first_name: 'Teacher', last_name: 'Inactive2', active: false
       @subject6 = FactoryGirl.create :subject, school: @school1
       @section5_4 = FactoryGirl.create :section, subject: @subject6
       @discipline5 = @subject6.discipline
@@ -382,6 +382,8 @@ describe "Student Listing", js:true do
       page.should have_css("a[href='/students/#{@student_prev_year.id}/sections_list']")
       find("a[href='/students/#{@student_prev_year.id}/sections_list']").click
     end
+    Rails.logger.debug("+++ visit student section list")
+    sleep 6
     assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
     within("#page-content")do
       within(".header-block")do
@@ -416,7 +418,7 @@ describe "Student Listing", js:true do
     sleep 3
     visit students_path
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ find student with sections in prev & current school year")
+    Rails.logger.debug("+++ find the student with sections in prev & current school year")
     sleep 10
     within("tr#student_#{@student_both.id}") do
       page.should have_css("a[href='/students/#{@student_both.id}/sections_list']")
@@ -501,12 +503,16 @@ describe "Student Listing", js:true do
         # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
         page.fill_in 'student_first_name', :with => 'Changed-Fname'
         page.fill_in 'student_last_name', :with => 'Changed-Lname'
+        sleep 10
         # confirm the required flag is displayed (this school has username by email)
-        page.should have_css("#email span.ui-required")
+        if (ServerConfig.first.try(:allow_subject_mgr) != true)
+          page.should have_css("#email span.ui-required")
+        else
+          page.should_not have_css("#email span.ui-required")
+        end
         page.fill_in 'student_email', :with => ''
         page.click_button('Save')
         Rails.logger.debug("+++ EMAIL REQUIRED TEST")
-        sleep 10
       end
     end
     # ensure that blank email gets an error on updates
@@ -564,7 +570,11 @@ describe "Student Listing", js:true do
         page.fill_in 'student_first_name', :with => ''
         page.fill_in 'student_last_name', :with => ''
         # confirm the required flag is displayed (this school has username by email)
-        page.should have_css("#email span.ui-required")
+        if (ServerConfig.first.try(:allow_subject_mgr) != true)
+          page.should have_css("#email span.ui-required")
+        else
+          page.should_not have_css("#email span.ui-required")
+        end
         page.fill_in 'student_email', :with => ''
         page.fill_in 'student_grade_level', :with => '4'
         sleep 10
