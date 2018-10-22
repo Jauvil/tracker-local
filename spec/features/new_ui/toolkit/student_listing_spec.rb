@@ -28,7 +28,7 @@ describe "Student Listing", js:true do
       @section2_3 = FactoryGirl.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
+      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
       # Assign a deactivated teacher to duplicate the bug can not display student sections if teacher is deactivated.
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section2_1, teacher: @teacher2
       @student_grad = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
@@ -43,14 +43,14 @@ describe "Student Listing", js:true do
       @section5_3 = FactoryGirl.create :section, subject: @subject5
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', grade_level: 2018
+      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 1
       # switch to year 2 for @school1
       @current_school_year = FactoryGirl.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
       @school1.save
 
       # # regular setup for Year 2
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section1_2, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -142,7 +142,7 @@ describe "Student Listing", js:true do
       @section2_3 = FactoryGirl.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
+      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
       # Assign a deactivated teacher to duplicate the bug can not display student sections if teacher is deactivated.
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section2_1, teacher: @teacher2
       @student_grad = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
@@ -157,14 +157,13 @@ describe "Student Listing", js:true do
       @section5_3 = FactoryGirl.create :section, subject: @subject5
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', grade_level: 2018
+
       # switch to year 2 for @school1
       @current_school_year = FactoryGirl.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
       @school1.save
-
-      # # regular setup for Year 2
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
+      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 1
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section1_2, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -248,6 +247,7 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
+    sleep 10
     Rails.logger.debug("+++ Inside current year school")
     visit students_path
     assert_equal("/students", current_path)
@@ -308,8 +308,8 @@ describe "Student Listing", js:true do
     can_see_student_dashboard(@student)
     visit students_path
     assert_equal("/students", current_path)
-    can_see_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
-    can_see_prior_year_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
+    can_see_student_sections(@student, @enrollment, can_see_all)
+    can_see_prior_year_student_sections(@student_prev_year, @enrollment_s2, can_see_all)
     can_see_both_years_student_sections(@student_both, @enrollment_both_1, @enrollment_both_2, can_see_all)
     visit students_path
     assert_equal("/students", current_path)
@@ -334,7 +334,8 @@ describe "Student Listing", js:true do
     assert_equal("/students/#{student.id}", current_path)
   end
 
-  def can_see_student_sections(student, enrollment, enrollment_s2, can_see_all)
+  def can_see_student_sections(student, enrollment, can_see_all)
+    Rails.logger.debug("+++ can_see_student_sections in current year")
     within("tr#student_#{student.id}") do
       page.should have_css("a[href='/students/#{student.id}/sections_list']")
       find("a[href='/students/#{student.id}/sections_list']").click
@@ -352,9 +353,10 @@ describe "Student Listing", js:true do
         page.should have_content("Teacher")
       end
       Rails.logger.debug("+++ confirm student sections list page")
-      # within("tr#enrollment_#{enrollment_s2.id}")
+        # within("tr#enrollment_#{enrollment.id}")do
       within(".tbody-body") do
-        if can_see_all
+        sleep 3
+        if can_see_all  #can_see_student_sections
           page.should have_css("a[href='/enrollments/#{enrollment.id}']")
           find("a[href='/enrollments/#{enrollment.id}']").click
           visit("/students/#{student.id}/sections_list")
@@ -366,7 +368,7 @@ describe "Student Listing", js:true do
           assert_equal("/enrollments/#{enrollment.id}", current_path)
         else
           # should not see link to tracker page for section not teaching that section
-          page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
+          page.should_not have_css("a[href='/enrollments/#{enrollment.id}']")
         end
         visit students_path
         assert_equal("/students", current_path)
@@ -374,100 +376,69 @@ describe "Student Listing", js:true do
     end
   end
 
-  def can_see_prior_year_student_sections(student, enrollment, enrollment_s2, can_see_all)
-
-    Rails.logger.debug("+++ start can_see_prior_year_student_sections")
-    sleep 3
-    within("tr#student_#{@student_prev_year.id}") do
-      page.should have_css("a[href='/students/#{@student_prev_year.id}/sections_list']")
-      find("a[href='/students/#{@student_prev_year.id}/sections_list']").click
+  def can_see_prior_year_student_sections(student_prev_year, enrollment_s2, can_see_all)
+    visit students_path
+    assert_equal("/students", current_path)
+    Rails.logger.debug("+++ find the student with section only in prior school year")
+    sleep 10
+    within("tr#student_#{student_prev_year.id}") do
+      page.should have_css("a[href='/students/#{student_prev_year.id}/sections_list']")
+      find("a[href='/students/#{student_prev_year.id}/sections_list']").click
     end
     Rails.logger.debug("+++ visit student section list")
     sleep 6
-    assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
+    assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
     within("#page-content")do
-      within(".header-block")do
-        within("h2.h1.page-title")do
-          page.should have_content("All Sections for student: ")
-        end
-      end
-      within(".table-title")do
-        page.should have_content("Subject")
-        page.should have_content("Section")
-        page.should have_content("Teacher")
-      end
       Rails.logger.debug("+++ confirmed student sections list page No error")
-      Rails.logger.debug("enrollment #{enrollment.inspect}")
-
-      if can_see_all
-        # page.should have css("a[href='/enrollments/#{@enrollment_both_1}']")
-        # page.should have css("a[href='/enrollments/#{@enrollment_both_2}']")
-        find("a[href='/enrollments/#{@enrollment_s2.id}']").click
-        assert_equal("/enrollments/#{@enrollment_s2.id}", current_path)
+      sleep 30
+      if can_see_all  #can_see_prior_year_student_sections
+        page.should have_css("a[href='/enrollments/#{enrollment_s2.id}']")
+        find("a[href='/enrollments/#{enrollment_s2.id}']").click
+        assert_equal("/enrollments/#{enrollment_s2.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
-        assert_equal("/students/#{@student_prev_year.id}/sections_list", current_path)
+        assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
       end
     end
   end
 
   def can_see_both_years_student_sections(student_both, enrollment_both_1, enrollment_both_2, can_see_all)
-    Rails.logger.debug("+++ start can_see_both_years_student_sections")
-    Rails.logger.debug("+++ student list")
-    sleep 3
     visit students_path
     assert_equal("/students", current_path)
+    Rails.logger.debug("+++ start can_see_both_years_student_sections")
     Rails.logger.debug("+++ find the student with sections in prev & current school year")
     sleep 10
-    within("tr#student_#{@student_both.id}") do
-      page.should have_css("a[href='/students/#{@student_both.id}/sections_list']")
-      find("a[href='/students/#{@student_both.id}/sections_list']").click
+    within("tr#student_#{student_both.id}") do
+      page.should have_css("a[href='/students/#{student_both.id}/sections_list']")
+      find("a[href='/students/#{student_both.id}/sections_list']").click
     end
     Rails.logger.debug("+++ In section list test enrollment prev and current school years")
-    assert_equal("/students/#{@student_both.id}/sections_list", current_path)
+    assert_equal("/students/#{student_both.id}/sections_list", current_path)
     sleep 10
     within("#page-content")do
-      within(".header-block")do
-        within("h2.h1.page-title")do
-          page.should have_content("All Sections for student: ")
-        end
-      end
-      within(".table-title")do
-        page.should have_content("Subject")
-        page.should have_content("Section")
-        page.should have_content("Teacher")
-      end
       Rails.logger.debug("+++ visit current year enrollment details")
       sleep 30
-      if can_see_all
-        find("a[href='/enrollments/#{@enrollment_both_1.id}']").click
-        assert_equal("/enrollments/#{@enrollment_both_1.id}", current_path)
+      if can_see_all #can_see_both_years_student_sections #1
+        find("a[href='/enrollments/#{enrollment_both_1.id}']").click
+        assert_equal("/enrollments/#{enrollment_both_1.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
-        assert_equal("/students/#{@student_both.id}/sections_list", current_path)
+        assert_equal("/students/#{student_both.id}/sections_list", current_path)
       end
-
-      Rails.logger.debug("+++ return to student listing")
-      sleep 10
       visit students_path
       assert_equal("/students", current_path)
-      find("a[href='/students/#{@student_both.id}/sections_list']").click
-      sleep 20
-      Rails.logger.debug("+++ visit prior year enrollment details")
-
-      if can_see_all
-        find("a[href='/enrollments/#{@enrollment_both_2.id}']").click
-        assert_equal("/enrollments/#{@enrollment_both_2.id}", current_path)
+      find("a[href='/students/#{student_both.id}/sections_list']").click
+      if can_see_all #can_see_both_years_student_sections #2
+        find("a[href='/enrollments/#{enrollment_both_2.id}']").click
+        assert_equal("/enrollments/#{enrollment_both_2.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
-        assert_equal("/students/#{@student_both.id}/sections_list", current_path)
+        assert_equal("/students/#{student_both.id}/sections_list", current_path)
       end
-
     end
-
   end
 
   def can_reset_student_password(student)
@@ -492,7 +463,7 @@ describe "Student Listing", js:true do
   def can_change_student(student)
     Rails.logger.debug("+++ can_change_student")
     within("tr#student_#{student.id}") do
-      sleep 7
+      sleep 20
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
     end
@@ -539,9 +510,9 @@ describe "Student Listing", js:true do
 
     # page.should_not have_css("#modal_popup form#edit_student_#{student.id}")
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ view updated student user info")
+    Rails.logger.debug("+++ view updated student user info line 541")
     within("tr#student_#{student.id}") do
-      sleep 10
+      sleep 20
       page.should have_css("a[data-url='/students/#{student.id}.js']")
       find("a[data-url='/students/#{student.id}.js']").click
     end
@@ -627,7 +598,7 @@ describe "Student Listing", js:true do
     assert_equal("/students", current_path)
     # ensure username is incremented if a duplicate (e.g. is different after @, etc.)
     Rails.logger.debug("+++ looking for /students/new.js")
-    sleep 10
+    sleep 0
     find("a[data-url='/students/new.js'] i.fa-plus-square").click
     Rails.logger.debug("+++ found /students/new.js")
     # within("div#page-content") do
@@ -662,7 +633,7 @@ describe "Student Listing", js:true do
     another_student_id = student_nodes[0][:id].split('_')[1]
     Rails.logger.debug("*** another_student_id: #{another_student_id}")
     within("tr#student_#{another_student_id}") do
-      sleep 10
+      sleep 30
       page.should have_css("a[data-url='/students/#{another_student_id}/security.js']")
       find("a[data-url='/students/#{another_student_id}/security.js']").click
     end

@@ -256,9 +256,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
-        sleep 20
         within("tr#user_#{@teacher.id}") do
-          sleep 60
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
           page.find("a[data-url='/users/#{@teacher.id}/edit.js']").click
@@ -298,7 +296,6 @@ describe "Staff Listing", js:true do
 
         within('.user-roles') do
           page.should have_content('teacher')
-          sleep 30
           if [:school_administrator, :system_administrator].include?(role)
             page.should have_content('counselor')
           else
@@ -325,7 +322,6 @@ describe "Staff Listing", js:true do
     # visit staff_listing_users_path
     if [:school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
-      sleep 10
       within("#page-content tr#user_#{@teacher.id}") do
         page.should have_css("i.fa-unlock")
         page.should have_css("a[data-url='/users/#{@teacher.id}/security.js'] i.fa-unlock")
