@@ -335,14 +335,14 @@ describe "Staff Listing", js:true do
         page.find(".modal-footer button", text: 'Close').click
       end
       assert_equal("/users/staff_listing", current_path)
-      else
-        assert_equal("/users/staff_listing", current_path)
-        within("#page-content") do
-          within("tr#user_#{@teacher.id}") do
-            page.should_not have_css("i.fa-unlock")
-            page.should_not have_css("a[data-url='/users/#{@teacher.id}/security.js']")
-          end
+    else
+      assert_equal("/users/staff_listing", current_path)
+      within("#page-content") do
+        within("tr#user_#{@teacher.id}") do
+          page.should_not have_css("i.fa-unlock")
+          page.should_not have_css("a[data-url='/users/#{@teacher.id}/security.js']")
         end
+      end
     end
 
 

@@ -247,7 +247,6 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
-    sleep 20
     Rails.logger.debug("+++ Inside current year school")
     visit students_path
     assert_equal("/students", current_path)
@@ -355,7 +354,6 @@ describe "Student Listing", js:true do
       Rails.logger.debug("+++ confirm student sections list page")
         # within("tr#enrollment_#{enrollment.id}")do
       within(".tbody-body") do
-        sleep 3
         if can_see_all  #can_see_student_sections
           page.should have_css("a[href='/enrollments/#{enrollment.id}']")
           find("a[href='/enrollments/#{enrollment.id}']").click
@@ -379,18 +377,12 @@ describe "Student Listing", js:true do
   def can_see_prior_year_student_sections(student_prev_year, enrollment_s2, can_see_all)
     visit students_path
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ find the student with section only in prior school year")
-    sleep 10
     within("tr#student_#{student_prev_year.id}") do
       page.should have_css("a[href='/students/#{student_prev_year.id}/sections_list']")
       find("a[href='/students/#{student_prev_year.id}/sections_list']").click
     end
-    Rails.logger.debug("+++ visit student section list")
-    sleep 6
     assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
     within("#page-content")do
-      Rails.logger.debug("+++ confirmed student sections list page No error")
-      sleep 30
       if can_see_all  #can_see_prior_year_student_sections
         page.should have_css("a[href='/enrollments/#{enrollment_s2.id}']")
         find("a[href='/enrollments/#{enrollment_s2.id}']").click
@@ -406,19 +398,12 @@ describe "Student Listing", js:true do
   def can_see_both_years_student_sections(student_both, enrollment_both_1, enrollment_both_2, can_see_all)
     visit students_path
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ start can_see_both_years_student_sections")
-    Rails.logger.debug("+++ find the student with sections in prev & current school year")
-    sleep 10
     within("tr#student_#{student_both.id}") do
       page.should have_css("a[href='/students/#{student_both.id}/sections_list']")
       find("a[href='/students/#{student_both.id}/sections_list']").click
     end
-    Rails.logger.debug("+++ In section list test enrollment prev and current school years")
     assert_equal("/students/#{student_both.id}/sections_list", current_path)
-    sleep 10
     within("#page-content")do
-      Rails.logger.debug("+++ visit current year enrollment details")
-      sleep 30
       if can_see_all #can_see_both_years_student_sections #1
         find("a[href='/enrollments/#{enrollment_both_1.id}']").click
         assert_equal("/enrollments/#{enrollment_both_1.id}", current_path)
@@ -447,7 +432,6 @@ describe "Student Listing", js:true do
       find("a[data-url='/students/#{student.id}/security.js']").click
     end
     page.should have_content("Student/Parent Security and Access")
-    sleep 3
     within("#user_#{student.id}") do
       page.should have_css("a[href='/students/#{student.id}/set_student_temporary_password']")
       find("a[href='/students/#{student.id}/set_student_temporary_password']").click
@@ -455,26 +439,20 @@ describe "Student Listing", js:true do
     within("#user_#{student.id}.student-temp-pwd") do
       page.should_not have_content('(Reset Password')
     end
-    Rails.logger.debug("+++ close button")
-    sleep 6
     page.click_button('Close')
   end
 
   def can_change_student(student)
-    Rails.logger.debug("+++ can_change_student")
     within("tr#student_#{student.id}") do
-      sleep 20
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
     end
     page.should have_content("Edit Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
-        Rails.logger.debug("+++ Changed-Fname")
         # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
         page.fill_in 'student_first_name', :with => 'Changed-Fname'
         page.fill_in 'student_last_name', :with => 'Changed-Lname'
-        sleep 10
         # confirm the required flag is displayed (this school has username by email)
         if (ServerConfig.first.try(:allow_subject_mgr) != true)
           page.should have_css("#email span.ui-required")
@@ -483,36 +461,27 @@ describe "Student Listing", js:true do
         end
         page.fill_in 'student_email', :with => ''
         page.click_button('Save')
-        Rails.logger.debug("+++ EMAIL REQUIRED TEST")
       end
     end
     # ensure that blank email gets an error on updates
     visit students_path
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ edit button")
-    sleep 20
     page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
     find("a[data-url='/students/#{student.id}/edit.js']").click
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
-      Rails.logger.debug("+++ edit student email")
       within("form#edit_student_#{student.id}") do
         page.fill_in 'student_first_name', :with => 'Changed-Fname'
         page.fill_in 'student_last_name', :with => 'Changed-Lname'
         #page.should have_css('span.ui-error', text:'Email is required.')
         page.fill_in 'student_email', :with => 'changed@email.address'
-        sleep 20
         page.click_button('Save')
-        Rails.logger.debug("+++ student edited")
-        sleep 30
       end
     end
     # Rails.logger.debug("+++ page.should_not have_css edit student")
 
     # page.should_not have_css("#modal_popup form#edit_student_#{student.id}")
     assert_equal("/students", current_path)
-    Rails.logger.debug("+++ view updated student user info line 541")
     within("tr#student_#{student.id}") do
-      sleep 20
       page.should have_css("a[data-url='/students/#{student.id}.js']")
       find("a[data-url='/students/#{student.id}.js']").click
     end
@@ -525,18 +494,14 @@ describe "Student Listing", js:true do
   end
 
   def can_create_student(student)
-    Rails.logger.debug("+++ can_create_student")
-    Rails.logger.debug("+++ looking for /students/new.js")
     find("a[data-url='/students/new.js'] i.fa-plus-square").click
     # within("#page-content") do
     #   sleep 15
     #   page.should have_css("a[data-url='/students/new.js']")
     #   find("a[data-url='/students/new.js'] i.fa-plus-square").click
     # end
-    Rails.logger.debug("+++ found /students/new.js")
     page.should have_content("Create New Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
-      Rails.logger.debug("+++ error message test")
       within("form#new_student") do
         page.fill_in 'student_first_name', :with => ''
         page.fill_in 'student_last_name', :with => ''
@@ -548,7 +513,6 @@ describe "Student Listing", js:true do
         end
         page.fill_in 'student_email', :with => ''
         page.fill_in 'student_grade_level', :with => '4'
-        sleep 10
         page.click_button('Save')
       end
     end
@@ -565,7 +529,6 @@ describe "Student Listing", js:true do
         page.fill_in 'student_email', :with => 'new@email.address'
         # page.should have_css('#grade-level span.ui-error', text:'["Grade Level is invalid"]')
         page.fill_in 'student_grade_level', :with => '2'
-        sleep 10
         page.click_button('Save')
       end
     end
@@ -579,15 +542,12 @@ describe "Student Listing", js:true do
 
     # confirm username is sch1_new
     student_nodes = all('tbody tr.student-row')
-    Rails.logger.debug("*** student_nodes[1][:id]: #{student_nodes[1][:id].inspect}")
     new_student_id = student_nodes[1][:id].split('_')[1]
-    Rails.logger.debug("*** new_student_id: #{new_student_id}")
     within("tr#student_#{new_student_id}") do
       page.should have_css("a[data-url='/students/#{new_student_id}/security.js']")
       find("a[data-url='/students/#{new_student_id}/security.js']").click
     end
     page.should have_content("Student/Parent Security and Access")
-    sleep 10
     page.click_button('Close')
     # within("#modal_popup") do
     #   sleep 10
@@ -597,10 +557,8 @@ describe "Student Listing", js:true do
     visit students_path
     assert_equal("/students", current_path)
     # ensure username is incremented if a duplicate (e.g. is different after @, etc.)
-    Rails.logger.debug("+++ looking for /students/new.js")
-    sleep 0
+
     find("a[data-url='/students/new.js'] i.fa-plus-square").click
-    Rails.logger.debug("+++ found /students/new.js")
     # within("div#page-content") do
     #   page.should have_css("a[data-url='/students/new.js']")
     #   find("a[data-url='/students/new.js']").click
@@ -617,7 +575,7 @@ describe "Student Listing", js:true do
         page.click_button('Save')
       end
     end
-    sleep 10
+
     page.should_not have_css("#modal_popup form#new_student")
     assert_equal("/students", current_path)
     # expect(page.text).to match(/New\sFname/) # alternate syntax
@@ -633,7 +591,6 @@ describe "Student Listing", js:true do
     another_student_id = student_nodes[0][:id].split('_')[1]
     Rails.logger.debug("*** another_student_id: #{another_student_id}")
     within("tr#student_#{another_student_id}") do
-      sleep 30
       page.should have_css("a[data-url='/students/#{another_student_id}/security.js']")
       find("a[data-url='/students/#{another_student_id}/security.js']").click
     end
@@ -645,9 +602,7 @@ describe "Student Listing", js:true do
   end
 
   def can_change_graduate(student)
-    Rails.logger.debug("+++ can_change_graduate")
     within("tr#student_#{student.id}.deactivated") do
-      sleep 10
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
     end
@@ -656,13 +611,11 @@ describe "Student Listing", js:true do
       within("form#edit_student_#{student.id}") do
         page.fill_in 'student_first_name', :with => 'Changed-Fname'
         page.fill_in 'student_last_name', :with => 'Changed-Lname'
-        sleep 30
         page.click_button('Save')
       end
     end
     assert_equal("/students", current_path)
     within("tr#student_#{student.id}.deactivated") do
-      sleep 5
       page.should have_content('Changed-Fname')
       page.should have_content('Changed-Lname')
     end
