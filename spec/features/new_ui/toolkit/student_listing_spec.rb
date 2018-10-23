@@ -555,12 +555,10 @@ describe "Student Listing", js:true do
     visit students_path
     assert_equal("/students", current_path)
     # ensure username is incremented if a duplicate (e.g. is different after @, etc.)
-
-    find("a[data-url='/students/new.js'] i.fa-plus-square").click
-    # within("div#page-content") do
-    #   page.should have_css("a[data-url='/students/new.js']")
-    #   find("a[data-url='/students/new.js']").click
-    # end
+    within("div#page-content") do
+      page.should have_css("a[data-url='/students/new.js']")
+      find("a[data-url='/students/new.js']").click
+    end
     within('#modal_popup h2') do
       page.should have_content("Create New Student")
     end
