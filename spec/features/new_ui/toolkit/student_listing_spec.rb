@@ -250,9 +250,9 @@ describe "Student Listing", js:true do
     visit students_path
     assert_equal("/students", current_path)
     within("#page-content") do
-      within(".header-block")do
-        page.should have_content("All Students for: #{@school1.name}")
-      end
+      page.should have_content("All Students for: #{@school1.name}")
+      page.should have_css("tr#student_#{@student.id}")
+      page.should_not have_css("tr#student_#{@student.id}.deactivated")
       # graduated student should be deactivated
       within("tr#student_#{@student_grad.id}.deactivated") do
         page.should have_content("#{@student_grad.last_name}") if can_create
@@ -302,7 +302,7 @@ describe "Student Listing", js:true do
     can_see_student_dashboard(@student)
     visit students_path
     assert_equal("/students", current_path)
-    can_see_student_sections(@student, @enrollment, can_see_all)
+    can_see_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
     can_see_prior_year_student_sections(@student_prev_year, @enrollment_s2, can_see_all)
     can_see_both_years_student_sections(@student_both, @enrollment_both_1, @enrollment_both_2, can_see_all)
     visit students_path
@@ -328,7 +328,7 @@ describe "Student Listing", js:true do
     assert_equal("/students/#{student.id}", current_path)
   end
 
-  def can_see_student_sections(student, enrollment, can_see_all)
+  def can_see_student_sections(student, enrollment, @enrollment_s2, can_see_all)
     within("tr#student_#{student.id}") do
       page.should have_css("a[href='/students/#{student.id}/sections_list']")
       find("a[href='/students/#{student.id}/sections_list']").click
