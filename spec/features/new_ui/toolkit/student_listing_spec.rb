@@ -246,7 +246,7 @@ describe "Student Listing", js:true do
   end
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
-    sleep 30
+
     visit students_path
     assert_equal("/students", current_path)
     within("#page-content") do
@@ -260,16 +260,12 @@ describe "Student Listing", js:true do
           page.should have_content("#{@student_grad.grade_level}") if can_create
         end
       end
-      Rails.logger.debug("+++ grad student deactivated test passed")
       within(".titled-table")do
         page.should have_content("Student ID")
         page.should have_content("Family/Last Name")
         page.should have_content("Given/First Name")
         page.should have_content("Student Email")
-        Rails.logger.debug("+++ Table Titles verified")
       end
-      Rails.logger.debug("student #{@student.inspect}")
-      Rails.logger.debug("+++ students list")
 
       within("tr#student_#{@student.id}") do
         page.should have_content("#{@student.last_name}") if can_create
@@ -387,7 +383,6 @@ describe "Student Listing", js:true do
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
-        sleep 60
         page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
         assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
       end
