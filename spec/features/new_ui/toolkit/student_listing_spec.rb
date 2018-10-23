@@ -334,7 +334,6 @@ describe "Student Listing", js:true do
   end
 
   def can_see_student_sections(student, enrollment, can_see_all)
-    Rails.logger.debug("+++ can_see_student_sections in current year")
     within("tr#student_#{student.id}") do
       page.should have_css("a[href='/students/#{student.id}/sections_list']")
       find("a[href='/students/#{student.id}/sections_list']").click
@@ -351,9 +350,7 @@ describe "Student Listing", js:true do
         page.should have_content("Section")
         page.should have_content("Teacher")
       end
-      Rails.logger.debug("+++ confirm student sections list page")
-        # within("tr#enrollment_#{enrollment.id}")do
-      within(".tbody-body") do
+      within("tr#enrollment_#{enrollment.id}")do
         if can_see_all  #can_see_student_sections
           page.should have_css("a[href='/enrollments/#{enrollment.id}']")
           find("a[href='/enrollments/#{enrollment.id}']").click
@@ -367,6 +364,7 @@ describe "Student Listing", js:true do
         else
           # should not see link to tracker page for section not teaching that section
           page.should_not have_css("a[href='/enrollments/#{enrollment.id}']")
+          assert_equal("/students/#{student.id}/sections_list", current_path)
         end
         visit students_path
         assert_equal("/students", current_path)
@@ -390,6 +388,7 @@ describe "Student Listing", js:true do
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
+        page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
         assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
       end
     end
@@ -405,22 +404,26 @@ describe "Student Listing", js:true do
     assert_equal("/students/#{student_both.id}/sections_list", current_path)
     within("#page-content")do
       if can_see_all #can_see_both_years_student_sections #1
+        page.should have_css("a[href='/enrollments/#{enrollment_both_1.id}']")
         find("a[href='/enrollments/#{enrollment_both_1.id}']").click
         assert_equal("/enrollments/#{enrollment_both_1.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
+        page.should_not have_css("a[href='/enrollments/#{enrollment_both_1.id}']")
         assert_equal("/students/#{student_both.id}/sections_list", current_path)
       end
       visit students_path
       assert_equal("/students", current_path)
       find("a[href='/students/#{student_both.id}/sections_list']").click
       if can_see_all #can_see_both_years_student_sections #2
+        page.should have_css("a[href='/enrollments/#{enrollment_both_2.id}']")
         find("a[href='/enrollments/#{enrollment_both_2.id}']").click
         assert_equal("/enrollments/#{enrollment_both_2.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
+        page.should_not have_css("a[href='/enrollments/#{enrollment_both_2.id}']")
         assert_equal("/students/#{student_both.id}/sections_list", current_path)
       end
     end
