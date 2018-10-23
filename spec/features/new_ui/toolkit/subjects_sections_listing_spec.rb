@@ -5,7 +5,7 @@ require 'spec_helper'
 describe "Subjects Sections Listing", js:true do
   describe "US System" do
     before (:each) do
-
+      # @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
       # two subjects in @school1
       # @section1_1 = FactoryGirl.create :section
       # @subject1 = @section1_1.subject
@@ -48,7 +48,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as subject manager teacher" do
       before do
         sign_in(@teacher1)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
     end
@@ -56,7 +56,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Regular teacher" do
       before do
         sign_in(@teacher3)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher3, false, true) }
     end
@@ -104,7 +104,7 @@ describe "Subjects Sections Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
-
+      # @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
       # two subjects in @school1
       # @section1_1 = FactoryGirl.create :section
       # @subject1 = @section1_1.subject
@@ -147,7 +147,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Subject Manager teacher" do
       before do
         sign_in(@teacher1)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher1, false, true) }
     end
@@ -155,7 +155,7 @@ describe "Subjects Sections Listing", js:true do
     describe "as Regular teacher" do
       before do
         sign_in(@teacher3)
-        #if @teacher1 isn't Subject Admin or manage subject admin.. they can't update subjects.
+        #if @teacher isn't Subject manager then they can't edit LO'S.
       end
       it { has_valid_subjects_listing(@teacher3, false, true) }
     end
@@ -212,7 +212,30 @@ describe "Subjects Sections Listing", js:true do
 
   def has_valid_subjects_listing(this_user, can_create_subject, can_create_section)
     visit subjects_path
+    Rails.logger.debug("+++ test enter_bulk button")
 
+    within(".header-block") do
+      page.should have_css("a[id='collapse-all-tbodies'][href='javascript:void(0)'] i.fa-caret-right")
+      page.should have_css("a[id='expand-all-tbodies'][href='javascript:void(0)'] i.fa-caret-down")
+      page.should have_css("a[id='filter-button'][href='javascript:void(0)'] i.fa-filter")
+      page.should have_css("a[id='print-button'][href='javascript:void(0)'] i.fa-print")
+      page.should have_css("a[id='download-button'][href='javascript:void(0)'] i.fa-download")
+      if :researcher || :teacher
+        page.should_not have_css("a[href='enrollments/enter_bulk']")
+        page.should_not have_css("a[href='sections/enter_bulk']")
+        page.should_not have_css("a[href='teaching_assignments/enter_bulk']")
+        page.should_not have_css("a[href='enrollments/enter_bulk']")
+        page.should_not have_css("a.dim[id='rollover-#{@school1.id}'][href='javascript:void(0)'] i.fa-forward")
+      else
+        page.should have_css("a[data-url='subjects/new.js']")
+        page.should have_css("a[href='sections/enter_bulk']")
+        page.should have_css("a[href='teaching_assignments/enter_bulk']")
+        page.should have_css("a[href='enrollments/enter_bulk']")
+        page.should have_css("a.dim[id='rollover-#{@school1.id}'][href='javascript:void(0)'] i.fa-forward")
+      end
+    end
+    Rails.logger.debug("+++ passed enter_bulk button test")
+    sleep 5
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
       (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||

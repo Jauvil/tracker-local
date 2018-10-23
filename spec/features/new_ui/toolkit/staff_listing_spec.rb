@@ -5,6 +5,7 @@ require 'spec_helper'
 describe "Staff Listing", js:true do
   describe "US System" do
     before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       @school = FactoryGirl.create :school, :us
@@ -77,6 +78,7 @@ describe "Staff Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       @school = FactoryGirl.create :school, :arabic
@@ -254,7 +256,6 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
-        sleep 20
         within("tr#user_#{@teacher.id}") do
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
@@ -292,7 +293,7 @@ describe "Staff Listing", js:true do
       within("#page-content table #user_#{@teacher.id}") do
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
-        sleep 10
+
         within('.user-roles') do
           page.should have_content('teacher')
           if [:school_administrator, :system_administrator].include?(role)
@@ -319,9 +320,8 @@ describe "Staff Listing", js:true do
     # Staff Security Information visiblity and availability testing
     # Only admins can view and reset security information for staff
     # visit staff_listing_users_path
-    if [:teacher, :school_administrator, :system_administrator].include?(role)
+    if [:school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
-      sleep 5
       within("#page-content tr#user_#{@teacher.id}") do
         page.should have_css("i.fa-unlock")
         page.should have_css("a[data-url='/users/#{@teacher.id}/security.js'] i.fa-unlock")
@@ -335,14 +335,14 @@ describe "Staff Listing", js:true do
         page.find(".modal-footer button", text: 'Close').click
       end
       assert_equal("/users/staff_listing", current_path)
-      # else
-      #   assert_equal("/users/staff_listing", current_path)
-      #   within("#page-content") do
-      #     within("tr#user_#{@teacher.id}") do
-      #       page.should have_css("i.fa-unlock")
-      #       page.should have_css("a[data-url='/users/#{@teacher.id}/security.js']")
-      #     end
-      #   end
+    else
+      assert_equal("/users/staff_listing", current_path)
+      within("#page-content") do
+        within("tr#user_#{@teacher.id}") do
+          page.should_not have_css("i.fa-unlock")
+          page.should_not have_css("a[data-url='/users/#{@teacher.id}/security.js']")
+        end
+      end
     end
 
 

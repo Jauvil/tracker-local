@@ -9,18 +9,19 @@ describe "School Listing", js:true do
       # @teacher = FactoryGirl.create :teacher, school: @school
       # @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
       # load_test_section(@section, @teacher)
-
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       # @school1
       @school1 = FactoryGirl.create :school_current_year, :us
+      Rails.logger.debug("+++ school #{@school1.inspect}")
       @teacher1 = FactoryGirl.create :teacher, school: @school1
       @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
       @section1_1 = FactoryGirl.create :section, subject: @subject1
       @section1_2 = FactoryGirl.create :section, subject: @subject1
       @section1_3 = FactoryGirl.create :section, subject: @subject1
       @discipline = @subject1.discipline
-      load_test_section(@section1_1, @teacher1)
+      load_test_section(@section1_1, @teacher1, false)
 
       # @school2
       @school2 = FactoryGirl.create :school_prior_year, :us
@@ -57,7 +58,7 @@ describe "School Listing", js:true do
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
       end
-      it { has_nav_to_schools_page(true) }
+      it { has_nav_to_schools_page(true, true) }
       it { has_valid_schools_summary(:researcher) }
       it { has_valid_school_navigations(:researcher) }
     end
@@ -68,7 +69,7 @@ describe "School Listing", js:true do
         sign_in(@researcher)
         @home_page = "/researchers/#{@researcher.id}"
       end
-      it { has_nav_to_schools_page(false) }
+      it { has_nav_to_schools_page(false, true) }
     end
 
     describe "as system administrator" do
@@ -78,7 +79,7 @@ describe "School Listing", js:true do
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end
-      it { has_nav_to_schools_page(true) }
+      it { has_nav_to_schools_page(true, true) }
       it { has_valid_schools_summary(:system_administrator)}
       it { has_valid_school_navigations(:system_administrator) }
       it { valid_edit_school }
@@ -90,7 +91,7 @@ describe "School Listing", js:true do
         sign_in(@system_administrator)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end
-      it { has_nav_to_schools_page(false) }
+      it { has_nav_to_schools_page(false, true) }
     end
 
     describe "as student" do
@@ -117,7 +118,7 @@ describe "School Listing", js:true do
       # @teacher = FactoryGirl.create :teacher, school: @school
       # @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
       # load_test_section(@section, @teacher)
-
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       # @school1
@@ -128,7 +129,7 @@ describe "School Listing", js:true do
       @section1_2 = FactoryGirl.create :section, subject: @subject1
       @section1_3 = FactoryGirl.create :section, subject: @subject1
       @discipline = @subject1.discipline
-      load_test_section(@section1_1, @teacher1)
+      load_test_section(@section1_1, @teacher1, false)
 
       # @school2
       @school2 = FactoryGirl.create :school_prior_year, :arabic
@@ -165,7 +166,7 @@ describe "School Listing", js:true do
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
       end
-      it { has_nav_to_schools_page(true) }
+      it { has_nav_to_schools_page(true, false) }
       it { has_valid_schools_summary(:researcher) }
       it { has_valid_school_navigations(:researcher) }
     end
@@ -176,7 +177,7 @@ describe "School Listing", js:true do
         sign_in(@researcher)
         @home_page = "/researchers/#{@researcher.id}"
       end
-      it { has_nav_to_schools_page(false) }
+      it { has_nav_to_schools_page(false, false) }
     end
 
     describe "as system administrator" do
@@ -186,7 +187,7 @@ describe "School Listing", js:true do
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end
-      it { has_nav_to_schools_page(true) }
+      it { has_nav_to_schools_page(true, false) }
       it { has_valid_schools_summary(:system_administrator)}
       it { has_valid_school_navigations(:system_administrator) }
       it { valid_edit_school }
@@ -198,7 +199,7 @@ describe "School Listing", js:true do
         sign_in(@system_administrator)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end
-      it { has_nav_to_schools_page(false) }
+      it { has_nav_to_schools_page(false, false) }
     end
 
     describe "as student" do
@@ -221,7 +222,7 @@ describe "School Listing", js:true do
   ##################################################
   # test methods
 
-  def has_nav_to_schools_page(school_assigned)
+  def has_nav_to_schools_page(school_assigned, show_subject_manager)
     # only for system_administrators and researchers
     if !school_assigned
       # confirm school is not assigned
@@ -234,6 +235,15 @@ describe "School Listing", js:true do
     find('li#side-schools a').click
     page.should have_css("a[href='/schools/#{@school2.id}']")
     find("a[href='/schools/#{@school2.id}']").click
+    if (show_subject_manager)
+      within("#allow-subject-mgr") do
+        page.should have_content("true")
+      end
+    else
+      page.should_not have_css("#allow-subject-mgr")
+    end
+    Rails.logger.debug("+++ server_config #{@server_config.inspect}")
+
 
     # confirm school is set
     within("#head-current-school") do
@@ -324,7 +334,11 @@ describe "School Listing", js:true do
           within('#username-from-email') { page.should have_content(@school1.has_flag?(School::USERNAME_FROM_EMAIL)) }
         else
           page.should_not have_css('#school-marking-periods')
-          page.should_not have_css('#allow-subject-mgr')
+          if (ServerConfig.first.try(:allow_subject_mgr) != true)
+            page.should_not have_css('#allow-subject-mgr') #egypt school system
+          else
+            page.should have_css('#allow-subject-mgr') #us school system
+          end
           page.should_not have_css('#school-use-family-name')
           page.should_not have_css('#school-sort-by')
           page.should_not have_css('#school-grade-in-subject')
@@ -467,22 +481,24 @@ describe "School Listing", js:true do
     def valid_edit_school
       # validate if edit school dialog should display, and if so does it work properly
       visit schools_path
+      Rails.logger.debug("+++ stage editing")
+
       find("a[data-url='/schools/#{@school1.id}/edit.js'] i.fa-edit").click
       page.should have_content("Edit School")
+
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
         within("form#edit_school_#{@school1.id}") do
-          Rails.logger.debug("+++ checkedbox")
+          Rails.logger.debug("+++ start edit")
           # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
-          page.fill_in 'school_name', :with => 'Changed-School-Name'
+          page.fill_in 'school_name', :with => 'New-School'
           page.fill_in 'school_acronym', :with => 'CHANGED'
-          sleep 10
-          page.fill_in 'school_city', :with => 'Changed City'
+          page.fill_in 'school_city', :with => 'Changed-City'
           page.fill_in 'school_marking_periods', :with => '4'
           if (ServerConfig.first.try(:allow_subject_mgr) != true)
             page.should_not have_content("Allow Subject Managers")
           else
-            find_field("school[flag_pars][subject_manager]").value.should == 'on'
-            find("input[name='school[flag_pars][subject_manager]']").set(false)
+            #find_field("school[flag_pars][subject_manager]").value.should == 'on'
+            find("input[name='school[flag_pars][subject_manager]']").set(true)
           end
           find_field("school[flag_pars][use_family_name]").value.should == 'on'
           find("input[name='school[flag_pars][use_family_name]']").set(false)
@@ -496,6 +512,8 @@ describe "School Listing", js:true do
           find("input#school_start_yyyy").set('2001')
           find("input#school_end_mm").set('5')
           find("input#school_end_yyyy").set('2002')
+          Rails.logger.debug("+++ finish editing")
+          sleep 20
           page.click_button('Save')
         end
       end
@@ -504,27 +522,60 @@ describe "School Listing", js:true do
       assert_equal("/schools", current_path)
       find("a[data-url='/schools/#{@school1.id}/edit.js'] i.fa-edit").click
       page.should have_content("Edit School")
+      Rails.logger.debug("+++ check to see subj manager is on")
+
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
         page.should have_css('input#school_name')
         find_field("school_name").value.should_not == @school2.name
-        find_field("school_name").value.should == 'Changed-School-Name'
-        sleep 5
+        find_field("school_name").value.should == 'New-School'
         find_field("school_acronym").value.should == 'CHANGED'
-        find_field("school_city").value.should == 'Changed City'
+        find_field("school_city").value.should == 'Changed-City'
         find_field("school_marking_periods").value.should == '4'
         if (ServerConfig.first.try(:allow_subject_mgr) != true)
           page.should_not have_content("Allow Subject Managers")
         else
-          find_field("school[flag_pars][subject_manager]").value.should == 'on'
+          expect(page).to have_field('school[flag_pars][subject_manager]', checked: true)
         end
         find_field("school[flag_pars][use_family_name]").value.should == 'on'
         find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
-        find_field("school[flag_pars][grade_in_subject_name]").value.should == 'on'
+        expect(page).to have_field('school[flag_pars][use_family_name]', checked: false)
+        expect(page).to have_field('school[flag_pars][user_by_first_last]', checked: false)
+        expect(page).to have_field('school[flag_pars][grade_in_subject_name]', checked: false)
         find_field("school[flag_pars][username_from_email]").value.should == 'on'
         find_field("school_start_mm").value.should == '10'
         find_field("school_start_yyyy").value.should == '2001'
         find_field("school_end_mm").value.should == '5'
         find_field("school_end_yyyy").value.should == '2002'
+        Rails.logger.debug("+++ edit check")
+        sleep 20
+        page.click_button('Save')
       end
+
+      assert_equal("/schools", current_path)
+
+      within("tr#school-#{@school1.id}") do
+        page.should have_content("New-School")
+        page.should have_content("CHANGED")
+        page.should have_content("Changed-City")
+        page.should have_content("2001-2002")
+        find("a[href='/schools/#{@school1.id}']").click
+      end
+      assert_equal("/schools/#{@school1.id}", current_path)
+
+      page.should have_css('#school-name', text: "New-School")
+      page.should have_css('#school-acronym', text: "CHANGED")
+      page.should have_css('#school-city', text: "Changed-City")
+      if (ServerConfig.first.try(:allow_subject_mgr) != true)
+        page.should_not have_content("Allow Subject Managers")
+      else
+      page.should have_css('#allow-subject-mgr', text: "true")
+      end
+      page.should have_css('#school-marking-periods', text: "4")
+      page.should have_css('#school-use-family-name', text: "false")
+      page.should have_css('#school-sort-by', text: "false")
+      page.should have_css('#school-grade-in-subject', text: "false")
+      page.should have_css('#username-from-email', text: "false")
+      page.should have_css('#school-year-start', text: "10-2001")
+      page.should have_css('#school-year-end', text: "5-2002")
     end # end valid_edit_school
   end
