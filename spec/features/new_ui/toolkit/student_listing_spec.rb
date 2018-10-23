@@ -163,7 +163,7 @@ describe "Student Listing", js:true do
       @school1.school_year_id = @current_school_year.id
       @school1.save
       @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section1_2, student: @student_prev_year
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
