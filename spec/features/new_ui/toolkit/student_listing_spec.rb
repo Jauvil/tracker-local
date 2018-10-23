@@ -328,7 +328,7 @@ describe "Student Listing", js:true do
     assert_equal("/students/#{student.id}", current_path)
   end
 
-  def can_see_student_sections(student, enrollment, @enrollment_s2, can_see_all)
+  def can_see_student_sections(student, enrollment, enrollment_s2, can_see_all)
     within("tr#student_#{student.id}") do
       page.should have_css("a[href='/students/#{student.id}/sections_list']")
       find("a[href='/students/#{student.id}/sections_list']").click
@@ -345,25 +345,28 @@ describe "Student Listing", js:true do
         page.should have_content("Section")
         page.should have_content("Teacher")
       end
-      within("tr#enrollment_#{enrollment.id}")do
-        if can_see_all  #can_see_student_sections
+      if can_see_all  #can_see_student_sections
+        within("tr#enrollment_#{enrollment.id}") do
           page.should have_css("a[href='/enrollments/#{enrollment.id}']")
           find("a[href='/enrollments/#{enrollment.id}']").click
-          visit("/students/#{student.id}/sections_list")
-          assert_equal("/students/#{student.id}/sections_list", current_path)
-          within("tr#enrollment_#{enrollment.id}") do
-            page.should have_css("a[href='/enrollments/#{enrollment.id}']")
-            find("a[href='/enrollments/#{enrollment.id}']").click
-          end
           assert_equal("/enrollments/#{enrollment.id}", current_path)
-        else
+          visit("/students/#{student.id}/sections_list")
+        end
+        assert_equal("/students/#{student.id}/sections_list", current_path)
+        within("tr#enrollment_#{enrollment.id}") do
+          page.should have_css("a[href='/enrollments/#{enrollment.id}']")
+          find("a[href='/enrollments/#{enrollment.id}']").click
+        end
+        assert_equal("/enrollments/#{enrollment.id}", current_path)
+      else
+        within("tr#enrollment_#{enrollment.id}")do
           # should not see link to tracker page for section not teaching that section
           page.should_not have_css("a[href='/enrollments/#{enrollment.id}']")
           assert_equal("/students/#{student.id}/sections_list", current_path)
         end
-        visit students_path
-        assert_equal("/students", current_path)
       end
+      visit students_path
+      assert_equal("/students", current_path)
     end
   end
 
@@ -437,11 +440,13 @@ describe "Student Listing", js:true do
     within("#user_#{student.id}.student-temp-pwd") do
       page.should_not have_content('(Reset Password')
     end
+    sleep 1
     page.click_button('Close')
   end
 
   def can_change_student(student)
     within("tr#student_#{student.id}") do
+      sleep 1
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
     end
@@ -449,15 +454,17 @@ describe "Student Listing", js:true do
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
         # page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
-        page.fill_in 'student_first_name', :with => 'Changed-Fname'
-        page.fill_in 'student_last_name', :with => 'Changed-Lname'
+        page.fill_in 'student_first_name', :with => 'Fname'
+        page.fill_in 'student_last_name', :with => 'Lname'
         # confirm the required flag is displayed (this school has username by email)
+        # Test US schools are set with email not required.
         if (ServerConfig.first.try(:allow_subject_mgr) != true)
           page.should have_css("#email span.ui-required")
         else
           page.should_not have_css("#email span.ui-required")
         end
         page.fill_in 'student_email', :with => ''
+        sleep 3
         page.click_button('Save')
       end
     end
@@ -468,10 +475,12 @@ describe "Student Listing", js:true do
     find("a[data-url='/students/#{student.id}/edit.js']").click
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
-        page.fill_in 'student_first_name', :with => 'Changed-Fname'
-        page.fill_in 'student_last_name', :with => 'Changed-Lname'
+        sleep 1
+        page.fill_in 'student_first_name', :with => 'Fname'
+        page.fill_in 'student_last_name', :with => 'Lname'
         #page.should have_css('span.ui-error', text:'Email is required.')
-        page.fill_in 'student_email', :with => 'changed@email.address'
+        page.fill_in 'student_email', :with => 'f@a.com'
+        sleep 1
         page.click_button('Save')
       end
     end
@@ -479,25 +488,24 @@ describe "Student Listing", js:true do
 
     # page.should_not have_css("#modal_popup form#edit_student_#{student.id}")
     assert_equal("/students", current_path)
+    sleep 2
     within("tr#student_#{student.id}") do
       page.should have_css("a[data-url='/students/#{student.id}.js']")
       find("a[data-url='/students/#{student.id}.js']").click
     end
     page.should have_content("View Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
-      page.should have_content('Changed-Fname')
-      page.should have_content('Changed-Lname')
-      page.should have_content('changed@email.address')
+      page.should have_content('Fname')
+      page.should have_content('Lname')
+      page.should have_content('f@a.com')
     end
   end
 
   def can_create_student(student)
-    find("a[data-url='/students/new.js'] i.fa-plus-square").click
-    # within("#page-content") do
-    #   sleep 15
-    #   page.should have_css("a[data-url='/students/new.js']")
-    #   find("a[data-url='/students/new.js'] i.fa-plus-square").click
-    # end
+    within("#page-content") do
+      page.should have_css("a[data-url='/students/new.js']")
+      find("a[data-url='/students/new.js'] i.fa-plus-square").click
+    end
     page.should have_content("Create New Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#new_student") do
@@ -546,12 +554,9 @@ describe "Student Listing", js:true do
       find("a[data-url='/students/#{new_student_id}/security.js']").click
     end
     page.should have_content("Student/Parent Security and Access")
-    page.click_button('Close')
-    # within("#modal_popup") do
-    #   sleep 10
-    #   page.should have_content("#{@school1.acronym}_new".downcase)
-    #   page.find('button').click
-    # end
+    sleep 1
+    page.find('button').click
+
     visit students_path
     assert_equal("/students", current_path)
     # ensure username is incremented if a duplicate (e.g. is different after @, etc.)
@@ -564,10 +569,11 @@ describe "Student Listing", js:true do
     end
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#new_student") do
-        page.fill_in 'student_first_name', :with => 'New-New-Fname'
-        page.fill_in 'student_last_name', :with => 'New-New-Lname'
-        page.fill_in 'student_email', :with => 'new@email.address'
+        page.fill_in 'student_first_name', :with => 'NFname'
+        page.fill_in 'student_last_name', :with => 'NLname'
+        page.fill_in 'student_email', :with => 'new@ba.com'
         page.fill_in 'student_grade_level', :with => '2'
+        sleep 3
         page.click_button('Save')
       end
     end
@@ -578,8 +584,8 @@ describe "Student Listing", js:true do
     page.text.should match(/New\sFname/)
     # expect(page.text).to match(/New\sLname/) # alternate syntax
     page.text.should match(/New\sLname/)
-    page.should have_content('new@email.address')
-    page.all('td.user-email', text: 'new@email.address').count.should == 2
+    page.should have_content('new@ba.com')
+    page.all('td.user-email', text: 'new@ba.com').count.should == 1
 
     # confirm username is sch1_new2
     student_nodes = all('tbody tr.student-row')
@@ -591,10 +597,8 @@ describe "Student Listing", js:true do
       find("a[data-url='/students/#{another_student_id}/security.js']").click
     end
     page.should have_content("Student/Parent Security and Access")
-    # within("#modal_popup") do
-    #   page.should have_content("#{@school1.acronym}_new2".downcase)
-    #   page.find('button').click
-    # end
+    sleep 1
+    page.find('button').click
   end
 
   def can_change_graduate(student)
