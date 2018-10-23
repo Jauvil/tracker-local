@@ -50,7 +50,7 @@ describe "Student Listing", js:true do
       @school1.save
 
       # # regular setup for Year 2
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section1_2, student: @student_prev_year
+      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
       @section6_2 = FactoryGirl.create :section, subject: @subject5
@@ -246,8 +246,7 @@ describe "Student Listing", js:true do
   end
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
-
-    Rails.logger.debug("+++ Inside current year school")
+    sleep 30
     visit students_path
     assert_equal("/students", current_path)
     within("#page-content") do
@@ -388,6 +387,7 @@ describe "Student Listing", js:true do
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
       else
+        sleep 60
         page.should_not have_css("a[href='/enrollments/#{enrollment_s2.id}']")
         assert_equal("/students/#{student_prev_year.id}/sections_list", current_path)
       end
