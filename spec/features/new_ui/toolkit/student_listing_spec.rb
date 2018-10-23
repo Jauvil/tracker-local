@@ -43,7 +43,7 @@ describe "Student Listing", js:true do
       @section5_3 = FactoryGirl.create :section, subject: @subject5
       @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 1
+      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
       # switch to year 2 for @school1
       @current_school_year = FactoryGirl.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
@@ -162,7 +162,7 @@ describe "Student Listing", js:true do
       @current_school_year = FactoryGirl.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
       @school1.save
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 1
+      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
       @enrollment_s2 = FactoryGirl.create :enrollment, section: @section1_2, student: @student_prev_year
       @section6_1 = FactoryGirl.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
@@ -247,7 +247,7 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
-    sleep 10
+    sleep 20
     Rails.logger.debug("+++ Inside current year school")
     visit students_path
     assert_equal("/students", current_path)
