@@ -253,13 +253,6 @@ describe "Student Listing", js:true do
       page.should have_content("All Students for: #{@school1.name}")
       page.should have_css("tr#student_#{@student.id}")
       page.should_not have_css("tr#student_#{@student.id}.deactivated")
-      # graduated student should be deactivated
-      within("tr#student_#{@student_grad.id}.deactivated") do
-        page.should have_content("#{@student_grad.last_name}") if can_create
-        within('td.user-grade-level') do
-          page.should have_content("#{@student_grad.grade_level}") if can_create
-        end
-      end
       within(".titled-table")do
         page.should have_content("Student ID")
         page.should have_content("Family/Last Name")
@@ -296,6 +289,13 @@ describe "Student Listing", js:true do
         page.should_not have_content("#{@student_transferred.email}") if !can_create
         page.should have_css("i.fa-undo") if can_deactivate && @student_transferred.active == false
         page.should_not have_css("i.fa-undo") if !can_deactivate && @student_transferred.active == false
+      end
+      # graduated student should be deactivated
+      within("tr#student_#{@student_grad.id}.deactivated") do
+        page.should have_content("#{@student_grad.last_name}") if can_create
+        within('td.user-grade-level') do
+          page.should have_content("#{@student_grad.grade_level}") if can_create
+        end
       end
     end # within("#page-content") do
 
