@@ -513,7 +513,7 @@ describe "School Listing", js:true do
           find("input#school_end_mm").set('5')
           find("input#school_end_yyyy").set('2002')
           Rails.logger.debug("+++ finish editing")
-          sleep 20
+          sleep 3
           page.click_button('Save')
         end
       end
@@ -547,7 +547,7 @@ describe "School Listing", js:true do
         find_field("school_end_mm").value.should == '5'
         find_field("school_end_yyyy").value.should == '2002'
         Rails.logger.debug("+++ edit check")
-        sleep 20
+        sleep 3
         page.click_button('Save')
       end
 

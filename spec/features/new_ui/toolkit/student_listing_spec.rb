@@ -434,6 +434,7 @@ describe "Student Listing", js:true do
     end
     page.should have_content("Student/Parent Security and Access")
     within("#user_#{student.id}") do
+      sleep 1
       page.should have_css("a[href='/students/#{student.id}/set_student_temporary_password']")
       find("a[href='/students/#{student.id}/set_student_temporary_password']").click
     end
@@ -532,19 +533,20 @@ describe "Student Listing", js:true do
         page.should have_css('#last-name span.ui-error', text:'["can\'t be blank"]')
         page.fill_in 'student_last_name', :with => 'New Lname'
         # page.should have_css('#email span.ui-error', text:'["Email is required."]')
-        page.fill_in 'student_email', :with => 'new@email.address'
+        page.fill_in 'student_email', :with => 'new@ba.com'
         # page.should have_css('#grade-level span.ui-error', text:'["Grade Level is invalid"]')
         page.fill_in 'student_grade_level', :with => '2'
         page.click_button('Save')
       end
     end
+    sleep 1
     page.should_not have_css("#modal_popup form#new_student")
     assert_equal("/students", current_path)
     # expect(page.text).to match(/New\sFname/) # alternate syntax
     page.text.should match(/New\sFname/)
     # expect(page.text).to match(/New\sLname/) # alternate syntax
     page.text.should match(/New\sLname/)
-    page.should have_content('new@email.address')
+    page.should have_content('new@ba.com')
 
     # confirm username is sch1_new
     student_nodes = all('tbody tr.student-row')
@@ -585,7 +587,7 @@ describe "Student Listing", js:true do
     # expect(page.text).to match(/New\sLname/) # alternate syntax
     page.text.should match(/New\sLname/)
     page.should have_content('new@ba.com')
-    page.all('td.user-email', text: 'new@ba.com').count.should == 1
+    page.all('td.user-email', text: 'new@ba.com').count.should == 2
 
     # confirm username is sch1_new2
     student_nodes = all('tbody tr.student-row')
@@ -608,6 +610,7 @@ describe "Student Listing", js:true do
     end
     page.should have_content("Edit Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
+      sleep 1
       within("form#edit_student_#{student.id}") do
         page.fill_in 'student_first_name', :with => 'Changed-Fname'
         page.fill_in 'student_last_name', :with => 'Changed-Lname'
@@ -615,6 +618,7 @@ describe "Student Listing", js:true do
       end
     end
     assert_equal("/students", current_path)
+    sleep 1
     within("tr#student_#{student.id}.deactivated") do
       page.should have_content('Changed-Fname')
       page.should have_content('Changed-Lname')

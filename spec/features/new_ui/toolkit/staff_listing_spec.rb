@@ -19,14 +19,14 @@ describe "Staff Listing", js:true do
 
     end
 
-    describe "as US teacher" do
+    describe "as teacher" do
       before do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
     end
 
-    describe "as US school administrator" do
+    describe "as school administrator" do
       before do
         @school_administrator = FactoryGirl.create :school_administrator, school: @school
         sign_in(@school_administrator)
@@ -43,7 +43,7 @@ describe "Staff Listing", js:true do
     #   it { has_valid_staff_listing(:counselor) }
     # end
 
-    describe "as US researcher" do
+    describe "as researcher" do
       before do
         @researcher = FactoryGirl.create :researcher
         sign_in(@researcher)
@@ -52,7 +52,7 @@ describe "Staff Listing", js:true do
       it { has_valid_staff_listing(:researcher) }
     end
 
-    describe "as US system administrator" do
+    describe "as system administrator" do
       before do
         @system_administrator = FactoryGirl.create :system_administrator
         sign_in(@system_administrator)
@@ -61,14 +61,14 @@ describe "Staff Listing", js:true do
       it { has_valid_staff_listing(:system_administrator) }
     end
 
-    describe "as US student" do
+    describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
     end
 
-    describe "as US parent" do
+    describe "as parent" do
       before do
         sign_in(@student.parent)
       end
@@ -92,14 +92,14 @@ describe "Staff Listing", js:true do
 
     end
 
-    describe "as EGYPT teacher" do
+    describe "as teacher" do
       before do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
     end
 
-    describe "as EGYPT school administrator" do
+    describe "as school administrator" do
       before do
         @school_administrator = FactoryGirl.create :school_administrator, school: @school
         sign_in(@school_administrator)
@@ -116,7 +116,7 @@ describe "Staff Listing", js:true do
     #   it { has_valid_staff_listing(:counselor) }
     # end
 
-    describe "as EGYPT researcher" do
+    describe "as researcher" do
       before do
         @researcher = FactoryGirl.create :researcher
         sign_in(@researcher)
@@ -125,7 +125,7 @@ describe "Staff Listing", js:true do
       it { has_valid_staff_listing(:researcher) }
     end
 
-    describe "as EGYPT system administrator" do
+    describe "as system administrator" do
       before do
         @system_administrator = FactoryGirl.create :system_administrator
         sign_in(@system_administrator)
@@ -134,14 +134,14 @@ describe "Staff Listing", js:true do
       it { has_valid_staff_listing(:system_administrator) }
     end
 
-    describe "as EGYPT student" do
+    describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
     end
 
-    describe "as EGYPT parent" do
+    describe "as parent" do
       before do
         sign_in(@student.parent)
       end
@@ -247,7 +247,6 @@ describe "Staff Listing", js:true do
       end
     end
 
-
     ########################
     # Edit Staff Information visiblity and availability testing
     # teachers can edit their own user information for themselves
@@ -257,6 +256,7 @@ describe "Staff Listing", js:true do
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
         within("tr#user_#{@teacher.id}") do
+          sleep 5
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
           page.find("a[data-url='/users/#{@teacher.id}/edit.js']").click
@@ -265,15 +265,15 @@ describe "Staff Listing", js:true do
       within("#modal_popup") do
         page.should have_css("h2", text: 'Edit Staff')
         within("form#edit_user_#{@teacher.id}") do
-
           # ensure that only the admins can choose roles in edit form
           if [:school_administrator, :system_administrator].include?(role)
+            sleep 1
             assert_equal(page.all("fieldset.role-field").count.should, 3)
             page.should have_css('fieldset#role-sch-admin')
             page.should have_css('fieldset#role-teach')
             page.should have_css('fieldset#role-couns')
-            # add counselor role to @teacher
             check('user[counselor]')
+            # add counselor role to @teacher
           else # teacher editing
             assert_equal(page.all("fieldset.role-field").count.should, 0)
             page.should_not have_css('fieldset#role-sch-admin')
@@ -293,8 +293,8 @@ describe "Staff Listing", js:true do
       within("#page-content table #user_#{@teacher.id}") do
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
-
         within('.user-roles') do
+          sleep 5
           page.should have_content('teacher')
           if [:school_administrator, :system_administrator].include?(role)
             page.should have_content('counselor')
@@ -309,6 +309,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :counselor, :researcher].include?(role)
       # visit staff_listing_users_path
       # assert_equal("/users/staff_listing", current_path)
+      sleep 1
       within("#page-content tr#user_#{@teacher_deact.id}") do
         page.should_not have_css("i.fa-edit")
         page.should_not have_css("a[data-url='/users/#{@teacher_deact.id}.js'] i.fa-edit")
@@ -322,6 +323,7 @@ describe "Staff Listing", js:true do
     # visit staff_listing_users_path
     if [:school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
+      sleep 1
       within("#page-content tr#user_#{@teacher.id}") do
         page.should have_css("i.fa-unlock")
         page.should have_css("a[data-url='/users/#{@teacher.id}/security.js'] i.fa-unlock")
