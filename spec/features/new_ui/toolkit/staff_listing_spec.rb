@@ -229,6 +229,7 @@ describe "Staff Listing", js:true do
       end
     end
     within("#modal_popup") do
+      sleep 1
       page.should have_content('View Staff')
       page.should have_content(@teacher.first_name)
       page.should have_content(@teacher.last_name)
