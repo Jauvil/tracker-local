@@ -55,6 +55,10 @@ describe "Rollover School Year", js:true do
       @student2_5   = FactoryGirl.create :student, school: @school2, first_name: 'Student5', last_name: 'Grade1', grade_level: 1
       @enrollment2_5 = FactoryGirl.create :enrollment, section: @section2_1_1, student: @student2_5, student_grade_level: 1, active: false
       @student_grad   = FactoryGirl.create :student, school: @school2, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2015
+      @student2_6   = FactoryGirl.create :student, school: @school2, first_name: 'Student6', last_name: 'Grade1', grade_level: 12
+      @enrollment2_6 = FactoryGirl.create :enrollment, section: @section2_1_1, student: @student2_6, student_grade_level: 12
+
+
 
       # create some invalid records
       @student_invalid_grade = FactoryGirl.build :student, school: @school2, first_name: 'Student', last_name: 'Bad Grade', grade_level: 23
@@ -515,6 +519,7 @@ describe "Rollover School Year", js:true do
       page.all("tbody.tbody-subject").count.should == 6
       # add new subject to model school
       find("a[data-url='/subjects/new.js']").click
+      sleep 1
       page.select(@subject2_1.discipline.name, from: "subject-discipline-id")
       page.fill_in 'subject-name', :with => 'New Subject'
       page.click_button('Save')
@@ -632,7 +637,6 @@ describe "Rollover School Year", js:true do
         page.should have_content("Old School Info 04")
       end
     end
-
     # confirm @s2_subj_math_1 exists and has sections
     visit subjects_path()
     page.should have_css("tbody#subj_header_#{@s2_subj_math_1.id}")
@@ -683,7 +687,6 @@ describe "Rollover School Year", js:true do
         page.should_not have_content('MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.')
       end
     end
-
     # confirm students are in original grade level
     visit students_path()
     within("tr#student_#{@student2_1.id}") do
@@ -752,18 +755,18 @@ describe "Rollover School Year", js:true do
           within("h1.text-center") do
             page.should have_content("Edit Learning Outcomes for:")
           end
+          find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly.'
+          find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
+          find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
+          find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
+          find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
+          find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
+          find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations'
+          find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.'
         end
-        find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly.'
-        find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
-        find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
-        find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
-        find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
-        find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
-        find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
-        find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
-        find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
-        find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations'
-        find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.'
       else
         within("tbody#subj_header_#{@subj_math_1.id}") do
           find("a[data-url='/subjects/#{@subj_math_1.id}/view_subject_outcomes']").click
@@ -787,7 +790,6 @@ describe "Rollover School Year", js:true do
           page.should have_content("MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.")
         end
       end
-      Rails.logger.debug("+++ test passed for math LOs changed in model school ?????")
 
       # go to @school2
       visit schools_path()
@@ -801,7 +803,6 @@ describe "Rollover School Year", js:true do
       page.all("tbody.tbody-subject").count.should == 5
 
     end
-    Rails.logger.debug("+++ got to school2")
 
     #########################################################
     # Rollover school year
@@ -889,7 +890,6 @@ describe "Rollover School Year", js:true do
       end
     end
 
-
     # confirm @s2_subj_art_2 exists and has sections
     visit subjects_path()
     page.should have_css("tbody#subj_header_#{@s2_subj_art_2.id}")
@@ -936,104 +936,107 @@ describe "Rollover School Year", js:true do
     # confirm @s2_subj_math_1 exists and has sections
     visit subjects_path()
     page.should have_css("tbody#subj_header_#{@s2_subj_math_1.id}")
-    if sys_admin && (ServerConfig.first.try(:allow_subject_mgr) == true)
-      within("tbody#subj_header_#{@s2_subj_math_1.id}") do
-        page.should have_content(@s2_subj_math_1.name)
-        find("a[href='/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes']").click
-        assert_equal("/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes", current_path)
-      end
-      within(".edit_subject_outcomes_form") do
-        within("h1.text-center") do
-          page.should have_content("Edit Learning Outcomes for:")
+    if sys_admin
+      if (ServerConfig.first.try(:allow_subject_mgr) == true)
+        within("tbody#subj_header_#{@s2_subj_math_1.id}") do
+          page.should have_content(@s2_subj_math_1.name)
+          find("a[href='/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes']").click
+          assert_equal("/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes", current_path)
+        end
+        within(".edit_subject_outcomes_form") do
+          within("h1.text-center") do
+            page.should have_content("Edit Learning Outcomes for:")
+          end
+          find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly.'
+          find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
+          find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
+          find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
+          find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
+          find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
+          find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations'
+          find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.'
+        end
+      else
+        within("tbody#subj_header_#{@s2_subj_math_1.id}") do
+          find("a[data-url='/subjects/#{@s2_subj_math_1.id}/view_subject_outcomes']").click
+        end
+        within(".view_subject_outcomes") do
+          within("h1.text-center") do
+            page.should have_content("View Learning Outcomes for:")
+          end
+        end
+        # confirm the LOs from the Sys Admin's Bulk Upload are displayed
+        within('table#current_los') do
+          page.should have_content('MA.1.01 - Will be changed significantly.')
+          page.should have_content('MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.')
+          page.should have_content('MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).')
+          page.should have_content('MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.')
+          page.should have_content('MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.')
+          page.should have_content('MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.')
+          page.should have_content('MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.')
+          page.should have_content('MA.1.09 - Will have a description that is very similar to 10.')
+          page.should have_content('MA.1.10 - Will have a description that is very similar to 09.')
+          page.should have_content('MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations')
+          page.should have_content('MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.')
         end
       end
-      # confirm the LOs from the Sys Admin's Bulk Upload are displayed
-      find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly.'
-      find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
-      find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
-      find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
-      find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
-      find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
-      find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations'
-      find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.'
-    elsif (sys_admin && (ServerConfig.first.try(:allow_subject_mgr) != true))
-      within("tbody#subj_header_#{@s2_subj_math_1.id}") do
-        find("a[data-url='/subjects/#{@s2_subj_math_1.id}/view_subject_outcomes']").click
-      end
-      within(".view_subject_outcomes") do
-        within("h1.text-center") do
-          page.should have_content("View Learning Outcomes for:")
+    elsif :school_administrator
+      if (ServerConfig.first.try(:allow_subject_mgr) == true)
+        within("tbody#subj_header_#{@s2_subj_math_1.id}") do
+          page.should have_content(@s2_subj_math_1.name)
+          find("a[href='/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes']").click
+          assert_equal("/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes", current_path)
         end
-      end
-      # confirm the LOs from the Sys Admin's Bulk Upload are displayed
-      within('table#current_los') do
-        page.should have_content('MA.1.01 - Will be changed significantly.')
-        page.should have_content('MA 1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.')
-        page.should have_content('MA.1.08 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).')
-        page.should have_content('MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.')
-        page.should have_content('MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.')
-        page.should have_content('MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.')
-        page.should have_content('MA.1.04 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.')
-        page.should have_content('MA.1.09 - Will have a description that is very similar to 10.')
-        page.should have_content('MA.1.10 - Will have a description that is very similar to 09.')
-        page.should have_content('MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations')
-        page.should have_content('MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.')
-      end
-    elsif (:school_administrator && (ServerConfig.first.try(:allow_subject_mgr) == true))
-      within("tbody#subj_header_#{@s2_subj_math_1.id}") do
-        page.should have_content(@s2_subj_math_1.name)
-        find("a[href='/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes']").click
-        assert_equal("/subjects/#{@s2_subj_math_1.id}/edit_subject_outcomes", current_path)
-      end
-      within(".edit_subject_outcomes_form") do
-        within("h1.text-center") do
-          page.should have_content("Edit Learning Outcomes for:")
+        within(".edit_subject_outcomes_form") do
+          within("h1.text-center") do
+            page.should have_content("Edit Learning Outcomes for:")
+          end
+          find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly. Create, interpret and analyze trigonometric ratios that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA.1.02 - Will be deleted. Apply the relationships between 2-D and 3-D objects in modeling situations.'
+          find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
+          find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.04 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
+          find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
+          find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.08 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
+          find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
+          find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
+          find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations.'
         end
-      end
-      # confirm school admins LOs are correct (note School Admins do not Upload Learning Outcomes, so no changes)
-      find_field("subject[subject_outcomes_attributes][0][name]").value.should == 'MA.1.01 - Will be changed significantly. Create, interpret and analyze trigonometric ratios that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][1][name]").value.should == 'MA.1.02 - Will be deleted. Apply the relationships between 2-D and 3-D objects in modeling situations.'
-      find_field("subject[subject_outcomes_attributes][2][name]").value.should == 'MA.1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.'
-      find_field("subject[subject_outcomes_attributes][3][name]").value.should == 'MA.1.04 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).'
-      find_field("subject[subject_outcomes_attributes][4][name]").value.should == 'MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][5][name]").value.should == 'MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.'
-      find_field("subject[subject_outcomes_attributes][6][name]").value.should == 'MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][7][name]").value.should == 'MA.1.08 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.'
-      find_field("subject[subject_outcomes_attributes][8][name]").value.should == 'MA.1.09 - Will have a description that is very similar to 10.'
-      find_field("subject[subject_outcomes_attributes][9][name]").value.should == 'MA.1.10 - Will have a description that is very similar to 09.'
-      find_field("subject[subject_outcomes_attributes][10][name]").value.should == 'MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations.'
-    else
-      within("tbody#subj_header_#{@s2_subj_math_1.id}") do
-        find("a[data-url='/subjects/#{@s2_subj_math_1.id}/view_subject_outcomes']").click
-      end
-      within(".view_subject_outcomes") do
-        within("h1.text-center") do
-          page.should have_content("View Learning Outcomes for:")
+      else
+        within("tbody#subj_header_#{@s2_subj_math_1.id}") do
+          find("a[data-url='/subjects/#{@s2_subj_math_1.id}/view_subject_outcomes']").click
         end
-      end
-      # confirm school admins LOs are correct (note School Admins do not Upload Learning Outcomes, so no changes)
-      within('table#current_los') do
-        page.should have_content('MA.1.01 - Will be changed significantly. Create, interpret and analyze trigonometric ratios that model real-world situations.')
-        page.should have_content('MA.1.02 - Will be deleted. Apply the relationships between 2-D and 3-D objects in modeling situations.')
-        page.should have_content('MA.1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.')
-        page.should have_content('MA.1.04 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).')
-        page.should have_content('MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.')
-        page.should have_content('MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.')
-        page.should have_content('MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.')
-        page.should have_content('MA.1.08 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.')
-        page.should have_content('MA.1.09 - Will have a description that is very similar to 10.')
-        page.should have_content('MA.1.10 - Will have a description that is very similar to 09.')
-        page.should have_content('MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations.')
-        page.should_not have_content('MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.')
+        within(".view_subject_outcomes") do
+          within("h1.text-center") do
+            page.should have_content("View Learning Outcomes for:")
+          end
+        end
+        # confirm school admins LOs are correct (note School Admins do not Upload Learning Outcomes, so no changes)
+        within('table#current_los') do
+          page.should have_content('MA.1.01 - Will be changed significantly. Create, interpret and analyze trigonometric ratios that model real-world situations.')
+          page.should have_content('MA.1.02 - Will be deleted. Apply the relationships between 2-D and 3-D objects in modeling situations.')
+          page.should have_content('MA.1.03 - Will have the MA.1.03 code without the period. Understand similarity and use the concept for scaling to solve problems.')
+          page.should have_content('MA.1.04 - will be switched with 08. Apply volume formulas (pyramid, cones, spheres, prisms).')
+          page.should have_content('MA.1.05 - Will be switched to semester 1&2. Create, interpret and analyze functions, particularly linear and step functions that model real-world situations.')
+          page.should have_content('MA.1.06 - Will be unchanged. Analyze, display and describe quantitative data with a focus on standard deviation.')
+          page.should have_content('MA.1.07 - Will be switched to semester 2. Create, interpret and analyze quadratic functions that model real-world situations.')
+          page.should have_content('MA.1.08 - Will be switched with 04. Create, interpret and analyze exponential and logarithmic functions that model real-world situations.')
+          page.should have_content('MA.1.09 - Will have a description that is very similar to 10.')
+          page.should have_content('MA.1.10 - Will have a description that is very similar to 09.')
+          page.should have_content('MA.1.11 - Will have period removed from description. Create, interpret and analyze systems of linear functions that model real-world situations.')
+          page.should_not have_content('MA.1.12 - Will be reactivated. Apply determinants and their properties in real-world situations.')
+        end
       end
     end
     Rails.logger.debug("+++ test passed confirm @s2_subj_math_1 exists and has sections")
 
     # confirm student grade levels are incremented properly
     visit students_path()
+    sleep 180
     within("tr#student_#{@student2_1.id}") do
       page.should have_content(@student2_1.last_name)
       page.should have_content(@student2_1.first_name)
@@ -1046,15 +1049,36 @@ describe "Rollover School Year", js:true do
       page.should_not have_css('td.user-grade-level', text: @student2_2.grade_level.to_s)
       page.should have_css('td.user-grade-level', text: '3')
     end
-    # student > grade level 3 is listed with the graduation year for grade level and deactivated.
-    page.should have_css("tr#student_#{@student2_3.id}")
-    # WHEN GRADE CHANGES TO 4. DEACTIVATE!!!
-    # page.should have_css("tr#student_#{@student2_3.id}.deactivated")
-    # within("tr#student_#{@student2_3.id}.deactivated") do
-    #   page.should have_content(@student2_3.last_name)
-    #   page.should have_content(@student2_3.first_name)
-    #   page.should have_css('td.user-grade-level', text: "#{@school2.school_year.starts_at.year}")
-    # end
+
+    if (ServerConfig.first.try(:allow_subject_mgr) != true)
+      # student > grade level 3 is listed with the graduation year for grade level and deactivated.
+      # Egypt schools
+      page.should have_css("tr#student_#{@student2_3.id}")
+      page.should have_css("tr#student_#{@student2_3.id}.deactivated")
+      within("tr#student_#{@student2_3.id}.deactivated") do
+        page.should have_content(@student2_3.last_name)
+        page.should have_content(@student2_3.first_name)
+        page.should have_css('td.user-grade-level', text: "#{@school2.school_year.starts_at.year}")
+      end
+    else
+      # not egypt schools
+      page.should have_css("tr#student_#{@student2_3.id}")
+      within("tr#student_#{@student2_3.id}") do
+        page.should have_content(@student2_3.last_name)
+        page.should have_content(@student2_3.first_name)
+        page.should_not have_css('td.user-grade-level', text: @student2_3.grade_level.to_s)
+        page.should have_css('td.user-grade-level', text: '4')
+      end
+      # grade 12 rollover for US school
+      page.should have_css("tr#student_#{@student2_6.id}")
+      page.should have_css("tr#student_#{@student2_6.id}.deactivated")
+      within("tr#student_#{@student2_6.id}.deactivated") do
+        page.should have_content(@student2_6.last_name)
+        page.should have_content(@student2_6.first_name)
+        page.should have_css('td.user-grade-level', text: "#{@school2.school_year.starts_at.year}")
+      end
+
+    end
 
     page.should have_css("tr#student_#{@student2_4.id}")
     page.should have_css("tr#student_#{@student2_4.id}.deactivated")

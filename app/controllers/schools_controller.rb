@@ -557,7 +557,9 @@ class SchoolsController < ApplicationController
     def rollover_student_grade_levels(school)
       # should be run after school year has been updated
       max_grade = 12
-      max_grade = 3 if school.has_flag?(School::USER_BY_FIRST_LAST)
+      max_grade = 3 if @school.has_flag?(School::USER_BY_FIRST_LAST)
+      # max_grade = 3 if (ServerConfig.first.try(:allow_subject_mgr) != true)
+      # ToDo use school GRADE LEVEL FLAGS to set max grade
       # Rails.logger.debug("+#}% max_grade: #{max_grade}")
       # increment student grade levels for all students in school, deactivate students > max grade (3 - egypt, 12 - others)
       Student.where(school_id: school.id).each do |st|
