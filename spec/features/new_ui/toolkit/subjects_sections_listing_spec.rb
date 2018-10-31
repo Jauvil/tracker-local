@@ -235,7 +235,7 @@ describe "Subjects Sections Listing", js:true do
       end
     end
     Rails.logger.debug("+++ passed enter_bulk button test")
-    sleep 5
+    sleep 2
     # ensure users can edit the appropriate subject outcomes, all else can view.
     if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
       (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
@@ -391,7 +391,7 @@ describe "Subjects Sections Listing", js:true do
         within('#new_subject') do
           select(@discipline.name[1], from: 'subject-discipline-id')
           page.fill_in 'subject[name]', :with => 'Newsubj'
-          sleep 10
+          sleep 2
           page.click_button('Save')
         end
         Rails.logger.debug("+++ popup closed")
@@ -415,7 +415,7 @@ describe "Subjects Sections Listing", js:true do
           #find the properties for NAME and DISCIPLINE to update subject
           select(@discipline.name[2], from: 'subject-discipline-id')
           page.fill_in 'subject-name', :with => 'Subname'
-          sleep 10
+          sleep 2
           page.click_button('Save')
           Rails.logger.debug("+++ update & save new subject")
         end
@@ -446,7 +446,7 @@ describe "Subjects Sections Listing", js:true do
         within('.block-content-full') do
           page.fill_in 'section[line_number]', :with => 'Newsect'
         end
-        sleep 10
+        sleep 2
         page.click_button('Save')
       end
 
@@ -486,7 +486,7 @@ describe "Subjects Sections Listing", js:true do
           #   page.should have_content(@section1_2.message)
           # end
           page.should have_selector("#section_school_year_id", value: "#{@section1_3.school_year.name}")
-          sleep 10
+          sleep 2
           Rails.logger.debug("+++ click save")
           page.click_button('Save')
           Rails.logger.debug("+++ done with popup")

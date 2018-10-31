@@ -513,18 +513,20 @@ describe "School Listing", js:true do
           find("input#school_end_mm").set('5')
           find("input#school_end_yyyy").set('2002')
           Rails.logger.debug("+++ finish editing")
-          sleep 20
+          sleep 1
           page.click_button('Save')
         end
       end
 
       page.should_not have_css("#modal_popup form#edit_school_#{@school2.id}")
       assert_equal("/schools", current_path)
+      sleep 1
       find("a[data-url='/schools/#{@school1.id}/edit.js'] i.fa-edit").click
       page.should have_content("Edit School")
       Rails.logger.debug("+++ check to see subj manager is on")
 
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
+        sleep 2
         page.should have_css('input#school_name')
         find_field("school_name").value.should_not == @school2.name
         find_field("school_name").value.should == 'New-School'
@@ -547,7 +549,7 @@ describe "School Listing", js:true do
         find_field("school_end_mm").value.should == '5'
         find_field("school_end_yyyy").value.should == '2002'
         Rails.logger.debug("+++ edit check")
-        sleep 20
+        sleep 1
         page.click_button('Save')
       end
 
