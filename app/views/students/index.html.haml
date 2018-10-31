@@ -39,8 +39,7 @@
           %i.fa.fa-lg.fa-users
           %i.fa.fa-lg.fa-stack-overflow
 
--# - max_grade = @school.has_flag?(School::USER_BY_FIRST_LAST) ? 3 : 12
-- max_grade = ServerConfig.first.try(:allow_subject_mgr) ? 3 : 12
+- max_grade = @school.has_flag?(School::USER_BY_FIRST_LAST) ? 3 : 12
 
 .block-section.indent-block
   .row.height-30

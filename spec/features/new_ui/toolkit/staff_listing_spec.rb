@@ -257,7 +257,6 @@ describe "Staff Listing", js:true do
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
         within("tr#user_#{@teacher.id}") do
-          sleep 5
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
           page.find("a[data-url='/users/#{@teacher.id}/edit.js']").click
@@ -268,7 +267,6 @@ describe "Staff Listing", js:true do
         within("form#edit_user_#{@teacher.id}") do
           # ensure that only the admins can choose roles in edit form
           if [:school_administrator, :system_administrator].include?(role)
-            sleep 1
             assert_equal(page.all("fieldset.role-field").count.should, 3)
             page.should have_css('fieldset#role-sch-admin')
             page.should have_css('fieldset#role-teach')
@@ -295,7 +293,6 @@ describe "Staff Listing", js:true do
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
         within('.user-roles') do
-          sleep 5
           page.should have_content('teacher')
           if [:school_administrator, :system_administrator].include?(role)
             page.should have_content('counselor')
@@ -310,7 +307,6 @@ describe "Staff Listing", js:true do
     if [:teacher, :counselor, :researcher].include?(role)
       # visit staff_listing_users_path
       # assert_equal("/users/staff_listing", current_path)
-      sleep 1
       within("#page-content tr#user_#{@teacher_deact.id}") do
         page.should_not have_css("i.fa-edit")
         page.should_not have_css("a[data-url='/users/#{@teacher_deact.id}.js'] i.fa-edit")
