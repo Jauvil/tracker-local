@@ -94,6 +94,8 @@ FactoryGirl.define do
     city                    { Faker::Address.city }
     state                   { Faker::Address.state }
     zip_code                { Faker::Address.zip }
+    min_grade               9
+    max_grade               12
   end
 
   # After creation of the school, a school year will be created and assigned.
@@ -111,10 +113,10 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email,max_grade,min_grade'
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   'subject_manager,grade_in_subject_name,max_grade,min_grade'
     end
   end
 
@@ -128,10 +130,10 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email,max_grade,min_grade'
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   'subject_manager,grade_in_subject_name,max_grade,min_grade'
     end
   end
 
@@ -145,10 +147,10 @@ FactoryGirl.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email,max_grade,min_grade'
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   'subject_manager,grade_in_subject_name,max_grade,min_grade'
     end
   end
 

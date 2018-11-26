@@ -504,6 +504,8 @@ describe "School Listing", js:true do
           find("input[name='school[flag_pars][use_family_name]']").set(false)
           find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
           find("input[name='school[flag_pars][user_by_first_last]']").set(false)
+          select "8", from: "min_grade"
+          select "11", from: "max_grade"
           find_field("school[flag_pars][grade_in_subject_name]").value.should == 'on'
           find("input[name='school[flag_pars][grade_in_subject_name]']").set(false)
           find_field("school[flag_pars][username_from_email]").value.should == 'on'
@@ -542,6 +544,8 @@ describe "School Listing", js:true do
         find_field("school[flag_pars][user_by_first_last]").value.should == 'on'
         expect(page).to have_field('school[flag_pars][use_family_name]', checked: false)
         expect(page).to have_field('school[flag_pars][user_by_first_last]', checked: false)
+        expect(page).to have_select('school[min_grade]', selected: '8')
+        expect(page).to have_select('school[max_grade]', selected: '11')
         expect(page).to have_field('school[flag_pars][grade_in_subject_name]', checked: false)
         find_field("school[flag_pars][username_from_email]").value.should == 'on'
         find_field("school_start_mm").value.should == '10'
@@ -575,6 +579,8 @@ describe "School Listing", js:true do
       page.should have_css('#school-marking-periods', text: "4")
       page.should have_css('#school-use-family-name', text: "false")
       page.should have_css('#school-sort-by', text: "false")
+      page.should have_css('#school-min-grade', text: "8")
+      page.should have_css('#school-max-grade', text: "11")
       page.should have_css('#school-grade-in-subject', text: "false")
       page.should have_css('#username-from-email', text: "false")
       page.should have_css('#school-year-start', text: "10-2001")

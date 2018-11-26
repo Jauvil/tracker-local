@@ -179,34 +179,34 @@ module LoadSectionHelper
   def create_us_model_school
     Rails.logger.debug("***** create_model_school")
     # this needs to be run before any other schools are created, so the ID is 1
-    @model_school = FactoryGirl.create :school_current_year, :us, marking_periods:"2", name: 'Model School', acronym: 'MOD'
+    @model_school = FactoryGirl.create :school_current_year, :us, marking_periods:"2", name: 'Model School', acronym: 'MOD', min_grade: 9, max_grade: 12
   end
 
   def create_arabic_model_school
     Rails.logger.debug("***** create_model_school")
     # this needs to be run before any other schools are created, so the ID is 1
-    @model_school = FactoryGirl.create :school_current_year, :arabic, marking_periods:"2", name: 'Model School', acronym: 'MOD'
+    @model_school = FactoryGirl.create :school_current_year, :arabic, marking_periods:"2", name: 'Model School', acronym: 'MOD', min_grade: 1, max_grade: 3
   end
 
   def create_training_school
     Rails.logger.debug("***** create_training_school")
     # this needs to be run after create_model_school and before any other schools are created, so the ID is 2
     # set to prior year for testing no new year rollover
-    @training_school = FactoryGirl.create :school_prior_year, marking_periods:"2", name: 'Egyptian Training School', acronym: 'ETS'
+    @training_school = FactoryGirl.create :school_prior_year, marking_periods:"2", name: 'Training School', acronym: 'ETS'
   end
 
   def create_us_training_school
     Rails.logger.debug("***** create_training_school")
     # this needs to be run after create_model_school and before any other schools are created, so the ID is 2
     # set to prior year for testing no new year rollover
-    @training_school = FactoryGirl.create :school_prior_year, :us, marking_periods:"2", name: 'Egyptian Training School', acronym: 'ETS'
+    @training_school = FactoryGirl.create :school_prior_year, :us, marking_periods:"2", name: 'US Training School', acronym: 'ETS', min_grade: 9, max_grade: 12
   end
 
   def create_arabic_training_school
     Rails.logger.debug("***** create_training_school")
     # this needs to be run after create_model_school and before any other schools are created, so the ID is 2
     # set to prior year for testing no new year rollover
-    @training_school = FactoryGirl.create :school_prior_year, :arabic, marking_periods:"2", name: 'US Training School', acronym: 'ETS'
+    @training_school = FactoryGirl.create :school_prior_year, :arabic, marking_periods:"2", name: 'Egyptian Training School', acronym: 'ETS', min_grade: 1, max_grade: 3
   end
 
   def create_school1

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20180905144713) do
+ActiveRecord::Schema.define(:version => 20181126155532) do
 
   create_table "announcements", :force => true do |t|
     t.text     "content"
@@ -265,6 +265,8 @@ ActiveRecord::Schema.define(:version => 20180905144713) do
     t.string   "grading_scale"
     t.integer  "school_year_id"
     t.string   "flags"
+    t.integer  "min_grade"
+    t.integer  "max_grade"
   end
 
   add_index "schools", ["school_year_id"], :name => "index_schools_on_school_year_id"

@@ -63,6 +63,18 @@
   %input.pull-left{:name => "school[flag_pars][#{School::USER_BY_FIRST_LAST}]", :type => "checkbox", checked: @school.has_flag?(School::USER_BY_FIRST_LAST)}
   %label.checkbox-right-label.pull-left="First/Last"
   %span.ui-error="#{@errors[School::USER_BY_FIRST_LAST] if @errors[School::USER_BY_FIRST_LAST].present?}"
+%fieldset.input-group#mingrades
+  %label.col-sm-5.control-label='Minimum Grade:'
+  %select.select-select2{id: 'min_grade', name: "school[min_grade]", style: "width: 75px;", value: @school.min_grade}
+    = options_for_select(0..12, selected = @school.min_grade)
+  %span.ui-required{title: 'Required'}='*'
+  %span.ui-error="#{@errors[:min_grade] if @errors[:min_grade].present?}"
+ %fieldset.input-group#maxgrades
+  %label.col-sm-5.control-label='Maximum Grade:'
+  %select.select-select2{id: 'max_grade', name: "school[max_grade]", style: "width: 75px;", value: @school.max_grade}
+    = options_for_select(0..12, selected = @school.max_grade)
+  %span.ui-required{title: 'Required'}='*'
+  %span.ui-error="#{@errors[:max_grade] if @errors[:max_grade].present?}"
 %fieldset.input-group
   %label.col-sm-5.control-label='Grade in Subject Name:'
   %input{type: 'hidden', name: "school[flag_pars][#{School::GRADE_IN_SUBJECT_NAME}]", value: 'false'}
