@@ -69,7 +69,7 @@
     = options_for_select(0..12, selected = @school.min_grade)
   %span.ui-required{title: 'Required'}='*'
   %span.ui-error="#{@errors[:min_grade] if @errors[:min_grade].present?}"
- %fieldset.input-group#maxgrades
+%fieldset.input-group#maxgrades
   %label.col-sm-5.control-label='Maximum Grade:'
   %select.select-select2{id: 'max_grade', name: "school[max_grade]", style: "width: 75px;", value: @school.max_grade}
     = options_for_select(0..12, selected = @school.max_grade)
