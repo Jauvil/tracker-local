@@ -587,7 +587,7 @@ describe "Student Listing", js:true do
     # expect(page.text).to match(/New\sLname/) # alternate syntax
     page.text.should match(/New\sLname/)
     page.should have_content('new@ba.com')
-    page.all('td.user-email', text: 'new@ba.com').count.should == 1
+    page.all('td.user-email', text: 'new@ba.com').count.should == 2
 
     # confirm username is sch1_new2
     student_nodes = all('tbody tr.student-row')

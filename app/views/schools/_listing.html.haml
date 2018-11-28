@@ -36,7 +36,7 @@
                   - if can? :edit, school
                     %a{data: {target: "#modal_popup", toggle: 'modal', url: edit_school_path(school.id, format: :js)}, title: 'Edit School'}
                       %i.fa.fa-lg.fa-edit
-                %td.text-center 
+                %td.text-center
                   - if can?(:new_year_rollover, school) && @model_school.present? && @model_school.school_year.present? && school.present? && school.school_year.present?
                     - if @model_school && (@model_school.school_year.starts_at.year > school.school_year.starts_at.year || @model_school.id == school.id)
                       - # model school year is after the current school year - rollover is available

@@ -351,7 +351,7 @@ ActiveRecord::Schema.define(:version => 20181126155532) do
     t.string   "web_server_name",     :default => "PARLO Tracker Web Server"
     t.datetime "created_at",                                                    :null => false
     t.datetime "updated_at",                                                    :null => false
-    t.boolean  "allow_subject_mgr",   :default => false
+    t.boolean  "allow_subject_mgr",   :default => true
   end
 
   create_table "subject_outcomes", :force => true do |t|

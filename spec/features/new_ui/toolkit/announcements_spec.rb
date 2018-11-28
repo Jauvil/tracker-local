@@ -87,9 +87,15 @@ describe "Announcements", js:true do
     end
     # hide first announcement
     page.should have_css("#announcements #announcement_#{@announcement2.id}")
+    save_and_open_page
+    Rails.logger.debug("+++ #{@announcement2.inspect}")
+    Rails.logger.debug("+++ #{@announcement1.inspect}")
     within("#announcements #announcement_#{@announcement1.id} .announcement-alert .hide-alert") do
-      page.find("a[href='/announcements/#{@announcement1.id}/hide']").click
+      sleep 5
+      find("a[href='/announcements/#{@announcement1.id}/hide']").click
+      # page.find("a[href='/announcements/#{@announcement1.id}/hide']").click
     end
+
     # confirm javascript hid the first announcement
     page.should_not have_css("#announcements #announcement_#{@announcement1.id}")
 
@@ -129,6 +135,7 @@ describe "Announcements", js:true do
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
+      sleep 60
       announcements.length.should == 3
 
       #############################################
