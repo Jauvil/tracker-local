@@ -480,7 +480,6 @@ describe "Attendance Entry", js:true do
     select('Field Trip', from: "attendance_#{@student.id}_excuse_id")
     page.should have_css("input#save_attendance", visible: true)
     sleep 3
-    page.click_button('Save Attendance')
     find("input#save_attendance").click
 
     # confirm updated values are displayed.
