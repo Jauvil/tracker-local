@@ -211,7 +211,7 @@ describe "Announcements", js:true do
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      sleep 40
+      sleep 2
       # announcements.length.should == 4
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_#{@announcement2.id}")
@@ -252,7 +252,7 @@ describe "Announcements", js:true do
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      # sleep 40
+      # sleep
       # announcements.length.should == 3
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_#{@announcement2.id}")

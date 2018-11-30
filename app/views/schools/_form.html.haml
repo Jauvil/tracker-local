@@ -77,7 +77,7 @@
   %span.ui-error="#{@errors[:max_grade] if @errors[:max_grade].present?}"
 %fieldset.input-group
   %label.col-sm-5.control-label='Grade in Subject Name:'
-  %input{type: 'hidden', name: "school[flag_pars][#{School::GRADE_IN_SUBJECT_NAME}]", value: 'true'}
+  %input{type: 'hidden', name: "school[flag_pars][#{School::GRADE_IN_SUBJECT_NAME}]", value: 'false'}
   %input.pull-left{:name => "school[flag_pars][#{School::GRADE_IN_SUBJECT_NAME}]", :type => "checkbox", checked: @school.has_flag?(School::GRADE_IN_SUBJECT_NAME)}
   %label.checkbox-right-label.pull-left="Yes"
   %span.ui-error="#{@errors[School::GRADE_IN_SUBJECT_NAME] if @errors[School::GRADE_IN_SUBJECT_NAME].present?}"
