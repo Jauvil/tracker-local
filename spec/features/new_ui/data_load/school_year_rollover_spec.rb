@@ -1089,7 +1089,7 @@ describe "Rollover School Year", js:true do
   end
 
   def bulk_upload_all_los
-    sleep 40
+    sleep 4
     visit upload_lo_file_subject_outcomes_path
     within("#page-content") do
       assert_equal("/subject_outcomes/upload_lo_file", current_path)
