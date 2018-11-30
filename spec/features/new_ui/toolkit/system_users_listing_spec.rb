@@ -3,71 +3,143 @@ require 'spec_helper'
 
 
 describe "System Users Listing", js:true do
-  before (:each) do
-    create_and_load_arabic_model_school
+  describe "US System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      create_and_load_us_model_school
 
-    @school = FactoryGirl.create :school, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
-    @discipline = @subject.discipline
-    load_test_section(@section, @teacher)
+      @school = FactoryGirl.create :school, :us
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
 
-    @school_administrator = FactoryGirl.create :school_administrator, school: @school
-    @researcher = FactoryGirl.create :researcher
-    @system_administrator = FactoryGirl.create :system_administrator
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @researcher = FactoryGirl.create :researcher
+      @system_administrator = FactoryGirl.create :system_administrator
 
-  end
-
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-      @home_page = "/teachers/#{@teacher.id}"
     end
-    it { has_no_system_users_listing }
-  end
 
-  describe "as school administrator" do
-    before do
-      sign_in(@school_administrator)
-      @home_page = "/school_administrators/#{@school_administrator.id}"
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_no_system_users_listing }
     end
-    it { has_no_system_users_listing }
-  end
 
-  describe "as researcher" do
-    before do
-      sign_in(@researcher)
-      set_users_school(@school)
-      @home_page = "/researchers/#{@researcher.id}"
+    describe "as school administrator" do
+      before do
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_no_system_users_listing }
     end
-    it { has_no_system_users_listing }
-  end
 
-  describe "as system administrator" do
-    before do
-      sign_in(@system_administrator)
-      set_users_school(@school)
-      @home_page = "/system_administrators/#{@system_administrator.id}"
-   end
-    it { has_valid_system_users_listing }
-  end
-
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @home_page = "/students/#{@student.id}"
+    describe "as researcher" do
+      before do
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_system_users_listing }
     end
-    it { has_no_system_users_listing }
-  end
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @home_page = "/parents/#{@student.parent.id}"
+    describe "as system administrator" do
+      before do
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
     end
-    it { has_no_system_users_listing }
+      it { has_valid_system_users_listing }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+  end
+  describe "Egypt System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
+
+      @school = FactoryGirl.create :school, :arabic
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
+
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @researcher = FactoryGirl.create :researcher
+      @system_administrator = FactoryGirl.create :system_administrator
+
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+
+    describe "as school administrator" do
+      before do
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+
+    describe "as researcher" do
+      before do
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+
+    describe "as system administrator" do
+      before do
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+    end
+      it { has_valid_system_users_listing }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_system_users_listing }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_system_users_listing }
+    end
   end
 
 
@@ -125,6 +197,7 @@ describe "System Users Listing", js:true do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
+        sleep 2
         # submit blank form to check for errors
         find('#btn-save').click
       end
@@ -135,6 +208,7 @@ describe "System Users Listing", js:true do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
+        sleep 1
         within('div.ui-error') do
           page.should have_content('Role is required')
         end
@@ -144,8 +218,15 @@ describe "System Users Listing", js:true do
         within('#family-name-field') do
           page.should have_content('Family/Last Name is required')
         end
-        within('#email-field') do
-          page.should have_content('Email is required')
+        if (ServerConfig.first.try(:allow_subject_mgr)) != true
+          # Email required for Egypt school system only
+          within('#email-field') do
+            page.should have_content('Email is required')
+          end
+        else
+          within('#email-field') do
+            page.should_not have_content('Email is required')
+          end
         end
         choose('sys-admin')
         fill_in('staff_first_name', with: 'Added')
@@ -215,6 +296,7 @@ describe "System Users Listing", js:true do
     ##############################
     # view the updated system user
     within("tr#user_#{new_system_user_id}") do
+      sleep 1
       find("a[data-url='/users/#{new_system_user_id}.js']").click
     end
 

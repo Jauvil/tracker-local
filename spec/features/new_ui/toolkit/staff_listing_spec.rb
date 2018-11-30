@@ -233,7 +233,7 @@ describe "Staff Listing", js:true do
       page.should have_content('View Staff')
       page.should have_content(@teacher.first_name)
       page.should have_content(@teacher.last_name)
-      page.should have_css("button", text: 'Cancel')
+      # page.should have_css("button", text: 'Cancel')
       find("button", text: 'Cancel').click
     end
     # teachers cannot see other user's information
@@ -256,6 +256,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
+        sleep 3
         within("tr#user_#{@teacher.id}") do
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
@@ -263,6 +264,7 @@ describe "Staff Listing", js:true do
         end
       end
       within("#modal_popup") do
+        sleep 1
         page.should have_css("h2", text: 'Edit Staff')
         within("form#edit_user_#{@teacher.id}") do
           # ensure that only the admins can choose roles in edit form
@@ -292,6 +294,7 @@ describe "Staff Listing", js:true do
       within("#page-content table #user_#{@teacher.id}") do
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
+        sleep 1
         within('.user-roles') do
           page.should have_content('teacher')
           if [:school_administrator, :system_administrator].include?(role)

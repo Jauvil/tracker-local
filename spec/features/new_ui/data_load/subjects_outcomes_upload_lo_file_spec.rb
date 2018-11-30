@@ -3,84 +3,168 @@ require 'spec_helper'
 
 
 describe "Subject Outcomes Bulk Upload LOs", js:true do
-  before (:each) do
+  describe "US System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      create_and_load_us_model_school
 
-    create_and_load_arabic_model_school
+      # two subjects in @school1
+      @section1_1 = FactoryGirl.create :section
+      @subject1 = @section1_1.subject
+      @school1 = @section1_1.school
+      @teacher1 = @subject1.subject_manager
+      @discipline = @subject1.discipline
 
-    # two subjects in @school1
-    @section1_1 = FactoryGirl.create :section
-    @subject1 = @section1_1.subject
-    @school1 = @section1_1.school
-    @teacher1 = @subject1.subject_manager
-    @discipline = @subject1.discipline
+      load_test_section(@section1_1, @teacher1)
 
-    load_test_section(@section1_1, @teacher1)
+      @section1_2 = FactoryGirl.create :section, subject: @subject1
+      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryGirl.create :section, subject: @subject1
+      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-    @section1_2 = FactoryGirl.create :section, subject: @subject1
-    ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
-    @section1_3 = FactoryGirl.create :section, subject: @subject1
-    ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
+      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryGirl.create :section, subject: @subject2
+      @section2_2 = FactoryGirl.create :section, subject: @subject2
+      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @discipline2 = @subject2.discipline
 
-    @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-    @section2_1 = FactoryGirl.create :section, subject: @subject2
-    @section2_2 = FactoryGirl.create :section, subject: @subject2
-    @section2_3 = FactoryGirl.create :section, subject: @subject2
-    @discipline2 = @subject2.discipline
+    end
 
+    describe "as teacher" do
+      before do
+        sign_in(@teacher1)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        sign_in(@school_administrator)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school1)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school1)
+      end
+      it { bulk_upload_all_same }
+      it { bulk_upload_all_new_subject }
+      it { bulk_upload_art_same }
+      it { bulk_upload_art_add_swap }
+      it { bulk_upload_math_1_change }
+      it { bulk_upload_capstone_1s1_delete_all }
+      it { bulk_upload_all_mismatches }
+      it { bulk_upload_wrong_file }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+      end
+      it { cannot_bulk_upload_los }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher1)
-    end
-    it { cannot_bulk_upload_los }
-  end
+  describe "Egypt System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
 
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
-      sign_in(@school_administrator)
-    end
-    it { cannot_bulk_upload_los }
-  end
+      # two subjects in @school1
+      @section1_1 = FactoryGirl.create :section
+      @subject1 = @section1_1.subject
+      @school1 = @section1_1.school
+      @teacher1 = @subject1.subject_manager
+      @discipline = @subject1.discipline
 
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      set_users_school(@school1)
-    end
-    it { cannot_bulk_upload_los }
-  end
+      load_test_section(@section1_1, @teacher1)
 
-  describe "as system administrator" do
-    before do
-      @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      set_users_school(@school1)
-    end
-    it { bulk_upload_all_same }
-    it { bulk_upload_all_new_subject }
-    it { bulk_upload_art_same }
-    it { bulk_upload_art_add_swap }
-    it { bulk_upload_math_1_change }
-    it { bulk_upload_capstone_1s1_delete_all }
-    it { bulk_upload_all_mismatches }
-    it { bulk_upload_wrong_file }
-  end
+      @section1_2 = FactoryGirl.create :section, subject: @subject1
+      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryGirl.create :section, subject: @subject1
+      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-  describe "as student" do
-    before do
-      sign_in(@student)
-    end
-    it { cannot_bulk_upload_los }
-  end
+      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryGirl.create :section, subject: @subject2
+      @section2_2 = FactoryGirl.create :section, subject: @subject2
+      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @discipline2 = @subject2.discipline
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
     end
-    it { cannot_bulk_upload_los }
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher1)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        sign_in(@school_administrator)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school1)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school1)
+      end
+      it { bulk_upload_all_same }
+      it { bulk_upload_all_new_subject }
+      it { bulk_upload_art_same }
+      it { bulk_upload_art_add_swap }
+      it { bulk_upload_math_1_change }
+      it { bulk_upload_capstone_1s1_delete_all }
+      it { bulk_upload_all_mismatches }
+      it { bulk_upload_wrong_file }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+      end
+      it { cannot_bulk_upload_los }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+      end
+      it { cannot_bulk_upload_los }
+    end
   end
 
   ##################################################
@@ -743,7 +827,6 @@ end
 
 describe "Subject Outcomes Bulk Upload LOs Invalid School", js:true do
   before (:each) do
-
     create_and_load_model_school
     create_school1
 

@@ -94,6 +94,8 @@ FactoryGirl.define do
     city                    { Faker::Address.city }
     state                   { Faker::Address.state }
     zip_code                { Faker::Address.zip }
+    min_grade               9
+    max_grade               12
   end
 
   # After creation of the school, a school year will be created and assigned.

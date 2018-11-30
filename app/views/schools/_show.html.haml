@@ -24,6 +24,12 @@
       %span.col-sm-6.control-label='Names by First, Last/Family:'
       %span#school-sort-by.col-sm-6.value=@school.has_flag?(School::USER_BY_FIRST_LAST)
     .row
+      %span.col-sm-6.control-label='Min Grade:'
+      %span#school-min-grade.col-sm-6.value=@school.min_grade
+    .row
+      %span.col-sm-6.control-label='Max Grade:'
+      %span#school-max-grade.col-sm-6.value=@school.max_grade
+    .row
       %span.col-sm-6.control-label='Grade in Subject Name:'
       %span#school-grade-in-subject.col-sm-6.value=@school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
     .row

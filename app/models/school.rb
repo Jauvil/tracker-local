@@ -12,9 +12,11 @@ class School < ActiveRecord::Base
   GRADE_IN_SUBJECT_NAME = 'grade_in_subject_name'
   USERNAME_FROM_EMAIL = 'username_from_email'
   SUBJECT_MANAGER = 'subject_manager'
-  VALID_FLAGS = [USE_FAMILY_NAME, USER_BY_FIRST_LAST, GRADE_IN_SUBJECT_NAME, USERNAME_FROM_EMAIL, SUBJECT_MANAGER]
+  MIN_GRADE = 'min_grade'
+  MAX_GRADE = 'max_grade'
+  VALID_FLAGS = [USE_FAMILY_NAME, USER_BY_FIRST_LAST, GRADE_IN_SUBJECT_NAME, USERNAME_FROM_EMAIL, SUBJECT_MANAGER, MIN_GRADE, MAX_GRADE]
 
-  attr_accessible :name, :acronym, :city, :marking_periods, :school_year, :flag_pars
+  attr_accessible :name, :acronym, :city, :marking_periods, :school_year, :flag_pars, :min_grade, :max_grade
 
   # Relationships
   has_many                      :teachers,

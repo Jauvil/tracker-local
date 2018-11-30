@@ -65,6 +65,8 @@ class SchoolsController < ApplicationController
           @school.grading_algorithm = @model_school.grading_algorithm # not used
           @school.grading_scale = @model_school.grading_scale # not used
           @school.flags = @model_school.flags
+          @school.min_grade = @model_school.min_grade
+          @school.max_grade = @model_school.max_grade
         end
         format.js
       rescue Exception => e

@@ -1089,6 +1089,7 @@ describe "Rollover School Year", js:true do
   end
 
   def bulk_upload_all_los
+    sleep 4
     visit upload_lo_file_subject_outcomes_path
     within("#page-content") do
       assert_equal("/subject_outcomes/upload_lo_file", current_path)
@@ -1131,7 +1132,6 @@ describe "Rollover School Year", js:true do
       select('W-MA.2.04', from: "selections_22")
       select('X-MA.2.05', from: "selections_23")
       find('#save_matches').click
-      save_and_open_page
       within('#prior_subj') { page.should have_content('Math 2')}
       within('#count_updates') { page.should have_content('5')}
       within('#count_adds') { page.should have_content('0')}
