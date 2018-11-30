@@ -64,7 +64,7 @@
                 %span#attendance_date= @attendance_date_field
               %p{:class => 'float_right'}
                 - if can? :update, @attendances[0]
-                  =submit_tag 'Save Attendance', id: "save_attendance"
+                  =submit_tag 'Save Attendance', id: "save_attendance_1"
             %p Please select the appropriate 'Attendance Type' for each student that was either absent, late or left class early.
             %ul
               %li An excuse and comments can be added, if applicable, to further explain why the student was not present for the entire class period
