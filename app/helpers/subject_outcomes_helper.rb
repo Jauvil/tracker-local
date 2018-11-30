@@ -263,7 +263,7 @@ module SubjectOutcomesHelper
       session[:school_context] = @school.id
       set_current_school
     end
-    if !@school.has_flag?(School::SUBJECT_MANAGER)
+    if !@school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
       @errors[:school] = 'Error: Bulk Upload LO is for schools with grade in subject name only.'
       raise @errors[:school]
     end

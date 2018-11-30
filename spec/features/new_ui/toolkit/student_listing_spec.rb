@@ -504,7 +504,6 @@ describe "Student Listing", js:true do
 
   def can_create_student(student)
     within("#page-content") do
-      sleep 4
       page.should have_css("a[data-url='/students/new.js']")
       find("a[data-url='/students/new.js'] i.fa-plus-square").click
     end
@@ -580,7 +579,7 @@ describe "Student Listing", js:true do
         page.click_button('Save')
       end
     end
-    sleep 3
+
     page.should_not have_css("#modal_popup form#new_student")
     assert_equal("/students", current_path)
     # expect(page.text).to match(/New\sFname/) # alternate syntax
