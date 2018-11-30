@@ -473,27 +473,40 @@ describe "Attendance Entry", js:true do
       page.should have_css("table#attendance_table tbody tr:nth-of-type(9)[id='attendance_#{@student_transferred.id}']")
     end
 
-
-
+    # navbar-nav-custom-content
     page.fill_in "attendance_#{@student_fname1.id}_comment", :with => 'Changed comment!'
     select('Tardy', from: "attendance_#{@student.id}_attendance_type_id")
     select('Field Trip', from: "attendance_#{@student.id}_excuse_id")
     page.should have_css("input#save_attendance", visible: true)
-    sleep 3
     find("input#save_attendance").click
 
-    # confirm updated values are displayed.
-    within("table#attendance_table tbody tr:nth-of-type(1)") do
-      find("input#attendance_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
+    if (ServerConfig.first.try(:allow_subject_mgr)) != true
+      # confirm updated values are displayed.
+      within("table#attendance_table tbody tr:nth-of-type(1)") do
+        find("input#attendance_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
+      end
+    else
+      within("table#attendance_table tbody tr:nth-of-type(8)") do
+        find("input#attendance_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
+      end
     end
-    page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student_fname1.id}']")
-    within("table#attendance_table tbody tr:nth-of-type(2)") do
-      page.should have_content("#{@student.full_name}")
-      find("select#attendance_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
-      find("select#attendance_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
-      find("input#attendance_#{@student.id}_comment").value.should == ""
+    if (ServerConfig.first.try(:allow_subject_mgr)) != true
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student_fname1.id}']")
+      within("table#attendance_table tbody tr:nth-of-type(2)") do
+        page.should have_content("#{@student.full_name}")
+        find("select#attendance_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
+        find("select#attendance_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
+        find("input#attendance_#{@student.id}_comment").value.should == ""
+      end
+    else
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_fname1.id}']")
+      within("table#attendance_table tbody tr:nth-of-type(1)") do
+        page.should have_content("#{@student.full_name}")
+        find("select#attendance_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
+        find("select#attendance_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
+        find("input#attendance_#{@student.id}_comment").value.should == ""
+      end
     end
-
   end  # section_attendance_entry_is_valid
 
 end

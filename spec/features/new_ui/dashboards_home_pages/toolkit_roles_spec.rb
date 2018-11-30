@@ -125,8 +125,11 @@ describe "Student Dashboard", js:true do
         # open up list of available roles if needed
         if !find("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']").visible?
           find("#side-role a.sidebar-nav-menu").click
+          wait_for_ajax
         end
         # change role to teacher if school admin and teacher
+
+        page.should have_css("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']", visible: true)
         find("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']").click
       end
       page.should have_css('li#side-current')
