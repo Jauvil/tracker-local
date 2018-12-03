@@ -3,154 +3,308 @@ require 'spec_helper'
 
 
 describe "Generate Student Attendance Detail Report", js:true do
-  before (:each) do
+  describe "US System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      create_and_load_us_model_school
 
-    create_and_load_arabic_model_school
+      # @school1
+      @school1 = FactoryGirl.create :school_current_year, :us
+      @teacher1 = FactoryGirl.create :teacher, school: @school1
+      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @discipline = @subject1.discipline
+      load_test_section(@section1_1, @teacher1)
 
-    # @school1
-    @school1 = FactoryGirl.create :school_current_year, :arabic
-    @teacher1 = FactoryGirl.create :teacher, school: @school1
-    @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-    @section1_1 = FactoryGirl.create :section, subject: @subject1
-    @discipline = @subject1.discipline
-    load_test_section(@section1_1, @teacher1)
+      @teacher2 = FactoryGirl.create :teacher, school: @school1
 
-    @teacher2 = FactoryGirl.create :teacher, school: @school1
+      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryGirl.create :section, subject: @subject2
+      @section2_2 = FactoryGirl.create :section, subject: @subject2
+      @discipline2 = @subject2.discipline
 
-    @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-    @section2_1 = FactoryGirl.create :section, subject: @subject2
-    @section2_2 = FactoryGirl.create :section, subject: @subject2
-    @discipline2 = @subject2.discipline
+      @teaching_assignment2_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section2_1
+      @teaching_assignment2_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher2, section: @section2_2
 
-    @teaching_assignment2_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section2_1
-    @teaching_assignment2_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher2, section: @section2_2
+      @enrollment2_1_2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student2
+      @enrollment2_1_3 = FactoryGirl.create :enrollment, section: @section2_1, student: @student3
+      @enrollment2_2_4 = FactoryGirl.create :enrollment, section: @section2_2, student: @student4
+      @enrollment2_2_5 = FactoryGirl.create :enrollment, section: @section2_2, student: @student5
 
-    @enrollment2_1_2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student2
-    @enrollment2_1_3 = FactoryGirl.create :enrollment, section: @section2_1, student: @student3
-    @enrollment2_2_4 = FactoryGirl.create :enrollment, section: @section2_2, student: @student4
-    @enrollment2_2_5 = FactoryGirl.create :enrollment, section: @section2_2, student: @student5
+      @at_tardy = FactoryGirl.create :attendance_type, description: "Tardy", school: @school1
+      @at_absent = FactoryGirl.create :attendance_type, description: "Absent", school: @school1
+      @at_deact = FactoryGirl.create :attendance_type, description: "Deactivated", school: @school1, active: false
 
-    @at_tardy = FactoryGirl.create :attendance_type, description: "Tardy", school: @school1
-    @at_absent = FactoryGirl.create :attendance_type, description: "Absent", school: @school1
-    @at_deact = FactoryGirl.create :attendance_type, description: "Deactivated", school: @school1, active: false
+      # @student attendance
+      # in two subjects on multiple days
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_deact,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,4)
 
-    # @student attendance
-    # in two subjects on multiple days
-    FactoryGirl.create :attendance,
-      section: @section1_1,
-      student: @student,
-      attendance_type: @at_deact,
-      attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
-      section: @section1_1,
-      student: @student,
-      attendance_type: @at_absent,
-      attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
-      section: @section1_1,
-      student: @student,
-      attendance_type: @at_tardy,
-      attendance_date: Date.new(2015,9,4)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_deact,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,4)
 
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student,
-      attendance_type: @at_deact,
-      attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student,
-      attendance_type: @at_absent,
-      attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student,
-      attendance_type: @at_tardy,
-      attendance_date: Date.new(2015,9,4)
+      # other students
+      # two sections of subject2 across two days
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student3,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student2,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student3,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,2)
 
-    # other students
-    # two sections of subject2 across two days
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student3,
-      attendance_type: @at_tardy,
-      attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student2,
-      attendance_type: @at_absent,
-      attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
-      section: @section2_1,
-      student: @student3,
-      attendance_type: @at_tardy,
-      attendance_date: Date.new(2015,9,2)
+      # students not in @teacher1 classes on 9/5
+      FactoryGirl.create :attendance,
+        section: @section2_2,
+        student: @student4,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,5)
+      FactoryGirl.create :attendance,
+        section: @section2_2,
+        student: @student5,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,5)
 
-    # students not in @teacher1 classes on 9/5
-    FactoryGirl.create :attendance,
-      section: @section2_2,
-      student: @student4,
-      attendance_type: @at_absent,
-      attendance_date: Date.new(2015,9,5)
-    FactoryGirl.create :attendance,
-      section: @section2_2,
-      student: @student5,
-      attendance_type: @at_tardy,
-      attendance_date: Date.new(2015,9,5)
+    end
 
+    describe "as teacher" do
+      before do
+        sign_in(@teacher1)
+        @err_page = "/teachers/#{@teacher1.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, false) }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        sign_in(@school_administrator)
+        @err_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, true) }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school1)
+        @err_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_student_attendance_detail_report }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school1)
+        @err_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, true) }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @err_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @err_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher1)
-      @err_page = "/teachers/#{@teacher1.id}"
-    end
-    it { has_valid_student_attendance_detail_report(true, false) }
-  end
+  describe "Egypt System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
 
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
-      sign_in(@school_administrator)
-      @err_page = "/school_administrators/#{@school_administrator.id}"
-    end
-    it { has_valid_student_attendance_detail_report(true, true) }
-  end
+      # @school1
+      @school1 = FactoryGirl.create :school_current_year, :arabic
+      @teacher1 = FactoryGirl.create :teacher, school: @school1
+      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @discipline = @subject1.discipline
+      load_test_section(@section1_1, @teacher1)
 
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      set_users_school(@school1)
-      @err_page = "/researchers/#{@researcher.id}"
-    end
-    it { has_no_student_attendance_detail_report }
-  end
+      @teacher2 = FactoryGirl.create :teacher, school: @school1
 
-  describe "as system administrator" do
-    before do
-      @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      set_users_school(@school1)
-      @err_page = "/system_administrators/#{@system_administrator.id}"
-    end
-    it { has_valid_student_attendance_detail_report(true, true) }
-  end
+      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryGirl.create :section, subject: @subject2
+      @section2_2 = FactoryGirl.create :section, subject: @subject2
+      @discipline2 = @subject2.discipline
 
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @err_page = "/students/#{@student.id}"
-    end
-    it { has_no_reports }
-  end
+      @teaching_assignment2_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section2_1
+      @teaching_assignment2_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher2, section: @section2_2
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @err_page = "/parents/#{@student.parent.id}"
+      @enrollment2_1_2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student2
+      @enrollment2_1_3 = FactoryGirl.create :enrollment, section: @section2_1, student: @student3
+      @enrollment2_2_4 = FactoryGirl.create :enrollment, section: @section2_2, student: @student4
+      @enrollment2_2_5 = FactoryGirl.create :enrollment, section: @section2_2, student: @student5
+
+      @at_tardy = FactoryGirl.create :attendance_type, description: "Tardy", school: @school1
+      @at_absent = FactoryGirl.create :attendance_type, description: "Absent", school: @school1
+      @at_deact = FactoryGirl.create :attendance_type, description: "Deactivated", school: @school1, active: false
+
+      # @student attendance
+      # in two subjects on multiple days
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_deact,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section1_1,
+        student: @student,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,4)
+
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_deact,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,4)
+
+      # other students
+      # two sections of subject2 across two days
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student3,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,1)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student2,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,2)
+      FactoryGirl.create :attendance,
+        section: @section2_1,
+        student: @student3,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,2)
+
+      # students not in @teacher1 classes on 9/5
+      FactoryGirl.create :attendance,
+        section: @section2_2,
+        student: @student4,
+        attendance_type: @at_absent,
+        attendance_date: Date.new(2015,9,5)
+      FactoryGirl.create :attendance,
+        section: @section2_2,
+        student: @student5,
+        attendance_type: @at_tardy,
+        attendance_date: Date.new(2015,9,5)
+
     end
-    it { has_no_reports }
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher1)
+        @err_page = "/teachers/#{@teacher1.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, false) }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        sign_in(@school_administrator)
+        @err_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, true) }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school1)
+        @err_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_student_attendance_detail_report }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school1)
+        @err_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_student_attendance_detail_report(true, true) }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @err_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @err_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
   ##################################################
@@ -212,7 +366,7 @@ describe "Generate Student Attendance Detail Report", js:true do
         find("button", text: 'Generate').click
       end
     end
-    
+
     # should return back to generate reports page with required fields errors
     page.should have_content('Generate Reports')
     page.should_not have_content('Internal Server Error')
@@ -331,7 +485,7 @@ describe "Generate Student Attendance Detail Report", js:true do
 
         # total @student
         within("table tr.total-student-row[data-student-id='#{@student.id}']") do
-          page.should have_css("a[href='/users/#{@student.id}']")
+          page.should have_css("a[href='/students/#{@student.id}']")
           page.should have_css("td[data-type-id='#{@at_absent.id}']", text: '2')
           page.should have_css("td[data-type-id='#{@at_tardy.id}']", text: '2')
           page.should have_css("td[data-type-id='9999999']", text: '2')

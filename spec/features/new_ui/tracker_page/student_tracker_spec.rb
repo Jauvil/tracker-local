@@ -98,7 +98,7 @@ describe "Student Tracker", js:true do
     # ensure deactivated enrollment doesn't show on page
     page.should_not have_content('Deactivated')
 
-    # todo - tests for Learning Outcome / Evidence Rating Comments 
+    # todo - tests for Learning Outcome / Evidence Rating Comments
     # @section_outcomes.each do |k, so|
     #   sor = @sors_by_so_s["#{so.id}:#{@student.id}"]
     #   within("#lo-evid") do

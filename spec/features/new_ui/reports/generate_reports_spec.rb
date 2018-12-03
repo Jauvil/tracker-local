@@ -3,66 +3,134 @@ require 'spec_helper'
 
 
 describe "Generate Reports", js:true do
-  before (:each) do
-    @section = FactoryGirl.create :section
-    @school = @section.school
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-    load_test_section(@section, @teacher)
+  describe "US System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @section = FactoryGirl.create :section
+      @school = @section.school
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      load_test_section(@section, @teacher)
 
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_valid_generate_reports }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_generate_reports }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_attendance_report }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_generate_reports }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-      @home_page = "/teachers/#{@teacher.id}"
-    end
-    it { has_valid_generate_reports }
-  end
+  describe "Egypt System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @section = FactoryGirl.create :section
+      @school = @section.school
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      load_test_section(@section, @teacher)
 
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      sign_in(@school_administrator)
-      @home_page = "/school_administrators/#{@school_administrator.id}"
     end
-    it { has_valid_generate_reports }
-  end
 
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      set_users_school(@school)
-      @home_page = "/researchers/#{@researcher.id}"
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_valid_generate_reports }
     end
-    it { has_no_attendance_report }
-  end
 
-  describe "as system administrator" do
-    before do
-      @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      set_users_school(@school)
-      @home_page = "/system_administrators/#{@system_administrator.id}"
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_generate_reports }
     end
-    it { has_valid_generate_reports }
-  end
 
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @home_page = "/students/#{@student.id}"
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_attendance_report }
     end
-    it { has_no_reports }
-  end
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @home_page = "/parents/#{@student.parent.id}"
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_generate_reports }
     end
-    it { has_no_reports }
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
   ##################################################

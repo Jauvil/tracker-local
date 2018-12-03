@@ -3,72 +3,145 @@ require 'spec_helper'
 
 
 describe "Generate Account Activity Report", js:true do
-  before (:each) do
 
-    create_and_load_arabic_model_school
+  describe "US system", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      create_and_load_us_model_school
 
-    @school = FactoryGirl.create :school, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
-    @discipline = @subject.discipline
+      @school = FactoryGirl.create :school, :us
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
 
-    load_test_section(@section, @teacher)
+      load_test_section(@section, @teacher)
 
-    @school_administrator = FactoryGirl.create :school_administrator, school: @school
-    @researcher = FactoryGirl.create :researcher
-    @system_administrator = FactoryGirl.create :system_administrator
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @researcher = FactoryGirl.create :researcher
+      @system_administrator = FactoryGirl.create :system_administrator
 
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_valid_account_activity_report(:teacher) }
+    end
+
+    describe "as school administrator" do
+      before do
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_account_activity_report(:school_administrator) }
+    end
+
+    describe "as researcher" do
+      before do
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_account_activity_report }
+    end
+
+    describe "as system administrator" do
+      before do
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_account_activity_report(:system_administrator) }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-      @home_page = "/teachers/#{@teacher.id}"
-    end
-    it { has_valid_account_activity_report(:teacher) }
-  end
+  describe "Egypt system", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
 
-  describe "as school administrator" do
-    before do
-      sign_in(@school_administrator)
-      @home_page = "/school_administrators/#{@school_administrator.id}"
-    end
-    it { has_valid_account_activity_report(:school_administrator) }
-  end
+      @school = FactoryGirl.create :school, :arabic
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
 
-  describe "as researcher" do
-    before do
-      sign_in(@researcher)
-      set_users_school(@school)
-      @home_page = "/researchers/#{@researcher.id}"
-    end
-    it { has_no_account_activity_report }
-  end
+      load_test_section(@section, @teacher)
 
-  describe "as system administrator" do
-    before do
-      sign_in(@system_administrator)
-      set_users_school(@school)
-      @home_page = "/system_administrators/#{@system_administrator.id}"
-    end
-    it { has_valid_account_activity_report(:system_administrator) }
-  end
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @researcher = FactoryGirl.create :researcher
+      @system_administrator = FactoryGirl.create :system_administrator
 
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @home_page = "/students/#{@student.id}"
     end
-    it { has_no_reports }
-  end
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @home_page = "/parents/#{@student.parent.id}"
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { has_valid_account_activity_report(:teacher) }
     end
-    it { has_no_reports }
+
+    describe "as school administrator" do
+      before do
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { has_valid_account_activity_report(:school_administrator) }
+    end
+
+    describe "as researcher" do
+      before do
+        sign_in(@researcher)
+        set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { has_no_account_activity_report }
+    end
+
+    describe "as system administrator" do
+      before do
+        sign_in(@system_administrator)
+        set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { has_valid_account_activity_report(:system_administrator) }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { has_no_reports }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { has_no_reports }
+    end
   end
 
   ##################################################
