@@ -3,149 +3,74 @@ require 'spec_helper'
 
 
 describe "Evidence Type Maintenance", js:true do
+  before (:each) do
 
-  describe "US System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
-      create_and_load_us_model_school
+    create_and_load_arabic_model_school
 
-      # @school1
-      @school = FactoryGirl.create :school_current_year, :us
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
-      @discipline = @subject.discipline
-      load_test_section(@section, @teacher)
+    # @school1
+    @school = FactoryGirl.create :school_current_year, :arabic
+    @teacher = FactoryGirl.create :teacher, school: @school
+    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+    @section = FactoryGirl.create :section, subject: @subject
+    @discipline = @subject.discipline
+    load_test_section(@section, @teacher)
 
-      @evidence_type_ids = @evidences.values.map{ |e| e.evidence_type_id.to_s }
+    @evidence_type_ids = @evidences.values.map{ |e| e.evidence_type_id.to_s }
 
-    end
-
-
-    describe "as teacher" do
-      before do
-        sign_in(@teacher)
-        @home_page = "/teachers/#{@teacher.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
-
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
-        sign_in(@school_administrator)
-        @home_page = "/school_administrators/#{@school_administrator.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
-
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        sign_in(@researcher)
-        # set_users_school(@school)
-        @home_page = "/researchers/#{@researcher.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
-
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        sign_in(@system_administrator)
-        # set_users_school(@school)
-        @home_page = "/system_administrators/#{@system_administrator.id}"
-      end
-      it { can_maintain_evid_type }
-    end
-
-    describe "as student" do
-      before do
-        sign_in(@student)
-        @home_page = "/students/#{@student.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
-
-    describe "as parent" do
-      before do
-        sign_in(@student.parent)
-        @home_page = "/parents/#{@student.parent.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
   end
 
-  describe "Egypt System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
-      create_and_load_arabic_model_school
 
-      # @school1
-      @school = FactoryGirl.create :school_current_year, :arabic
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
-      @discipline = @subject.discipline
-      load_test_section(@section, @teacher)
-
-      @evidence_type_ids = @evidences.values.map{ |e| e.evidence_type_id.to_s }
-
+  describe "as teacher" do
+    before do
+      sign_in(@teacher)
+      @home_page = "/teachers/#{@teacher.id}"
     end
+    it { cannot_see_evid_type_maint }
+  end
 
-
-    describe "as teacher" do
-      before do
-        sign_in(@teacher)
-        @home_page = "/teachers/#{@teacher.id}"
-      end
-      it { cannot_see_evid_type_maint }
+  describe "as school administrator" do
+    before do
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      sign_in(@school_administrator)
+      @home_page = "/school_administrators/#{@school_administrator.id}"
     end
+    it { cannot_see_evid_type_maint }
+  end
 
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
-        sign_in(@school_administrator)
-        @home_page = "/school_administrators/#{@school_administrator.id}"
-      end
-      it { cannot_see_evid_type_maint }
+  describe "as researcher" do
+    before do
+      @researcher = FactoryGirl.create :researcher
+      sign_in(@researcher)
+      # set_users_school(@school)
+      @home_page = "/researchers/#{@researcher.id}"
     end
+    it { cannot_see_evid_type_maint }
+  end
 
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        sign_in(@researcher)
-        # set_users_school(@school)
-        @home_page = "/researchers/#{@researcher.id}"
-      end
-      it { cannot_see_evid_type_maint }
+  describe "as system administrator" do
+    before do
+      @system_administrator = FactoryGirl.create :system_administrator
+      sign_in(@system_administrator)
+      # set_users_school(@school)
+      @home_page = "/system_administrators/#{@system_administrator.id}"
     end
+    it { can_maintain_evid_type }
+  end
 
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        sign_in(@system_administrator)
-        # set_users_school(@school)
-        @home_page = "/system_administrators/#{@system_administrator.id}"
-      end
-      it { can_maintain_evid_type }
+  describe "as student" do
+    before do
+      sign_in(@student)
+      @home_page = "/students/#{@student.id}"
     end
+    it { cannot_see_evid_type_maint }
+  end
 
-    describe "as student" do
-      before do
-        sign_in(@student)
-        @home_page = "/students/#{@student.id}"
-      end
-      it { cannot_see_evid_type_maint }
+  describe "as parent" do
+    before do
+      sign_in(@student.parent)
+      @home_page = "/parents/#{@student.parent.id}"
     end
-
-    describe "as parent" do
-      before do
-        sign_in(@student.parent)
-        @home_page = "/parents/#{@student.parent.id}"
-      end
-      it { cannot_see_evid_type_maint }
-    end
+    it { cannot_see_evid_type_maint }
   end
 
   ##################################################

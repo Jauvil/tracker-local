@@ -140,4 +140,3 @@ describe "ReportCardRequest" do
 		it_should_behave_like 'cannot generate report card'
     end
 end
-

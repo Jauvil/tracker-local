@@ -3,134 +3,66 @@ require 'spec_helper'
 
 
 describe "Student Tracker", js:true do
-  describe "US System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
-      @section = FactoryGirl.create :section
-      @teacher = FactoryGirl.create :teacher, school: @section.school
-      load_test_section(@section, @teacher)
-      # todo - add prior/next year section
-    end
-
-    describe "as teacher" do
-      before do
-        sign_in(@teacher)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-      # # one time check to ensure unenrolled student is flagged on page
-      # it { deactivated_student_shows_unenrolled }
-    end
-
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @section.school
-        sign_in(@school_administrator)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
-
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        sign_in(@researcher)
-        set_users_school(@section.school)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
-
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        sign_in(@system_administrator)
-        set_users_school(@section.school)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
-
-    describe "as student" do
-      before do
-        sign_in(@student)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
-
-    describe "as parent" do
-      before do
-        sign_in(@student.parent)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
+  before (:each) do
+    @section = FactoryGirl.create :section
+    @teacher = FactoryGirl.create :teacher, school: @section.school
+    load_test_section(@section, @teacher)
+    # todo - add prior/next year section
   end
 
-  describe "Egypt System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
-      @section = FactoryGirl.create :section
-      @teacher = FactoryGirl.create :teacher, school: @section.school
-      load_test_section(@section, @teacher)
-      # todo - add prior/next year section
+  describe "as teacher" do
+    before do
+      sign_in(@teacher)
     end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
+    # # one time check to ensure unenrolled student is flagged on page
+    # it { deactivated_student_shows_unenrolled }
+  end
 
-    describe "as teacher" do
-      before do
-        sign_in(@teacher)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-      # # one time check to ensure unenrolled student is flagged on page
-      # it { deactivated_student_shows_unenrolled }
+  describe "as school administrator" do
+    before do
+      @school_administrator = FactoryGirl.create :school_administrator, school: @section.school
+      sign_in(@school_administrator)
     end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
+  end
 
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @section.school
-        sign_in(@school_administrator)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
+  describe "as researcher" do
+    before do
+      @researcher = FactoryGirl.create :researcher
+      sign_in(@researcher)
+      set_users_school(@section.school)
     end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
+  end
 
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        sign_in(@researcher)
-        set_users_school(@section.school)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
+  describe "as system administrator" do
+    before do
+      @system_administrator = FactoryGirl.create :system_administrator
+      sign_in(@system_administrator)
+      set_users_school(@section.school)
     end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
+  end
 
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        sign_in(@system_administrator)
-        set_users_school(@section.school)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
+  describe "as student" do
+    before do
+      sign_in(@student)
     end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
+  end
 
-    describe "as student" do
-      before do
-        sign_in(@student)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
+  describe "as parent" do
+    before do
+      sign_in(@student.parent)
     end
-
-    describe "as parent" do
-      before do
-        sign_in(@student.parent)
-      end
-      # it { can_see_student_tracker }
-      it { student_tracker_is_valid }
-    end
+    # it { can_see_student_tracker }
+    it { student_tracker_is_valid }
   end
 
   ##################################################

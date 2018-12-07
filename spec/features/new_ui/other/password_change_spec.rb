@@ -3,190 +3,88 @@ require 'spec_helper'
 
 
 describe "User can change password", js:true do
-  describe "US System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
-      create_and_load_us_model_school
+  before (:each) do
+    create_and_load_arabic_model_school
 
-      @school1 = FactoryGirl.create :school, :us
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @discipline = @subject1.discipline
-      load_test_section(@section1_1, @teacher1)
+    @school1 = FactoryGirl.create :school, :arabic
+    @teacher1 = FactoryGirl.create :teacher, school: @school1
+    @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher
+    @section1_1 = FactoryGirl.create :section, subject: @subject1
+    @discipline = @subject1.discipline
+    load_test_section(@section1_1, @teacher1)
 
-      @student_no_email = FactoryGirl.create :student_no_email, school_id: @school1.id, first_name: 'Student', last_name: 'Has No Email'
-    end
-
-    describe "as teacher" do
-      before do
-        @teacher1.temporary_password='temporary'
-        @teacher1.save
-        sign_in(@teacher1)
-        @username = @teacher1.username
-        @home_page = "/teachers/#{@teacher1.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@teacher1, true, false) }
-    end
-
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
-        @school_administrator.temporary_password='temporary'
-        @school_administrator.save
-        sign_in(@school_administrator)
-        @username = @school_administrator.username
-        @home_page = "/school_administrators/#{@school_administrator.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@school_administrator, true, true) }
-    end
-
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        @researcher.temporary_password='temporary'
-        @researcher.save
-        sign_in(@researcher)
-        # set_users_school(@school1)
-        @username = @researcher.username
-        @home_page = "/researchers/#{@researcher.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@researcher, false, false) }
-    end
-
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        @system_administrator.temporary_password='temporary'
-        @system_administrator.save
-        sign_in(@system_administrator)
-        # set_users_school(@school1)
-        @username = @system_administrator.username
-        @home_page = "/system_administrators/#{@system_administrator.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@system_administrator, true, true) }
-    end
-
-    describe "as student" do
-      before do
-        @student.temporary_password='temporary'
-        @student.save
-        sign_in(@student)
-        @username = @student.username
-        @home_page = "/students/#{@student.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@student, false, false) }
-    end
-
-    describe "as parent" do
-      before do
-        @student.parent.temporary_password='temporary'
-        @student.parent.save
-        sign_in(@student.parent)
-        @username = @student.parent.username
-        @home_page = "/parents/#{@student.parent.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@student.parent, false, false) }
-    end
+    @student_no_email = FactoryGirl.create :student_no_email, school_id: @school1.id, first_name: 'Student', last_name: 'Has No Email'
   end
 
-
-  describe "Egypt System", js:true do
-    before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
-      create_and_load_arabic_model_school
-
-      @school1 = FactoryGirl.create :school, :arabic
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @discipline = @subject1.discipline
-      load_test_section(@section1_1, @teacher1)
-
-      @student_no_email = FactoryGirl.create :student_no_email, school_id: @school1.id, first_name: 'Student', last_name: 'Has No Email'
+  describe "as teacher" do
+    before do
+      @teacher1.temporary_password='temporary'
+      @teacher1.save
+      sign_in(@teacher1)
+      @username = @teacher1.username
+      @home_page = "/teachers/#{@teacher1.id}"
     end
+    it { can_login_first_time_and_reset_pwd(@teacher1, true, false) }
+  end
 
-    describe "as teacher" do
-      before do
-        @teacher1.temporary_password='temporary'
-        @teacher1.save
-        sign_in(@teacher1)
-        @username = @teacher1.username
-        @home_page = "/teachers/#{@teacher1.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@teacher1, true, false) }
+  describe "as school administrator" do
+    before do
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+      @school_administrator.temporary_password='temporary'
+      @school_administrator.save
+      sign_in(@school_administrator)
+      @username = @school_administrator.username
+      @home_page = "/school_administrators/#{@school_administrator.id}"
     end
+    it { can_login_first_time_and_reset_pwd(@school_administrator, true, true) }
+  end
 
-    describe "as school administrator" do
-      before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
-        @school_administrator.temporary_password='temporary'
-        @school_administrator.save
-        sign_in(@school_administrator)
-        @username = @school_administrator.username
-        @home_page = "/school_administrators/#{@school_administrator.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@school_administrator, true, true) }
+  describe "as researcher" do
+    before do
+      @researcher = FactoryGirl.create :researcher
+      @researcher.temporary_password='temporary'
+      @researcher.save
+      sign_in(@researcher)
+      # set_users_school(@school1)
+      @username = @researcher.username
+      @home_page = "/researchers/#{@researcher.id}"
     end
+    it { can_login_first_time_and_reset_pwd(@researcher, false, false) }
+  end
 
-    describe "as researcher" do
-      before do
-        @researcher = FactoryGirl.create :researcher
-        @researcher.temporary_password='temporary'
-        @researcher.save
-        sign_in(@researcher)
-        # set_users_school(@school1)
-        @username = @researcher.username
-        @home_page = "/researchers/#{@researcher.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@researcher, false, false) }
+  describe "as system administrator" do
+    before do
+      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator.temporary_password='temporary'
+      @system_administrator.save
+      sign_in(@system_administrator)
+      # set_users_school(@school1)
+      @username = @system_administrator.username
+      @home_page = "/system_administrators/#{@system_administrator.id}"
     end
+    it { can_login_first_time_and_reset_pwd(@system_administrator, true, true) }
+  end
 
-    describe "as system administrator" do
-      before do
-        @system_administrator = FactoryGirl.create :system_administrator
-        @system_administrator.temporary_password='temporary'
-        @system_administrator.save
-        sign_in(@system_administrator)
-        # set_users_school(@school1)
-        @username = @system_administrator.username
-        @home_page = "/system_administrators/#{@system_administrator.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@system_administrator, true, true) }
+  describe "as student" do
+    before do
+      @student.temporary_password='temporary'
+      @student.save
+      sign_in(@student)
+      @username = @student.username
+      @home_page = "/students/#{@student.id}"
     end
+    it { can_login_first_time_and_reset_pwd(@student, false, false) }
+  end
 
-    describe "as student" do
-      before do
-        @student.temporary_password='temporary'
-        @student.save
-        sign_in(@student)
-        @username = @student.username
-        @home_page = "/students/#{@student.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@student, false, false) }
+  describe "as parent" do
+    before do
+      @student.parent.temporary_password='temporary'
+      @student.parent.save
+      sign_in(@student.parent)
+      @username = @student.parent.username
+      @home_page = "/parents/#{@student.parent.id}"
     end
-
-    describe "as student no email" do
-      before do
-        @student_no_email.temporary_password='temporary'
-        @student_no_email.save
-        sign_in(@student_no_email)
-        @username = @student_no_email.username
-        @home_page = "/students/#{@student_no_email.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@student_no_email, false, false) }
-    end
-
-    describe "as parent" do
-      before do
-        @student.parent.temporary_password='temporary'
-        @student.parent.save
-        sign_in(@student.parent)
-        @username = @student.parent.username
-        @home_page = "/parents/#{@student.parent.id}"
-      end
-      it { can_login_first_time_and_reset_pwd(@student.parent, false, false) }
-    end
+    it { can_login_first_time_and_reset_pwd(@student.parent, false, false) }
   end
 
   ##################################################
