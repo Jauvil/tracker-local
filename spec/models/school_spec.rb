@@ -45,7 +45,7 @@ describe School do
 
 	describe "allow blank school year" do
 		before { @school.school_year_id = " " }
-		it { should be_valid }
+			it { should be_valid }
 	end
 
 	describe "don't allow school year if it's school is not our school" do
