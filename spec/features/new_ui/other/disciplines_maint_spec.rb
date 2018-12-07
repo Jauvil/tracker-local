@@ -3,78 +3,157 @@ require 'spec_helper'
 
 
 describe "Disciplines Maintenance", js:true do
-  before (:each) do
 
-    create_and_load_arabic_model_school
+  describe "US System ", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_us_model_school
 
-    # @school
-    @school = FactoryGirl.create :school_current_year, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @disciplines << @subject.discipline
-    @section = FactoryGirl.create :section, subject: @subject
-    @discipline = @subject.discipline
-    load_test_section(@section, @teacher)
+      # @school
+      @school = FactoryGirl.create :school_current_year, :us
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @disciplines << @subject.discipline
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
 
-    @discipline_ids = @disciplines.map{ |d| d.id}
+      @discipline_ids = @disciplines.map{ |d| d.id}
 
-    @subject2 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 1'
-    @subject3 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 2'
-    @subject4 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 3'
+      @subject2 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 1'
+      @subject3 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 2'
+      @subject4 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 3'
 
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        # set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { can_see_discipline_maint }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        # set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { can_do_discipline_maint }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
   end
 
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-      @home_page = "/teachers/#{@teacher.id}"
-    end
-    it { cannot_see_discipline_maint }
-  end
+  describe "Egypt System ", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
 
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      sign_in(@school_administrator)
-      @home_page = "/school_administrators/#{@school_administrator.id}"
-    end
-    it { cannot_see_discipline_maint }
-  end
+      # @school
+      @school = FactoryGirl.create :school_current_year, :arabic
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @disciplines << @subject.discipline
+      @section = FactoryGirl.create :section, subject: @subject
+      @discipline = @subject.discipline
+      load_test_section(@section, @teacher)
 
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      # set_users_school(@school)
-      @home_page = "/researchers/#{@researcher.id}"
-    end
-    it { can_see_discipline_maint }
-  end
+      @discipline_ids = @disciplines.map{ |d| d.id}
 
-  describe "as system administrator" do
-    before do
-      @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      # set_users_school(@school)
-      @home_page = "/system_administrators/#{@system_administrator.id}"
-    end
-    it { can_do_discipline_maint }
-  end
+      @subject2 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 1'
+      @subject3 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 2'
+      @subject4 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 3'
 
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @home_page = "/students/#{@student.id}"
     end
-    it { cannot_see_discipline_maint }
-  end
 
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @home_page = "/parents/#{@student.parent.id}"
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { cannot_see_discipline_maint }
     end
-    it { cannot_see_discipline_maint }
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        # set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { can_see_discipline_maint }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        # set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { can_do_discipline_maint }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { cannot_see_discipline_maint }
+    end
   end
 
   ##################################################
