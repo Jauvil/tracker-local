@@ -21,7 +21,7 @@ describe "ReportCardRequest" do
 		@school_administrator = create :school_administrator, school: @school
 	end
 
-	describe 'Navigation as School Administrator' do
+	pending 'Navigation as School Administrator' do
 		before { sign_in(@school_administrator, @school_administrator.password) }
 		it { should have_link 'Generate Report Cards', href: report_card_path }
 
@@ -31,7 +31,7 @@ describe "ReportCardRequest" do
 		end
 	end
 
-	describe 'Generate report card, grade level has student' do
+	pending 'Generate report card, grade level has student' do
 		before do
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
@@ -59,7 +59,7 @@ describe "ReportCardRequest" do
 		end
 	end
 
-	describe 'Generate report card, with no students in the selected grade' do
+	pending 'Generate report card, with no students in the selected grade' do
 		before do
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
@@ -85,7 +85,7 @@ describe "ReportCardRequest" do
 		end
 	end
 
-  describe 'when school administrator email is blank' do
+  pending 'when school administrator email is blank' do
     before do
       @school_administrator.email=''
       @school_administrator.save(validate: false)
@@ -121,7 +121,7 @@ describe "ReportCardRequest" do
 		it_should_behave_like 'cannot generate report card'
     end
 
-    describe 'Counselor cannot generate report card' do
+    pending 'Counselor cannot generate report card' do
 		before do
 			@counselor = create :counselor, school: @school
 			sign_in @counselor
