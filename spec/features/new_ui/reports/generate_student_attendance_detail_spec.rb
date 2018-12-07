@@ -212,7 +212,7 @@ describe "Generate Student Attendance Detail Report", js:true do
         find("button", text: 'Generate').click
       end
     end
-    
+
     # should return back to generate reports page with required fields errors
     page.should have_content('Generate Reports')
     page.should_not have_content('Internal Server Error')

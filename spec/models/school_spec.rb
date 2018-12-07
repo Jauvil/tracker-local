@@ -7,7 +7,7 @@ describe School do
    subject { @school }
 
    it { should be_valid }
-   
+
    relationships = [:teachers, :counselors, :subjects, :sections, :students, :school_years]
    test_has_relationships relationships
 
@@ -45,19 +45,24 @@ describe School do
 
 	describe "allow blank school year" do
 		before { @school.school_year_id = " " }
-		it { should be_valid }
+			it { should be_valid }
 	end
 
 	describe "don't allow school year if it's school is not our school" do
-		before do
+		let(:school) do
 			@other_school = School.create(name:"LapaxHigh", acronym:"LVDH",marking_periods:"4")
 			@other_school_year  = SchoolYear.create(name:"UberSchoolYear", school_id: @other_school.id,
-    							starts_at: Date.parse("2012-09-01"),
-    							ends_at: Date.parse("2013-06-20"))
+								starts_at: Date.parse("2012-09-01"),
+								ends_at: Date.parse("2013-06-20"))
+		end
+
+		subject { school }
+
+		before do
 			@school.current_school_year = @other_school_year
 		end
 
-		it { should_not be_valid }
+			it { should_not be_valid }
 	end
 
 	describe "allow school year if it is in our school" do
@@ -67,7 +72,7 @@ describe School do
     							ends_at: Date.parse("2013-06-20"))
 		end
 
-		it do 
+		it do
 			@school.current_school_year = @school_year
 			@school.should be_valid
 		end

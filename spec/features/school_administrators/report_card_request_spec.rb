@@ -12,7 +12,7 @@ shared_examples_for 'cannot generate report card' do
 	it { current_path.should_not == report_card_path }
 end
 
-describe "ReportCardRequest" do 
+describe "ReportCardRequest" do
 
 	subject { page }
 
@@ -21,17 +21,17 @@ describe "ReportCardRequest" do
 		@school_administrator = create :school_administrator, school: @school
 	end
 
-	describe 'Navigation as School Administrator' do
-		before { sign_in(@school_administrator, @school_administrator.password) } 
+	pending 'Navigation as School Administrator' do
+		before { sign_in(@school_administrator, @school_administrator.password) }
 		it { should have_link 'Generate Report Cards', href: report_card_path }
-		
+
 		describe "Click Generate Report Cards" do
 			before { click_link 'Generate Report Cards'}
 			it_should_behave_like 'report card request form'
 		end
 	end
 
-	describe 'Generate report card, grade level has student' do
+	pending 'Generate report card, grade level has student' do
 		before do
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
@@ -39,11 +39,11 @@ describe "ReportCardRequest" do
 			@grade = 3
 		    @student = create :student, school: @school, grade_level: @grade
 			sign_in @school_administrator
-			
+
 			visit report_card_path
 		end
 
-		it 'cause delayed_job to send recieve and completed messages' do 
+		it 'cause delayed_job to send recieve and completed messages' do
 			select @grade.to_s, from: 'report_card_request_grade_level'
 			find("input[value='Request Report Card']").click
 
@@ -59,16 +59,16 @@ describe "ReportCardRequest" do
 		end
 	end
 
-	describe 'Generate report card, with no students in the selected grade' do
+	pending 'Generate report card, with no students in the selected grade' do
 		before do
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
 
-			sign_in(@school_administrator, @school_administrator.password)			
+			sign_in(@school_administrator, @school_administrator.password)
 			visit report_card_path
 		end
 
-		it 'cause delayed_job to send recieved and no student messages' do 
+		it 'cause delayed_job to send recieved and no student messages' do
 			@grade = 5
 			select @grade.to_s, from: 'report_card_request_grade_level'
 			find("input[value='Request Report Card']").click
@@ -85,7 +85,7 @@ describe "ReportCardRequest" do
 		end
 	end
 
-  describe 'when school administrator email is blank' do
+  pending 'when school administrator email is blank' do
     before do
       @school_administrator.email=''
       @school_administrator.save(validate: false)
@@ -121,8 +121,8 @@ describe "ReportCardRequest" do
 		it_should_behave_like 'cannot generate report card'
     end
 
-    describe 'Counselor cannot generate report card' do
-		before do 
+    pending 'Counselor cannot generate report card' do
+		before do
 			@counselor = create :counselor, school: @school
 			sign_in @counselor
 			visit report_card_path
@@ -134,10 +134,9 @@ describe "ReportCardRequest" do
 		before do
 			# We don't have a model for researcher
 		    @researcher = create :user, researcher:true
-			sign_in(@researcher,@researcher.password) 
+			sign_in(@researcher,@researcher.password)
 			visit report_card_path
 		end
 		it_should_behave_like 'cannot generate report card'
     end
 end
-

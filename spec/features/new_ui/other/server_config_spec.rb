@@ -3,76 +3,150 @@ require 'spec_helper'
 
 
 describe "Server Configuration Maintenance", js:true do
-  before (:each) do
+  describe "US System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      create_and_load_us_model_school
 
-    create_and_load_arabic_model_school
-
-    @system_administrator = FactoryGirl.create :system_administrator
-    @researcher = FactoryGirl.create :researcher
-    @school = FactoryGirl.create :school_current_year, :arabic
-    @school_administrator = FactoryGirl.create :school_administrator, school: @school
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
-
-    load_test_section(@section, @teacher, false) # no server config file created
-
-    @school2 = FactoryGirl.create :school_current_year, :arabic
-
-  end
-
-  describe "as teacher" do
-    before do
-      sign_in(@teacher)
-      @home_page = "/teachers/#{@teacher.id}"
-    end
-    it { cannot_see_server_config }
-  end
-
-  describe "as school administrator" do
-    before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      sign_in(@school_administrator)
-      @home_page = "/school_administrators/#{@school_administrator.id}"
-    end
-    it { cannot_see_server_config }
-  end
-
-  describe "as researcher" do
-    before do
-      @researcher = FactoryGirl.create :researcher
-      sign_in(@researcher)
-      # set_users_school(@school)
-      @home_page = "/researchers/#{@researcher.id}"
-    end
-    it { cannot_see_server_config }
-  end
-
-  describe "as student" do
-    before do
-      sign_in(@student)
-      @home_page = "/students/#{@student.id}"
-    end
-    it { cannot_see_server_config }
-  end
-
-  describe "as parent" do
-    before do
-      sign_in(@student.parent)
-      @home_page = "/parents/#{@student.parent.id}"
-    end
-    it { cannot_see_server_config }
-  end
-
-  #line 52
-  describe "as system administrator" do
-    before do
       @system_administrator = FactoryGirl.create :system_administrator
-      sign_in(@system_administrator)
-      # set_users_school(@school)
-      @home_page = "/system_administrators/#{@system_administrator.id}"
+      @researcher = FactoryGirl.create :researcher
+      @school = FactoryGirl.create :school_current_year, :us
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+
+      load_test_section(@section, @teacher, false) # no server config file created
+
+      @school2 = FactoryGirl.create :school_current_year, :us
+
     end
-    it { can_maintain_server_config }
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        # set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        # set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { can_maintain_server_config }
+    end
+  end
+
+  describe "Egypt System", js:true do
+    before (:each) do
+      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      create_and_load_arabic_model_school
+
+      @system_administrator = FactoryGirl.create :system_administrator
+      @researcher = FactoryGirl.create :researcher
+      @school = FactoryGirl.create :school_current_year, :arabic
+      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @teacher = FactoryGirl.create :teacher, school: @school
+      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryGirl.create :section, subject: @subject
+
+      load_test_section(@section, @teacher, false) # no server config file created
+
+      @school2 = FactoryGirl.create :school_current_year, :arabic
+
+    end
+
+    describe "as teacher" do
+      before do
+        sign_in(@teacher)
+        @home_page = "/teachers/#{@teacher.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as school administrator" do
+      before do
+        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        sign_in(@school_administrator)
+        @home_page = "/school_administrators/#{@school_administrator.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as researcher" do
+      before do
+        @researcher = FactoryGirl.create :researcher
+        sign_in(@researcher)
+        # set_users_school(@school)
+        @home_page = "/researchers/#{@researcher.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as student" do
+      before do
+        sign_in(@student)
+        @home_page = "/students/#{@student.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as parent" do
+      before do
+        sign_in(@student.parent)
+        @home_page = "/parents/#{@student.parent.id}"
+      end
+      it { cannot_see_server_config }
+    end
+
+    describe "as system administrator" do
+      before do
+        @system_administrator = FactoryGirl.create :system_administrator
+        sign_in(@system_administrator)
+        # set_users_school(@school)
+        @home_page = "/system_administrators/#{@system_administrator.id}"
+      end
+      it { can_maintain_server_config }
+    end
   end
 
   ##################################################
@@ -93,13 +167,20 @@ describe "Server Configuration Maintenance", js:true do
 
     # confirm that sys admin home page has a warning about server config table
     Rails.logger.debug(" +++ start server_config")
-    page.should have_css('#overall #sys-admin-links #server-config span.ui-error')
+    page.should_not have_css('#overall #sys-admin-links #server-config span.ui-error')
+    # if (ServerConfig.first.try(:allow_subject_mgr) != true)
+    #   page.should_not have_css('#overall #sys-admin-links #server-config span.ui-error')
+    # else
+    #   page.should_not have_css('#overall #sys-admin-links #server-config span.ui-error')
+    # end
 
     #confirm that viewing at the server config record automatically creates one
     page.find('#overall #sys-admin-links #server-config a').click
     within('#breadcrumb-flash-msgs') do
-      page.should have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
+      page.should_not have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
     end
+
+
 
     # confirm missing server config record error message is gone from home page
     visit system_administrator_path(@system_administrator.id)
@@ -147,7 +228,11 @@ describe "Server Configuration Maintenance", js:true do
       fill_in('support_email', with: 'trackersupport2@21pstem.org')
       fill_in('support_team', with: 'Tracker Support Team2')
       fill_in('school_support_team', with: 'School IT Support Team2')
-      find("input[name='config[allow_subject_mgr]']").set(true)
+      if (ServerConfig.first.try(:allow_subject_mgr) != true)
+        find("input[name='config[allow_subject_mgr]']").set(false)
+      else
+        find("input[name='config[allow_subject_mgr]']").set(true)
+      end
       fill_in('server_url', with: 'https://21pstem.org')
       fill_in('server_name', with: 'Tracker System2')
       fill_in('web_server_name', with: 'PARLO Tracker Web Server2')
@@ -159,7 +244,11 @@ describe "Server Configuration Maintenance", js:true do
       page.should have_css('span#support-email', text: 'trackersupport2@21pstem.org')
       page.should have_css('span#support-team', text: 'Tracker Support Team2')
       page.should have_css('span#school-support-team', text: 'School IT Support Team2')
-      page.should have_css('span#allow_subject_mgr', text: 'true')
+      if (ServerConfig.first.try(:allow_subject_mgr) != true)
+        page.should have_css('span#allow_subject_mgr', text: 'false')
+      else
+        page.should have_css('span#allow_subject_mgr', text: 'true')
+      end
       page.should have_css('span#server-url', text: 'https://21pstem.org')
       page.should have_css('span#server-name', text: 'Tracker System2')
       page.should have_css('span#web-server-name', text: 'PARLO Tracker Web Server2')
