@@ -179,13 +179,7 @@ describe "Server Configuration Maintenance", js:true do
     within('#breadcrumb-flash-msgs') do
       page.should_not have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
     end
-    # within('#breadcrumb-flash-msgs') do
-    #   if (ServerConfig.first.try(:allow_subject_mgr) != true)
-    #     page.should have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
-    #   else
-    #     page.should_not have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
-    #   end
-    # end
+
 
 
     # confirm missing server config record error message is gone from home page

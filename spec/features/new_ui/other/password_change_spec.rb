@@ -166,6 +166,17 @@ describe "User can change password", js:true do
       it { can_login_first_time_and_reset_pwd(@student, false, false) }
     end
 
+    describe "as student no email" do
+      before do
+        @student_no_email.temporary_password='temporary'
+        @student_no_email.save
+        sign_in(@student_no_email)
+        @username = @student_no_email.username
+        @home_page = "/students/#{@student_no_email.id}"
+      end
+      it { can_login_first_time_and_reset_pwd(@student_no_email, false, false) }
+    end
+
     describe "as parent" do
       before do
         @student.parent.temporary_password='temporary'

@@ -17,9 +17,7 @@ describe UsersController do
     end
   end
 
-  pending "test removing school context for system administrator"
-
-  describe "GET show" do
+  pending "GET show" do
     it "removes school context for a system administrator" do
       sign_in @system_administrator
       session[:school_context] = @school.id
