@@ -120,24 +120,34 @@ describe "User can change password", js:true do
 
       # confirm display of temporary password if there is one, and confirm the display of the reset password button
       within("#modal-body") do
+        within("td#user_#{@student.parent.id}.parent-temp-pwd") do
+          page.should have_css("span.temp-pwd")
+          page.should have_css("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']")
+        end
         within("td#user_#{@student.id}.student-temp-pwd") do
           page.should_not have_css("span.temp-pwd")
           sleep 1
           find("a[href='/students/#{@student.id}/set_student_temporary_password']").click
-          # confirm screen has changed with new temp password
-          page.should have_content("#{@student.temporary_password}")
-
-          page.should have_css("a[href='/students/#{@student.id}/set_student_temporary_password']")
-        end
-
-        within("td#user_#{@student.parent.id}.parent-temp-pwd") do
-          page.should have_css("span.temp-pwd")
-          page.should have_css("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']")
-          page.should have_css("span.temp-pwd")
-          sleep 1
-          page.find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
         end
       end
+
+      # confirm student now has a temporary password
+      within("#modal-body") do
+        # confirm screen has changed with new temp password
+        within("td#user_#{@student.id}.student-temp-pwd") do
+          within("span.temp-pwd") do
+            page.should have_content("#{@student.temporary_password}")
+          end
+          page.should have_css("a[href='/students/#{@student.id}/set_student_temporary_password']")
+        end
+        # reset parent's password after confirming screen is correct
+        within("td#user_#{@student.parent.id}.parent-temp-pwd") do
+          page.should have_css("span.temp-pwd")
+          sleep 1
+          find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
+        end
+      end
+
 
       within("#modal-body") do
         # confirm screen has changed with new temp password
