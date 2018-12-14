@@ -126,6 +126,7 @@ describe "User can change password", js:true do
         end
         within("td#user_#{@student.id}.student-temp-pwd") do
           page.should_not have_css("span.temp-pwd")
+          sleep 1
           find("a[href='/students/#{@student.id}/set_student_temporary_password']").click
         end
       end
@@ -142,9 +143,11 @@ describe "User can change password", js:true do
         # reset parent's password after confirming screen is correct
         within("td#user_#{@student.parent.id}.parent-temp-pwd") do
           page.should have_css("span.temp-pwd")
+          sleep 1
           find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
         end
       end
+
 
       within("#modal-body") do
         # confirm screen has changed with new temp password
@@ -161,16 +164,18 @@ describe "User can change password", js:true do
       # logout and back in as student, to confirm logging in with new password works correctly
       @student.reload
       student_email = @student.email
-
       page.find('#modal_popup #modal-body button', text: 'Close').click
-      page.find("#main-container header .dropdown-toggle").click
-      page.find("#main-container header .dropdown-menu-right a[href='/users/sign_out']").click
+
+      sleep 1
+      find("#main-container header .dropdown-toggle").click
+      find("#main-container header .dropdown-menu-right a[href='/users/sign_out']").click
+
 
       assert_equal("/", current_path)
       page.fill_in 'user_username', :with => @student.username
       page.fill_in 'user_password', :with => @student.temporary_password
       find("input[name='commit']").click
-
+      sleep 1
       page.fill_in 'user_password', :with => 'after_reset'
       page.fill_in 'user_password_confirmation', :with => 'after_reset'
       page.find("input[name='commit']").click
@@ -211,6 +216,7 @@ describe "User can change password", js:true do
       within("#modal-body") do
         within("td#user_#{@student_no_email.id}.student-temp-pwd") do
           page.should_not have_css("span.temp-pwd")
+          sleep 1
           find("a[href='/students/#{@student_no_email.id}/set_student_temporary_password']").click
           page.should have_css("span.temp-pwd")
         end
@@ -218,7 +224,7 @@ describe "User can change password", js:true do
 
       @student_no_email.reload
       page.find('#modal_popup #modal-body button', text: 'Close').click
-
+      sleep 1
       # signin with reset temporary password, then set password
       page.find("#main-container header .dropdown-toggle").click
       page.find("#main-container header .dropdown-menu-right a[href='/users/sign_out']").click
@@ -267,6 +273,7 @@ describe "User can change password", js:true do
 
       within("#modal-body") do
         within("td#user_#{@teacher1.id}") do
+          sleep 1
           page.should_not have_css("span.temp-pwd")
           find("a[href='/users/#{@teacher1.id}/set_temporary_password']").click
         end

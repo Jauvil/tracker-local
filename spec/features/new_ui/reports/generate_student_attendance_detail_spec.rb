@@ -331,7 +331,7 @@ describe "Generate Student Attendance Detail Report", js:true do
 
         # total @student
         within("table tr.total-student-row[data-student-id='#{@student.id}']") do
-          page.should have_css("a[href='/users/#{@student.id}']")
+          page.should have_css("a[href='/students/#{@student.id}']")
           page.should have_css("td[data-type-id='#{@at_absent.id}']", text: '2')
           page.should have_css("td[data-type-id='#{@at_tardy.id}']", text: '2')
           page.should have_css("td[data-type-id='9999999']", text: '2')

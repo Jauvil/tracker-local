@@ -256,7 +256,7 @@ describe "Staff Listing", js:true do
     if [:teacher, :school_administrator, :system_administrator].include?(role)
       assert_equal("/users/staff_listing", current_path)
       within("#page-content") do
-        sleep 3
+        sleep 1
         within("tr#user_#{@teacher.id}") do
           page.should have_css("i.fa-edit")
           page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")

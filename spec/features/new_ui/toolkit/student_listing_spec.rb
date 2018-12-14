@@ -465,7 +465,7 @@ describe "Student Listing", js:true do
           page.should_not have_css("#email span.ui-required")
         end
         page.fill_in 'student_email', :with => ''
-        sleep 3
+        sleep 1
         page.click_button('Save')
       end
     end
@@ -489,9 +489,10 @@ describe "Student Listing", js:true do
 
     # page.should_not have_css("#modal_popup form#edit_student_#{student.id}")
     assert_equal("/students", current_path)
-    sleep 2
+    sleep 1
     within("tr#student_#{student.id}") do
       page.should have_css("a[data-url='/students/#{student.id}.js']")
+      sleep 1
       find("a[data-url='/students/#{student.id}.js']").click
     end
     page.should have_content("View Student")
@@ -503,10 +504,15 @@ describe "Student Listing", js:true do
   end
 
   def can_create_student(student)
-    within("#page-content") do
+    visit students_path
+    assert_equal("/students", current_path)
+    within("div#page-content") do
+      page.should have_css("i.fa-plus-square")
       page.should have_css("a[data-url='/students/new.js']")
-      find("a[data-url='/students/new.js'] i.fa-plus-square").click
+      sleep 15
+      find("a[data-url='/students/new.js']").click
     end
+
     page.should have_content("Create New Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#new_student") do
@@ -575,11 +581,11 @@ describe "Student Listing", js:true do
         page.fill_in 'student_last_name', :with => 'NLname'
         page.fill_in 'student_email', :with => 'new@ba.com'
         page.fill_in 'student_grade_level', :with => '2'
-        sleep 3
+        sleep 1
         page.click_button('Save')
       end
     end
-
+    sleep 5
     page.should_not have_css("#modal_popup form#new_student")
     assert_equal("/students", current_path)
     # expect(page.text).to match(/New\sFname/) # alternate syntax

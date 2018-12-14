@@ -197,7 +197,7 @@ describe "System Users Listing", js:true do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
-        sleep 2
+        sleep 1
         # submit blank form to check for errors
         find('#btn-save').click
       end
@@ -235,7 +235,7 @@ describe "System Users Listing", js:true do
         find('#btn-save').click
       end
     end
-
+    sleep 1
     # wait for dialog to close
     page.should_not have_css('#modal_popup', visible: true)
 
