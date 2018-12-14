@@ -2,6 +2,7 @@
 # see license.txt in this software package
 #
 class ApplicationController < ActionController::Base
+
   protect_from_forgery
   around_filter :hide_student_names,    if:     :current_researcher
   before_filter :get_referrer,          except: [:create, :update]

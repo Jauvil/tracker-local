@@ -166,7 +166,7 @@ describe "Announcements", js:true do
       # find 'id new annoucement then click HIDE'
       page.find("a[href='/announcements/1/hide']").click
     end
-    sleep 3
+    sleep 1
     within("#announcements #announcement_#{@announcement1.id} .announcement-alert .hide-alert") do
       page.find("a[href='/announcements/#{@announcement1.id}/hide']").click
     end
@@ -204,14 +204,14 @@ describe "Announcements", js:true do
 
       # add another announcement
       find("a#show-add[data-url='/announcements/new.js']").click
-      sleep 3
+      sleep 1
       fill_in("announcement_content", with: 'This is a new Announcement!')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      sleep 2
+      sleep 1
       # announcements.length.should == 4
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_#{@announcement2.id}")
@@ -223,7 +223,7 @@ describe "Announcements", js:true do
       # confirm edit new announcement works properly
 
       # get id of new announcement from returned announcement elements and go to edit popup
-      sleep 2
+      sleep 1
       # announcement_id = announcements[3][:id].split('_')[1]
       within("#announcements tr#announcement_1") do
         find("a[data-target='#modal_popup']").click
@@ -231,7 +231,7 @@ describe "Announcements", js:true do
 
       # confirm on edit page
       page.should have_content('System Alert Message')
-      sleep 2
+      sleep 1
       fill_in("announcement_content", with: 'This is a changed Announcement!')
       find("#modal_popup form#edit_announcement_1 input[type='submit']").click
 

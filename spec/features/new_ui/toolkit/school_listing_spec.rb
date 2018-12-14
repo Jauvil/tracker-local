@@ -528,7 +528,7 @@ describe "School Listing", js:true do
       Rails.logger.debug("+++ check to see subj manager is on")
 
       within("#modal_popup .modal-dialog .modal-content .modal-body") do
-        sleep 2
+        sleep 1
         page.should have_css('input#school_name')
         find_field("school_name").value.should_not == @school2.name
         find_field("school_name").value.should == 'New-School'

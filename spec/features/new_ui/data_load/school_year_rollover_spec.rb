@@ -527,7 +527,6 @@ describe "Rollover School Year", js:true do
       # confirm new subject is in model school
       page.should have_content("#{@subject2_1.discipline.name} : New Subject")
       page.all("tbody.tbody-subject").count.should == 7
-      sleep 1
       # go back to @school2
       find("a[href='/schools']").click
       find("a[href='/schools/#{@school2.id}']").click
@@ -1089,7 +1088,7 @@ describe "Rollover School Year", js:true do
   end
 
   def bulk_upload_all_los
-    sleep 4
+
     visit upload_lo_file_subject_outcomes_path
     within("#page-content") do
       assert_equal("/subject_outcomes/upload_lo_file", current_path)
