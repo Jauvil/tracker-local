@@ -509,17 +509,9 @@ describe "Student Listing", js:true do
     within("div#page-content") do
       page.should have_css("i.fa-plus-square")
       page.should have_css("a[data-url='/students/new.js']")
-      sleep 10
+      sleep 15
       find("a[data-url='/students/new.js']").click
     end
-
-    # within("#page-content") do
-    #   page.should have_css("i.fa-plus-square")
-    #   page.should have_css("a[data-url='/students/new.js'] i.fa-plus-square")
-    #   Rails.logger.debug("+++ add new student")
-    #   sleep 10
-    #   page.find("a[data-url='/students/new.js']").click
-    # end
 
     page.should have_content("Create New Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do

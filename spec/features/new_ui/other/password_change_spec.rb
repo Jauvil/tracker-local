@@ -138,21 +138,6 @@ describe "User can change password", js:true do
           page.find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
         end
       end
-        # confirm student now has a temporary password
-        # confirm screen has changed with new temp password
-        # within("td#user_#{@student.id}.student-temp-pwd") do
-        #   # within("span.temp-pwd") do
-
-        #   page.should have_content("#{@student.temporary_password}")
-        #   #end
-        #   page.should have_css("a[href='/students/#{@student.id}/set_student_temporary_password']")
-        # end
-        # reset parent's password after confirming screen is correct
-        # within("td#user_#{@student.parent.id}.parent-temp-pwd") do
-        #   page.should have_css("span.temp-pwd")
-        #   find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
-        # end
-      # end
 
       within("#modal-body") do
         # confirm screen has changed with new temp password
