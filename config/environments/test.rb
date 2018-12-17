@@ -7,6 +7,10 @@ Tracker2::Application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  # Log error messages when you accidentally call methods on nil.
+  # # This was removed by the rake rails:update to Rails 4.0 ????
+  config.whiny_nils = true
+
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.
@@ -36,4 +40,16 @@ Tracker2::Application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+  end
+
+  # # sets all logs to stdout (including active record sql statements)
+  config.logger = Logger.new(STDOUT)
+
+  # # set logger level to one of [:debug, :info, :warn, :error, :fatal]
+  # # note: this will display to console when config.logger is set to STDOUT (see above)
+  config.log_level = :debug
+
 end

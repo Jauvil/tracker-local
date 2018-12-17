@@ -77,4 +77,22 @@ Tracker2::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  # Attempt to remedy nginx 500 errors when uploading files 12/15/2011
+  Paperclip.options[:command_path]      = "/usr/local/bin"
+  Paperclip.options[:image_magick_path] = "/usr/local/bin"
+
+  # config.middleware.use ExceptionNotification::Rack,
+  #   email: {
+  #     sender_address: "error_log@21pstem.org",
+  #     exception_recipients: "trackersupport@21pstem.org"
+  #   }
+
+  ActionMailer::Base.delivery_method  = :sendmail
+
+  ActionMailer::Base.sendmail_settings = {
+    location: "/usr/sbin/sendmail",
+    arguments: nil
+  }
+
 end
