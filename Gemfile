@@ -1,21 +1,24 @@
   source 'http://rubygems.org'
 
-  gem 'rails', '3.2.22.5'
+  gem 'rails', '4.0.13'
+  gem 'railties',  '4.0.13'
   gem 'passenger', '3.0.18'       # Production web server.
   gem 'whenever','~>0.9', require: false
-  gem 'rake', '10.1.0'
+  # gem 'rake', '10.1.0' # for Rails 3.2
+  gem 'rake'
 
-  # Gems used only for assets and not required
-  # in production environments by default.
-  group :assets do
-    gem 'sass-rails',   '~> 3.2.3'
-    # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  # # Gems used only for assets and not required
+  # # in production environments by default.
+  # group :assets do
+  #   # gem 'sass-rails',   '~> 3.2.3' # for Rails 3.2
+    gem 'sass-rails'
+  #   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
     gem 'therubyracer', :platforms => :ruby
-    gem 'uglifier', '>= 1.0.3'
-  end
+  #   gem 'uglifier', '>= 1.0.3'
+  # end
 
   # moved out of assets groups for use in views also
-  gem 'coffee-rails', '~> 3.2.1'
+  # gem 'coffee-rails', '~> 3.2.1'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'
 
@@ -27,13 +30,12 @@ gem 'rack-ssl', require: 'rack/ssl'
 gem 'mysql2', group: :production
 gem 'sqlite3', group: [:development, :test]
 
-# gem 'devise'          # Authentication
 gem 'cancan'          # Authorization : See /app/models/ability.rb
 
 gem 'acts_as_list'    # Drag and drop reordering, 'position' column.
 
 gem 'paperclip'       # Upload / retrieve files via HTML.
-gem 'prawnto'
+# gem 'prawnto' # for Rails 3.2
 gem 'prawn'           # Serve dynamically generated PDF's
 gem 'axlsx_rails'
 gem 'delayed_job_active_record', "~> 4.0.0"
@@ -52,7 +54,8 @@ gem 'jquery-rails'
 gem 'zip-zip'         # provides compatibility for rubyzip pre 1.0 (for selenium-webdriver)
 # todo - fix problems with 'i18n-js'
 # gem 'i18n-js', '2.1.2'
-gem 'gretel', '~> 3.0.7'    # breadcrumbs
+# gem 'gretel', '~> 3.0.7'    # breadcrumbs for Rails 3.2
+gem 'gretel', '3.0.9'    # breadcrumbs ( last release for this gem )
 
 #gem 'letter_opener', group: :development # Opens emails in new window in development.
 
@@ -64,7 +67,8 @@ gem 'fastthread', '1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 gem 'bullet', '4.6.0', group: :development
 gem 'nokogiri', '1.6.3.1'
 gem 'rack-cache', '1.6.1'
-gem 'devise', '3.0.0'
+gem 'devise', '3.0.0'   # Authentication
+
 
 group :development, :test do
   gem 'rspec-rails', '2.14.0'
