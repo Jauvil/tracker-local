@@ -5,7 +5,7 @@
   gem 'passenger', '3.0.18'       # Production web server.
   gem 'whenever','~>0.9', require: false
   # gem 'rake', '10.1.0' # for Rails 3.2
-  gem 'rake'
+  gem 'rake', '< 11.0' # for rails 4.0
 
   # # Gems used only for assets and not required
   # # in production environments by default.
@@ -18,9 +18,15 @@
   # end
 
   # moved out of assets groups for use in views also
-  # gem 'coffee-rails', '~> 3.2.1'
+  gem 'coffee-rails'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'
+
+  # ToDo change to strong params
+  # see curriculum app.
+  # https://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html
+  # https://www.sitepoint.com/rails-4-quick-look-strong-parameters/
+  gem 'protected_attributes' # temporary till strong params
 
 
 # SSL implementation
