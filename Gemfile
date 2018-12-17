@@ -1,6 +1,6 @@
   source 'http://rubygems.org'
 
-  gem 'rails', '3.2.10'
+  gem 'rails', '3.2.22.5'
   gem 'passenger', '3.0.18'       # Production web server.
   gem 'whenever','~>0.9', require: false
   gem 'rake', '10.1.0'
