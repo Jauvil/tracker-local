@@ -5,19 +5,19 @@ require 'spec_helper'
 describe "Announcements", js:true do
   describe "US System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       # @school1
-      @school1 = FactoryGirl.create :school_current_year, :us
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @school1 = FactoryBot.create :school_current_year, :us
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
       load_test_section(@section1_1, @teacher1)
 
-      @announcement1 = FactoryGirl.create :announcement
-      @announcement2 = FactoryGirl.create :announcement
+      @announcement1 = FactoryBot.create :announcement
+      @announcement2 = FactoryBot.create :announcement
     end
 
 
@@ -31,7 +31,7 @@ describe "Announcements", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -40,7 +40,7 @@ describe "Announcements", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
@@ -50,7 +50,7 @@ describe "Announcements", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"
@@ -77,19 +77,19 @@ describe "Announcements", js:true do
 
   describe "Egypt System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       # @school1
-      @school1 = FactoryGirl.create :school_current_year, :arabic
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @school1 = FactoryBot.create :school_current_year, :arabic
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
       load_test_section(@section1_1, @teacher1)
 
-      @announcement1 = FactoryGirl.create :announcement
-      @announcement2 = FactoryGirl.create :announcement
+      @announcement1 = FactoryBot.create :announcement
+      @announcement2 = FactoryBot.create :announcement
     end
 
 
@@ -103,7 +103,7 @@ describe "Announcements", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -112,7 +112,7 @@ describe "Announcements", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
@@ -122,7 +122,7 @@ describe "Announcements", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"

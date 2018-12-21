@@ -4,32 +4,32 @@ require 'spec_helper'
 describe "School Listing", js:true do
   describe "US System" do
     before (:each) do
-      # @section = FactoryGirl.create :section
+      # @section = FactoryBot.create :section
       # @school = @section.school
-      # @teacher = FactoryGirl.create :teacher, school: @school
-      # @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      # @teacher = FactoryBot.create :teacher, school: @school
+      # @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
       # load_test_section(@section, @teacher)
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       # @school1
-      @school1 = FactoryGirl.create :school_current_year, :us
+      @school1 = FactoryBot.create :school_current_year, :us
       Rails.logger.debug("+++ school #{@school1.inspect}")
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      @section1_3 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
       load_test_section(@section1_1, @teacher1, false)
 
       # @school2
-      @school2 = FactoryGirl.create :school_prior_year, :us
-      @teacher2_1 = FactoryGirl.create :teacher, school: @school2
-      @subject2_1 = FactoryGirl.create :subject, school: @school2, subject_manager: @teacher2_1
-      @section2_1_1 = FactoryGirl.create :section, subject: @subject2_1
-      @section2_1_2 = FactoryGirl.create :section, subject: @subject2_1
-      @section2_1_3 = FactoryGirl.create :section, subject: @subject2_1
+      @school2 = FactoryBot.create :school_prior_year, :us
+      @teacher2_1 = FactoryBot.create :teacher, school: @school2
+      @subject2_1 = FactoryBot.create :subject, school: @school2, subject_manager: @teacher2_1
+      @section2_1_1 = FactoryBot.create :section, subject: @subject2_1
+      @section2_1_2 = FactoryBot.create :section, subject: @subject2_1
+      @section2_1_3 = FactoryBot.create :section, subject: @subject2_1
 
     end
 
@@ -43,7 +43,7 @@ describe "School Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -53,7 +53,7 @@ describe "School Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
@@ -65,7 +65,7 @@ describe "School Listing", js:true do
 
     describe "as researcher with no school selected" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         @home_page = "/researchers/#{@researcher.id}"
       end
@@ -74,7 +74,7 @@ describe "School Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"
@@ -87,7 +87,7 @@ describe "School Listing", js:true do
 
     describe "as system administrator with no school selected" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end
@@ -113,31 +113,31 @@ describe "School Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
-      # @section = FactoryGirl.create :section
+      # @section = FactoryBot.create :section
       # @school = @section.school
-      # @teacher = FactoryGirl.create :teacher, school: @school
-      # @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
+      # @teacher = FactoryBot.create :teacher, school: @school
+      # @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
       # load_test_section(@section, @teacher)
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       # @school1
-      @school1 = FactoryGirl.create :school_current_year, :arabic
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
+      @school1 = FactoryBot.create :school_current_year, :arabic
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      @section1_3 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
       load_test_section(@section1_1, @teacher1, false)
 
       # @school2
-      @school2 = FactoryGirl.create :school_prior_year, :arabic
-      @teacher2_1 = FactoryGirl.create :teacher, school: @school2
-      @subject2_1 = FactoryGirl.create :subject, school: @school2, subject_manager: @teacher2_1
-      @section2_1_1 = FactoryGirl.create :section, subject: @subject2_1
-      @section2_1_2 = FactoryGirl.create :section, subject: @subject2_1
-      @section2_1_3 = FactoryGirl.create :section, subject: @subject2_1
+      @school2 = FactoryBot.create :school_prior_year, :arabic
+      @teacher2_1 = FactoryBot.create :teacher, school: @school2
+      @subject2_1 = FactoryBot.create :subject, school: @school2, subject_manager: @teacher2_1
+      @section2_1_1 = FactoryBot.create :section, subject: @subject2_1
+      @section2_1_2 = FactoryBot.create :section, subject: @subject2_1
+      @section2_1_3 = FactoryBot.create :section, subject: @subject2_1
 
     end
 
@@ -151,7 +151,7 @@ describe "School Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -161,7 +161,7 @@ describe "School Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
         @home_page = "/researchers/#{@researcher.id}"
@@ -173,7 +173,7 @@ describe "School Listing", js:true do
 
     describe "as researcher with no school selected" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         @home_page = "/researchers/#{@researcher.id}"
       end
@@ -182,7 +182,7 @@ describe "School Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
         @home_page = "/system_administrators/#{@system_administrator.id}"
@@ -195,7 +195,7 @@ describe "School Listing", js:true do
 
     describe "as system administrator with no school selected" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         @home_page = "/system_administrators/#{@system_administrator.id}"
       end

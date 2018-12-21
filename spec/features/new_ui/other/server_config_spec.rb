@@ -5,20 +5,20 @@ require 'spec_helper'
 describe "Server Configuration Maintenance", js:true do
   describe "US System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
-      @system_administrator = FactoryGirl.create :system_administrator
-      @researcher = FactoryGirl.create :researcher
-      @school = FactoryGirl.create :school_current_year, :us
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @system_administrator = FactoryBot.create :system_administrator
+      @researcher = FactoryBot.create :researcher
+      @school = FactoryBot.create :school_current_year, :us
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
+      @teacher = FactoryBot.create :teacher, school: @school
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
 
       load_test_section(@section, @teacher, false) # no server config file created
 
-      @school2 = FactoryGirl.create :school_current_year, :us
+      @school2 = FactoryBot.create :school_current_year, :us
 
     end
 
@@ -32,7 +32,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        @school_administrator = FactoryBot.create :school_administrator, school: @school
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -41,7 +41,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         # set_users_school(@school)
         @home_page = "/researchers/#{@researcher.id}"
@@ -67,7 +67,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         # set_users_school(@school)
         @home_page = "/system_administrators/#{@system_administrator.id}"
@@ -78,20 +78,20 @@ describe "Server Configuration Maintenance", js:true do
 
   describe "Egypt System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
-      @system_administrator = FactoryGirl.create :system_administrator
-      @researcher = FactoryGirl.create :researcher
-      @school = FactoryGirl.create :school_current_year, :arabic
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @system_administrator = FactoryBot.create :system_administrator
+      @researcher = FactoryBot.create :researcher
+      @school = FactoryBot.create :school_current_year, :arabic
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
+      @teacher = FactoryBot.create :teacher, school: @school
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
 
       load_test_section(@section, @teacher, false) # no server config file created
 
-      @school2 = FactoryGirl.create :school_current_year, :arabic
+      @school2 = FactoryBot.create :school_current_year, :arabic
 
     end
 
@@ -105,7 +105,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        @school_administrator = FactoryBot.create :school_administrator, school: @school
         sign_in(@school_administrator)
         @home_page = "/school_administrators/#{@school_administrator.id}"
       end
@@ -114,7 +114,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         # set_users_school(@school)
         @home_page = "/researchers/#{@researcher.id}"
@@ -140,7 +140,7 @@ describe "Server Configuration Maintenance", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         # set_users_school(@school)
         @home_page = "/system_administrators/#{@system_administrator.id}"

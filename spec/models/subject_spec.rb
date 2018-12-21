@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Subject do
 
   before do
-    @school = FactoryGirl.build :school, :arabic, marking_periods:"2", name: 'Arabic School', acronym: 'AS'
-    @subject_manager = FactoryGirl.build :teacher, school: @school
-    @subject = FactoryGirl.build :subject, name: 'Model Subject', subject_manager: @subject_manager, school: @school
+    @school = FactoryBot.build :school, :arabic, marking_periods:"2", name: 'Arabic School', acronym: 'AS'
+    @subject_manager = FactoryBot.build :teacher, school: @school
+    @subject = FactoryBot.build :subject, name: 'Model Subject', subject_manager: @subject_manager, school: @school
   end
 
   describe "school should be set up with arabic flags" do
@@ -19,7 +19,7 @@ describe Subject do
 
   subject { @subject }
   it { should be_valid }
-   
+
   relationships = [:sections, :teachers, :subject_outcomes, :all_subject_outcomes]
   test_has_relationships relationships
 

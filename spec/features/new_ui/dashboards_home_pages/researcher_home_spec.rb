@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe "Researcher Home Page", js:true do
   before (:each) do
-    @researcher = FactoryGirl.create :researcher
-    @section = FactoryGirl.create :section
+    @researcher = FactoryBot.create :researcher
+    @section = FactoryBot.create :section
     @school = @section.school
-    @teacher = FactoryGirl.create :teacher, school: @school
+    @teacher = FactoryBot.create :teacher, school: @school
     load_test_section(@section, @teacher)
     # todo - add prior/next year section
   end
@@ -22,7 +22,7 @@ describe "Researcher Home Page", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
       sign_in(@school_administrator)
       @home_page = "/school_administrators/#{@school_administrator.id}"
     end
@@ -40,7 +40,7 @@ describe "Researcher Home Page", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@section.school)
       @home_page = "/system_administrators/#{@system_administrator.id}"

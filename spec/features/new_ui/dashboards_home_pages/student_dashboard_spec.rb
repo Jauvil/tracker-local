@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe "Student Dashboard", js:true do
   before (:each) do
-    @section1_1 = FactoryGirl.create :section
+    @section1_1 = FactoryBot.create :section
     @subject1 = @section1_1.subject
     @school1 = @section1_1.school
     @teacher1 = @subject1.subject_manager
@@ -13,18 +13,18 @@ describe "Student Dashboard", js:true do
     load_test_section(@section1_1, @teacher1)
 
     # add unenrolled section to student (inactive enrollment)
-    @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-    @section2_1 = FactoryGirl.create :section, subject: @subject2
-    @enrollment2_1 = FactoryGirl.create :enrollment, section: @section2_1, student: @student, active: false
-    @subjo2_1 = FactoryGirl.create(:subject_outcome, subject: @subject2)
-    @secto2_1 = FactoryGirl.create(:section_outcome, section: @section2_1, subject_outcome: @subjo2_1, minimized: false)
-    @sor2_1 = FactoryGirl.create :section_outcome_rating, section_outcome: @secto2_1, student: @student, rating: 'H'
-    @ev2_1 = FactoryGirl.create(:evidence, section: @section2_1)
-    @eso2_1 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto2_1, evidence: @ev2_1
-    @esor2_1 = FactoryGirl.create :evidence_section_outcome_rating, evidence_section_outcome: @eso2_1, student: @student, rating: 'B'
+    @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+    @section2_1 = FactoryBot.create :section, subject: @subject2
+    @enrollment2_1 = FactoryBot.create :enrollment, section: @section2_1, student: @student, active: false
+    @subjo2_1 = FactoryBot.create(:subject_outcome, subject: @subject2)
+    @secto2_1 = FactoryBot.create(:section_outcome, section: @section2_1, subject_outcome: @subjo2_1, minimized: false)
+    @sor2_1 = FactoryBot.create :section_outcome_rating, section_outcome: @secto2_1, student: @student, rating: 'H'
+    @ev2_1 = FactoryBot.create(:evidence, section: @section2_1)
+    @eso2_1 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto2_1, evidence: @ev2_1
+    @esor2_1 = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: @eso2_1, student: @student, rating: 'B'
 
-    @subject3 = FactoryGirl.create :subject, subject_manager: @teacher1
-    @section3_1 = FactoryGirl.create :section, subject: @subject3
+    @subject3 = FactoryBot.create :subject, subject_manager: @teacher1
+    @section3_1 = FactoryBot.create :section, subject: @subject3
 
 
 
@@ -47,7 +47,7 @@ describe "Student Dashboard", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @section1_1.school
+      @school_administrator = FactoryBot.create :school_administrator, school: @section1_1.school
       sign_in(@school_administrator)
     end
     it { student_dashboard_is_valid(true) }
@@ -55,7 +55,7 @@ describe "Student Dashboard", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       set_users_school(@section1_1.school)
     end
@@ -64,7 +64,7 @@ describe "Student Dashboard", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@section1_1.school)
     end

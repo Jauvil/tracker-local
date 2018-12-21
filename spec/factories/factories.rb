@@ -28,7 +28,7 @@
 # 5) Use the same method for referencing a local variable.
 # factory :teaching_assignment do
 #   section
-#   teacher   { FactoryGirl.create(:teacher, school: section.school) }
+#   teacher   { FactoryBot.create(:teacher, school: section.school) }
 # end
 # The pattern in 5) is used extensively. The :teaching_assignment model does not enforce any
 # restriction on the teacher. But we want to setup sensible defaults. If we did not add the lambda code
@@ -73,7 +73,7 @@
 #    Build or Create: You can call :build or :create on all models, except noted on the factory. You could run into referential integrity
 #    issues when using build, if the model expects a referenced model to have an id. Use create most of the time if you want to be happy.
 
-FactoryGirl.define do
+FactoryBot.define do
   #traits are reusable
   trait :user_common_attributes do
       gender                  "F"
@@ -108,7 +108,7 @@ FactoryGirl.define do
     school_common_attributes
     #automagically set the school year for this school
     after(:create) do |school|
-      school_year = FactoryGirl.create(:school_year, school: school)
+      school_year = FactoryBot.create(:school_year, school: school)
       school.current_school_year=school_year
       school.save
     end
@@ -124,8 +124,8 @@ FactoryGirl.define do
     school_common_attributes
     #automagically set the school year for this school
     after(:create) do |school|
-      @prior_school_year = FactoryGirl.create(:prior_school_year, school: school)
-      school_year = @current_school_year = FactoryGirl.create(:current_school_year, school: school)
+      @prior_school_year = FactoryBot.create(:prior_school_year, school: school)
+      school_year = @current_school_year = FactoryBot.create(:current_school_year, school: school)
       school.current_school_year=school_year
       school.save
     end
@@ -141,8 +141,8 @@ FactoryGirl.define do
     school_common_attributes
     #automagically set the school year for this school
     after(:create) do |school|
-      prior_school_year = @prior_school_year = FactoryGirl.create(:prior_school_year, school: school)
-      @current_school_year = FactoryGirl.create(:current_school_year, school: school)
+      prior_school_year = @prior_school_year = FactoryBot.create(:prior_school_year, school: school)
+      @current_school_year = FactoryBot.create(:current_school_year, school: school)
       school.current_school_year=prior_school_year
       school.save
     end
@@ -202,7 +202,7 @@ FactoryGirl.define do
     student true
     subscription_status "0"
     after(:create) do |student|
-      @parent_no_email = FactoryGirl.create(:user, school_id: student.school_id, parent: true, child_id: student.id)
+      @parent_no_email = FactoryBot.create(:user, school_id: student.school_id, parent: true, child_id: student.id)
     end
 
   end
@@ -243,7 +243,7 @@ FactoryGirl.define do
 
   factory :teaching_assignment do
     section
-    teacher   { FactoryGirl.create(:teacher, school: section.school) }
+    teacher   { FactoryBot.create(:teacher, school: section.school) }
     write_access  true
   end
 
@@ -263,7 +263,7 @@ FactoryGirl.define do
 
   factory :enrollment do
     section
-    student   { FactoryGirl.create(:student, school: section.school) }
+    student   { FactoryBot.create(:student, school: section.school) }
     student_grade_level { student.grade_level }
   end
 
@@ -279,7 +279,7 @@ FactoryGirl.define do
 
   factory :section_outcome do
     section
-    subject_outcome   { FactoryGirl.create(:subject_outcome, subject: section.subject) }
+    subject_outcome   { FactoryBot.create(:subject_outcome, subject: section.subject) }
     marking_period    3
     active            true
     minimized         false
@@ -288,7 +288,7 @@ FactoryGirl.define do
   factory :section_outcome_rating do
     rating            "H"
     section_outcome
-    student           { FactoryGirl.create(:student, school: section_outcome.subject_outcome.subject.school) }
+    student           { FactoryBot.create(:student, school: section_outcome.subject_outcome.subject.school) }
   end
 
   factory :evidence_type do
@@ -311,7 +311,7 @@ FactoryGirl.define do
   factory :evidence_section_outcome_rating do
     rating "Y"
     evidence_section_outcome
-    student { FactoryGirl.create(:student, school: evidence_section_outcome.section_outcome.subject_outcome.subject.school) }
+    student { FactoryBot.create(:student, school: evidence_section_outcome.section_outcome.subject_outcome.subject.school) }
   end
 
   factory :evidence_hyperlink do
@@ -342,9 +342,9 @@ FactoryGirl.define do
     section
     school            { section.school }
     student
-    attendance_type   { FactoryGirl.create(:attendance_type, school: section.school) }
+    attendance_type   { FactoryBot.create(:attendance_type, school: section.school) }
     attendance_date   { Date.today }
-    excuse            { FactoryGirl.create(:excuse, school: section.school) }
+    excuse            { FactoryBot.create(:excuse, school: section.school) }
     sequence(:comment) { |n| "Comment #{n}" }
   end
 

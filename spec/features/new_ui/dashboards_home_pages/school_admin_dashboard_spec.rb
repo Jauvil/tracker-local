@@ -4,22 +4,22 @@ require 'spec_helper'
 
 describe "School Admin Dashboard", js:true do
   before (:each) do
-    @school = FactoryGirl.create :school_current_year, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, name: 'Subject 1', subject_manager: @teacher, school: @school
-    @section = FactoryGirl.create :section, subject: @subject
-    @subj_math_3 = FactoryGirl.create :subject, name: 'Math 3', subject_manager: @teacher, school: @school
-    @subj_math_4 = FactoryGirl.create :subject, name: 'Math 4', subject_manager: @teacher, school: @school
-    @subj_math_5 = FactoryGirl.create :subject, name: 'Math 5', subject_manager: @teacher, school: @school
+    @school = FactoryBot.create :school_current_year, :arabic
+    @teacher = FactoryBot.create :teacher, school: @school
+    @subject = FactoryBot.create :subject, name: 'Subject 1', subject_manager: @teacher, school: @school
+    @section = FactoryBot.create :section, subject: @subject
+    @subj_math_3 = FactoryBot.create :subject, name: 'Math 3', subject_manager: @teacher, school: @school
+    @subj_math_4 = FactoryBot.create :subject, name: 'Math 4', subject_manager: @teacher, school: @school
+    @subj_math_5 = FactoryBot.create :subject, name: 'Math 5', subject_manager: @teacher, school: @school
     # consider determining order of subjects in dashboard, and then ensuring that subject 1 is there for testing appropriately
-    # @subj_math_6 = FactoryGirl.create :subject, name: 'Math 6', subject_manager: @teacher, school: @school
-    # @subj_math_7 = FactoryGirl.create :subject, name: 'Math 7', subject_manager: @teacher, school: @school
-    # @subj_math_8 = FactoryGirl.create :subject, name: 'Math 8', subject_manager: @teacher, school: @school
-    # @subj_math_9 = FactoryGirl.create :subject, name: 'Math 9', subject_manager: @teacher, school: @school
-    # @subj_math_10 = FactoryGirl.create :subject, name: 'Math 10', subject_manager: @teacher, school: @school
-    # @subj_math_11 = FactoryGirl.create :subject, name: 'Math 11', subject_manager: @teacher, school: @school
-    # @subj_math_12 = FactoryGirl.create :subject, name: 'Math 12', subject_manager: @teacher, school: @school
-    @school_administrator = FactoryGirl.create :school_administrator, school: @section.school
+    # @subj_math_6 = FactoryBot.create :subject, name: 'Math 6', subject_manager: @teacher, school: @school
+    # @subj_math_7 = FactoryBot.create :subject, name: 'Math 7', subject_manager: @teacher, school: @school
+    # @subj_math_8 = FactoryBot.create :subject, name: 'Math 8', subject_manager: @teacher, school: @school
+    # @subj_math_9 = FactoryBot.create :subject, name: 'Math 9', subject_manager: @teacher, school: @school
+    # @subj_math_10 = FactoryBot.create :subject, name: 'Math 10', subject_manager: @teacher, school: @school
+    # @subj_math_11 = FactoryBot.create :subject, name: 'Math 11', subject_manager: @teacher, school: @school
+    # @subj_math_12 = FactoryBot.create :subject, name: 'Math 12', subject_manager: @teacher, school: @school
+    @school_administrator = FactoryBot.create :school_administrator, school: @section.school
     load_test_section(@section, @teacher)
 
     @subject = @section.subject
@@ -41,7 +41,7 @@ describe "School Admin Dashboard", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       set_users_school(@section.school)
     end
@@ -50,7 +50,7 @@ describe "School Admin Dashboard", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@section.school)
     end

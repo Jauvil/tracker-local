@@ -5,30 +5,30 @@ describe "Bulk Enter Sections", js:true do
 
   describe "US System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       # two subjects in @school1
-      @school1 = FactoryGirl.create :school_prior_year, :us
+      @school1 = FactoryBot.create :school_prior_year, :us
 
-      @teacher1_1 = FactoryGirl.create :teacher, school: @school1
+      @teacher1_1 = FactoryBot.create :teacher, school: @school1
 
       # # @subject1 has sections assigned
-      # @subject1_1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1_1
+      # @subject1_1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1_1
       # @discipline = @subject1_1.discipline
 
-      # @section1_1_1 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'a-b'
-      # @ta1_1_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_1
-      # @section1_1_2 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'c-d'
-      # @ta1_1_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_2
-      # @section1_1_3 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'e-f'
-      # @ta1_1_3 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_3
+      # @section1_1_1 = FactoryBot.create :section, subject: @subject1_1, line_number: 'a-b'
+      # @ta1_1_1 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_1
+      # @section1_1_2 = FactoryBot.create :section, subject: @subject1_1, line_number: 'c-d'
+      # @ta1_1_2 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_2
+      # @section1_1_3 = FactoryBot.create :section, subject: @subject1_1, line_number: 'e-f'
+      # @ta1_1_3 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_3
 
       # # @subject2 has no sections assigned
-      # @teacher1_2 = FactoryGirl.create :teacher, school: @school1
-      # @subject1_2 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1_2, discipline: @discipline
+      # @teacher1_2 = FactoryBot.create :teacher, school: @school1
+      # @subject1_2 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1_2, discipline: @discipline
 
-      @student   = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'School1'
+      @student   = FactoryBot.create :student, school: @school1, first_name: 'Student', last_name: 'School1'
       set_parent_password(@student)
 
     end
@@ -42,7 +42,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { valid_bulk_enter_sections(false) }
@@ -50,7 +50,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -59,7 +59,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
@@ -83,30 +83,30 @@ describe "Bulk Enter Sections", js:true do
   end
   describe "Egypt System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       # two subjects in @school1
-      @school1 = FactoryGirl.create :school_prior_year, :arabic
+      @school1 = FactoryBot.create :school_prior_year, :arabic
 
-      @teacher1_1 = FactoryGirl.create :teacher, school: @school1
+      @teacher1_1 = FactoryBot.create :teacher, school: @school1
 
       # # @subject1 has sections assigned
-      # @subject1_1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1_1
+      # @subject1_1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1_1
       # @discipline = @subject1_1.discipline
 
-      # @section1_1_1 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'a-b'
-      # @ta1_1_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_1
-      # @section1_1_2 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'c-d'
-      # @ta1_1_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_2
-      # @section1_1_3 = FactoryGirl.create :section, subject: @subject1_1, line_number: 'e-f'
-      # @ta1_1_3 = FactoryGirl.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_3
+      # @section1_1_1 = FactoryBot.create :section, subject: @subject1_1, line_number: 'a-b'
+      # @ta1_1_1 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_1
+      # @section1_1_2 = FactoryBot.create :section, subject: @subject1_1, line_number: 'c-d'
+      # @ta1_1_2 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_2
+      # @section1_1_3 = FactoryBot.create :section, subject: @subject1_1, line_number: 'e-f'
+      # @ta1_1_3 = FactoryBot.create :teaching_assignment, teacher: @teacher1_1, section: @section1_1_3
 
       # # @subject2 has no sections assigned
-      # @teacher1_2 = FactoryGirl.create :teacher, school: @school1
-      # @subject1_2 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1_2, discipline: @discipline
+      # @teacher1_2 = FactoryBot.create :teacher, school: @school1
+      # @subject1_2 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1_2, discipline: @discipline
 
-      @student   = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'School1'
+      @student   = FactoryBot.create :student, school: @school1, first_name: 'Student', last_name: 'School1'
       set_parent_password(@student)
 
     end
@@ -120,7 +120,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { valid_bulk_enter_sections(false) }
@@ -128,7 +128,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -137,7 +137,7 @@ describe "Bulk Enter Sections", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end

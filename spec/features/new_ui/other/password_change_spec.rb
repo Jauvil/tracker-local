@@ -6,14 +6,14 @@ describe "User can change password", js:true do
   before (:each) do
     create_and_load_arabic_model_school
 
-    @school1 = FactoryGirl.create :school, :arabic
-    @teacher1 = FactoryGirl.create :teacher, school: @school1
-    @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher
-    @section1_1 = FactoryGirl.create :section, subject: @subject1
+    @school1 = FactoryBot.create :school, :arabic
+    @teacher1 = FactoryBot.create :teacher, school: @school1
+    @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher
+    @section1_1 = FactoryBot.create :section, subject: @subject1
     @discipline = @subject1.discipline
     load_test_section(@section1_1, @teacher1)
 
-    @student_no_email = FactoryGirl.create :student_no_email, school_id: @school1.id, first_name: 'Student', last_name: 'Has No Email'
+    @student_no_email = FactoryBot.create :student_no_email, school_id: @school1.id, first_name: 'Student', last_name: 'Has No Email'
   end
 
   describe "as teacher" do
@@ -29,7 +29,7 @@ describe "User can change password", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+      @school_administrator = FactoryBot.create :school_administrator, school: @school1
       @school_administrator.temporary_password='temporary'
       @school_administrator.save
       sign_in(@school_administrator)
@@ -41,7 +41,7 @@ describe "User can change password", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       @researcher.temporary_password='temporary'
       @researcher.save
       sign_in(@researcher)
@@ -54,7 +54,7 @@ describe "User can change password", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       @system_administrator.temporary_password='temporary'
       @system_administrator.save
       sign_in(@system_administrator)

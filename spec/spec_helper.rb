@@ -20,8 +20,8 @@ require 'capybara/rspec'
 require 'rspec/autorun'
 require 'paperclip/matchers'
 require 'coffee_script'
-require 'factory_girl_rails'
-# require 'factory_bot'
+# require 'factory_girl_rails'
+require 'factory_bot'
 require 'model_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -57,8 +57,8 @@ RSpec.configure do |config|
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
 
-  #Allows us to call factories without prefacing with FactoryGirl
-  config.include FactoryGirl::Syntax::Methods
+  #Allows us to call factories without prefacing with FactoryBot
+  config.include FactoryBot::Syntax::Methods
 end
 
 class ActiveRecord::Base

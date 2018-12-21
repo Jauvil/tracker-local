@@ -8,8 +8,8 @@ Tracker2::Application.configure do
   config.cache_classes = true
 
   # Log error messages when you accidentally call methods on nil.
-  # # This was removed by the rake rails:update to Rails 4.0 ????
-  config.whiny_nils = true
+  # # This was removed by the rake rails:update to Rails 4.0 ????  # Removed
+  # config.whiny_nils = true
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
