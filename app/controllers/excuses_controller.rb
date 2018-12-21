@@ -7,6 +7,12 @@ class ExcusesController < ApplicationController
 
   before_filter :valid_current_school
 
+  EXCUSE_PARAMS = [
+    :code,
+    :description,
+    :active
+  ]
+
   def index
     # set to allow any user to see the list of excuses
     authorize! :read, Excuse
@@ -26,7 +32,7 @@ class ExcusesController < ApplicationController
 
   # New UI
   def create
-    @excuse = Excuse.new(params[:excuse])
+    @excuse = Excuse.new(excuse)
     @excuse.school_id = current_school_id
     authorize! :update, @excuse # only let maintainers do these things
     if @excuse.save
@@ -52,7 +58,7 @@ class ExcusesController < ApplicationController
   def update
     find_excuse
     authorize! :update, @excuse # only let maintainers do these things
-    if @excuse.update_attributes(params[:excuse])
+    if @excuse.update_attributes(excuse)
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.updated')
     else
       flash[:alert] = I18n.translate('alerts.had_errors') + I18n.translate('action_titles.update')
@@ -82,6 +88,10 @@ class ExcusesController < ApplicationController
       @school = get_current_school
       @excuse = Excuse.includes(:school).where(id: params[:id], school_id: @school.id).first
     end
+  end
+
+  def excuse
+    params.require[:excuse].permit(EXCUSE_PARAMS)
   end
 
 end

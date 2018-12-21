@@ -2,7 +2,7 @@
 # see license.txt in this software package
 #
 class SchoolYear < ActiveRecord::Base
-  attr_accessible :ends_at, :name, :school_id, :starts_at, :school
+  # attr_accessible :ends_at, :name, :school_id, :starts_at, :school
 
   attr_reader :start_mm, :start_yyyy, :end_mm, :end_yyyy
 

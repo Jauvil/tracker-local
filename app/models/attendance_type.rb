@@ -4,7 +4,7 @@
 class AttendanceType < ActiveRecord::Base
   belongs_to :school
   has_many :attendances
-  attr_accessible :description, :active
+  # attr_accessible :description, :active
 
   validates :description, presence: {message: I18n.translate('errors.cant_be_blank')}
   validates :school, presence: {message: I18n.translate('errors.cant_be_blank')}
@@ -22,5 +22,6 @@ class AttendanceType < ActiveRecord::Base
     active_recs << item if item.present? && !item.active?
     return active_recs
   end
+
 
 end

@@ -2,7 +2,8 @@
 # see license.txt in this software package
 #
 class EvidenceHyperlink < ActiveRecord::Base
-  attr_accessible :description, :evidence_id, :hyperlink, :title
+  # No controller for evidence_hyperlink
+  # attr_accessible :description, :evidence_id, :hyperlink, :title
   before_save :add_http
 
   belongs_to :evidence, counter_cache: true

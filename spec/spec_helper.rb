@@ -21,6 +21,7 @@ require 'rspec/autorun'
 require 'paperclip/matchers'
 require 'coffee_script'
 require 'factory_girl_rails'
+# require 'factory_bot'
 require 'model_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -28,6 +29,7 @@ require 'model_helper'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+  config.include Rails.application.routes.url_helpers
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -40,6 +42,9 @@ RSpec.configure do |config|
   config.include LoadSectionHelper, :type => :feature
   config.include ApplicationHelper
   config.include Paperclip::Shoulda::Matchers
+
+
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

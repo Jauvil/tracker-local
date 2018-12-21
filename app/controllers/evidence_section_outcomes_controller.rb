@@ -4,6 +4,12 @@
 class EvidenceSectionOutcomesController < ApplicationController
   load_and_authorize_resource
 
+  EVIDENCE_SECTION_OUTCOME_PARAMS =[
+    :evidence_id,
+    :position,
+    :section_outcome_id, :evidence_section_outcome_ratings_attributes
+  ]
+
   def show
     respond_to do |format|
       format.json
@@ -45,7 +51,7 @@ class EvidenceSectionOutcomesController < ApplicationController
 
   def update
     respond_to do |format|
-      if @evidence_section_outcome.update_attributes(params[:evidence_section_outcome])
+      if @evidence_section_outcome.update_attributes(evidence_section_outcome)
         format.js
       else
         format.js { render js: "alert('Changes could not be saved!');" }
@@ -63,5 +69,11 @@ class EvidenceSectionOutcomesController < ApplicationController
     end
 
     render nothing: true
+  end
+
+  private
+
+  def evidence_section_outcome
+    params.require[:evidence_section_outcome].permit(EVIDENCE_SECTION_OUTCOME_PARAMS)
   end
 end

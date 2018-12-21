@@ -5,7 +5,7 @@ class Excuse < ActiveRecord::Base
   belongs_to :school
   has_many :attendances
 
-  attr_accessible :code, :description, :active
+  # attr_accessible :code, :description, :active
 
   validates :description, presence: {message: I18n.translate('errors.cant_be_blank')}
   validates :school_id, presence: {message: I18n.translate('errors.cant_be_blank')}
