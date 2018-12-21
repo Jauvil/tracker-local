@@ -21,6 +21,7 @@ require 'rspec/autorun'
 require 'paperclip/matchers'
 require 'coffee_script'
 require 'factory_girl_rails'
+# require 'factory_bot'
 require 'model_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -40,6 +41,9 @@ RSpec.configure do |config|
   config.include LoadSectionHelper, :type => :feature
   config.include ApplicationHelper
   config.include Paperclip::Shoulda::Matchers
+
+
+
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.

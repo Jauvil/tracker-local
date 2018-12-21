@@ -2,5 +2,6 @@
 # see license.txt in this software package
 #
 class EvidenceTemplateSubjectOutcome < ActiveRecord::Base
-  attr_accessible :evidence_template_id, :subject_outcome_id
+  # Not in controllers
+  # attr_accessible :evidence_template_id, :subject_outcome_id
 end

@@ -9,6 +9,14 @@ class AttendancesController < ApplicationController
 
   before_filter :valid_current_school
 
+  ATTENDANCE_PARAMS = [
+    :user_id,
+    :comment,
+    :attendance_date,
+    :attendance_type_id,
+    :excuse_id
+  ]
+
   def index
     @attendance = Attendance.new
     @attendance.school_id = current_school_id
@@ -37,7 +45,8 @@ class AttendancesController < ApplicationController
   end
 
   def create
-    @attendance = Attendance.new(params[:attendance])
+    # @attendance = Attendance.new(params[:attendance])
+    @attendance = Attendance.new(attendance_params)
     @attendance.school_id = current_school_id
     authorize! :update, @attendance
     if @attendance.save
@@ -62,7 +71,8 @@ class AttendancesController < ApplicationController
   def update
     find_attendance
     authorize! :update, @attendance
-    if @attendance.update_attributes(params[:attendance])
+    # if @attendance.update_attributes(params[:attendance])
+    if @attendance.update_attributes(attendance_params)
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.updated')
       redirect_to action: 'index'
     else
@@ -309,6 +319,10 @@ private
     if valid_current_school
       @attendance = Attendance.includes(:school).where(id: params[:id], school_id: current_school_id).first
     end
+  end
+
+  def attendance_params
+    params.require(:attendance).permit(ATTENDANCE_PARAMS)
   end
 
 end

@@ -7,6 +7,11 @@ class AttendanceTypesController < ApplicationController
 
   before_filter :valid_current_school
 
+  ATTENDANCE_TYPE_PARAMS = [
+    :description,
+    :active
+  ]
+
   def index
     # set to allow any user to see the list of Attendance Types
     authorize! :read, AttendanceType
@@ -26,7 +31,7 @@ class AttendanceTypesController < ApplicationController
 
   # New UI
   def create
-    @attendance_type = AttendanceType.new(params[:attendance_type])
+    @attendance_type = AttendanceType.new(attendance_type_params)
     @attendance_type.school_id = current_school_id
     authorize! :update, @attendance_type # only let maintainers do these things
     if @attendance_type.save
@@ -52,7 +57,7 @@ class AttendanceTypesController < ApplicationController
   def update
     find_attendance_type
     authorize! :update, @attendance_type
-    if @attendance_type.update_attributes(params[:attendance_type])
+    if @attendance_type.update_attributes(attendance_type_params)
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.updated')
     else
       flash[:alert] = I18n.translate('alerts.had_errors') + I18n.translate('action_titles.update')
@@ -81,6 +86,10 @@ class AttendanceTypesController < ApplicationController
     if valid_current_school
       @attendance_type = AttendanceType.includes(:school).where(id: params[:id], school_id: current_school_id).first
     end
+  end
+
+  def attendance_type_params
+    params.require[:attendance_type].permit(ATTENDANCE_TYPE_PARAMS)
   end
 
 end

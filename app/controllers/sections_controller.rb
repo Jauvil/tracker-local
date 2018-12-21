@@ -8,6 +8,12 @@ class SectionsController < ApplicationController
 
   include SectionsHelper
 
+  SECTION_PARAMS = [
+    :school_year_id,
+    :subject_id,
+    :line_number
+  ]
+
   # New UI Tracker Page
   # Teacher Tracker Page (Section Tracker)
   def show
@@ -131,10 +137,10 @@ class SectionsController < ApplicationController
       @teachers = Teacher.where(school_id: @school.id).accessible_by(current_ability).order(:last_name, :first_name)
     end
     respond_to do |format|
-      if @section.update_attributes(params[:section])
+      if @section.update_attributes(section_params)
         @teaching_assignments = []
         # remove error 500 on filter change in teacher tracker
-        if params[:section][:selected_marking_period].present?
+        if section_params[:selected_marking_period].present?
           # update marking period filter
           show_prep_h
           format.js { render nothing: true }
@@ -326,7 +332,7 @@ class SectionsController < ApplicationController
   end
 
   def set_section_message
-    if @section.update_attributes params[:section]
+    if @section.update_attributes section_params
       render :update do |page|
         page.replace_html "section_message_content", link_to_function(allow_markup(@section.message), "createSectionMessageForm("+@section.id.to_s+")")
       end
@@ -586,10 +592,10 @@ class SectionsController < ApplicationController
   # New UI
   # update section message from edit_section_message popup
   def update_section_message
-    Rails.logger.debug("*** update_section_message #{params[:section].keys}")
+    Rails.logger.debug("*** update_section_message #{section_params.keys}")
     respond_to do |format|
-      if params[:section].keys == %w(message)
-        if @section.update_attributes(params[:section])
+      if section_params.keys == %w(message)
+        if @section.update_attributes(section_params)
           Rails.logger.debug("*** params: #{params.inspect.to_s}")
           format.js
         else
@@ -706,5 +712,10 @@ class SectionsController < ApplicationController
     end
   end
 
+  private
+
+  def section_params
+    params.require[:section].permit(SECTION_PARAMS)
+  end
 
 end

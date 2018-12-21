@@ -8,7 +8,7 @@ class ReportCardRequest
 	extend  ActiveModel::Naming
 
 attr_accessor :grade_level
-attr_accessible
+# attr_accessible
 
 validates_inclusion_of :grade_level,
 					   :in => 1..12,

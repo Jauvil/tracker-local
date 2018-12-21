@@ -3,6 +3,16 @@
 #
 class AnnouncementsController < ApplicationController
   load_and_authorize_resource
+
+  ANNOUNCEMENT_PARAMS = [
+    :content,
+    :end_at,
+    :restrict_to_staff,
+    :show_staff,
+    :show_students_and_parents,
+    :start_at
+  ]
+
   def show
 
   end
@@ -64,7 +74,7 @@ class AnnouncementsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @announcement.update_attributes(params[:announcement])
+      if @announcement.update_attributes(announcement_params)
         format.js { render action: :saved }
       else
         format.js { render action: :saved }
@@ -89,5 +99,11 @@ class AnnouncementsController < ApplicationController
       format.html { redirect_to :back }
       format.js
     end
+  end
+
+  private
+
+  def announcement_params
+    params.require(:announcement).permit(ANNOUNCEMENT_PARAMS)
   end
 end

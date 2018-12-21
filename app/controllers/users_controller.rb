@@ -8,6 +8,30 @@ class UsersController < ApplicationController
   before_filter :authorize_current_user
   load_and_authorize_resource except: [:create, :update]
 
+  USER_PARAMS = [
+    :duty_par,
+    :permission_par,
+    :xid,
+    :first_name,
+    :last_name,
+    :email,
+    :street_address,
+    :city,
+    :state,
+    :zip_code,
+    :active,
+    :grade_level,
+    :gender,
+    :race,
+    :special_ed,
+    :child_id,
+    :password,
+    :password_confirmation,
+    :subscription_status,
+    :school_id,
+    :username
+  ]
+
   def show
     # remove_school_context
     set_school if enforce_context?
@@ -60,7 +84,8 @@ class UsersController < ApplicationController
 
   # New UI
   def create
-    @user = User.new(params[:user])
+    # @user = User.new(params[:user])
+    @user = User.new(user_params)
 
     @user.school_id = current_school_id
     @user.set_unique_username
@@ -106,13 +131,13 @@ class UsersController < ApplicationController
   end
 
   def update
-    if params[:user][:password].blank? || params[:user][:password_confirmation].blank?
-      params[:user].delete(:password)
-      params[:user].delete(:password_confirmation)
+    if user_params[:password].blank? || user_params[:password_confirmation].blank?
+      user_params.delete(:password)
+      user_params.delete(:password_confirmation)
     end
     # prevent clearing out email address if blank
-    if params[:user][:email].blank?
-      params[:user].delete(:email)
+    if user_params[:email].blank?
+      user_params.delete(:email)
     end
 
     @user = User.find(params[:id])
@@ -129,11 +154,11 @@ class UsersController < ApplicationController
     @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
     respond_to do |format|
-      lname = params[:user][:last_name]
+      lname = user_params[:last_name]
       reload_staff_list = (lname.present? && lname != @user.last_name && lname[0] != @user.last_name[0]) ? true : false
-      @user.assign_attributes(params[:user])
+      @user.assign_attributes(user_params)
       @user.valid?
-      if @user.errors.count == 0 && @user.update_attributes(params[:user])
+      if @user.errors.count == 0 && @user.update_attributes(user_params)
         if params[:commit] == 'active'
           format.js
         elsif @user.password and @user.password_confirmation
@@ -141,7 +166,7 @@ class UsersController < ApplicationController
           if @user.reset_password!(@user.password, @user.password_confirmation)
             @user.temporary_password = nil unless @user.temporary_password == @user.password
             @user.save
-            if params[:user][:password].present? && params[:user][:temporary_password].present?
+            if user_params[:password].present? && user_params[:temporary_password].present?
               UserMailer.changed_user_password(@user, @school, get_server_config).deliver # deliver after save
             end
             format.html { redirect_to(root_path, :notice => 'Password was successfully updated.') }
@@ -150,7 +175,7 @@ class UsersController < ApplicationController
           end
         else
           Rails.logger.error("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
-          if @school.has_flag?(School::USERNAME_FROM_EMAIL) && params[:user][:email].blank?
+          if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
             @user.errors.add(:email, "email is required")
             Rails.logger.error("*** @user.errors: #{@user.errors.inspect}")
             format.js
@@ -166,7 +191,7 @@ class UsersController < ApplicationController
           end
         end
       else
-        if @school.has_flag?(School::USERNAME_FROM_EMAIL) && params[:user][:email].blank?
+        if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
           @user.errors.add(:email, "email is required")
         end
         Rails.logger.error("ERROR - #{@user.errors.full_messages}")
@@ -479,5 +504,13 @@ class UsersController < ApplicationController
         user_in.send(role+'=', value)
       end
     end
+
+  #####################################################################################
+
+  private
+
+  def user_params
+    params.require[:user].permit(USER_PARAMS)
+  end
 
 end

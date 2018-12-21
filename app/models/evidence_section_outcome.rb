@@ -2,7 +2,7 @@
 # see license.txt in this software package
 #
 class EvidenceSectionOutcome < ActiveRecord::Base
-  attr_accessible :evidence_id, :position, :section_outcome_id, :evidence_section_outcome_ratings_attributes
+  # attr_accessible :evidence_id, :position, :section_outcome_id, :evidence_section_outcome_ratings_attributes
   # default_scope   order: 'evidence_section_outcomes.position ASC'
 
   belongs_to                    :evidence

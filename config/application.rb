@@ -13,7 +13,7 @@ require 'csv'
 # Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 Bundler.require(*Rails.groups)
-
+# Bundler.require(:default, Rails.env)
 module Tracker2
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

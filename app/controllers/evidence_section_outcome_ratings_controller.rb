@@ -4,6 +4,14 @@
 class EvidenceSectionOutcomeRatingsController < ApplicationController
   # load_and_authorize_resource
 
+  EVIDENCE_SECTION_OUTCOME_RATING_PARAMS = [
+    :comment,
+    :evidence_section_outcome_id,
+    :flagged,
+    :rating,
+    :student_id
+  ]
+
   def show
 
     # where is this used?
@@ -19,7 +27,7 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
   # SectionOutcome, Evidence, EvidenceSectionOutcome and Student objects.
 
   def create
-    @evidence_section_outcome_rating = EvidenceSectionOutcomeRating.new(params[:evidence_section_outcome_rating])
+    @evidence_section_outcome_rating = EvidenceSectionOutcomeRating.new(evidence_section_outcome_rating)
     authorize! :create, @evidence_section_outcome_rating # only let maintainers do these things
 
     # only update tracker page when not bulk (bulk update is refreshed)
@@ -43,8 +51,8 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
     # not sure if these are needed. check where this is called!
     elsif params[:evidence_section_outcome_rating_id]
       esorid = params[:evidence_section_outcome_rating_id]
-    elsif params[:evidence_section_outcome_rating][:id]
-      esorid = params[:evidence_section_outcome_rating][:id]
+    elsif evidence_section_outcome_rating[:id]
+      esorid = evidence_section_outcome_rating[:id]
     else
       esorid = 0 # will fail
     end
@@ -52,7 +60,7 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
       @evidence_section_outcome_rating = EvidenceSectionOutcomeRating.find(esorid)
       @section_outcome_id = @evidence_section_outcome_rating.evidence_section_outcome.section_outcome_id
     rescue
-      @evidence_section_outcome_rating = EvidenceSectionOutcomeRating.new(params[:evidence_section_outcome_rating])
+      @evidence_section_outcome_rating = EvidenceSectionOutcomeRating.new(evidence_section_outcome_rating)
       @evidence_section_outcome_rating.errors.add(:base, "ERROR - Please reload page, Missing esor record: #{esorid.inspect}")
       @section_outcome_id = 0
     end
@@ -62,12 +70,18 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
 
     render_to = (params['bulk'] == 'true' ) ? {nothing:true} : 'update_tracker'
     respond_to do |format|
-      if  (@evidence_section_outcome_rating.errors.count == 0) && (@evidence_section_outcome_rating.update_attributes params[:evidence_section_outcome_rating])
+      if  (@evidence_section_outcome_rating.errors.count == 0) && (@evidence_section_outcome_rating.update_attributes evidence_section_outcome_rating)
         format.js {render render_to}
       else
         Rails.logger.error("ERROR - updating esor: #{@evidence_section_outcome_rating.errors.full_messages.inspect.to_s}")
         format.js {render render_to, alert: @evidence_section_outcome_rating.errors.full_messages.inspect.to_s}
       end
     end
+  end
+
+  private
+
+  def evidence_section_outcome_rating
+    params.require[:evidence_section_outcome_rating].permit(EVIDENCE_SECTION_OUTCOME_RATING_PARAMS)
   end
 end

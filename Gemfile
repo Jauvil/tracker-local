@@ -7,6 +7,9 @@
   # gem 'rake', '10.1.0' # for Rails 3.2
   gem 'rake', '< 11.0' # for rails 4.0
 
+  # Strong Parameters
+  gem 'strong_parameters'
+
   # # Gems used only for assets and not required
   # # in production environments by default.
   # group :assets do
@@ -18,6 +21,9 @@
   # end
 
   # moved out of assets groups for use in views also
+
+  # gem 'coffee-rails', '~> 3.2.1'
+
   gem 'coffee-rails'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'

@@ -10,7 +10,7 @@ class Attendance < ActiveRecord::Base
   belongs_to :attendance_type
   belongs_to :enrollment
 
-  attr_accessible :user_id, :comment, :attendance_date, :attendance_type_id, :excuse_id
+  # attr_accessible :user_id, :comment, :attendance_date, :attendance_type_id, :excuse_id
 
   validates :school, presence: {message: I18n.translate('errors.cant_be_blank')}
   # no validations for presence of section (will be nil for daily attendence)
