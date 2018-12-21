@@ -245,4 +245,47 @@ Tracker2::Application.routes.draw do
   #   collection do
   #     get 'enter_bulk'
   #     post 'update_bulk'
+  match 'teaching_assignments/enter_bulk' => 'teaching_assignments#enter_bulk',
+    as: 'enter_bulk_teaching_assignments',
+    via: :get #new UI
+  match 'teaching_assignments/update_bulk' => 'teaching_assignments#update_bulk',
+    as: 'update_bulk_teaching_assignments',
+    via: :post #new UI
+  resources :teaching_resources
+  root :to => "home#index"
+  match "home/plc_schedule"         => "home#plc_schedule", :via => [:get], :as => "plc_schedule"
+  match "home/math_resources"       => "home#math_resources", :via => [:get], :as => "math_resources"
+  match "misc/upload_bulk_templates"       => "misc#upload_bulk_templates", :via => [:get], :as => "upload_bulk_templates"
+  resources :excuses, except: [:show, :destroy]
+  resources :attendance_types, except: [:show, :destroy]
+
+  match "attendances/section_attendance_update" => "home#index", via: :get
+  resources :attendances do
+    member do
+      get 'section_attendance'
+    end
+    collection do
+      # get 'section_attendance'
+      get 'section_attendance_by_date'
+      post 'section_attendance_update'
+      get 'section_attendance_xls', defaults: {format: :xlsx}
+      get 'attendance_maintenance'
+      get 'attendance_report'
+      get 'student_attendance_detail_report'
+    end
+  end
+  resources :generates, except: [:show, :update, :destroy]
+
+  resources :server_configs, only: [:show, :edit, :update]
+
+  match "ui/save_cell_size" => "ui#save_cell_size", via: :put, defaults: { format: :js } #new UI
+  match "ui/save_toolkit" => "ui#save_toolkit", via: :put, defaults: { format: :js } #new UI
+
+  # any unmatched posts go to home page.
+  match "*path" => "home#index", via: [:post]
+
+  # must be last item
+  # match ':action' => 'static#:action'
+  match ':action' => 'misc#:action', :via => [:get]
+
 end

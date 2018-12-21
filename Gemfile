@@ -7,9 +7,6 @@
   # gem 'rake', '10.1.0' # for Rails 3.2
   gem 'rake', '< 11.0' # for rails 4.0
 
-  # Strong Parameters
-  gem 'strong_parameters'
-
   # # Gems used only for assets and not required
   # # in production environments by default.
   # group :assets do
@@ -27,12 +24,6 @@
   gem 'coffee-rails'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'
-
-  # ToDo change to strong params
-  # see curriculum app.
-  # https://edgeapi.rubyonrails.org/classes/ActionController/StrongParameters.html
-  # https://www.sitepoint.com/rails-4-quick-look-strong-parameters/
-  gem 'protected_attributes' # temporary till strong params
 
 
 # SSL implementation
@@ -76,7 +67,7 @@ gem 'gretel', '3.0.9'    # breadcrumbs ( last release for this gem )
 gem 'fastthread', '1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 
 # fixes for being old:
-gem 'bullet', '4.6.0', group: :development
+# gem 'bullet', '4.6.0', group: :development
 gem 'nokogiri', '1.6.3.1'
 gem 'rack-cache', '1.6.1'
 gem 'devise', '3.0.0'   # Authentication
