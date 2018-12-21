@@ -5,7 +5,7 @@ class EvidenceSectionOutcomeRating < ActiveRecord::Base
   # attr_accessible             :comment, :evidence_section_outcome_id, :flagged, :rating, :student_id
 
   # Rails 4.0 has changed serialized attributes and attr_readonly to class methods only. You shouldn't use instance methods since it's now deprecated. You should change them to use class methods, e.g. self.serialized_attributes to self.class.serialized_attributes
-. attr_readonly               :evidence_section_outcome_id, :student_id
+  attr_readonly               :evidence_section_outcome_id, :student_id
 
   before_save                 :populate_rating, :upcase_rating
   before_validation           :uniquify, on: :create

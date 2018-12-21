@@ -21,7 +21,7 @@ require 'rspec/autorun'
 require 'paperclip/matchers'
 require 'coffee_script'
 # require 'factory_girl_rails'
-require 'factory_bot'
+require 'factory_bot_rails'
 require 'model_helper'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
