@@ -23,7 +23,10 @@
   # moved out of assets groups for use in views also
 
   # gem 'coffee-rails', '~> 3.2.1'
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   gem 'coffee-rails'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'
