@@ -33,7 +33,8 @@ gem 'rack-ssl', require: 'rack/ssl'
 gem 'mysql2', group: :production
 gem 'sqlite3', group: [:development, :test]
 
-gem 'cancan'          # Authorization : See /app/models/ability.rb
+# gem 'cancan'          # Authorization : See /app/models/ability.rb
+gem 'cancancan', '~> 1.10'
 
 gem 'acts_as_list'    # Drag and drop reordering, 'position' column.
 
@@ -54,7 +55,7 @@ gem 'newrelic_rpm'
 gem 'haml'            # Markup language to render HTML. Alternative to erb.
 gem 'rabl'            # DSL for rendering JSON responses.
 gem 'jquery-rails'
-gem 'zip-zip'         # provides compatibility for rubyzip pre 1.0 (for selenium-webdriver)
+# gem 'zip-zip'         # provides compatibility for rubyzip pre 1.0 (for selenium-webdriver)
 # todo - fix problems with 'i18n-js'
 # gem 'i18n-js', '2.1.2'
 # gem 'gretel', '~> 3.0.7'    # breadcrumbs for Rails 3.2
