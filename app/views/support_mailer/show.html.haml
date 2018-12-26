@@ -24,15 +24,15 @@
         = '---------------'
       %br
         = @ex.backtrace
-    %p
-      = '---------------'
-      %br
-        = 'Session:'
-      %br
-        = '---------------'
-      - @sess.each do |k,v|
-        %br
-          = "#{k.inspect} -> #{v.inspect}"
+    -# %p
+    -#   = '---------------'
+    -#   %br
+    -#     = 'Session:'
+    -#   %br
+    -#     = '---------------'
+    -#   - @sess.each do |k,v|
+    -#     %br
+    -#       = "#{k.inspect} -> #{v.inspect}"
     %p
       = '---------------'
       %br
