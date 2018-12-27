@@ -7,17 +7,17 @@ describe "Generate Account Activity Report", js:true do
 
     create_and_load_arabic_model_school
 
-    @school = FactoryGirl.create :school, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
+    @school = FactoryBot.create :school, :arabic
+    @teacher = FactoryBot.create :teacher, school: @school
+    @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+    @section = FactoryBot.create :section, subject: @subject
     @discipline = @subject.discipline
 
     load_test_section(@section, @teacher)
 
-    @school_administrator = FactoryGirl.create :school_administrator, school: @school
-    @researcher = FactoryGirl.create :researcher
-    @system_administrator = FactoryGirl.create :system_administrator
+    @school_administrator = FactoryBot.create :school_administrator, school: @school
+    @researcher = FactoryBot.create :researcher
+    @system_administrator = FactoryBot.create :system_administrator
 
   end
 

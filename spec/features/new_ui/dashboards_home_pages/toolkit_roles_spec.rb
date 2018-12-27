@@ -4,9 +4,9 @@ require 'spec_helper'
 
 describe "Student Dashboard", js:true do
   before (:each) do
-    @section = FactoryGirl.create :section
+    @section = FactoryBot.create :section
     @school = @section.school
-    @teacher = FactoryGirl.create :teacher, school: @school
+    @teacher = FactoryBot.create :teacher, school: @school
 
     # load_multi_schools_sections # see load_section_helper.rb
     load_test_section(@section, @teacher)
@@ -22,7 +22,7 @@ describe "Student Dashboard", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
       sign_in(@school_administrator)
       @current_role = 'school_administrator'
     end
@@ -31,7 +31,7 @@ describe "Student Dashboard", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       @current_role = 'researcher'
       set_users_school(@school)
@@ -42,7 +42,7 @@ describe "Student Dashboard", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       @current_role = 'system_administrator'
       set_users_school(@school)

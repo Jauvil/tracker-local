@@ -5,14 +5,14 @@ require 'spec_helper'
 describe "Staff Listing", js:true do
   describe "US System" do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
-      @school = FactoryGirl.create :school, :us
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @school = FactoryBot.create :school, :us
+      @teacher = FactoryBot.create :teacher, school: @school
+      @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
@@ -28,7 +28,7 @@ describe "Staff Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        @school_administrator = FactoryBot.create :school_administrator, school: @school
         sign_in(@school_administrator)
       end
       it { has_valid_staff_listing(:school_administrator) }
@@ -37,7 +37,7 @@ describe "Staff Listing", js:true do
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
     #   before do
-    #     @counselor = FactoryGirl.create :counselor, school: @school
+    #     @counselor = FactoryBot.create :counselor, school: @school
     #     sign_in(@counselor)
     #   end
     #   it { has_valid_staff_listing(:counselor) }
@@ -45,7 +45,7 @@ describe "Staff Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school)
       end
@@ -54,7 +54,7 @@ describe "Staff Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school)
       end
@@ -78,14 +78,14 @@ describe "Staff Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
-      @school = FactoryGirl.create :school, :arabic
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @school = FactoryBot.create :school, :arabic
+      @teacher = FactoryBot.create :teacher, school: @school
+      @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
@@ -101,7 +101,7 @@ describe "Staff Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school
+        @school_administrator = FactoryBot.create :school_administrator, school: @school
         sign_in(@school_administrator)
       end
       it { has_valid_staff_listing(:school_administrator) }
@@ -110,7 +110,7 @@ describe "Staff Listing", js:true do
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
     #   before do
-    #     @counselor = FactoryGirl.create :counselor, school: @school
+    #     @counselor = FactoryBot.create :counselor, school: @school
     #     sign_in(@counselor)
     #   end
     #   it { has_valid_staff_listing(:counselor) }
@@ -118,7 +118,7 @@ describe "Staff Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school)
       end
@@ -127,7 +127,7 @@ describe "Staff Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school)
       end

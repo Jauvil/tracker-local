@@ -5,20 +5,20 @@ require 'spec_helper'
 describe "System Users Listing", js:true do
   describe "US System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
-      @school = FactoryGirl.create :school, :us
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @school = FactoryBot.create :school, :us
+      @teacher = FactoryBot.create :teacher, school: @school
+      @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      @researcher = FactoryGirl.create :researcher
-      @system_administrator = FactoryGirl.create :system_administrator
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
+      @researcher = FactoryBot.create :researcher
+      @system_administrator = FactoryBot.create :system_administrator
 
     end
 
@@ -74,20 +74,20 @@ describe "System Users Listing", js:true do
   end
   describe "Egypt System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
-      @school = FactoryGirl.create :school, :arabic
-      @teacher = FactoryGirl.create :teacher, school: @school
-      @teacher_deact = FactoryGirl.create :teacher, school: @school, active: false
-      @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-      @section = FactoryGirl.create :section, subject: @subject
+      @school = FactoryBot.create :school, :arabic
+      @teacher = FactoryBot.create :teacher, school: @school
+      @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+      @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+      @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
-      @researcher = FactoryGirl.create :researcher
-      @system_administrator = FactoryGirl.create :system_administrator
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
+      @researcher = FactoryBot.create :researcher
+      @system_administrator = FactoryBot.create :system_administrator
 
     end
 

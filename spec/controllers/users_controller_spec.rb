@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe UsersController do
   before(:each) do
-    @system_administrator = FactoryGirl.create(:system_administrator)
+    @system_administrator = FactoryBot.create(:system_administrator)
     @school = create :school
   end
 

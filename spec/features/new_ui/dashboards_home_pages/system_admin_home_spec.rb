@@ -7,16 +7,16 @@ describe "System Administrator Home Page", js:true do
 
     create_and_load_arabic_model_school
 
-    @system_administrator = FactoryGirl.create :system_administrator
-    @researcher = FactoryGirl.create :researcher
-    @school = FactoryGirl.create :school_current_year, :arabic
-    @school_administrator = FactoryGirl.create :school_administrator, school: @school
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
-    @section = FactoryGirl.create :section, subject: @subject
+    @system_administrator = FactoryBot.create :system_administrator
+    @researcher = FactoryBot.create :researcher
+    @school = FactoryBot.create :school_current_year, :arabic
+    @school_administrator = FactoryBot.create :school_administrator, school: @school
+    @teacher = FactoryBot.create :teacher, school: @school
+    @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
+    @section = FactoryBot.create :section, subject: @subject
     load_test_section(@section, @teacher)
 
-    @school2 = FactoryGirl.create :school_current_year, :arabic
+    @school2 = FactoryBot.create :school_current_year, :arabic
   end
 
   describe "as teacher" do

@@ -84,7 +84,7 @@ group :development, :test do
   gem 'addressable', '2.3.5'
   gem 'sshkit', '1.3.0'
   gem 'capybara', '1.1.2'
-  gem 'factory_girl_rails', require: false
+  gem 'factory_bot_rails', require: false
   gem 'guard-rspec'
   gem 'simplecov'
   gem 'selenium-webdriver'

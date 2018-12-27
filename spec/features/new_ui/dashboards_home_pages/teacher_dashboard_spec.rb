@@ -4,8 +4,8 @@ require 'spec_helper'
 
 describe "Teacher Dashboard", js:true do
   before (:each) do
-    @section = FactoryGirl.create :section
-    @teacher = FactoryGirl.create :teacher, school: @section.school
+    @section = FactoryBot.create :section
+    @teacher = FactoryBot.create :teacher, school: @section.school
     load_test_section(@section, @teacher)
     # todo - add prior/next year section
   end
@@ -20,7 +20,7 @@ describe "Teacher Dashboard", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @section.school
+      @school_administrator = FactoryBot.create :school_administrator, school: @section.school
       sign_in(@school_administrator)
     end
     # it { can_see_teacher_dashboard }
@@ -29,7 +29,7 @@ describe "Teacher Dashboard", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       set_users_school(@section.school)
     end
@@ -39,7 +39,7 @@ describe "Teacher Dashboard", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@section.school)
     end

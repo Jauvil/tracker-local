@@ -7,10 +7,10 @@ describe "Generate Tracker Usage Report", js:true do
 
     create_and_load_arabic_model_school
 
-    @school1 = FactoryGirl.create :school, :arabic
-    @teacher1 = FactoryGirl.create :teacher, school: @school1
-    @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-    @section1_1 = FactoryGirl.create :section, subject: @subject1
+    @school1 = FactoryBot.create :school, :arabic
+    @teacher1 = FactoryBot.create :teacher, school: @school1
+    @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+    @section1_1 = FactoryBot.create :section, subject: @subject1
     @discipline = @subject1.discipline
 
     load_test_section(@section1_1, @teacher1)
@@ -20,47 +20,47 @@ describe "Generate Tracker Usage Report", js:true do
     val_sors = ["H", "P", "N", "U"]
 
     # section outcome with no evidence and no ratings
-    @subjo_1_0_0_0 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_1_0_0_0 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_0_0_0, minimized: false) # don't minimize any
-    @ev_1_0_0_0 = FactoryGirl.create(:evidence, section: @section1_1)
+    @subjo_1_0_0_0 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_1_0_0_0 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_0_0_0, minimized: false) # don't minimize any
+    @ev_1_0_0_0 = FactoryBot.create(:evidence, section: @section1_1)
 
     # section outcome with one evidence and no ratings
-    @subjo_1_0_1_0 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_1_0_1_0 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_0_1_0, minimized: false) # don't minimize any
-    @ev_1_0_1_0 = FactoryGirl.create(:evidence, section: @section1_1)
-    @eso_1_0_1_0 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto_1_0_1_0, evidence: @ev_1_0_1_0
+    @subjo_1_0_1_0 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_1_0_1_0 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_0_1_0, minimized: false) # don't minimize any
+    @ev_1_0_1_0 = FactoryBot.create(:evidence, section: @section1_1)
+    @eso_1_0_1_0 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto_1_0_1_0, evidence: @ev_1_0_1_0
 
     # section outcome with one evidence ratings
-    @subjo_1_1_1_0 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_1_1_1_0 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_1_0, minimized: false) # don't minimize any
-    @ev_1_1_1_0 = FactoryGirl.create(:evidence, section: @section1_1)
-    @sor_1_1_1_0 = FactoryGirl.create :section_outcome_rating, section_outcome: @secto_1_1_1_0, student: @student2, rating: val_sors[0]
-    @eso_1_1_1_0 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto_1_1_1_0, evidence: @ev_1_1_1_0
-    # @esor_1_1_1_0 = FactoryGirl.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_1_0, student: @student2, rating: val_esors[0]
+    @subjo_1_1_1_0 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_1_1_1_0 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_1_0, minimized: false) # don't minimize any
+    @ev_1_1_1_0 = FactoryBot.create(:evidence, section: @section1_1)
+    @sor_1_1_1_0 = FactoryBot.create :section_outcome_rating, section_outcome: @secto_1_1_1_0, student: @student2, rating: val_sors[0]
+    @eso_1_1_1_0 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto_1_1_1_0, evidence: @ev_1_1_1_0
+    # @esor_1_1_1_0 = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_1_0, student: @student2, rating: val_esors[0]
 
     # section outcome rated with one evidence rated
-    @subjo_1_1_1_1 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_1_1_1_1 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_1_1, minimized: false) # don't minimize any
-    @ev_1_1_1_1 = FactoryGirl.create(:evidence, section: @section1_1)
-    @sor_1_1_1_1 = FactoryGirl.create :section_outcome_rating, section_outcome: @secto_1_1_1_1, student: @student2, rating: val_sors[0]
-    @eso_1_1_1_1 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto_1_1_1_1, evidence: @ev_1_1_1_1
-    @esor_1_1_1_1 = FactoryGirl.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_1_1, student: @student2, rating: val_esors[0]
+    @subjo_1_1_1_1 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_1_1_1_1 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_1_1, minimized: false) # don't minimize any
+    @ev_1_1_1_1 = FactoryBot.create(:evidence, section: @section1_1)
+    @sor_1_1_1_1 = FactoryBot.create :section_outcome_rating, section_outcome: @secto_1_1_1_1, student: @student2, rating: val_sors[0]
+    @eso_1_1_1_1 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto_1_1_1_1, evidence: @ev_1_1_1_1
+    @esor_1_1_1_1 = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_1_1, student: @student2, rating: val_esors[0]
 
     # section outcome rated with one deactivated evidence rated
-    @subjo_d0_1_1_1 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_d0_1_1_1 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_d0_1_1_1, minimized: false) # don't minimize any
-    @ev_d0_1_1_1 = FactoryGirl.create(:evidence, section: @section1_1, active: false)
-    @sor_d0_1_1_1 = FactoryGirl.create :section_outcome_rating, section_outcome: @secto_d0_1_1_1, student: @student2, rating: val_sors[0]
-    @eso_d0_1_1_1 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto_d0_1_1_1, evidence: @ev_d0_1_1_1
-    @esor_d0_1_1_1 = FactoryGirl.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_d0_1_1_1, student: @student2, rating: val_esors[0]
+    @subjo_d0_1_1_1 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_d0_1_1_1 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_d0_1_1_1, minimized: false) # don't minimize any
+    @ev_d0_1_1_1 = FactoryBot.create(:evidence, section: @section1_1, active: false)
+    @sor_d0_1_1_1 = FactoryBot.create :section_outcome_rating, section_outcome: @secto_d0_1_1_1, student: @student2, rating: val_sors[0]
+    @eso_d0_1_1_1 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto_d0_1_1_1, evidence: @ev_d0_1_1_1
+    @esor_d0_1_1_1 = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_d0_1_1_1, student: @student2, rating: val_esors[0]
 
     # section outcome rated with one deactivated rated eso
-    @subjo_1_1_d0_1 = FactoryGirl.create(:subject_outcome, subject: @subject1)
-    @secto_1_1_d0_1 = FactoryGirl.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_d0_1, minimized: false, active: false) # don't minimize any
-    @ev_1_1_d0_1 = FactoryGirl.create(:evidence, section: @section1_1)
-    @sor_1_1_d0_1 = FactoryGirl.create :section_outcome_rating, section_outcome: @secto_1_1_d0_1, student: @student2, rating: val_sors[0]
-    @eso_1_1_d0_1 = FactoryGirl.create :evidence_section_outcome, section_outcome: @secto_1_1_d0_1, evidence: @ev_1_1_d0_1
-    @esor_1_1_d0_1 = FactoryGirl.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_d0_1, student: @student2, rating: val_esors[0]
+    @subjo_1_1_d0_1 = FactoryBot.create(:subject_outcome, subject: @subject1)
+    @secto_1_1_d0_1 = FactoryBot.create(:section_outcome, section: @section1_1, subject_outcome: @subjo_1_1_d0_1, minimized: false, active: false) # don't minimize any
+    @ev_1_1_d0_1 = FactoryBot.create(:evidence, section: @section1_1)
+    @sor_1_1_d0_1 = FactoryBot.create :section_outcome_rating, section_outcome: @secto_1_1_d0_1, student: @student2, rating: val_sors[0]
+    @eso_1_1_d0_1 = FactoryBot.create :evidence_section_outcome, section_outcome: @secto_1_1_d0_1, evidence: @ev_1_1_d0_1
+    @esor_1_1_d0_1 = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: @eso_1_1_d0_1, student: @student2, rating: val_esors[0]
 
   end
 
@@ -74,7 +74,7 @@ describe "Generate Tracker Usage Report", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+      @school_administrator = FactoryBot.create :school_administrator, school: @school1
       sign_in(@school_administrator)
     end
     it { has_valid_tracker_usage_report(:school_administrator) }
@@ -82,7 +82,7 @@ describe "Generate Tracker Usage Report", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       set_users_school(@school1)
     end
@@ -91,7 +91,7 @@ describe "Generate Tracker Usage Report", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       Rails.logger.debug("*** @school1: #{@school1.inspect}")
       set_users_school(@school1)

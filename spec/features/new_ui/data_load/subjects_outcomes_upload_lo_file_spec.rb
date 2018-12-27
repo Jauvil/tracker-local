@@ -5,11 +5,11 @@ require 'spec_helper'
 describe "Subject Outcomes Bulk Upload LOs", js:true do
   describe "US System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
       # two subjects in @school1
-      @section1_1 = FactoryGirl.create :section
+      @section1_1 = FactoryBot.create :section
       @subject1 = @section1_1.subject
       @school1 = @section1_1.school
       @teacher1 = @subject1.subject_manager
@@ -17,15 +17,15 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
       load_test_section(@section1_1, @teacher1)
 
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
-      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      ta1 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryBot.create :section, subject: @subject1
+      ta2 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-      @section2_1 = FactoryGirl.create :section, subject: @subject2
-      @section2_2 = FactoryGirl.create :section, subject: @subject2
-      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryBot.create :section, subject: @subject2
+      @section2_2 = FactoryBot.create :section, subject: @subject2
+      @section2_3 = FactoryBot.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
     end
@@ -39,7 +39,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { cannot_bulk_upload_los }
@@ -47,7 +47,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -56,7 +56,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
@@ -87,11 +87,11 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
   describe "Egypt System", js:true do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
       # two subjects in @school1
-      @section1_1 = FactoryGirl.create :section
+      @section1_1 = FactoryBot.create :section
       @subject1 = @section1_1.subject
       @school1 = @section1_1.school
       @teacher1 = @subject1.subject_manager
@@ -99,15 +99,15 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
       load_test_section(@section1_1, @teacher1)
 
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
-      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      ta1 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryBot.create :section, subject: @subject1
+      ta2 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-      @section2_1 = FactoryGirl.create :section, subject: @subject2
-      @section2_2 = FactoryGirl.create :section, subject: @subject2
-      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryBot.create :section, subject: @subject2
+      @section2_2 = FactoryBot.create :section, subject: @subject2
+      @section2_3 = FactoryBot.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
     end
@@ -121,7 +121,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { cannot_bulk_upload_los }
@@ -129,7 +129,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -138,7 +138,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
@@ -834,7 +834,7 @@ describe "Subject Outcomes Bulk Upload LOs Invalid School", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@school1)
     end

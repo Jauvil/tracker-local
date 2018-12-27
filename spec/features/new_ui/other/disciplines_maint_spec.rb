@@ -8,19 +8,19 @@ describe "Disciplines Maintenance", js:true do
     create_and_load_arabic_model_school
 
     # @school
-    @school = FactoryGirl.create :school_current_year, :arabic
-    @teacher = FactoryGirl.create :teacher, school: @school
-    @subject = FactoryGirl.create :subject, school: @school, subject_manager: @teacher
+    @school = FactoryBot.create :school_current_year, :arabic
+    @teacher = FactoryBot.create :teacher, school: @school
+    @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
     @disciplines << @subject.discipline
-    @section = FactoryGirl.create :section, subject: @subject
+    @section = FactoryBot.create :section, subject: @subject
     @discipline = @subject.discipline
     load_test_section(@section, @teacher)
 
     @discipline_ids = @disciplines.map{ |d| d.id}
 
-    @subject2 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 1'
-    @subject3 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 2'
-    @subject4 = FactoryGirl.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 3'
+    @subject2 = FactoryBot.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 1'
+    @subject3 = FactoryBot.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 2'
+    @subject4 = FactoryBot.create :subject, school: @school, discipline: @discipline, name: 'Astrophysics 3'
 
   end
 
@@ -34,7 +34,7 @@ describe "Disciplines Maintenance", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school
+      @school_administrator = FactoryBot.create :school_administrator, school: @school
       sign_in(@school_administrator)
       @home_page = "/school_administrators/#{@school_administrator.id}"
     end
@@ -43,7 +43,7 @@ describe "Disciplines Maintenance", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       # set_users_school(@school)
       @home_page = "/researchers/#{@researcher.id}"
@@ -53,7 +53,7 @@ describe "Disciplines Maintenance", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       # set_users_school(@school)
       @home_page = "/system_administrators/#{@system_administrator.id}"

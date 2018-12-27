@@ -5,66 +5,66 @@ require 'spec_helper'
 describe "Student Listing", js:true do
   describe "US System" do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: true
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
 
-      @school1 = FactoryGirl.create :school, :us
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @teacher2 = FactoryGirl.create :teacher, school: @school1, active: false
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @school1 = FactoryBot.create :school, :us
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @teacher2 = FactoryBot.create :teacher, school: @school1, active: false
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
 
       load_test_section(@section1_1, @teacher1)
 
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
-      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      ta1 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryBot.create :section, subject: @subject1
+      ta2 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-      @section2_1 = FactoryGirl.create :section, subject: @subject2
-      @section2_2 = FactoryGirl.create :section, subject: @subject2
-      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryBot.create :section, subject: @subject2
+      @section2_2 = FactoryBot.create :section, subject: @subject2
+      @section2_3 = FactoryBot.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
-      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
+      # @enrollment_s2 = FactoryBot.create :enrollment, section: @section2_1, student: @student
       # Assign a deactivated teacher to duplicate the bug can not display student sections if teacher is deactivated.
-      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section2_1, teacher: @teacher2
-      @student_grad = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
+      @teaching_assignment = FactoryBot.create :teaching_assignment, section: @section2_1, teacher: @teacher2
+      @student_grad = FactoryBot.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
 
 
       # # # :school_prior_year
-      @teacher5 = FactoryGirl.create :teacher, school: @school1, active: false
-      @teacher6 = FactoryGirl.create :teacher, school: @school1
-      @subject5 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher5
-      @section5_1 = FactoryGirl.create :section, subject: @subject5
-      @section5_2 = FactoryGirl.create :section, subject: @subject5
-      @section5_3 = FactoryGirl.create :section, subject: @subject5
-      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
+      @teacher5 = FactoryBot.create :teacher, school: @school1, active: false
+      @teacher6 = FactoryBot.create :teacher, school: @school1
+      @subject5 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher5
+      @section5_1 = FactoryBot.create :section, subject: @subject5
+      @section5_2 = FactoryBot.create :section, subject: @subject5
+      @section5_3 = FactoryBot.create :section, subject: @subject5
+      @teaching_assignment = FactoryBot.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
+      @student_prev_year = FactoryBot.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
       # switch to year 2 for @school1
-      @current_school_year = FactoryGirl.create :current_school_year, school: @school1
+      @current_school_year = FactoryBot.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
       @school1.save
 
       # # regular setup for Year 2
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
-      @section6_1 = FactoryGirl.create :section, subject: @subject5
+      @enrollment_s2 = FactoryBot.create :enrollment, section: @section2_1, student: @student_prev_year
+      @section6_1 = FactoryBot.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
-      @section6_2 = FactoryGirl.create :section, subject: @subject5
-      @section6_3 = FactoryGirl.create :section, subject: @subject5
+      @section6_2 = FactoryBot.create :section, subject: @subject5
+      @section6_3 = FactoryBot.create :section, subject: @subject5
 
       # Student enrolled in previous & current sections
-      @teacher7 = FactoryGirl.create :teacher, school: @school1, active: false
-      @subject6 = FactoryGirl.create :subject, school: @school1
-      @section5_4 = FactoryGirl.create :section, subject: @subject6
+      @teacher7 = FactoryBot.create :teacher, school: @school1, active: false
+      @subject6 = FactoryBot.create :subject, school: @school1
+      @section5_4 = FactoryBot.create :section, subject: @subject6
       @discipline5 = @subject6.discipline
-      @student_both = FactoryGirl.create :student, school: @school1, first_name: 'Both', last_name: 'Years', active: true, grade_level: 2
-      @enrollment_both_1 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_both
-      @enrollment_both_2 = FactoryGirl.create :enrollment, section: @section5_4, student: @student_both
-      @teaching_assignment2 = FactoryGirl.create :teaching_assignment, section: @section5_4, teacher: @teacher7
+      @student_both = FactoryBot.create :student, school: @school1, first_name: 'Both', last_name: 'Years', active: true, grade_level: 2
+      @enrollment_both_1 = FactoryBot.create :enrollment, section: @section2_1, student: @student_both
+      @enrollment_both_2 = FactoryBot.create :enrollment, section: @section5_4, student: @student_both
+      @teaching_assignment2 = FactoryBot.create :teaching_assignment, section: @section5_4, teacher: @teacher7
 
     end
 
@@ -77,7 +77,7 @@ describe "Student Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { has_valid_student_listing(true, true, true) }
@@ -85,7 +85,7 @@ describe "Student Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -94,7 +94,7 @@ describe "Student Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
@@ -119,65 +119,65 @@ describe "Student Listing", js:true do
 
   describe "Egypt System" do
     before (:each) do
-      @server_config = FactoryGirl.create :server_config, allow_subject_mgr: false
+      @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
 
-      @school1 = FactoryGirl.create :school, :arabic
-      @teacher1 = FactoryGirl.create :teacher, school: @school1
-      @teacher2 = FactoryGirl.create :teacher, school: @school1, active: false
-      @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-      @section1_1 = FactoryGirl.create :section, subject: @subject1
+      @school1 = FactoryBot.create :school, :arabic
+      @teacher1 = FactoryBot.create :teacher, school: @school1
+      @teacher2 = FactoryBot.create :teacher, school: @school1, active: false
+      @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+      @section1_1 = FactoryBot.create :section, subject: @subject1
       @discipline = @subject1.discipline
 
       load_test_section(@section1_1, @teacher1)
 
-      @section1_2 = FactoryGirl.create :section, subject: @subject1
-      ta1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_2
-      @section1_3 = FactoryGirl.create :section, subject: @subject1
-      ta2 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section1_3
+      @section1_2 = FactoryBot.create :section, subject: @subject1
+      ta1 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_2
+      @section1_3 = FactoryBot.create :section, subject: @subject1
+      ta2 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section1_3
 
-      @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-      @section2_1 = FactoryGirl.create :section, subject: @subject2
-      @section2_2 = FactoryGirl.create :section, subject: @subject2
-      @section2_3 = FactoryGirl.create :section, subject: @subject2
+      @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+      @section2_1 = FactoryBot.create :section, subject: @subject2
+      @section2_2 = FactoryBot.create :section, subject: @subject2
+      @section2_3 = FactoryBot.create :section, subject: @subject2
       @discipline2 = @subject2.discipline
 
-      # @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student
+      # @enrollment_s2 = FactoryBot.create :enrollment, section: @section2_1, student: @student
       # Assign a deactivated teacher to duplicate the bug can not display student sections if teacher is deactivated.
-      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section2_1, teacher: @teacher2
-      @student_grad = FactoryGirl.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
+      @teaching_assignment = FactoryBot.create :teaching_assignment, section: @section2_1, teacher: @teacher2
+      @student_grad = FactoryBot.create :student, school: @school1, first_name: 'Student', last_name: 'Graduated', active: false, grade_level: 2017
 
 
       # # # :school_prior_year
-      @teacher5 = FactoryGirl.create :teacher, school: @school1, active: false
-      @teacher6 = FactoryGirl.create :teacher, school: @school1
-      @subject5 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher5
-      @section5_1 = FactoryGirl.create :section, subject: @subject5
-      @section5_2 = FactoryGirl.create :section, subject: @subject5
-      @section5_3 = FactoryGirl.create :section, subject: @subject5
-      @teaching_assignment = FactoryGirl.create :teaching_assignment, section: @section5_2, teacher: @teacher5
+      @teacher5 = FactoryBot.create :teacher, school: @school1, active: false
+      @teacher6 = FactoryBot.create :teacher, school: @school1
+      @subject5 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher5
+      @section5_1 = FactoryBot.create :section, subject: @subject5
+      @section5_2 = FactoryBot.create :section, subject: @subject5
+      @section5_3 = FactoryBot.create :section, subject: @subject5
+      @teaching_assignment = FactoryBot.create :teaching_assignment, section: @section5_2, teacher: @teacher5
       @discipline = @subject5.discipline
 
       # switch to year 2 for @school1
-      @current_school_year = FactoryGirl.create :current_school_year, school: @school1
+      @current_school_year = FactoryBot.create :current_school_year, school: @school1
       @school1.school_year_id = @current_school_year.id
       @school1.save
-      @student_prev_year = FactoryGirl.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
-      @enrollment_s2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_prev_year
-      @section6_1 = FactoryGirl.create :section, subject: @subject5
+      @student_prev_year = FactoryBot.create :student, school: @school1, first_name: 'Prior', last_name: 'Sections', active: true, grade_level: 2018
+      @enrollment_s2 = FactoryBot.create :enrollment, section: @section2_1, student: @student_prev_year
+      @section6_1 = FactoryBot.create :section, subject: @subject5
       load_test_section(@section6_1, @teacher5)
-      @section6_2 = FactoryGirl.create :section, subject: @subject5
-      @section6_3 = FactoryGirl.create :section, subject: @subject5
+      @section6_2 = FactoryBot.create :section, subject: @subject5
+      @section6_3 = FactoryBot.create :section, subject: @subject5
 
       # Student enrolled in previous & current sections
-      @teacher7 = FactoryGirl.create :teacher, school: @school1, first_name: 'Teacher', last_name: 'Inactive2', active: false
-      @subject6 = FactoryGirl.create :subject, school: @school1
-      @section5_4 = FactoryGirl.create :section, subject: @subject6
+      @teacher7 = FactoryBot.create :teacher, school: @school1, first_name: 'Teacher', last_name: 'Inactive2', active: false
+      @subject6 = FactoryBot.create :subject, school: @school1
+      @section5_4 = FactoryBot.create :section, subject: @subject6
       @discipline5 = @subject6.discipline
-      @student_both = FactoryGirl.create :student, school: @school1, first_name: 'Both', last_name: 'Years', active: true, grade_level: 2
-      @enrollment_both_1 = FactoryGirl.create :enrollment, section: @section5_4, student: @student_both
-      @enrollment_both_2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student_both
-      @teaching_assignment2 = FactoryGirl.create :teaching_assignment, section: @section5_4, teacher: @teacher7
+      @student_both = FactoryBot.create :student, school: @school1, first_name: 'Both', last_name: 'Years', active: true, grade_level: 2
+      @enrollment_both_1 = FactoryBot.create :enrollment, section: @section5_4, student: @student_both
+      @enrollment_both_2 = FactoryBot.create :enrollment, section: @section2_1, student: @student_both
+      @teaching_assignment2 = FactoryBot.create :teaching_assignment, section: @section5_4, teacher: @teacher7
 
     end
 
@@ -190,7 +190,7 @@ describe "Student Listing", js:true do
 
     describe "as school administrator" do
       before do
-        @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+        @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
       it { has_valid_student_listing(true, true, true) }
@@ -198,7 +198,7 @@ describe "Student Listing", js:true do
 
     describe "as researcher" do
       before do
-        @researcher = FactoryGirl.create :researcher
+        @researcher = FactoryBot.create :researcher
         sign_in(@researcher)
         set_users_school(@school1)
       end
@@ -207,7 +207,7 @@ describe "Student Listing", js:true do
 
     describe "as system administrator" do
       before do
-        @system_administrator = FactoryGirl.create :system_administrator
+        @system_administrator = FactoryBot.create :system_administrator
         sign_in(@system_administrator)
         set_users_school(@school1)
       end

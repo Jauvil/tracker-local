@@ -8,61 +8,61 @@ describe "Generate Student Attendance Detail Report", js:true do
     create_and_load_arabic_model_school
 
     # @school1
-    @school1 = FactoryGirl.create :school_current_year, :arabic
-    @teacher1 = FactoryGirl.create :teacher, school: @school1
-    @subject1 = FactoryGirl.create :subject, school: @school1, subject_manager: @teacher1
-    @section1_1 = FactoryGirl.create :section, subject: @subject1
+    @school1 = FactoryBot.create :school_current_year, :arabic
+    @teacher1 = FactoryBot.create :teacher, school: @school1
+    @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher1
+    @section1_1 = FactoryBot.create :section, subject: @subject1
     @discipline = @subject1.discipline
     load_test_section(@section1_1, @teacher1)
 
-    @teacher2 = FactoryGirl.create :teacher, school: @school1
+    @teacher2 = FactoryBot.create :teacher, school: @school1
 
-    @subject2 = FactoryGirl.create :subject, subject_manager: @teacher1
-    @section2_1 = FactoryGirl.create :section, subject: @subject2
-    @section2_2 = FactoryGirl.create :section, subject: @subject2
+    @subject2 = FactoryBot.create :subject, subject_manager: @teacher1
+    @section2_1 = FactoryBot.create :section, subject: @subject2
+    @section2_2 = FactoryBot.create :section, subject: @subject2
     @discipline2 = @subject2.discipline
 
-    @teaching_assignment2_1 = FactoryGirl.create :teaching_assignment, teacher: @teacher1, section: @section2_1
-    @teaching_assignment2_2 = FactoryGirl.create :teaching_assignment, teacher: @teacher2, section: @section2_2
+    @teaching_assignment2_1 = FactoryBot.create :teaching_assignment, teacher: @teacher1, section: @section2_1
+    @teaching_assignment2_2 = FactoryBot.create :teaching_assignment, teacher: @teacher2, section: @section2_2
 
-    @enrollment2_1_2 = FactoryGirl.create :enrollment, section: @section2_1, student: @student2
-    @enrollment2_1_3 = FactoryGirl.create :enrollment, section: @section2_1, student: @student3
-    @enrollment2_2_4 = FactoryGirl.create :enrollment, section: @section2_2, student: @student4
-    @enrollment2_2_5 = FactoryGirl.create :enrollment, section: @section2_2, student: @student5
+    @enrollment2_1_2 = FactoryBot.create :enrollment, section: @section2_1, student: @student2
+    @enrollment2_1_3 = FactoryBot.create :enrollment, section: @section2_1, student: @student3
+    @enrollment2_2_4 = FactoryBot.create :enrollment, section: @section2_2, student: @student4
+    @enrollment2_2_5 = FactoryBot.create :enrollment, section: @section2_2, student: @student5
 
-    @at_tardy = FactoryGirl.create :attendance_type, description: "Tardy", school: @school1
-    @at_absent = FactoryGirl.create :attendance_type, description: "Absent", school: @school1
-    @at_deact = FactoryGirl.create :attendance_type, description: "Deactivated", school: @school1, active: false
+    @at_tardy = FactoryBot.create :attendance_type, description: "Tardy", school: @school1
+    @at_absent = FactoryBot.create :attendance_type, description: "Absent", school: @school1
+    @at_deact = FactoryBot.create :attendance_type, description: "Deactivated", school: @school1, active: false
 
     # @student attendance
     # in two subjects on multiple days
-    FactoryGirl.create :attendance,
+    FactoryBot.create :attendance,
       section: @section1_1,
       student: @student,
       attendance_type: @at_deact,
       attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section1_1,
       student: @student,
       attendance_type: @at_absent,
       attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section1_1,
       student: @student,
       attendance_type: @at_tardy,
       attendance_date: Date.new(2015,9,4)
 
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_1,
       student: @student,
       attendance_type: @at_deact,
       attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_1,
       student: @student,
       attendance_type: @at_absent,
       attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_1,
       student: @student,
       attendance_type: @at_tardy,
@@ -70,29 +70,29 @@ describe "Generate Student Attendance Detail Report", js:true do
 
     # other students
     # two sections of subject2 across two days
-    FactoryGirl.create :attendance,
+    FactoryBot.create :attendance,
       section: @section2_1,
       student: @student3,
       attendance_type: @at_tardy,
       attendance_date: Date.new(2015,9,1)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_1,
       student: @student2,
       attendance_type: @at_absent,
       attendance_date: Date.new(2015,9,2)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_1,
       student: @student3,
       attendance_type: @at_tardy,
       attendance_date: Date.new(2015,9,2)
 
     # students not in @teacher1 classes on 9/5
-    FactoryGirl.create :attendance,
+    FactoryBot.create :attendance,
       section: @section2_2,
       student: @student4,
       attendance_type: @at_absent,
       attendance_date: Date.new(2015,9,5)
-    FactoryGirl.create :attendance,
+      FactoryBot.create :attendance,
       section: @section2_2,
       student: @student5,
       attendance_type: @at_tardy,
@@ -110,7 +110,7 @@ describe "Generate Student Attendance Detail Report", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryGirl.create :school_administrator, school: @school1
+      @school_administrator = FactoryBot.create :school_administrator, school: @school1
       sign_in(@school_administrator)
       @err_page = "/school_administrators/#{@school_administrator.id}"
     end
@@ -119,7 +119,7 @@ describe "Generate Student Attendance Detail Report", js:true do
 
   describe "as researcher" do
     before do
-      @researcher = FactoryGirl.create :researcher
+      @researcher = FactoryBot.create :researcher
       sign_in(@researcher)
       set_users_school(@school1)
       @err_page = "/researchers/#{@researcher.id}"
@@ -129,7 +129,7 @@ describe "Generate Student Attendance Detail Report", js:true do
 
   describe "as system administrator" do
     before do
-      @system_administrator = FactoryGirl.create :system_administrator
+      @system_administrator = FactoryBot.create :system_administrator
       sign_in(@system_administrator)
       set_users_school(@school1)
       @err_page = "/system_administrators/#{@system_administrator.id}"
