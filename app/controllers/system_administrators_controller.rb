@@ -65,7 +65,6 @@ class SystemAdministratorsController < ApplicationController
       @user.errors.add(:base, 'Role is required!')
     end
     @user.assign_attributes(user_params)
-
     @user.set_unique_username
     @user.set_temporary_password
     if user_params[:first_name].blank?

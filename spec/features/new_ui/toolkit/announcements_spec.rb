@@ -219,12 +219,10 @@ describe "Announcements", js:true do
       page.should have_css("#announcements #announcement_1")
 
 
-
       #############################################
       # confirm edit new announcement works properly
 
       # get id of new announcement from returned announcement elements and go to edit popup
-
       # announcement_id = announcements[3][:id].split('_')[1]
       within("#announcements tr#announcement_1") do
         find("a[data-target='#modal_popup']").click
@@ -246,14 +244,12 @@ describe "Announcements", js:true do
       within(announcements[2]) do
         find('a#delete-item').click
       end
-
       #click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-
       # announcements.length.should == 3
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_4")
