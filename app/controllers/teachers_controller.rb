@@ -40,7 +40,6 @@ class TeachersController < ApplicationController
 
     @students = Student.alphabetical.where(id: unique_student_ids)
 
-
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: current_sect_ids)
     puts "*** student ratings"
 
