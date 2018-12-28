@@ -4,6 +4,16 @@
 class TeachersController < ApplicationController
   load_and_authorize_resource
 
+  TEACHER_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :street_address,
+    :city,
+    :state,
+    :zip_code
+  ]
+
   def index
     respond_to do |format|
       format.html
@@ -13,6 +23,7 @@ class TeachersController < ApplicationController
 
   # New UI - Teacher Dashboard
   def show
+    puts "*** show"
     @current_sections = @teacher.sections.order(:position).current
     @old_sections     = @teacher.sections.order(:position).old
 
@@ -25,11 +36,13 @@ class TeachersController < ApplicationController
     @ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_section(section_ids: current_sect_ids)
 
     unique_student_ids = Enrollment.where(section_id: current_sect_ids).pluck(:student_id).uniq
-    Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
-
+    # Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
+    puts "*** unique_student_ids = #{unique_student_ids.inspect.to_s}"
     @students = Student.alphabetical.where(id: unique_student_ids)
+    puts "*** students"
 
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: current_sect_ids)
+    puts "*** student ratings"
 
     # recent activity
     @recent10 = Student.where('current_sign_in_at IS NOT NULL AND id in (?)', unique_student_ids).order('current_sign_in_at DESC').limit(10)
@@ -72,7 +85,8 @@ class TeachersController < ApplicationController
 
   def update
     respond_to do |format|
-      if @teacher.update_attributes(params[:teacher])
+      # if @teacher.update_attributes(params[:teacher])
+      if @teacher.update_attributes(teacher_params)
         format.html { redirect_to @teacher, notice: "Teacher successfully updated!" }
       else
         format.html { render action: "new" }
@@ -87,6 +101,12 @@ class TeachersController < ApplicationController
     respond_to do |format|
       format.html
     end
+  end
+
+  private
+
+  def teacher_params
+    params.require('teacher').permit(TEACHER_PARAMS)
   end
 
 end

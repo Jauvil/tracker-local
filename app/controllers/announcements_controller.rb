@@ -104,6 +104,6 @@ class AnnouncementsController < ApplicationController
   private
 
   def announcement_params
-    params.require(:announcement).permit(ANNOUNCEMENT_PARAMS)
+    params.require('announcement').permit(ANNOUNCEMENT_PARAMS)
   end
 end

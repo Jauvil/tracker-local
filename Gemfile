@@ -88,6 +88,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'simplecov'
   gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
   gem "ruby-prof", "~> 0.13.0"
 end
 

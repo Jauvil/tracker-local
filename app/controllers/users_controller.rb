@@ -505,12 +505,12 @@ class UsersController < ApplicationController
       end
     end
 
-  #####################################################################################
+  ####################################################################################
 
   private
 
   def user_params
-    params.require[:user].permit(USER_PARAMS)
+    params.require('user').permit(USER_PARAMS)
   end
 
 end

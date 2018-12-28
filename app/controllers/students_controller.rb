@@ -7,6 +7,26 @@ class StudentsController < ApplicationController
 
   load_and_authorize_resource except: [:new, :create]
 
+  STUDENT_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :grade_level,
+    :street_address,
+    :city,
+    :state,
+    :zip_code,
+    :race,
+    :gender,
+    :special_ed
+  ]
+
+  PARENT_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+  ]
+
   # skip_load_and_authorize_resource only: :index
 
   # New UI
@@ -106,7 +126,7 @@ class StudentsController < ApplicationController
   def create
     @school = get_current_school
     @student = Student.new
-    @student.assign_attributes(params[:student])
+    @student.assign_attributes(student_params)
     Rails.logger.debug("*** initial errors: #{@student.errors.full_messages}")
     @student.school_id = @school.id
     @student.set_unique_username
@@ -114,7 +134,7 @@ class StudentsController < ApplicationController
     @student.valid?
     Rails.logger.debug("*** set errors: #{@student.errors.full_messages}")
     @parent = Parent.new
-    @parent.assign_attributes(params[:parent])
+    @parent.assign_attributes(parent_params)
     @parent.school_id = @school.id
     parent_status = @parent.valid?
     Rails.logger.debug("*** parent initial errors: #{@parent.errors.full_messages}")
@@ -133,8 +153,8 @@ class StudentsController < ApplicationController
         if @parent.blank?
           @parent = Parent.new
         end
-        Rails.logger.debug("*** @parent.assign_attributes(#{params[:parent].inspect})")
-        @parent.assign_attributes(params[:parent])
+        Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
+        @parent.assign_attributes(parent_params)
         Rails.logger.debug("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
         Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
         @parent.school_id = @school.id
@@ -182,18 +202,18 @@ class StudentsController < ApplicationController
   # Edit Student from Students listing via js
   def update
     @school = get_current_school
-    lname = params[:student][:last_name]
+    lname = student_params[:last_name]
     reload_student_list = (lname.present? && lname != @student.last_name && lname[0] != @student.last_name[0]) ? true : false
 
-    student_status = @student.update_attributes(params[:student])
-    if student_status && params[:student][:password].present? && params[:student][:temporary_password].present?
+    student_status = @student.update_attributes(student_params)
+    if student_status && student_params[:password].present? && student_params[:temporary_password].present?
       UserMailer.changed_user_password(@student, @school, get_server_config).deliver # deliver after save
     end
     parent_status = true
     @parent = @student.parent
     @parenta = @student.get_parent
     @parentb = @student.parents.first
-    parent_status = @parent.update_attributes(params[:parent])
+    parent_status = @parent.update_attributes(parent_params)
 
     respond_to do |format|
       if student_status && parent_status
@@ -447,5 +467,15 @@ class StudentsController < ApplicationController
 
   #####################################################################################
   protected
+
+  private
+
+  def student_params
+    params.require(:student).permit(STUDENT_PARAMS)
+  end
+
+  def parent_params
+    params.require(:parent).permit(PARENT_PARAMS)
+  end
 
 end

@@ -189,9 +189,10 @@ class ApplicationController < ActionController::Base
         @toolkit_past_enrollments = user_loaded.child.enrollments.order(:position).old
       end
       if user_loaded.staff? && user_loaded.methods.include?(:sections)
-        @toolkit_current_sections = user_loaded.sections.order(:position).current.all
+        # @toolkit_current_sections = user_loaded.sections.order(:position).current.all
+        @toolkit_current_sections = user_loaded.sections.order("start_at <= :now and end_at >= :now", now: Time.zone.now).currenct
         @toolkit_current_section_ids = @toolkit_current_sections.map(&:id)
-        @toolkit_past_sections = user_loaded.sections.order(:position).old.all
+        @toolkit_past_sections = user_loaded.sections.order("start_at <= :now and end_at >= :now", now: Time.zone.now).old
         @toolkit_past_section_ids = @toolkit_past_sections.map(&:id)
       end
     end
