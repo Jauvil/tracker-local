@@ -36,7 +36,7 @@ class TeachersController < ApplicationController
     @ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_section(section_ids: current_sect_ids)
 
     unique_student_ids = Enrollment.where(section_id: current_sect_ids).pluck(:student_id).uniq
-    # Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
+    Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
 
     @students = Student.alphabetical.where(id: unique_student_ids)
 
