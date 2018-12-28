@@ -18,7 +18,9 @@ class StudentsController < ApplicationController
     :zip_code,
     :race,
     :gender,
-    :special_ed
+    :special_ed,
+    :password,
+    :temporary_password
   ]
 
   PARENT_PARAMS = [
@@ -471,11 +473,11 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(STUDENT_PARAMS)
+    params.require('student').permit(STUDENT_PARAMS)
   end
 
   def parent_params
-    params.require(:parent).permit(PARENT_PARAMS)
+    params.require('parent').permit(PARENT_PARAMS)
   end
 
 end

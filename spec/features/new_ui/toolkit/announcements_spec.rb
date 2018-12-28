@@ -151,7 +151,7 @@ describe "Announcements", js:true do
   # test methods
 
   def has_valid_announcements(role)
-
+    sleep 200
     # has first announcement in header
     within("#announcements #announcement_#{@announcement1.id}") do
       page.should have_content(@announcement1.content)

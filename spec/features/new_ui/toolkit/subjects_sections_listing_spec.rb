@@ -402,7 +402,7 @@ describe "Subjects Sections Listing", js:true do
       #page.should have_content("Newsubj")
 
       # if user is a regular teacher can not perform Edit Subject
-
+      sleep 50
       Rails.logger.debug("+++ start editing subject")
       # click on edit subject should show edit subject popup
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
