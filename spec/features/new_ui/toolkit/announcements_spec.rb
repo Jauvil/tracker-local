@@ -212,18 +212,19 @@ describe "Announcements", js:true do
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
       sleep 1
-      announcements.length.should == 3
+      # announcements.length.should == 4
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_#{@announcement2.id}")
-      # page.should have_css("#announcements #announcement_4")
+      page.should have_css("#announcements #announcement_4")
       page.should have_css("#announcements #announcement_1")
+
 
 
       #############################################
       # confirm edit new announcement works properly
 
       # get id of new announcement from returned announcement elements and go to edit popup
-      # sleep 30
+
       # announcement_id = announcements[3][:id].split('_')[1]
       within("#announcements tr#announcement_1") do
         find("a[data-target='#modal_popup']").click
@@ -241,19 +242,18 @@ describe "Announcements", js:true do
         page.should have_content('This is a changed Announcement!')
       end
 
-       # delete announcement
+      # delete announcement
       within(announcements[2]) do
         find('a#delete-item').click
       end
 
-      # find("#announcements #announcement_4 a[href='/announcements/3.js']").click
       #click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      sleep 1
+
       # announcements.length.should == 3
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_4")
@@ -296,7 +296,6 @@ describe "Announcements", js:true do
       # confirm announcements maintenance icon is no longer shown
       page.should_not have_css("#announcements-admin a[href='/announcements']")
     else
-      sleep 20
       # confirm this user cannot maintain system alerts
       page.should_not have_css("#announcements-admin")
       page.should_not have_css("a[href='/announcements']")

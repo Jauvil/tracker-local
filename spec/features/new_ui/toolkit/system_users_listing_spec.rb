@@ -153,7 +153,6 @@ describe "System Users Listing", js:true do
     page.should_not have_css("a[href='/system_administrators/system_users']")
     # try to go directly to page
     visit system_maintenance_system_administrators_path
-    sleep 20
     assert_equal(current_path, @home_page)
   end # has_no_system_users_listing
 
@@ -209,7 +208,7 @@ describe "System Users Listing", js:true do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
-        sleep 2
+        sleep 1
         within('div.ui-error') do
           page.should have_content('Role is required')
         end

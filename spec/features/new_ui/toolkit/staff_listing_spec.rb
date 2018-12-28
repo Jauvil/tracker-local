@@ -182,7 +182,7 @@ describe "Staff Listing", js:true do
       end
     end
     # note will get redirected to primary role for user, in this case is teacher
-    sleep 40
+
     assert_equal("/teachers/#{@teacher.id}", current_path)
     page.should have_content("Teacher: #{@teacher.full_name}")
 
