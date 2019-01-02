@@ -23,7 +23,9 @@ class SchoolsController < ApplicationController
     :starts_at,
     :school,
     :start_yyyy,
-    :start_mm
+    :start_mm,
+    :end_yyyy,
+    :end_mm
   ]
 
   # RESTful Methods
@@ -109,7 +111,7 @@ class SchoolsController < ApplicationController
         ActiveRecord::Base.transaction do
           if @school.save
             # copy subjects and LOs from Model school to new school
-            set_school_year_record(@school_year, params[:school_year])
+            set_school_year_record(@school_year, school_year_params)
             # only copy subjects and learning outcomes if this is not the model school
             if @model_school && school_params[:acronymn] != 'MOD'
               school_subjects = Subject.where(school_id: @school.id)
@@ -169,7 +171,7 @@ class SchoolsController < ApplicationController
         @school_year = get_school_year(@school, @model_school)
         ActiveRecord::Base.transaction do
           if @school.update_attributes(school_params)
-            set_school_year_record(@school_year, params[:school_year]) if params[:school_year]
+            set_school_year_record(@school_year, school_year_params) if school_year_params
             # don't copy of subjects and learning outcomes on update
             # this will be done on the subjects sections listing
             Rails.logger.debug("*** School was successfully updated.")
@@ -186,8 +188,8 @@ class SchoolsController < ApplicationController
         flash[:alert] = msg_str
         format.js
       end
-    end
-  end
+    end # end respond_to
+  end # end update
 
   # new UI, add/update subjects and LOs from Model School (for new year rollover)
   # - note subject active flag is not implemented yet, subject outcome active flags should be reviewed.
@@ -677,10 +679,10 @@ class SchoolsController < ApplicationController
   private
 
   def school_params
-    params.require['school'].permit(SCHOOL_PARAMS)
+    params.require(:school).permit(SCHOOL_PARAMS)
   end
 
   def school_year_params
-    params.require['school_year'].permit(SCHOOL_YEAR_PARAMS)
+    params.require(:school_year).permit(SCHOOL_YEAR_PARAMS)
   end
 end

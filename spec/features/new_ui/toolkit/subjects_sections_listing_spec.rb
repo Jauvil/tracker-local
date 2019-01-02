@@ -391,7 +391,7 @@ describe "Subjects Sections Listing", js:true do
         within('#new_subject') do
           select(@discipline.name[1], from: 'subject-discipline-id')
           page.fill_in 'subject[name]', :with => 'Newsubj'
-          sleep 1
+          sleep 10
           page.click_button('Save')
         end
         Rails.logger.debug("+++ popup closed")
@@ -402,7 +402,7 @@ describe "Subjects Sections Listing", js:true do
       #page.should have_content("Newsubj")
 
       # if user is a regular teacher can not perform Edit Subject
-      sleep 50
+      sleep 40
       Rails.logger.debug("+++ start editing subject")
       # click on edit subject should show edit subject popup
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")

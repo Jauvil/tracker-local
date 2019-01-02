@@ -5,6 +5,10 @@ class SubjectOutcomesController < ApplicationController
 
   include SubjectOutcomesHelper
 
+  SUBJECT_OUTCOME_PARAMS = [
+    :section_id
+  ]
+
   def index
     #
     # todo - remove this code - dead code - uses with_permissions_to from declarative_authorization gem
@@ -615,5 +619,9 @@ class SubjectOutcomesController < ApplicationController
   end
 
   private
+
+  def subject_outcome_params
+    params.require[:subject_outcome].permit(SUBJECT_OUTCOME_PARAMS)
+  end
 
 end
