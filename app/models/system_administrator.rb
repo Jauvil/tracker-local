@@ -2,7 +2,6 @@
 # see license.txt in this software package
 #
 class SystemAdministrator < User
-  # default_scope where(system_administrator: true)
   default_scope { where(system_administrator: true) }
 
 end

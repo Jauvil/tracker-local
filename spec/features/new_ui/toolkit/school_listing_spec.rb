@@ -521,7 +521,7 @@ describe "School Listing", js:true do
 
       page.should_not have_css("#modal_popup form#edit_school_#{@school2.id}")
       assert_equal("/schools", current_path)
-      sleep 15
+      sleep 1
       find("a[data-url='/schools/#{@school1.id}/edit.js'] i.fa-edit").click
       page.should have_content("Edit School")
       Rails.logger.debug("+++ check to see subj manager is on")

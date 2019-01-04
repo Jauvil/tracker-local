@@ -10,9 +10,7 @@ class AttendanceType < ActiveRecord::Base
   validates :school, presence: {message: I18n.translate('errors.cant_be_blank')}
 
   # scopes
-  # scope :active_attendance_types, conditions: {active: true}
   scope :active_attendance_types, -> { where(active: true)}
-  # scope :all_attendance_types, conditions: {active: [true, false]}
   scope :all_attendance_types, -> { where(active: [true, false])}
 
 

@@ -2,7 +2,8 @@
 # see license.txt in this software package
 #
 class Parent < User
-  default_scope where(parent: true, active: true)
+  default_scope { where(parent: true, active: true) }
+
   # Access Control
   # using_access_control
 

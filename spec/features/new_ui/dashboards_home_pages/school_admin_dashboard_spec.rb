@@ -105,7 +105,6 @@ describe "School Admin Dashboard", js:true do
     # make sure learning outcomes covered match
     within("#learning") do
       page.should have_content("4 out of 4")
-      sleep 30
       # make sure first entry is Subject 1
       subject_nodes = all('tbody td.subject-link a').map(&:text)
       subject_nodes[0].should == @subject.name

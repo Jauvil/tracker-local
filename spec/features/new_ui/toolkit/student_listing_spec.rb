@@ -299,7 +299,7 @@ describe "Student Listing", js:true do
       end
     end # within("#page-content") do
 
-    # can_see_student_dashboard(@student)
+    can_see_student_dashboard(@student)
     visit students_path
     assert_equal("/students", current_path)
     can_see_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)

@@ -6,9 +6,12 @@ class Enrollment < ActiveRecord::Base
   # using_access_control
   puts "++++++ enrollment"
   scope :alphabetical, joins(:student).where(active: true).order("users.last_name", "users.first_name")
-  scope :current, { joins: { section: { subject: :school } }, conditions: ["sections.school_year_id = schools.school_year_id"] }
+  # scope :current, { joins: { section: { subject: :school } }, conditions: ["sections.school_year_id = schools.school_year_id"] }
+  scope :current, -> { joins( section: { subject: :school } ).where("sections.school_year_id = schools.school_year_id") }
+  # scope :red, -> { where(color: 'red') }
   scope :old,     { joins: { section: { subject: :school } }, conditions: ["sections.school_year_id != schools.school_year_id"] }
-  scope :active_enrollment, where(active: true)
+  # scope :active_enrollment, where(active: true)
+  scope :active_enrollment, -> { where(active: true)}
 
   # Relationships
   belongs_to                    :student

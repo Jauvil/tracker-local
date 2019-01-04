@@ -2,7 +2,7 @@
 # see license.txt in this software package
 #
 class Teacher < User
-  default_scope where(teacher: true, active: true)
+  default_scope { where(teacher: true, active: true) }
   # default_scope order: 'LOWER(users.last_name), LOWER(users.first_name) ASC'
 
   # Access Control

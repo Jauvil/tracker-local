@@ -391,8 +391,7 @@ describe "Subjects Sections Listing", js:true do
         within('#new_subject') do
           select(@discipline.name[1], from: 'subject-discipline-id')
           page.fill_in 'subject[name]', :with => 'Newsubj'
-          sleep 10
-          puts "+++ check if SAVE COMPLETED"
+          sleep 1
           page.click_button('Save')
         end
       end
@@ -443,9 +442,7 @@ describe "Subjects Sections Listing", js:true do
         within('.block-content-full') do
           page.fill_in 'section[line_number]', :with => 'Newsect'
         end
-        Rails.logger.debug("+++ Save New Section")
-        puts "+++ Save New Section"
-        sleep 10
+        sleep 1
         page.click_button('Save')
       end
 
