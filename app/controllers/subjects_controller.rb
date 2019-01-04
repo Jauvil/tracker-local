@@ -7,7 +7,8 @@ class SubjectsController < ApplicationController
 
   SUBJECT_PARAMS = [
     :name,
-    :discipline_id
+    :discipline_id,
+    :subject_outcomes_attributes
   ]
 
   def index
@@ -52,6 +53,7 @@ class SubjectsController < ApplicationController
   end
 
   def show
+    puts "+++ show"
     @school = get_current_school
     @school_year = SchoolYear.find(@school.school_year_id)
 
@@ -85,6 +87,7 @@ class SubjectsController < ApplicationController
 
   def new
     @school = get_current_school
+    puts " +++ CREATE NEW BUTTON"
     @subjects = Subject.where(school_id: @school.id)
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
       @teachers = Teacher.where(school_id: @school.id).accessible_by(current_ability).order(:first_name, :last_name)
@@ -92,6 +95,7 @@ class SubjectsController < ApplicationController
       @teachers = Teacher.where(school_id: @school.id).accessible_by(current_ability).order(:last_name, :first_name)
     end
     @disciplines = Discipline.order(:name)
+
     respond_to do |format|
       format.html # new.html.erb
       # format.xml  { render :xml => @student }   # what is this for ???
@@ -101,6 +105,8 @@ class SubjectsController < ApplicationController
 
   def create
     @school = get_current_school
+    Rails.logger.debug("+++ subject: #{@subject.inspect}")
+    @subject.school_id = @school.id
     @subjects = Subject.where(school_id: @school.id)
     # @teachers = Teacher.where(school_id: @school.id, active: true)
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
@@ -110,13 +116,12 @@ class SubjectsController < ApplicationController
     end
     @disciplines = Discipline.all
     respond_to do |format|
-      @saved = @subject.save
+      saved = @subject.save
       @subject.errors.add(:discipline_id, I18n.translate('errors.cant_be_blank')) if !@subject.discipline_id # to get error onto form
       # @subject.errors.add(:subject_manager_id, I18n.translate('errors.cant_be_blank')) if !@subject.subject_manager_id # to get error onto form
-      if @saved && @subject.errors.count == 0
-        format.html { redirect_to @subject }
+      if saved && @subject.errors.count == 0
         # format.html { redirect_to(@subject.school, :notice => 'Subject was successfully created.') }
-        # format.html { render :action => "index" }
+        format.html { render :action => "index" }
         format.js
       else
         format.html { render :action => "new" }
@@ -235,7 +240,6 @@ class SubjectsController < ApplicationController
   private
 
   def subject_params
-    # params.require['subject'].permit(SUBJECT_PARAMS)
     params.require(:subject).permit(SUBJECT_PARAMS)
   end
 

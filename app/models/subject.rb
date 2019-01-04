@@ -14,8 +14,8 @@ class Subject < ActiveRecord::Base
                                 dependent: :destroy
   has_many                      :teachers,
                                 through: :teaching_assignments
-  has_many                      :subject_outcomes,
-                                conditions: { active: true }
+  has_many                      :subject_outcomes, -> { where active: true}
+                                # conditions: { active: true }
   has_many                      :all_subject_outcomes,
                                 class_name: 'SubjectOutcome',
                                 dependent: :destroy

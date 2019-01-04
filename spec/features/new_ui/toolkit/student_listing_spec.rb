@@ -299,7 +299,7 @@ describe "Student Listing", js:true do
       end
     end # within("#page-content") do
 
-    can_see_student_dashboard(@student)
+    # can_see_student_dashboard(@student)
     visit students_path
     assert_equal("/students", current_path)
     can_see_student_sections(@student, @enrollment, @enrollment_s2, can_see_all)
@@ -322,8 +322,9 @@ describe "Student Listing", js:true do
 
   def can_see_student_dashboard(student)
     within("tr#student_#{student.id}") do
-      page.should have_css("a[href='/students/#{student.id}']")
-      find("a[href='/students/#{student.id}']").click
+      page.should have_css("i.fa-dashboard")
+      page.should have_css("a[href='/students/#{student.id}'] i.fa-dashboard")
+      find("a[href='/students/#{student.id}'] i.fa-dashboard").click
     end
     assert_equal("/students/#{student.id}", current_path)
   end

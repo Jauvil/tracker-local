@@ -27,8 +27,8 @@ class School < ActiveRecord::Base
                                 :dependent => :destroy
   has_many                      :sections,
                                 :through   => :subjects
-  has_many                      :students,
-                                conditions: { active: true },
+  has_many                      :students, -> { where active: true},
+  # conditions: { active: true },
                                 :dependent => :destroy
 
   # remove this? once automated testing is set up
