@@ -22,20 +22,14 @@ class Student < User
   accepts_nested_attributes_for :parents
   belongs_to                    :school
   has_one                       :first_enrollment, class_name: "Enrollment", foreign_key: 'student_id'
-  has_many                      :enrollments,
-                                conditions: { active: true },
+  has_many                      :enrollments, -> { where active: true },
                                 dependent: :destroy
   accepts_nested_attributes_for :enrollments
   has_many                      :sections,
                                 through: :enrollments
-  has_many                      :current_sections,
+  has_many                      :current_sections, -> { where(enrollments: {active: true} ) },
                                 through: :enrollments,
-                                source: :section,
-                                conditions: {
-                                  enrollments: { active: true }
-                                }
-
-
+                                source: :section
   has_many                      :section_outcome_ratings,
                                 dependent: :destroy
   has_many                      :attendances,

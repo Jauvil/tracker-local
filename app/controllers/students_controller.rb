@@ -70,13 +70,14 @@ class StudentsController < ApplicationController
     @school = get_current_school
 
     # todo performance tune this report.  Note view calls student.rb ratings_count method which does SQL against SectionOutcomeRating table for each student.
+    # DEPRECATION WARNING: Model.scoped is deprecated. Please use Model.all instead.
 
     if template == "index"
       # @students = Student.accessible_by(current_ability).active.includes(:parent).order(:grade_level, :last_name, :first_name)
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
         @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name).scoped
       else
-        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name).scoped
+        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name).all
       end
     else
       authorize! :proficiency_bars, Student

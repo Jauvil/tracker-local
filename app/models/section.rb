@@ -17,38 +17,39 @@ class Section < ActiveRecord::Base
                                   conditions: { users: { active: true } },
                                   dependent: :destroy
   accepts_nested_attributes_for   :enrollments
-  has_many                        :active_enrollments,
+  has_many                        :active_enrollments, -> { where active: true, users: { active: true } },
                                   class_name: 'Enrollment',
-                                  include: :student,
-                                  conditions: { active: true, users: { active: true } }
-  has_many                        :students, through: :enrollments,
-                                  order: [:last_name, :first_name]
-  has_many                        :section_outcomes,
-                                  conditions: { active: true },
+                                  include: :student
+  has_many                        :students, -> { order(:last_name, :first_name) },
+                                  through: :enrollments
+  has_many                        :section_outcomes, -> { where active: true},
                                   order: :position,
                                   dependent: :destroy
-  has_many                        :inactive_section_outcomes,
+  has_many                        :inactive_section_outcomes,  -> { where active: false},
                                   class_name: 'SectionOutcome',
-                                  conditions: { active: false},
                                   order: :position
-  has_many                        :subject_outcomes, through: :section_outcomes,
-                                  conditions: {'subject_outcomes.active' => true}
+  has_many                        :subject_outcomes, -> {where('subject_outcomes.active' => true)},
+                                  through: :section_outcomes
   has_many                        :all_subject_outcomes, through: :section_outcomes
   has_many                        :section_outcome_ratings, through: :section_outcomes
-  has_many                        :evidences, conditions: { active: true }
-                                  accepts_nested_attributes_for :evidences
-  has_many                        :inactive_evidences, class_name: 'Evidence', conditions: { active: false }
+  has_many                        :evidences, -> { where active: true }
+  accepts_nested_attributes_for   :evidences
+  has_many                        :inactive_evidences, -> { where active: false}, class_name: 'Evidence'
   has_many                        :evidence_section_outcomes,
                                   through: :section_outcomes
-                                  accepts_nested_attributes_for :inactive_evidences
+  accepts_nested_attributes_for   :inactive_evidences
   has_many                        :evidence_section_outcome_ratings,
                                   include: :evidence,
                                   through: :evidence_section_outcomes
   belongs_to                      :school_year
 
   # Scopes
-  scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
-  scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
+  # scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
+  # scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
+  scope :current, -> { includes(subject: :school).where("sections.school_year_id = schools.school_year_id") }
+  scope :old, -> { includes(subject: :school).where("sections.school_year_id != schools.school_year_id") }
+
+  scope :published_articles, -> { includes(:articles).where(articles: { published: true}) }
 
   def active_student_enrollments
    enrollments.where(
