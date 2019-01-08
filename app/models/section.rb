@@ -12,23 +12,13 @@ class Section < ActiveRecord::Base
   has_many                        :teachers, through: :teaching_assignments
   belongs_to                      :subject
   has_one                         :school, through: :subject
-  has_many                        :enrollments,
-                                  include: :student,
-                                  conditions: { users: { active: true } },
-                                  dependent: :destroy
+  has_many                        :enrollments, -> { includes(:student).where(users: {active: true} ) }, dependent: :destroy
   accepts_nested_attributes_for   :enrollments
-  has_many                        :active_enrollments, -> { where active: true, users: { active: true } },
-                                  class_name: 'Enrollment',
-                                  include: :student
-  has_many                        :students, -> { order(:last_name, :first_name) },
-                                  through: :enrollments
-  has_many                        :section_outcomes, -> { where active: true},
-                                  order: :position,
-                                  dependent: :destroy
-  has_many                        :inactive_section_outcomes,  -> { where active: false},
-                                  class_name: 'SectionOutcome',
-                                  order: :position
-  has_many                        :subject_outcomes, -> {where('subject_outcomes.active' => true)},
+  has_many                        :active_enrollments, -> { includes(:student).where(active: true, users: { active: true } ) }, class_name: 'Enrollment'
+  has_many                        :students, -> { order(:last_name, :first_name) }, through: :enrollments
+  has_many                        :section_outcomes, -> { where(active: true).order(:position) }, dependent: :destroy
+  has_many                        :inactive_section_outcomes,  -> { where(active: false).order(:position) }, class_name: 'SectionOutcome'
+  has_many                        :subject_outcomes, -> { where('subject_outcomes.active' => true) },
                                   through: :section_outcomes
   has_many                        :all_subject_outcomes, through: :section_outcomes
   has_many                        :section_outcome_ratings, through: :section_outcomes
@@ -38,9 +28,7 @@ class Section < ActiveRecord::Base
   has_many                        :evidence_section_outcomes,
                                   through: :section_outcomes
   accepts_nested_attributes_for   :inactive_evidences
-  has_many                        :evidence_section_outcome_ratings,
-                                  include: :evidence,
-                                  through: :evidence_section_outcomes
+  has_many                        :evidence_section_outcome_ratings, -> { includes(:evidence) }, through: :evidence_section_outcomes
   belongs_to                      :school_year
 
   # Scopes

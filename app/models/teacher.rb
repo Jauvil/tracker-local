@@ -16,7 +16,7 @@ class Teacher < User
                                 :class_name => "Subject"
   has_many                      :teaching_assignments
   has_many                      :sections,
-                                :through => :teaching_assignments
+                                through: :teaching_assignments
 
   # Validations
   validates_presence_of         :school_id

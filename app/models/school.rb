@@ -19,16 +19,11 @@ class School < ActiveRecord::Base
   # attr_accessible :name, :acronym, :city, :marking_periods, :school_year, :flag_pars, :min_grade, :max_grade
 
   # Relationships
-  has_many                      :teachers,
-                                :dependent => :destroy
-  has_many                      :counselors,
-                                :dependent => :destroy
-  has_many                      :subjects,
-                                :dependent => :destroy
-  has_many                      :sections,
-                                :through   => :subjects
-  has_many                      :students, -> { where active: true},
-                                :dependent => :destroy
+  has_many                      :teachers, dependent: :destroy
+  has_many                      :counselors, dependent: :destroy
+  has_many                      :subjects, dependent: :destroy
+  has_many                      :sections, through: :subjects
+  has_many                      :students, -> { where active: true}, dependent: :destroy
 
   # remove this? once automated testing is set up
   has_many                      :school_years

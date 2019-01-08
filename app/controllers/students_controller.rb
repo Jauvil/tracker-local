@@ -77,7 +77,7 @@ class StudentsController < ApplicationController
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
         @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name).scoped
       else
-        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name).all
+        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name)  #.scoped
       end
     else
       authorize! :proficiency_bars, Student

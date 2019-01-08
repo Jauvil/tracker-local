@@ -6,7 +6,7 @@ class Student < User
   # constants
   MIN_GRADUATION_YEAR = 2000
 
-  # parameter black/white listing
+  # parameter black/white listingf
   attr_accessor :subsection
 
   # before_update :set_unique_username, if: lambda { |a| a.active }
