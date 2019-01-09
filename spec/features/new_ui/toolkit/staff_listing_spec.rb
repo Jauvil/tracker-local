@@ -16,7 +16,6 @@ describe "Staff Listing", js:true do
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
-
     end
 
     describe "as teacher" do
