@@ -76,7 +76,7 @@
               - staff.each do |s|
                 - deact_class = s.active ? 'active' : 'deactivated'
                 - if s.teacher? && s.active?
-                  - assignments = Teacher.find(s.id).sections.current.count  #update to Rails 4
+                  - assignments = Teacher.includes(:sections).where("sections.id = #{s.id}").references(:sections).count
                 - else
                   - assignments = ''
                 %tr{class: deact_class, id: "user_#{s.id}"}
