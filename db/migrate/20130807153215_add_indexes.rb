@@ -11,8 +11,8 @@ class AddIndexes < ActiveRecord::Migration
     add_index :evidence_section_outcome_ratings, :evidence_section_outcome_id, name: 'evidence_section_outcome_ratings_on_eso_id'
     add_index :evidence_section_outcomes, :evidence_id
     # add_index :evidence_section_outcomes, :section_outcome_id
-    add_index :evidence_template_subject_outcomes, :evidence_template_id
-    add_index :evidence_template_subject_outcomes, :subject_outcome_id
+    add_index :evidence_template_subject_outcomes, :evidence_template_id, name: 'evidence_temp_subj_outc_on_temp_id'
+    add_index :evidence_template_subject_outcomes, :subject_outcome_id, name: 'evidence_temp_subj_outc_on_out_id'
     add_index :evidence_templates, :subject_id
     # add_index :evidences, :section_outcome_id
     add_index :evidences, :evidence_type_id

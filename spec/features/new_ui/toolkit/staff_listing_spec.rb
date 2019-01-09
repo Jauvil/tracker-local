@@ -16,6 +16,7 @@ describe "Staff Listing", js:true do
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
 
+
     end
 
     describe "as teacher" do
@@ -191,6 +192,8 @@ describe "Staff Listing", js:true do
     # all others who can see staff listing (admins, counselor, researcher) can see them
     visit staff_listing_users_path
     assert_equal("/users/staff_listing", current_path)
+    puts "+++ /users/staff_listing"
+    sleep 20
     within("#page-content") do
       within("tr#user_#{@teacher.id}") do
         page.should have_css("a[href='/users/#{@teacher.id}/sections_list'] i.fa-check")
