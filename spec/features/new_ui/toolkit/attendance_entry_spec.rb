@@ -448,15 +448,15 @@ describe "Attendance Entry", js:true do
       end
       page.should have_css("table#attendance_table tbody tr:nth-of-type(2)[id='attendance_#{@student.id}']")
       page.should have_css("table#attendance_table tbody tr:nth-of-type(3)[id='attendance_#{@student2.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student3.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student4.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(10)[id='attendance_#{@student5.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(11)[id='attendance_#{@student6.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(12)[id='attendance_#{@student_new.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(13)[id='attendance_#{@student_transferred.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(4)[id='attendance_#{@student3.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(5)[id='attendance_#{@student4.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student5.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(7)[id='attendance_#{@student6.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_new.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(9)[id='attendance_#{@student_transferred.id}']")
     else
       # us school
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(12)[id='attendance_#{@student_fname1.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_fname1.id}']")
       within("table#attendance_table tbody tr:nth-of-type(1)") do
         page.should have_content("#{@student.full_name}")
         find("select#attendance_#{@student.id}_attendance_type_id").value.should == ""
@@ -464,13 +464,13 @@ describe "Attendance Entry", js:true do
         find("input#attendance_#{@student.id}_comment").value.should == ""
       end
       page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(3 )[id='attendance_#{@student2.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(4)[id='attendance_#{@student3.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student4.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student5.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(10)[id='attendance_#{@student6.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(11)[id='attendance_#{@student_new.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(13)[id='attendance_#{@student_transferred.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(2)[id='attendance_#{@student2.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(3)[id='attendance_#{@student3.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(4)[id='attendance_#{@student4.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(5)[id='attendance_#{@student5.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student6.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(7)[id='attendance_#{@student_new.id}']")
+      page.should have_css("table#attendance_table tbody tr:nth-of-type(9)[id='attendance_#{@student_transferred.id}']")
     end
 
     # navbar-nav-custom-content

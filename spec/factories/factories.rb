@@ -76,12 +76,12 @@
 FactoryBot.define do
   #traits are reusable
   trait :user_common_attributes do
-      gender                  "F"
+      gender                  { "F" }
       first_name              { Faker::Name.first_name }
       last_name               { Faker::Name.last_name }
-      password                "password"
-      password_confirmation   "password"
-      active                  true
+      password                { "password" }
+      password_confirmation   { "password" }
+      active                  { true }
       sequence(:username)     { |n| "user#{n}" }
       sequence(:email)        { |n| "user#{n}@example.com" }
   end
@@ -89,13 +89,13 @@ FactoryBot.define do
   trait :school_common_attributes do
     sequence(:name)         { |n| "Factory School #{n}" }
     sequence(:acronym)      { |n| "SCH#{n}"}
-    marking_periods         4
+    marking_periods         { 4 }
     street_address          { Faker::Address.street_address }
     city                    { Faker::Address.city }
     state                   { Faker::Address.state }
     zip_code                { Faker::Address.zip }
-    min_grade               9
-    max_grade               12
+    min_grade               { 9 }
+    max_grade               { 12 }
   end
 
   # After creation of the school, a school year will be created and assigned.
@@ -113,10 +113,10 @@ FactoryBot.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   { 'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email' }
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   { 'subject_manager,grade_in_subject_name' }
     end
   end
 
@@ -130,10 +130,10 @@ FactoryBot.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   { 'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email' }
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   { 'subject_manager,grade_in_subject_name' }
     end
   end
 
@@ -147,10 +147,10 @@ FactoryBot.define do
       school.save
     end
     trait :arabic do
-      flags   'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+      flags   { 'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email' }
     end
     trait :us do
-      flags   'subject_manager,grade_in_subject_name'
+      flags   { 'subject_manager,grade_in_subject_name' }
     end
   end
 
@@ -160,7 +160,7 @@ FactoryBot.define do
   end
 
   factory :school_year do
-    name                    "2013-2014"
+    name                    { "2013-2014" }
     starts_at               { 80.days.ago }
     ends_at                 { 30.days.from_now }
   end
@@ -187,20 +187,20 @@ FactoryBot.define do
   factory :student do
     user_common_attributes
     school
-    grade_level  2
-    student      true
+    grade_level  { 2 }
+    student      { true }
   end
 
   factory :student_no_email, class: User do
     school
-    gender "F"
-    password "password"
-    password_confirmation "password"
-    active true
-    username 'student_no_email'
-    grade_level 2
-    student true
-    subscription_status "0"
+    gender  { "F" }
+    password { "password" }
+    password_confirmation { "password" }
+    active { true }
+    username { 'student_no_email' }
+    grade_level { 2 }
+    student { true }
+    subscription_status { "0" }
     after(:create) do |student|
       @parent_no_email = FactoryBot.create(:user, school_id: student.school_id, parent: true, child_id: student.id)
     end
@@ -212,29 +212,29 @@ FactoryBot.define do
   factory :teacher do
     user_common_attributes
     school
-    teacher true
+    teacher { true }
   end
 
   factory :counselor do
     user_common_attributes
     school
-    counselor true
+    counselor { true }
   end
 
   factory :researcher, class: User do
     user_common_attributes
-    researcher true
+    researcher { true }
   end
 
   factory :school_administrator do
     user_common_attributes
     school
-    school_administrator true
+    school_administrator { true }
   end
 
   factory :system_administrator do
     user_common_attributes
-    system_administrator true
+    system_administrator { true }
   end
 
   factory :discipline do
@@ -244,7 +244,7 @@ FactoryBot.define do
   factory :teaching_assignment do
     section
     teacher   { FactoryBot.create(:teacher, school: section.school) }
-    write_access  true
+    write_access  { true }
   end
 
   factory :subject do
@@ -258,7 +258,7 @@ FactoryBot.define do
     sequence(:line_number) { |n| "CLASS #{n}" }
     subject
     school_year { subject.school.current_school_year }
-    message   Faker::Lorem.words(1).first
+    message   { Faker::Lorem.words(1).first }
   end
 
   factory :enrollment do
@@ -273,20 +273,20 @@ FactoryBot.define do
     trait :arabic do
       sequence(:lo_code)        { |n| "#{subject[0...1].upcase}.#{subject.grade_from_subject_name}.#{n}"}
       sequence(:description)    { |n| "Learning Outcome #{n}"}
-      marking_period            1
+      marking_period            { 1 }
     end
   end
 
   factory :section_outcome do
     section
     subject_outcome   { FactoryBot.create(:subject_outcome, subject: section.subject) }
-    marking_period    3
-    active            true
-    minimized         false
+    marking_period    { 3 }
+    active            { true }
+    minimized         { false }
   end
 
   factory :section_outcome_rating do
-    rating            "H"
+    rating            { "H" }
     section_outcome
     student           { FactoryBot.create(:student, school: section_outcome.subject_outcome.subject.school) }
   end
@@ -299,7 +299,7 @@ FactoryBot.define do
     section
     sequence(:name) { |n| "Test Evidence #{n}" }
     assignment_date { Date.today }
-    active          true
+    active          { true }
     evidence_type
   end
 
@@ -309,7 +309,7 @@ FactoryBot.define do
   end
 
   factory :evidence_section_outcome_rating do
-    rating "Y"
+    rating { "Y" }
     evidence_section_outcome
     student { FactoryBot.create(:student, school: evidence_section_outcome.section_outcome.subject_outcome.subject.school) }
   end
@@ -317,13 +317,13 @@ FactoryBot.define do
   factory :evidence_hyperlink do
     evidence
     sequence(:title) { |n| "Hyperlink Title #{n}" }
-    hyperlink       Faker::Internet.url
+    hyperlink       { Faker::Internet.url }
   end
 
   factory :evidence_attachment do
    evidence
    sequence(:name) { |n| "Attachment Name #{n}" }
-   attachment      File.new(Rails.root + 'spec/fixtures/rails.png')
+   attachment      { File.new(Rails.root + 'spec/fixtures/rails.png') }
   end
 
   factory :excuse do
@@ -335,7 +335,7 @@ FactoryBot.define do
   factory :attendance_type do
    sequence(:description) { |n| "Tardy #{n}" }
    school
-   active true
+   active { true }
   end
 
   factory :attendance do
@@ -356,7 +356,7 @@ FactoryBot.define do
 
   # This model cannot be saved, so call build only when using it, not create
   factory :report_card_request do
-    grade_level 5
+    grade_level { 5 }
   end
 
   factory :server_config do

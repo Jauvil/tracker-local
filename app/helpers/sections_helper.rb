@@ -33,7 +33,7 @@ module SectionsHelper
 
   def show_prep_h
     # set up for the show view
-    @section = Section.scoped
+    @section = Section.all
     @section = @section.includes(
       section_outcomes: [
         :section,
