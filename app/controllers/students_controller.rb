@@ -40,28 +40,22 @@ class StudentsController < ApplicationController
   #   GET "/students/#.js"
   #   Parameters: {"id"=>"#"}
   def show
-    Rails.logger.debug("*** student show")
     # @sections = @student.active_sections.includes(:subject, :teachers)
     # @section_outcome_rating_counts = @student.hash_of_section_outcome_rating_counts
     # @active_enrollments = Enrollment.includes(:section).alphabetical.current.where(student_id: @student)
     @active_enrollments = Enrollment.includes(:section).current.active_enrollment.where(student_id: @student)
-    Rails.logger.debug("*** active_enrollments")
     current_sect_ids = @active_enrollments.pluck(:section_id)
     Rails.logger.debug("*** current_sect_ids: #{current_sect_ids}")
     @ratings = @student.hash_of_section_outcome_rating_counts(section_ids: current_sect_ids)
     @e_over_cur = @student.overall_current_evidence_ratings
     @e_weekly_cur = @student.overall_current_evidence_ratings 1.week.ago
     @missing = @student.missing_evidences_by_section
-    Rails.logger.debug("*** missing_evidences_by_section")
     @parent = @student.get_parent
 
     respond_to do |format|
-      Rails.logger.debug("*** start respond to FORMAT")
       format.html
       format.js # show user popup from student listing
-      Rails.logger.debug("*** END OF RESPOND TO FORMAT ")
     end
-    Rails.logger.debug("*** end of student show")
   end
 
   # New UI

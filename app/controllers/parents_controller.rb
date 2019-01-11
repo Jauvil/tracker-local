@@ -25,7 +25,6 @@ class ParentsController < ApplicationController
   #   Rendered parents/show.html.haml within layouts/application
   #      - uses student/_dashboard.html.haml
   def show
-    puts "*** show"
     @student = Student.find(@parent.child_id)
     @active_enrollments = Enrollment.includes(:section).current.where(student_id: @student)
     current_sect_ids = @active_enrollments.pluck(:section_id)
@@ -33,7 +32,7 @@ class ParentsController < ApplicationController
     @e_over_cur = @student.overall_current_evidence_ratings
     @e_weekly_cur = @student.overall_current_evidence_ratings 1.week.ago
     @missing = @student.missing_evidences_by_section
-    puts "*** show"
+
     respond_to do |format|
       format.html
     end

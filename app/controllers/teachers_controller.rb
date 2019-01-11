@@ -25,12 +25,9 @@ class TeachersController < ApplicationController
   def show
     current_sections = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
     @current_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).current
-    # @current_sections = @teacher.sections.order(:position).current
-    # old_sections = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
-    # @old_sections = Section.where(section_id: current_sections).order(:position).old
     old_section = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
     @current_section = Section.includes(:section_outcomes).where(section_id: old_section).order(:position).references(:section_outcomes).old
-    # @old_sections     = @teacher.sections.order(:position).old
+
 
     current_sect_ids = []
     @teacher.teaching_assignments.each do |ta|
@@ -46,7 +43,7 @@ class TeachersController < ApplicationController
     @students = Student.alphabetical.where(id: unique_student_ids)
 
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: current_sect_ids)
-    puts "*** 1 student ratings"
+
 
     # recent activity
     @recent10 = Student.where('current_sign_in_at IS NOT NULL AND id in (?)', unique_student_ids).order('current_sign_in_at DESC').limit(10)

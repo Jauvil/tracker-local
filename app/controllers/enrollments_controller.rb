@@ -11,7 +11,7 @@ class EnrollmentsController < ApplicationController
     @student                  = @enrollment.student
     @evidence_ratings         = @student.section_evidence_ratings @enrollment.section_id
     @sy = SchoolYear.find(@section.school_year_id)
-    puts "*****  enrollments"
+
     # todo - move this to enrollment controller
     @section_outcome_ratings  = @student.section_section_outcome_ratings @section.id
 
@@ -23,7 +23,7 @@ class EnrollmentsController < ApplicationController
     end
     @e_over_cur = @enrollment.count_section_evidence_ratings @enrollment.section_id
     @e_weekly_cur = @enrollment.count_section_evidence_ratings @enrollment.section_id, 1.week.ago
-    puts " +++ enrollments"
+
     respond_to do |format|
       format.html
       # format.json # used for Student Bar Charts (charts for all sections for a student)

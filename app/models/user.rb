@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
 
          :rememberable, :trackable, :recoverable#, :validatable # (removed in favor of custom validations
                                                                 # because :validatable requires an email address)
+  # scope :alphabetical, order([:last_name, :first_name])
   scope :alphabetical, -> {
     order(:last_name, :first_name)
   }

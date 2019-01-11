@@ -4,7 +4,6 @@
 class Enrollment < ActiveRecord::Base
   # Access Control
   # using_access_control
-  puts "++++++ enrollment"
   scope :alphabetical, -> { joins(:student).where(active: true).order("users.last_name", "users.first_name") }
   scope :current, -> { joins(section: { subject: :school }).where("sections.school_year_id = schools.school_year_id") }
   scope :old, -> { joins(section: { subject: :school }).where("sections.school_year_id != schools.school_year_id") }
@@ -30,7 +29,6 @@ class Enrollment < ActiveRecord::Base
 
   #todo have this work on enrollment section
   def hash_of_section_outcome_rating_counts(options = {})
-    puts "**** hash_of_section_outcome_rating_counts"
     options[:marking_periods] ||= (1..10).to_a
     hash = Hash.new { |h,k| h[k] = { H: 0, P: 0, N: 0, U: 0 } }
     section_outcome_ratings = SectionOutcomeRating.joins(:section_outcome).where(student_id: student_id, section_outcomes: { active: true })

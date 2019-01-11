@@ -68,7 +68,6 @@ class SectionsController < ApplicationController
   end
 
   def new
-    puts "+++ NEW SECTION POP UP"
     # currently only allow entry into the current school for system administrators
     # @schools = School.accessible_by(current_ability).order('name')
     Rails.logger.debug("*** sections#new, params: #{params}")
@@ -93,7 +92,6 @@ class SectionsController < ApplicationController
 
   def create
     @school = get_current_school
-    Rails.logger.debug("+++ section: #{@section.inspect}")
     @section.school_year_id = @school.school_year_id
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
       @teachers = Teacher.where(school_id: @school.id).accessible_by(current_ability).order(:first_name, :last_name)
