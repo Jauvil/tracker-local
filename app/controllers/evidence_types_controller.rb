@@ -8,7 +8,7 @@ class EvidenceTypesController < ApplicationController
   ]
 
   def index
-    @evidence_types = EvidenceType.order(:name).all
+    @evidence_types = EvidenceType.order(:name)
     authorize! :listing, EvidenceType # ensure redirect to login page on timeout
     respond_to do |format|
       format.json # This response is used by forms in old UI?

@@ -18,7 +18,7 @@ class DisciplinesController < ApplicationController
   end
 
   def index
-    @disciplines = Discipline.order(:name).all
+    @disciplines = Discipline.order(:name)
     authorize! :read, Discipline # ensure redirect to login page on timeout
     respond_to do |format|
       format.html # This response is used in Evidence Type Maintenance in New UI

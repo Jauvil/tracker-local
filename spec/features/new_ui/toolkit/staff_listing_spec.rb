@@ -177,6 +177,7 @@ describe "Staff Listing", js:true do
     # all who can see staff listing (teachers, admins, counselor, researcher) can see any teacher's dashboard
     within("#page-content") do
       within("tr#user_#{@teacher.id}") do
+        sleep 4
         page.should have_css("a[href='/users/#{@teacher.id}'] i.fa-dashboard")
         page.find("a[href='/users/#{@teacher.id}']").click
       end
@@ -193,7 +194,7 @@ describe "Staff Listing", js:true do
     visit staff_listing_users_path
     assert_equal("/users/staff_listing", current_path)
     puts "+++ /users/staff_listing"
-    sleep 20
+    sleep 2
     within("#page-content") do
       within("tr#user_#{@teacher.id}") do
         page.should have_css("a[href='/users/#{@teacher.id}/sections_list'] i.fa-check")

@@ -240,8 +240,12 @@ class UsersController < ApplicationController
     @current_sections = []
     @previous_sections = []
     if user_loaded
-      @current_sections = user_loaded.sections.order(:position).current
-      @previous_sections = user_loaded.sections.order(:position).old
+      current_sections = TeachingAssignment.where(teacher_id: user_loaded.id).pluck(:section_id)
+      @current_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).current
+      # (user_loaded.id).sections.order(:position).current
+      previous_sections = TeachingAssignment.where(teacher_id: user_loaded.id).pluck(:section_id)
+      @previous_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).old
+      # user_loaded.sections.order(:position).old
     end
 
     respond_to do |format|

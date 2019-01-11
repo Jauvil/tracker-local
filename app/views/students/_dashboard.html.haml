@@ -178,7 +178,6 @@
                     %i.fa.fa-check.fa-lg
                     %strong.left=" #{e.section.name} | #{t_name}"
                 %td.active.col-sm-7
-                  / .table-progress{:style => "width: #{width}%;"}=display if width >= 15
                   .progress-container
                     - if complete > 0
                       .table-progress{title: 'Learning Outcomes completed at Proficient or Higher out of total rated', :style => "width: #{prof_width}%;"}= if both_in_left then display elsif !both_in_right then complete end

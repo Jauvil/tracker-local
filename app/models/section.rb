@@ -97,14 +97,7 @@ class Section < ActiveRecord::Base
   # used only in the Teacher Tracker page, and Bulk Rate pages.
   def hash_of_section_outcome_ratings
     return_value            = Hash.new { |l, k| l[k] = Hash.new(["",0]) }
-    section_outcome_ratings = SectionOutcomeRating.select("section_outcome_ratings.id, section_outcome_ratings.rating, section_outcome_ratings.student_id, section_outcome_ratings.section_outcome_id").joins({:student => :enrollments}, {:section_outcome => :section}).where(
-                                :section_outcomes => {
-                                    :section_id => id
-                                    },
-                                  :enrollments => {
-                                    :section_id => id
-                                  }
-                              ).all
+    section_outcome_ratings = SectionOutcomeRating.select("section_outcome_ratings.id, section_outcome_ratings.rating, section_outcome_ratings.student_id, section_outcome_ratings.section_outcome_id").joins({:student => :enrollments}, {:section_outcome => :section}).where(:section_outcomes => { :section_id => id }, :enrollments => { :section_id => id } )
     section_outcome_ratings.each do |s|
       return_value[s[:section_outcome_id]][s[:student_id]] = [s[:rating],s[:id]]
     end
@@ -114,16 +107,9 @@ class Section < ActiveRecord::Base
   def hash_of_evidence_ratings(options = {})
     return_value      = Hash.new { |h,k| h[k] = Hash.new { |l,m| l[m] = Hash.new(["", "", 0, "f"]) } }
     if options[:evidence_id].present?
-      evidence_ratings  = evidence_section_outcome_ratings.joins(:student)
-        .includes(:evidence_section_outcome)
-        .where(
-          users: {active: true},
-          evidence_section_outcomes: {evidence_id: options[:evidence_id]}
-        )
+      evidence_ratings  = evidence_section_outcome_ratings.joins(:student).includes(:evidence_section_outcome).where(users: {active: true}, evidence_section_outcomes: {evidence_id: options[:evidence_id]}).references(:evidence_section_outcome)
     else
-      evidence_ratings  = evidence_section_outcome_ratings.joins(:student)
-        .includes(:evidence_section_outcome)
-        .where(users: {active: true})
+      evidence_ratings  = evidence_section_outcome_ratings.joins(:student).includes(:evidence_section_outcome).where(users: {active: true}).references(:evidence_section_outcome)
     end
     Rails.logger.debug ("*** got evidence ratings")
     evidence_ratings.each do |e|
