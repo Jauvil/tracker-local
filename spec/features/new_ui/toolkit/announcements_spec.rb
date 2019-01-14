@@ -149,7 +149,7 @@ describe "Announcements", js:true do
 
   ##################################################
   # test methods
-
+  sleep 50
   def has_valid_announcements(role)
     # has first announcement in header
     within("#announcements #announcement_#{@announcement1.id}") do
@@ -159,26 +159,30 @@ describe "Announcements", js:true do
       end
     end
     # hide first announcement
-    page.should have_css("#announcements #announcement_#{@announcement2.id}")
-
-    within("#announcements #announcement_1 .announcement-alert .hide-alert") do
-      # find 'id new annoucement then click HIDE'
-      page.find("a[href='/announcements/1/hide']").click
-    end
+    page.should have_css("#announcements #announcement_#{@announcement1.id}")
     sleep 1
     within("#announcements #announcement_#{@announcement1.id} .announcement-alert .hide-alert") do
+      # find 'id new annoucement then click HIDE'
       page.find("a[href='/announcements/#{@announcement1.id}/hide']").click
     end
-
+    sleep 1
     # confirm javascript hid the first announcement
     page.should_not have_css("#announcements #announcement_#{@announcement1.id}")
 
     # hide second announcement
+    page.should have_css("#announcements #announcement_#{@announcement2.id}")
     within("#announcements #announcement_#{@announcement2.id} .announcement-alert .hide-alert") do
       page.find("a[href='/announcements/#{@announcement2.id}/hide']").click
     end
     # confirm javascript hid the second announcement
     page.should_not have_css("#announcements #announcement_#{@announcement2.id}")
+
+    # hide second announcement
+    # within("#announcements #announcement_#{@announcement2.id} .announcement-alert .hide-alert") do
+    #   page.find("a[href='/announcements/#{@announcement2.id}/hide']").click
+    # end
+    # confirm javascript hid the second announcement
+    # page.should_not have_css("#announcements #announcement_#{@announcement2.id}")
 
     # confirm the highlighted announcements block is no longer showing
     page.should_not have_css("#announcements")
@@ -197,25 +201,31 @@ describe "Announcements", js:true do
       page.should_not have_css("#announcements")
       find("#announcements-admin a[href='/announcements']").click
       assert_equal(current_path, '/announcements')
-
+      sleep 1
       announcements = page.all("#announcements tr")
-      announcements.length.should == 3
+      announcements.length.should == 2
+
+      # add an announcement
+      find("a#show-add[data-url='/announcements/new.js']").click
+      sleep 1
+      fill_in("announcement_content", with: 'This is the first new Announcement!')
+      find("#modal_popup form#new_announcement input[type='submit']").click
 
       # add another announcement
       find("a#show-add[data-url='/announcements/new.js']").click
       sleep 1
-      fill_in("announcement_content", with: 'This is a new Announcement!')
+      fill_in("announcement_content", with: 'This is the second new Announcement!')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
       announcements = page.all("#announcements tr")
-      sleep 1
+
       # announcements.length.should == 4
       page.should have_css("#announcements #announcement_#{@announcement1.id}")
       page.should have_css("#announcements #announcement_#{@announcement2.id}")
       page.should have_css("#announcements #announcement_4")
-      page.should have_css("#announcements #announcement_1")
+      page.should have_css("#announcements #announcement_3")
 
 
       #############################################
@@ -231,7 +241,7 @@ describe "Announcements", js:true do
       page.should have_content('System Alert Message')
       sleep 1
       fill_in("announcement_content", with: 'This is a changed Announcement!')
-      find("#modal_popup form#edit_announcement_1 input[type='submit']").click
+      find("#modal_popup form#edit_announcement_#{@announcement1.id} input[type='submit']").click
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
@@ -284,7 +294,7 @@ describe "Announcements", js:true do
       end
       page.driver.browser.switch_to.alert.accept
 
-      find("#announcements #announcement_1 a[href='/announcements/1.js']").click
+      find("#announcements #announcement_3 a[href='/announcements/3.js']").click
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 
