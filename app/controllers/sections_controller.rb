@@ -536,16 +536,18 @@ class SectionsController < ApplicationController
 
     # used for both overall student performance and section proficiency bars
     @ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_section(section_ids: [@section.id])
-
+    Rails.logger.debug("*** Ratings by Section")
     # used for both section_outcome proficiency bars
     @so_ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_so(section_ids: [@section.id])
 
     unique_student_ids = Enrollment.where(section_id: @section.id).pluck(:student_id).uniq
     Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
 
-    @students = Student.alphabetical.where(id: unique_student_ids)
+    @students = Student.where(id: unique_student_ids)
+    Rails.logger.debug("*** @students = #{@students.inspect}")
 
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: [@section.id])
+    Rails.logger.debug("*** student_ratings")
 
     # recent activity
     @recent10 = Student.where('current_sign_in_at IS NOT NULL AND id in (?)', unique_student_ids).order('current_sign_in_at DESC').limit(10)

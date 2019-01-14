@@ -88,7 +88,7 @@ class SectionOutcomeRating < ActiveRecord::Base
       active_enr[e.section_id][e.student_id] = e.active
     end
     options[:marking_periods] ||= (1..10).to_a
-    sors = SectionOutcomeRating.includes(:section_outcome).where(section_outcomes: { active: true, section_id: cur_section_ids})
+    sors = SectionOutcomeRating.includes(:student, :section_outcome).where(section_outcomes: { active: true, section_id: cur_section_ids})
     sors.each do |sor|
       # todo - review this marking period logic
       if (sor.section_outcome.marking_period_array & options[:marking_periods]).length > 0
