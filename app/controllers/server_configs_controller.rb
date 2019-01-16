@@ -3,6 +3,11 @@
 #
 class ServerConfigsController < ApplicationController
 
+  SERVER_CONFIG_PARAMS = [
+    :server_name,
+    :allow_subject_mgr
+  ]
+
   # New UI - System Administrator Dashboard
   def show
     authorize! :sys_admin_links, User
@@ -54,12 +59,18 @@ class ServerConfigsController < ApplicationController
     authorize! :sys_admin_links, User
     @server_config = ServerConfig.first
     respond_to do |format|
-      if @server_config.update_attributes(params[:config])
+      if @server_config.update_attributes(server_config_params)
         format.html { render action: :show }
       else
         format.html { render action: :edit }
       end
     end
+  end
+
+  private
+
+  def server_config_params
+    params.require(:config).permit(SERVER_CONFIG_PARAMS)
   end
 
 end

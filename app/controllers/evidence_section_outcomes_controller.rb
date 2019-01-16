@@ -7,7 +7,8 @@ class EvidenceSectionOutcomesController < ApplicationController
   EVIDENCE_SECTION_OUTCOME_PARAMS =[
     :evidence_id,
     :position,
-    :section_outcome_id, :evidence_section_outcome_ratings_attributes
+    :section_outcome_id,
+    :evidence_section_outcome_ratings_attributes
   ]
 
   def show

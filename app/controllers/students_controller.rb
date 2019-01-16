@@ -27,6 +27,8 @@ class StudentsController < ApplicationController
     :first_name,
     :last_name,
     :email,
+    :password,
+    :temporary_password
   ]
 
   # skip_load_and_authorize_resource only: :index
@@ -47,10 +49,13 @@ class StudentsController < ApplicationController
     current_sect_ids = @active_enrollments.pluck(:section_id)
     Rails.logger.debug("*** current_sect_ids: #{current_sect_ids}")
     @ratings = @student.hash_of_section_outcome_rating_counts(section_ids: current_sect_ids)
+    Rails.logger.debug("*** ratings")
+
     @e_over_cur = @student.overall_current_evidence_ratings
     @e_weekly_cur = @student.overall_current_evidence_ratings 1.week.ago
     @missing = @student.missing_evidences_by_section
     @parent = @student.get_parent
+    Rails.logger.debug("*** parent #{@parent.inspect}")
 
     respond_to do |format|
       format.html
@@ -474,11 +479,11 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require('student').permit(STUDENT_PARAMS)
+    params.require(:student).permit(STUDENT_PARAMS)
   end
 
   def parent_params
-    params.require('parent').permit(PARENT_PARAMS)
+    params.require(:parent).permit(PARENT_PARAMS)
   end
 
 end

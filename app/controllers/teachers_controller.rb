@@ -25,8 +25,11 @@ class TeachersController < ApplicationController
   def show
     current_sections = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
     @current_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).current
+    Rails.logger.debug("+++ current_sections #{@current_sections.inspect}")
+
     old_section = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
-    @current_section = Section.includes(:section_outcomes).where(section_id: old_section).order(:position).references(:section_outcomes).old
+    @old_sections = Section.includes(:section_outcomes).where(id: old_section).order(:position).references(:section_outcomes).old
+    Rails.logger.debug("+++ old_sections #{@old_sections.inspect}")
 
 
     current_sect_ids = []

@@ -93,13 +93,13 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
-    set_role(@user, 'system_administrator', params['user']['system_administrator']) if params['user']['system_administrator']
-    set_role(@user, 'researcher', params['user']['researcher']) if params['user']['researcher']
-    set_role(@user, 'school_administrator', params['user']['school_administrator']) if params['user']['school_administrator']
-    set_role(@user, 'counselor', params['user']['counselor']) if params['user']['counselor']
-    set_role(@user, 'teacher', params['user']['teacher']) if params['user']['teacher']
-    set_role(@user, 'student', params['user']['student']) if params['user']['student']
-    set_role(@user, 'parent', params['user']['parent']) if params['user']['parent']
+    set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
+    set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
+    set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
+    set_role(@user, 'counselor', user_params['counselor']) if user_params['counselor']
+    set_role(@user, 'teacher', user_params['teacher']) if user_params['teacher']
+    set_role(@user, 'student', user_params['student']) if user_params['student']
+    set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
     @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
 
@@ -143,13 +143,13 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @school = get_current_school
 
-    set_role(@user, 'system_administrator', params['user']['system_administrator']) if params['user']['system_administrator']
-    set_role(@user, 'researcher', params['user']['researcher']) if params['user']['researcher']
-    set_role(@user, 'school_administrator', params['user']['school_administrator']) if params['user']['school_administrator']
-    set_role(@user, 'counselor', params['user']['counselor']) if params['user']['counselor']
-    set_role(@user, 'teacher', params['user']['teacher']) if params['user']['teacher']
-    set_role(@user, 'student', params['user']['student']) if params['user']['student']
-    set_role(@user, 'parent', params['user']['parent']) if params['user']['parent']
+    set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
+    set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
+    set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
+    set_role(@user, 'counselor', user_params['counselor']) if user_params['counselor']
+    set_role(@user, 'teacher', user_params['teacher']) if user_params['teacher']
+    set_role(@user, 'student', user_params['student']) if user_params['student']
+    set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
     @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 

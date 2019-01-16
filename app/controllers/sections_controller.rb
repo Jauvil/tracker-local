@@ -91,6 +91,7 @@ class SectionsController < ApplicationController
   end
 
   def create
+    Rails.logger.debug("*** create section")
     @school = get_current_school
     @section.school_year_id = @school.school_year_id
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
@@ -205,12 +206,14 @@ class SectionsController < ApplicationController
   # new UI
   # bring up new enrollment popup form for teacher tracker page
   def new_enrollment
+    Rails.logger.debug("+++ start new enrollment")
     @school = get_current_school
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
-      section_students = @section.school.students.first_last
+      section_students =  @section.school.students.first_last
     else
       section_students = @section.school.students.alphabetical
     end
+
     @students = section_students - @section.active_students
     @enrollment = Enrollment.new
     # new student and parent for add new student to class (views/students/_form.html.haml)

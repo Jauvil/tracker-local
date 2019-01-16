@@ -4,6 +4,10 @@
 class ReportCardController < ApplicationController
 	# load_and_authorize_resource :report_card_request, parent: false
 
+  REPORT_CARD_REQUEST_PARAMS = [
+    :grade_level,
+  ]
+
 	def new
 	end
 
@@ -66,7 +70,7 @@ class ReportCardController < ApplicationController
 
   # process by old report card form - to be removed
 	def create
-    @grade_level = params[:report_card_request][:grade_level]
+    @grade_level = report_card_request_params[:grade_level]
     begin
       raise BlankEmailException  if current_user.email.blank?
       raise UserInvalidException if current_user.invalid?
@@ -75,7 +79,7 @@ class ReportCardController < ApplicationController
       school_instance = School.find(school_id)
       email = current_user.email
       full_name = current_user.full_name
-      grade = params[:report_card_request][:grade_level]
+      grade = report_card_request_params[:grade_level]
       url = request.protocol+request.host_with_port
 
       p = ReportCardProcessor.new(school_id,grade,email,full_name,url)
@@ -97,7 +101,14 @@ class ReportCardController < ApplicationController
       @report_card_request.errors.add(:base,"#{e}")
       render 'new'
     end
- end
+  end
+
+  private
+
+  def report_card_request_params
+    params.require(:report_card_request).permit(REPORT_CARD_REQUEST_PARAMS)
+  end
+
 end
 
 class BlankEmailException < StandardError

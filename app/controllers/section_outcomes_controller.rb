@@ -4,6 +4,11 @@
 class SectionOutcomesController < ApplicationController
   load_and_authorize_resource except: :update
 
+  SECTION_OUTCOME_PARAMS = [
+    :section_id,
+    :subject_outcome_id
+  ]
+
   # New UI
   # Bulk Rate Learning Outcome page
   # show a single Section Outcome in a Tracker Page like view for Bulk Section Outcome Ratings
@@ -36,11 +41,11 @@ class SectionOutcomesController < ApplicationController
   def create
     Rails.logger.debug("*** SectionOutcomeController.create started")
     begin
-      raise NullParameterException unless params[:mp] && params[:section_outcome][:subject_outcome_id]
+      raise NullParameterException unless params[:mp] && section_outcome_params[:subject_outcome_id]
 
       @section_outcome = SectionOutcome.find_or_create({
-                          section_id: params[:section_outcome][:section_id], subject_outcome_id: params[:section_outcome][:subject_outcome_id]
-                         }, params[:section_outcome])
+                          section_id: section_outcome_params[:section_id], subject_outcome_id: section_outcome_params[:subject_outcome_id]
+                         }, section_outcome_params)
 
       # Math for marking period bitmask.
       marking_periods = params[:mp].sort{|a,b| a[1] <=> b[1]}
@@ -78,7 +83,7 @@ class SectionOutcomesController < ApplicationController
 
     Rails.logger.debug("*** @section_outcome.errors.count = #{@section_outcome.errors.count}")
     respond_to do |format|
-      if @section_outcome.update_attributes(params[:section_outcome]) # testing - {active: true}) or false
+      if @section_outcome.update_attributes(section_outcome_params) # testing - {active: true}) or false
         format.js # output handled by section_outcomes/update.js.erb
         format.html { redirect_to new_section_outcome_section_path(@section_outcome.section_id) }
       else
@@ -171,4 +176,9 @@ class SectionOutcomesController < ApplicationController
     end
   end
 
+  private
+
+  def section_outcome_params
+    params.require(:section_outcome).permit(SECTION_OUTCOME_PARAMS)
+  end
 end

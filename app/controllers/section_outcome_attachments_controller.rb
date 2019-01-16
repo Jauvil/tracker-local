@@ -4,6 +4,12 @@
 class SectionOutcomeAttachmentsController < ApplicationController
   load_and_authorize_resource
 
+  SECTION_OUTCOME_ATTACHMENT_PARAMS = [
+    :section_outcome,
+    :section
+  ]
+
+
   # RESTful Methods
   def index
     #
@@ -30,7 +36,7 @@ class SectionOutcomeAttachmentsController < ApplicationController
   end
 
   def create
-    @section_outcome_attachment = SectionOutcomeAttachment.new(params[:section_outcome_attachment])
+    @section_outcome_attachment = SectionOutcomeAttachment.new(section_outcome_attachment_params)
 
     respond_to do |format|
       if @section_outcome_attachment.save
@@ -50,5 +56,11 @@ class SectionOutcomeAttachmentsController < ApplicationController
     respond_to do |format|
       format.html {redirect_to @section}
     end
+  end
+
+  private
+
+  def section_outcome_attachment_params
+    params.require(:section_outcome_attachment).permit(SECTION_OUTCOME_ATTACHMENT_PARAMS)
   end
 end

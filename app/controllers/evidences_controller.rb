@@ -4,6 +4,12 @@
 class EvidencesController < ApplicationController
   load_and_authorize_resource except: :rate
 
+  EVIDENCE_PARAMS = [
+    :evidence_section_outcomes_attributes
+    :reassessment
+  ]
+
+
   # RESTful Methods
 
   # looks like part of rating
@@ -123,7 +129,7 @@ class EvidencesController < ApplicationController
 
     # get selected section outcomes
     selected_sos = []
-    so_ids = params[:evidence][:evidence_section_outcomes_attributes]
+    so_ids = evidence_params[:evidence_section_outcomes_attributes]
     if so_ids.length > 0
       so_ids.each do |ik, iv|
         iv.each do |sok, sov|
@@ -172,7 +178,7 @@ class EvidencesController < ApplicationController
     end
     # if no errors, notify all students
     Rails.logger.debug("+++ errors: #{errors} errors: #{errors}")
-    if errors == 0 && params[:send_email] == 'true' && params[:evidence][:reassessment] == 'false'
+    if errors == 0 && params[:send_email] == 'true' && evidence_params[:reassessment] == 'false'
       # only send email notifications to
       @section.active_enrollments.each do |e|
         # send new evidence email to student
@@ -246,7 +252,7 @@ class EvidencesController < ApplicationController
     @errors = ''
     has_eso = false
     begin
-      if params[:evidence][:evidence_section_outcomes_attributes]
+      if evidence_params[:evidence_section_outcomes_attributes]
         # edit evidence with eso updates as well
         has_eso = true
         @eso_id = params[:eso_id]
@@ -258,7 +264,7 @@ class EvidencesController < ApplicationController
         end
         # confirm we have at least one eso attached to evidence, else reject this update
         ok_to_update = false
-        params[:evidence][:evidence_section_outcomes_attributes].each do |pk, pv|
+        evidence_params[:evidence_section_outcomes_attributes].each do |pk, pv|
           Rails.logger.debug("*** pk = #{pk}, pv = #{pv}")
           if pk.to_s[0] != 'x'
             ok_to_update = true if pv['_destroy'] == '0'
@@ -274,7 +280,7 @@ class EvidencesController < ApplicationController
         end
       end
 
-      @evidence.update_attributes(params[:evidence])
+      @evidence.update_attributes(evidence_params)
       if @evidence.errors.count > 0
         @errors += ', '+@evidence.errors.full_messages.join(", ")
         raise 'evidence update errors'
@@ -354,6 +360,12 @@ class EvidencesController < ApplicationController
         format.html { redirect_to @evidence.section, :notice => @evidence.name + " was successfully restored." }
       end
     end
+  end
+
+  private
+
+  def evidence_params
+    params.require(:evidence).permit(EVIDENCE_PARAMS)
   end
 
 end

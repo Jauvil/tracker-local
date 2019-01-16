@@ -57,7 +57,7 @@ class Student < User
   scope :alphabetical, -> { where(active: true).order("last_name", "first_name") } # deprecate this for active_student and last_then_first
   scope :first_last, -> { order("first_name", "last_name") } # deprecate this for first_then_last
   scope :first_then_last, -> { order("first_name", "last_name") }
-  scope :last_then_first, -> { order("first_name", "last_name") }
+  scope :last_then_first, -> { order("last_name", "first_name") }
 
 
   # other definitions

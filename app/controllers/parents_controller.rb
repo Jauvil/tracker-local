@@ -70,7 +70,7 @@ class ParentsController < ApplicationController
   private
 
   def parent_params
-    params.require('parent').permit(PARENT_PARAMS)
+    params.require(:parent).permit(PARENT_PARAMS)
   end
 
 end
