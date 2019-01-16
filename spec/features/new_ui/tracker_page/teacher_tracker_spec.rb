@@ -66,9 +66,10 @@ describe "Teacher Tracker", js:true do
 
   def teacher_tracker_is_valid(editable)
     visit section_path(@section.id)
+    sleep 20
     assert_equal("/sections/#{@section.id}", current_path)
     page.should have_content("All Learning Outcomes")
-
+  \
     within("table[data-section-id='#{@section.id}']") do
       page.should have_content("#{@subject_outcomes.values[0].name}")
       page.should have_css('tbody.tbody-header')
@@ -116,7 +117,7 @@ describe "Teacher Tracker", js:true do
       find("#evid-other-los .block-title i").click
 
       find('button', text: 'Save').click
-
+      sleep 1
       find("div#expand-all-los-button").click
 
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
