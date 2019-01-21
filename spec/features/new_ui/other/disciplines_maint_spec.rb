@@ -176,13 +176,13 @@ describe "Disciplines Maintenance", js:true do
     # Add a discipline type with no description should return error
     page.find('a#show-disc-to-add').click
     page.should have_css('#modal-body h2', text: 'Maintain Disciplines')
-    page.find("#modal-body form#new_discipline input[value='Save']").click
+    page.find("#modal-body form#new_discipline input[name='commit']").click
     page.should have_css('#modal-body h2', text: 'Maintain Disciplines')
     page.should have_css("#modal-body form#new_discipline fieldset#discipline_name span.ui-error")
 
     # edit returned error form to add new discipline
     fill_in("discipline[name]", with: 'Mathematics')
-    page.find("#modal-body form#new_discipline input[value='Save']").click
+    page.find("#modal-body form#new_discipline input[name='commit']").click
 
     # Confirm new discipline is in displayed listing
     assert_equal('/disciplines', current_path)
@@ -224,13 +224,13 @@ describe "Disciplines Maintenance", js:true do
 
     # blank out evidence name to ensure blanks are not allowed
     fill_in("discipline[name]", with: '')
-    page.find("#modal-body form#edit_discipline_#{new_d_id} input[value='Save']").click
+    page.find("#modal-body form#edit_discipline_#{new_d_id} input[name='commit']").click
     page.should have_css('#modal-body h2', text: 'Maintain Disciplines')
     page.should have_css("#modal-body form#edit_discipline_#{new_d_id} fieldset#discipline_name span.ui-error")
 
     # put in a different name for the evidence type
     fill_in("discipline[name]", with: 'Science')
-    page.find("#modal-body form#edit_discipline_#{new_d_id} input[value='Save']").click
+    page.find("#modal-body form#edit_discipline_#{new_d_id} input[name='commit']").click
 
     # Confirm updated evidence type is in displayed listing
     assert_equal('/disciplines', current_path)

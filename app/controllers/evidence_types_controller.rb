@@ -25,7 +25,7 @@ class EvidenceTypesController < ApplicationController
   end
 
   def create
-    @evidence_type = EvidenceType.new(evidence_type)
+    @evidence_type = EvidenceType.new(evidence_type_params)
     authorize! :update, @evidence_type # only let maintainers do these things
     if @evidence_type.save
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.created')
@@ -46,9 +46,10 @@ class EvidenceTypesController < ApplicationController
   end
 
   def update
+    puts "+++ evidence_type update"
     @evidence_type = EvidenceType.find(params[:id])
     authorize! :update, @evidence_type # only let maintainers do these things
-    if @evidence_type.update_attributes(evidence_type)
+    if @evidence_type.update_attributes(evidence_type_params)
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.updated')
     else
       flash[:alert] = I18n.translate('alerts.had_errors') + I18n.translate('action_titles.update')
@@ -60,8 +61,8 @@ class EvidenceTypesController < ApplicationController
 
   private
 
-  def evidence_type
-    params.require[:evidence_type].permit(EVIDENCE_TYPE_PARAMS)
+  def evidence_type_params
+    params.require(:evidence_type).permit(EVIDENCE_TYPE_PARAMS)
   end
 
 end

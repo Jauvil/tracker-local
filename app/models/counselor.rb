@@ -2,7 +2,7 @@
 # see license.txt in this software package
 #
 class Counselor < User
-  default_scope { where(counselor: true) }
+  default_scope { where counselor: true }
 
 
   # Relationships

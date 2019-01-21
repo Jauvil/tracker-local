@@ -1130,6 +1130,7 @@ describe "Rollover School Year", js:true do
       select('V-MA.2.03', from: "selections_21")
       select('W-MA.2.04', from: "selections_22")
       select('X-MA.2.05', from: "selections_23")
+      sleep 20
       find('#save_matches').click
       within('#prior_subj') { page.should have_content('Math 2')}
       within('#count_updates') { page.should have_content('5')}

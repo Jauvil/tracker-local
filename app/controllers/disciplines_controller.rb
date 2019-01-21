@@ -4,8 +4,7 @@
 class DisciplinesController < ApplicationController
 
   DISCIPLINE_PARAMS = [
-    :name,
-    :discipline_id
+    :name
   ]
 
   def show

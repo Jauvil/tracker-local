@@ -186,7 +186,7 @@ describe "User can change password", js:true do
 
       assert_equal("/students/#{@student.id}", current_path)
       @student.reload
-      assert_equal(student_email, @student.email)
+      assert_equal(student_email, @student.email)  # ToDo-what page is this?
 
 
       # log back in as user

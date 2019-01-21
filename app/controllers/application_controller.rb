@@ -182,21 +182,37 @@ class ApplicationController < ActionController::Base
     if load_sections
       Rails.logger.debug("*** load users sections")
       if current_user.student? && user_loaded.methods.include?(:enrollments)
-        @toolkit_current_enrollments = user_loaded.enrollments.order(:position).current
-        @toolkit_past_enrollments = user_loaded.enrollments.order(:position).old
+        @toolkit_current_enrollments = user_loaded.enrollments.current
+        @toolkit_past_enrollments = user_loaded.enrollments.old
       elsif current_user.parent? && user_loaded.methods.include?(:child)
-        @toolkit_current_enrollments = user_loaded.child.enrollments.order(:position).current
-        @toolkit_past_enrollments = user_loaded.child.enrollments.order(:position).old
+        @toolkit_current_enrollments = user_loaded.child.enrollments.current
+        @toolkit_past_enrollments = user_loaded.child.enrollments.old
       end
       if user_loaded.staff? && user_loaded.methods.include?(:sections)
-        @toolkit_current_sections = user_loaded.sections.order(:position).current
+        @toolkit_current_sections = user_loaded.sections.current #.all
         @toolkit_current_section_ids = @toolkit_current_sections.map(&:id)
-        @toolkit_past_sections = user_loaded.sections.order(:position).old
+        @toolkit_past_sections = user_loaded.sections.old #.all
         @toolkit_past_section_ids = @toolkit_past_sections.map(&:id)
       end
     end
+    # if load_sections
+    #   Rails.logger.debug("*** load users sections")
+    #   if current_user.student? && user_loaded.methods.include?(:enrollments)
+    #     @toolkit_current_enrollments = user_loaded.enrollments.order(:position).current
+    #     @toolkit_past_enrollments = user_loaded.enrollments.order(:position).old
+    #   elsif current_user.parent? && user_loaded.methods.include?(:child)
+    #     @toolkit_current_enrollments = user_loaded.child.enrollments.order(:position).current
+    #     @toolkit_past_enrollments = user_loaded.child.enrollments.order(:position).old
+    #   end
+    #   if user_loaded.staff? && user_loaded.methods.include?(:sections)
+    #     @toolkit_current_sections = user_loaded.sections.order(:position).current #.all
+    #     @toolkit_current_section_ids = @toolkit_current_sections.map(&:id)
+    #     @toolkit_past_sections = user_loaded.sections.order(:position).old #.all
+    #     @toolkit_past_section_ids = @toolkit_past_sections.map(&:id)
+    #   end
+    # end
 
-    Post.includes(:comments).where("comments.title = 'foo'").references(:comments)
+    # Post.includes(:comments).where("comments.title = 'foo'").references(:comments)
     @current_school = get_current_school
 
     Rails.logger.debug("*** toolkit_instances initialized with #{@toolkit_current_sections.count} & #{@toolkit_past_sections.count} & #{@toolkit_subjects.count}")

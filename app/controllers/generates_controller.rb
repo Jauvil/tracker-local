@@ -20,6 +20,7 @@ class GeneratesController < ApplicationController
   # - listings - Toolkit - Generate Listings
   # GET "/generates/new"
   def new
+    puts "+++ new generate report"
     authorize! :read, Generate
     @generate = Generate.new
     @section_id = params[:section_id] if params[:section_id]
@@ -55,7 +56,7 @@ class GeneratesController < ApplicationController
         format.html { redirect_to schools_path}
       else
         Rails.logger.debug("*** OK, default response")
-        format.html
+        format.html #ToDo Not redirecting to CREATE GENERATE REPORT
       end
     end
   end
@@ -66,6 +67,7 @@ class GeneratesController < ApplicationController
   # otherwise send errors back to form for resubmission.
   # POST "/generates"
   def create
+    puts "+++ create Generate Report"
     authorize! :read, Generate
     Rails.logger.debug("*** params: #{params.inspect}")
     # params_gen = generate_params

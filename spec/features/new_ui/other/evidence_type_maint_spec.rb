@@ -131,13 +131,13 @@ describe "Evidence Type Maintenance", js:true do
     # Add a new evidence type with no description should return error
     page.find('a#show-at-to-add').click
     page.should have_css('#modal-body h2', text: 'Maintain Evidence Types')
-    page.find("#modal-body form#new_evidence_type input[value='Save']").click
+    page.find("#modal-body form#new_evidence_type input[name='commit']").click
     page.should have_css('#modal-body h2', text: 'Maintain Evidence Types')
     page.should have_css("#modal-body form#new_evidence_type fieldset#evidence_type_name span.ui-error")
 
     # edit returned error form to add new evidence type
     fill_in("evidence_type[name]", with: 'Homework')
-    page.find("#modal-body form#new_evidence_type input[value='Save']").click
+    page.find("#modal-body form#new_evidence_type input[name='commit']").click
 
     # Confirm new evidence type is in displayed listing
     assert_equal('/evidence_types', current_path)
@@ -177,13 +177,13 @@ describe "Evidence Type Maintenance", js:true do
 
     # blank out evidence name to ensure blanks are not allowed
     fill_in("evidence_type[name]", with: '')
-    page.find("#modal-body form#edit_evidence_type_#{new_et_id} input[value='Save']").click
+    page.find("#modal-body form#edit_evidence_type_#{new_et_id} input[name='commit']").click
     page.should have_css('#modal-body h2', text: 'Maintain Evidence Types')
     page.should have_css("#modal-body form#edit_evidence_type_#{new_et_id} fieldset#evidence_type_name span.ui-error")
 
     # put in a different name for the evidence type
     fill_in("evidence_type[name]", with: 'Journal')
-    page.find("#modal-body form#edit_evidence_type_#{new_et_id} input[value='Save']").click
+    page.find("#modal-body form#edit_evidence_type_#{new_et_id} input[name='commit']").click
 
     # Confirm updated evidence type is in displayed listing
     assert_equal('/evidence_types', current_path)
