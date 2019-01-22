@@ -9,24 +9,18 @@ class SectionOutcome < ActiveRecord::Base
   belongs_to                    :subject_outcome
   belongs_to                    :section
 
-  has_many                      :section_outcome_ratings,
-                                :dependent  => :destroy
+  has_many                      :section_outcome_ratings, dependent: :destroy
+
   accepts_nested_attributes_for :section_outcome_ratings,
                                 :reject_if  => lambda { |a| a[:rating].blank? }
-  has_many                      :evidence_section_outcomes,
-                                include: :evidence,
-                                conditions: {evidences: { active: true } }
+  has_many                      :evidence_section_outcomes, -> { includes(:evidence).where(evidences: {active: true} )  }
   has_many                      :evidences,
                                 through: :evidence_section_outcomes
-  has_many                      :inactive_evidences,
-                                through: :evidence_section_outcomes,
-                                source: :evidence,
-                                conditions: {active: false}
+  has_many                      :inactive_evidences, -> { where(active: true) }, through: :evidence_section_outcomes, source: :evidence
   has_many                      :evidence_section_outcome_ratings,
                                 through: :evidence_section_outcomes
   has_many                      :section_outcome_attachments,
                                 dependent: :destroy
-
   # Validations
   validate                      :consistent_subject_id
   validates_uniqueness_of       :subject_outcome_id,

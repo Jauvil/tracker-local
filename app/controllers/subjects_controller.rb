@@ -5,6 +5,12 @@ class SubjectsController < ApplicationController
   load_and_authorize_resource
   skip_before_filter :get_referrer, only: :update_subject_outcomes
 
+  SUBJECT_PARAMS = [
+    :name,
+    :discipline_id,
+    :subject_outcomes_attributes
+  ]
+
   def index
     # needs to be optimized for page load (takes 1.5 sec)
     # @subjects = Subject.where(school_id: current_school_id).order({discipline: :name}, :name)  #.includes(sections: {teaching_assignments: :teacher})
@@ -96,6 +102,7 @@ class SubjectsController < ApplicationController
 
   def create
     @school = get_current_school
+    @subject.school_id = @school.id
     @subjects = Subject.where(school_id: @school.id)
     # @teachers = Teacher.where(school_id: @school.id, active: true)
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
@@ -109,7 +116,7 @@ class SubjectsController < ApplicationController
       @subject.errors.add(:discipline_id, I18n.translate('errors.cant_be_blank')) if !@subject.discipline_id # to get error onto form
       # @subject.errors.add(:subject_manager_id, I18n.translate('errors.cant_be_blank')) if !@subject.subject_manager_id # to get error onto form
       if saved && @subject.errors.count == 0
-        #format.html { redirect_to(@subject.school, :notice => 'Subject was successfully created.') }
+        # format.html { redirect_to(@subject.school, :notice => 'Subject was successfully created.') }
         format.html { render :action => "index" }
         format.js
       else
@@ -157,10 +164,10 @@ class SubjectsController < ApplicationController
   end
 
   def update_subject_outcomes
-    params[:subject].slice!(:subject_outcomes_attributes)
+    subject_params.slice!(:subject_outcomes_attributes)
 
     respond_to do |format|
-      if @subject.update_attributes(params[:subject])
+      if @subject.update_attributes(subject_params)
         format.html { redirect_to session[:return_to] }
       else
         format.html { render action: "edit_subject_outcomes" }
@@ -179,9 +186,9 @@ class SubjectsController < ApplicationController
     end
     @disciplines = Discipline.all
     respond_to do |format|
-      updated = @subject.update_attributes(params[:subject])
+      @updated = @subject.update_attributes(subject_params)
       @subject.errors.add(:discipline_id, I18n.translate('errors.cant_be_blank')) if !@subject.discipline_id # to get error onto form
-      if updated && @subject.errors.count == 0
+      if @updated && @subject.errors.count == 0
         format.html { redirect_to @subject }
         format.js
       else
@@ -226,5 +233,10 @@ class SubjectsController < ApplicationController
     @by_lo_count = @subject_ratings.sort_by{|k,v| v[:ratio]}.reverse
   end
 
+  private
+
+  def subject_params
+    params.require(:subject).permit(SUBJECT_PARAMS)
+  end
 
 end

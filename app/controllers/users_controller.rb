@@ -93,13 +93,13 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
-    set_role(@user, 'system_administrator', params['user']['system_administrator']) if params['user']['system_administrator']
-    set_role(@user, 'researcher', params['user']['researcher']) if params['user']['researcher']
-    set_role(@user, 'school_administrator', params['user']['school_administrator']) if params['user']['school_administrator']
-    set_role(@user, 'counselor', params['user']['counselor']) if params['user']['counselor']
-    set_role(@user, 'teacher', params['user']['teacher']) if params['user']['teacher']
-    set_role(@user, 'student', params['user']['student']) if params['user']['student']
-    set_role(@user, 'parent', params['user']['parent']) if params['user']['parent']
+    set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
+    set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
+    set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
+    set_role(@user, 'counselor', user_params['counselor']) if user_params['counselor']
+    set_role(@user, 'teacher', user_params['teacher']) if user_params['teacher']
+    set_role(@user, 'student', user_params['student']) if user_params['student']
+    set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
     @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
 
@@ -143,13 +143,13 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @school = get_current_school
 
-    set_role(@user, 'system_administrator', params['user']['system_administrator']) if params['user']['system_administrator']
-    set_role(@user, 'researcher', params['user']['researcher']) if params['user']['researcher']
-    set_role(@user, 'school_administrator', params['user']['school_administrator']) if params['user']['school_administrator']
-    set_role(@user, 'counselor', params['user']['counselor']) if params['user']['counselor']
-    set_role(@user, 'teacher', params['user']['teacher']) if params['user']['teacher']
-    set_role(@user, 'student', params['user']['student']) if params['user']['student']
-    set_role(@user, 'parent', params['user']['parent']) if params['user']['parent']
+    set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
+    set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
+    set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
+    set_role(@user, 'counselor', user_params['counselor']) if user_params['counselor']
+    set_role(@user, 'teacher', user_params['teacher']) if user_params['teacher']
+    set_role(@user, 'student', user_params['student']) if user_params['student']
+    set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
     @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
@@ -240,8 +240,10 @@ class UsersController < ApplicationController
     @current_sections = []
     @previous_sections = []
     if user_loaded
-      @current_sections = user_loaded.sections.order(:position).current
-      @previous_sections = user_loaded.sections.order(:position).old
+      current_sections = TeachingAssignment.where(teacher_id: user_loaded.id).pluck(:section_id)
+      @current_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).current
+      previous_sections = TeachingAssignment.where(teacher_id: user_loaded.id).pluck(:section_id)
+      @previous_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).old
     end
 
     respond_to do |format|
@@ -505,12 +507,10 @@ class UsersController < ApplicationController
       end
     end
 
-  #####################################################################################
-
   private
 
   def user_params
-    params.require[:user].permit(USER_PARAMS)
+    params.require('user').permit(USER_PARAMS)
   end
 
 end

@@ -12,43 +12,32 @@ class Section < ActiveRecord::Base
   has_many                        :teachers, through: :teaching_assignments
   belongs_to                      :subject
   has_one                         :school, through: :subject
-  has_many                        :enrollments,
-                                  include: :student,
-                                  conditions: { users: { active: true } },
-                                  dependent: :destroy
+  has_many                        :enrollments, -> { includes(:student).where(users: {active: true} ) }, dependent: :destroy
   accepts_nested_attributes_for   :enrollments
-  has_many                        :active_enrollments,
-                                  class_name: 'Enrollment',
-                                  include: :student,
-                                  conditions: { active: true, users: { active: true } }
-  has_many                        :students, through: :enrollments,
-                                  order: [:last_name, :first_name]
-  has_many                        :section_outcomes,
-                                  conditions: { active: true },
-                                  order: :position,
-                                  dependent: :destroy
-  has_many                        :inactive_section_outcomes,
-                                  class_name: 'SectionOutcome',
-                                  conditions: { active: false},
-                                  order: :position
-  has_many                        :subject_outcomes, through: :section_outcomes,
-                                  conditions: {'subject_outcomes.active' => true}
+  has_many                        :active_enrollments, -> { includes(:student).where(active: true, users: { active: true } ) }, class_name: 'Enrollment'
+  has_many                        :students, -> { order(:last_name, :first_name) }, through: :enrollments
+  has_many                        :section_outcomes, -> { where(active: true).order(:position) }, dependent: :destroy
+  has_many                        :inactive_section_outcomes,  -> { where(active: false).order(:position) }, class_name: 'SectionOutcome'
+  has_many                        :subject_outcomes, -> { where('subject_outcomes.active' => true) },
+                                  through: :section_outcomes
   has_many                        :all_subject_outcomes, through: :section_outcomes
   has_many                        :section_outcome_ratings, through: :section_outcomes
-  has_many                        :evidences, conditions: { active: true }
-                                  accepts_nested_attributes_for :evidences
-  has_many                        :inactive_evidences, class_name: 'Evidence', conditions: { active: false }
+  has_many                        :evidences, -> { where active: true }
+  accepts_nested_attributes_for   :evidences
+  has_many                        :inactive_evidences, -> { where active: false}, class_name: 'Evidence'
   has_many                        :evidence_section_outcomes,
                                   through: :section_outcomes
-                                  accepts_nested_attributes_for :inactive_evidences
-  has_many                        :evidence_section_outcome_ratings,
-                                  include: :evidence,
-                                  through: :evidence_section_outcomes
+  accepts_nested_attributes_for   :inactive_evidences
+  has_many                        :evidence_section_outcome_ratings, -> { includes(:evidence) }, through: :evidence_section_outcomes
   belongs_to                      :school_year
 
   # Scopes
-  scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
-  scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
+  # scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
+  # scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
+  scope :current, -> { includes(subject: :school).where("sections.school_year_id = schools.school_year_id") }
+  scope :old, -> { includes(subject: :school).where("sections.school_year_id != schools.school_year_id") }
+
+  scope :published_articles, -> { includes(:articles).where(articles: { published: true}) }
 
   def active_student_enrollments
    enrollments.where(
@@ -109,13 +98,13 @@ class Section < ActiveRecord::Base
   def hash_of_section_outcome_ratings
     return_value            = Hash.new { |l, k| l[k] = Hash.new(["",0]) }
     section_outcome_ratings = SectionOutcomeRating.select("section_outcome_ratings.id, section_outcome_ratings.rating, section_outcome_ratings.student_id, section_outcome_ratings.section_outcome_id").joins({:student => :enrollments}, {:section_outcome => :section}).where(
-                                :section_outcomes => {
-                                    :section_id => id
-                                    },
-                                  :enrollments => {
-                                    :section_id => id
-                                  }
-                              ).all
+      :section_outcomes => {
+         :section_id => id
+         },
+         :enrollments => {
+           :section_id => id
+           }
+           )
     section_outcome_ratings.each do |s|
       return_value[s[:section_outcome_id]][s[:student_id]] = [s[:rating],s[:id]]
     end
@@ -126,15 +115,14 @@ class Section < ActiveRecord::Base
     return_value      = Hash.new { |h,k| h[k] = Hash.new { |l,m| l[m] = Hash.new(["", "", 0, "f"]) } }
     if options[:evidence_id].present?
       evidence_ratings  = evidence_section_outcome_ratings.joins(:student)
-        .includes(:evidence_section_outcome)
-        .where(
-          users: {active: true},
-          evidence_section_outcomes: {evidence_id: options[:evidence_id]}
-        )
+      .includes(:evidence_section_outcome)
+      .where(
+        users: {active: true},
+        evidence_section_outcomes: {evidence_id: options[:evidence_id]}).references(:evidence_section_outcome)
     else
       evidence_ratings  = evidence_section_outcome_ratings.joins(:student)
-        .includes(:evidence_section_outcome)
-        .where(users: {active: true})
+      .includes(:evidence_section_outcome)
+      .where(users: {active: true}).references(:evidence_section_outcome)
     end
     Rails.logger.debug ("*** got evidence ratings")
     evidence_ratings.each do |e|

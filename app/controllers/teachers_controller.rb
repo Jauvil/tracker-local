@@ -4,6 +4,16 @@
 class TeachersController < ApplicationController
   load_and_authorize_resource
 
+  TEACHER_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :street_address,
+    :city,
+    :state,
+    :zip_code
+  ]
+
   def index
     respond_to do |format|
       format.html
@@ -13,8 +23,14 @@ class TeachersController < ApplicationController
 
   # New UI - Teacher Dashboard
   def show
-    @current_sections = @teacher.sections.order(:position).current
-    @old_sections     = @teacher.sections.order(:position).old
+    current_sections = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
+    @current_sections = Section.includes(:section_outcomes).where(id: current_sections).order(:position).references(:section_outcomes).current
+    Rails.logger.debug("+++ current_sections #{@current_sections.inspect}")
+
+    old_section = TeachingAssignment.where(teacher_id: @teacher.id).pluck(:section_id)
+    @old_sections = Section.includes(:section_outcomes).where(id: old_section).order(:position).references(:section_outcomes).old
+    Rails.logger.debug("+++ old_sections #{@old_sections.inspect}")
+
 
     current_sect_ids = []
     @teacher.teaching_assignments.each do |ta|
@@ -30,6 +46,7 @@ class TeachersController < ApplicationController
     @students = Student.alphabetical.where(id: unique_student_ids)
 
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: current_sect_ids)
+
 
     # recent activity
     @recent10 = Student.where('current_sign_in_at IS NOT NULL AND id in (?)', unique_student_ids).order('current_sign_in_at DESC').limit(10)
@@ -72,7 +89,7 @@ class TeachersController < ApplicationController
 
   def update
     respond_to do |format|
-      if @teacher.update_attributes(params[:teacher])
+      if @teacher.update_attributes(teacher_params)
         format.html { redirect_to @teacher, notice: "Teacher successfully updated!" }
       else
         format.html { render action: "new" }
@@ -87,6 +104,12 @@ class TeachersController < ApplicationController
     respond_to do |format|
       format.html
     end
+  end
+
+  private
+
+  def teacher_params
+    params.require('teacher').permit(TEACHER_PARAMS)
   end
 
 end

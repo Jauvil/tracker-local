@@ -7,8 +7,8 @@ class SubjectOutcome < ActiveRecord::Base
 
   # Relationships
   belongs_to              :subject
-  has_many                :section_outcomes, :dependent => :destroy
-  has_many                :section_outcome_ratings, :through => :section_outcomes
+  has_many                :section_outcomes, dependent: :destroy
+  has_many                :section_outcome_ratings, through: :section_outcomes
 
   # Validations
   validates_presence_of   :subject_id

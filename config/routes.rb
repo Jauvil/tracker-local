@@ -87,7 +87,7 @@ Tracker2::Application.routes.draw do
     get 'new_system_user', on: :new, defaults: { format: :js } # new UI
     member do
       get 'edit_system_user', defaults: { format: :js }
-      put 'update_system_user', defaults: { format: :js }
+      patch 'update_system_user', defaults: { format: :js }
     end
     collection do
       post 'create_system_user', defaults: { format: :js }

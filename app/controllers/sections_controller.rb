@@ -8,10 +8,18 @@ class SectionsController < ApplicationController
 
   include SectionsHelper
 
+  SUBJECT_PARAMS = [
+    :name,
+    :discipline_id,
+    :subject_outcomes_attributes
+  ]
+
   SECTION_PARAMS = [
     :school_year_id,
     :subject_id,
-    :line_number
+    :line_number,
+    :selected_marking_period,
+    :teaching_assignment_attributes
   ]
 
   # New UI Tracker Page
@@ -83,6 +91,7 @@ class SectionsController < ApplicationController
   end
 
   def create
+    Rails.logger.debug("*** create section")
     @school = get_current_school
     @section.school_year_id = @school.school_year_id
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
@@ -197,12 +206,14 @@ class SectionsController < ApplicationController
   # new UI
   # bring up new enrollment popup form for teacher tracker page
   def new_enrollment
+    Rails.logger.debug("+++ start new enrollment")
     @school = get_current_school
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
-      section_students = @section.school.students.first_last
+      section_students =  @section.school.students.first_last
     else
       section_students = @section.school.students.alphabetical
     end
+
     @students = section_students - @section.active_students
     @enrollment = Enrollment.new
     # new student and parent for add new student to class (views/students/_form.html.haml)
@@ -528,16 +539,18 @@ class SectionsController < ApplicationController
 
     # used for both overall student performance and section proficiency bars
     @ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_section(section_ids: [@section.id])
-
+    Rails.logger.debug("*** Ratings by Section")
     # used for both section_outcome proficiency bars
     @so_ratings = SectionOutcomeRating.hash_of_section_outcome_rating_by_so(section_ids: [@section.id])
 
     unique_student_ids = Enrollment.where(section_id: @section.id).pluck(:student_id).uniq
     Rails.logger.debug("*** unique_student_ids = #{unique_student_ids.inspect.to_s}")
 
-    @students = Student.alphabetical.where(id: unique_student_ids)
+    @students = Student.where(id: unique_student_ids)
+    Rails.logger.debug("*** @students = #{@students.inspect}")
 
     @student_ratings = SectionOutcomeRating.hash_of_students_rating_by_section(section_ids: [@section.id])
+    Rails.logger.debug("*** student_ratings")
 
     # recent activity
     @recent10 = Student.where('current_sign_in_at IS NOT NULL AND id in (?)', unique_student_ids).order('current_sign_in_at DESC').limit(10)
@@ -715,7 +728,10 @@ class SectionsController < ApplicationController
   private
 
   def section_params
-    params.require[:section].permit(SECTION_PARAMS)
+    params.require(:section).permit(SECTION_PARAMS)
   end
 
+  def subject_params
+    params.require(:subject).permit(SUBJECT_PARAMS)
+  end
 end

@@ -166,8 +166,8 @@ ActiveRecord::Schema.define(:version => 20181126155532) do
     t.datetime "updated_at",           :null => false
   end
 
-  add_index "evidence_template_subject_outcomes", ["evidence_template_id"], :name => "index_evidence_template_subject_outcomes_on_evidence_template_id"
-  add_index "evidence_template_subject_outcomes", ["subject_outcome_id"], :name => "index_evidence_template_subject_outcomes_on_subject_outcome_id"
+  add_index "evidence_template_subject_outcomes", ["evidence_template_id"], :name => "evidence_temp_subj_outc_on_temp_id"
+  add_index "evidence_template_subject_outcomes", ["subject_outcome_id"], :name => "evidence_temp_subj_outc_on_out_id"
 
   create_table "evidence_templates", :force => true do |t|
     t.integer  "subject_id"

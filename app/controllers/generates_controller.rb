@@ -5,12 +5,31 @@
 class GeneratesController < ApplicationController
   # Not hooked up to a database table / ActiveRecord model like the other controllers. Used to serve
   # semi-static pages that still need some server information.
+  GENERATE_PARAMS = [
+    :name,
+    :subject_id,
+    :subject_section_id,
+    :grade_level,
+    :section_id,
+    :section_outcome_id,
+    :student_id,
+    :single_student_id,
+    :marking_period,
+    :start_date,
+    :end_date,
+    :details,
+    :attendance_type_id,
+    :user_type_staff,
+    :user_type_students,
+    :user_type_parents
+  ]
 
   # new UI
   # Generate Form selecting options for generated listings
   # - listings - Toolkit - Generate Listings
   # GET "/generates/new"
   def new
+    puts "+++ new generate report"
     authorize! :read, Generate
     @generate = Generate.new
     @section_id = params[:section_id] if params[:section_id]
@@ -46,7 +65,7 @@ class GeneratesController < ApplicationController
         format.html { redirect_to schools_path}
       else
         Rails.logger.debug("*** OK, default response")
-        format.html
+        format.html #ToDo Not redirecting to CREATE GENERATE REPORT
       end
     end
   end
@@ -57,10 +76,11 @@ class GeneratesController < ApplicationController
   # otherwise send errors back to form for resubmission.
   # POST "/generates"
   def create
+    puts "+++ create Generate Report"
     authorize! :read, Generate
     Rails.logger.debug("*** params: #{params.inspect}")
-    params_gen = params[:generate]
-    @generate = Generate.new(params_gen)
+    # params_gen = generate_params
+    @generate = Generate.new(generate_params)
     Rails.logger.debug ("@generate = #{@generate.inspect.to_s}")
     if @generate.valid?   #see validators/generate_validator.rb
       Rails.logger.debug("record is valid")
@@ -87,8 +107,8 @@ class GeneratesController < ApplicationController
       else
         @school_students = Student.accessible_by(current_ability).order(:last_name, :first_name).where(school_id: @school.id)
       end
-      @range_start = params_gen[:start_date].truncate(10, omission: '')
-      @range_end = params_gen[:end_date].truncate(10, omission: '')
+      @range_start = generate_params[:start_date].truncate(10, omission: '')
+      @range_end = generate_params[:end_date].truncate(10, omission: '')
       @attendance_types = AttendanceType.all_attendance_types.where(school_id: @school.id)
     end
     respond_to do |format|
@@ -117,12 +137,18 @@ class GeneratesController < ApplicationController
         format.html {redirect_to create_report_card_path(grade_level: @generate.grade_level)} if @generate.name == 'report_cards'
         format.html {redirect_to account_activity_report_users_path(user_type_staff: @generate.user_type_staff, user_type_students: @generate.user_type_students, user_type_parents: @generate.user_type_parents, )} if @generate.name == 'account_activity'
         format.html {redirect_to section_attendance_xls_attendances_path()} if @generate.name == 'section_attendance_xls'
-        format.html {redirect_to controller: :attendances, action: :attendance_report, subject_id: params_gen[:subject_id], subject_section_id: params_gen[:subject_section_id], start_date: @range_start, end_date: @range_end, attendance_type_id: params_gen[:attendance_type_id]} if @generate.name == 'attendance_report'
-        format.html {redirect_to controller: :attendances, action: :student_attendance_detail_report, student_id: params_gen[:student_id], start_date: @range_start, end_date: @range_end, attendance_type_id: params_gen[:attendance_type_id], details: params_gen[:details]} if @generate.name == 'student_attendance_detail_report'
+        format.html {redirect_to controller: :attendances, action: :attendance_report, subject_id: generate_params[:subject_id], subject_section_id: generate_params[:subject_section_id], start_date: @range_start, end_date: @range_end, attendance_type_id: generate_params[:attendance_type_id]} if @generate.name == 'attendance_report'
+        format.html {redirect_to controller: :attendances, action: :student_attendance_detail_report, student_id: generate_params[:student_id], start_date: @range_start, end_date: @range_end, attendance_type_id: generate_params[:attendance_type_id], details: generate_params[:details]} if @generate.name == 'student_attendance_detail_report'
         format.html {redirect_to view_context.user_dashboard_path(current_user),
           alert: 'Invalid Report Chosen!'
         }
       end
     end
+  end
+
+  private
+
+  def generate_params
+    params.require(:generate).permit(GENERATE_PARAMS)
   end
 end

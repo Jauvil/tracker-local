@@ -322,8 +322,9 @@ describe "Student Listing", js:true do
 
   def can_see_student_dashboard(student)
     within("tr#student_#{student.id}") do
-      page.should have_css("a[href='/students/#{student.id}']")
-      find("a[href='/students/#{student.id}']").click
+      page.should have_css("i.fa-dashboard")
+      page.should have_css("a[href='/students/#{student.id}'] i.fa-dashboard")
+      find("a[href='/students/#{student.id}'] i.fa-dashboard").click
     end
     assert_equal("/students/#{student.id}", current_path)
   end
@@ -465,12 +466,13 @@ describe "Student Listing", js:true do
           page.should_not have_css("#email span.ui-required")
         end
         page.fill_in 'student_email', :with => ''
-        sleep 1
+        sleep 2
         page.click_button('Save')
       end
     end
     # ensure that blank email gets an error on updates
     visit students_path
+    sleep 5
     assert_equal("/students", current_path)
     page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
     find("a[data-url='/students/#{student.id}/edit.js']").click
@@ -601,6 +603,7 @@ describe "Student Listing", js:true do
     another_student_id = student_nodes[0][:id].split('_')[1]
     Rails.logger.debug("*** another_student_id: #{another_student_id}")
     within("tr#student_#{another_student_id}") do
+      sleep 5
       page.should have_css("a[data-url='/students/#{another_student_id}/security.js']")
       find("a[data-url='/students/#{another_student_id}/security.js']").click
     end

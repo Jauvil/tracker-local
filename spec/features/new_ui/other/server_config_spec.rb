@@ -241,6 +241,7 @@ describe "Server Configuration Maintenance", js:true do
     # check Server Config Show page to see the updates
     page.should have_css('h2 strong', text: 'View Server Configuration')
     within('div#server-config') do
+      sleep 30
       page.should have_css('span#support-email', text: 'trackersupport2@21pstem.org')
       page.should have_css('span#support-team', text: 'Tracker Support Team2')
       page.should have_css('span#school-support-team', text: 'School IT Support Team2')

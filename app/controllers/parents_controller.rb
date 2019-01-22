@@ -4,6 +4,11 @@
 class ParentsController < ApplicationController
   load_and_authorize_resource
 
+  PARENT_PARAMS = [
+    :password,
+    :temporary_password
+  ]
+
   # def show
   #   Rails.logger.debug("*** @parent = #{@parent.inspect.to_s}")
   #   Rails.logger.debug("*** @parent.student = #{@parent.student.inspect.to_s}")
@@ -36,11 +41,13 @@ class ParentsController < ApplicationController
   def update
     @school = get_current_school
     respond_to do |format|
-      parent_status = @parent.update_attributes(params[:parent])
+      parent_status = @parent.update_attributes(parent_params)
       if parent_status
-        if params[:parent][:password].present? && params[:parent][:temporary_password].present?
+        if parent_params[:password].present? && parent_params[:temporary_password].present?
           UserMailer.changed_user_password(@parent, @school, get_server_config).deliver # deliver after save
+          puts " +++ UserMailer"
         end
+        puts " +++  format.js"
         format.js
       else
         format.js { render js: "alert('Parent could not be updated.');" }
@@ -58,6 +65,12 @@ class ParentsController < ApplicationController
     respond_to do |format|
       format.js
     end
+  end
+
+  private
+
+  def parent_params
+    params.require(:parent).permit(PARENT_PARAMS)
   end
 
 end

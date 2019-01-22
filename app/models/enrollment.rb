@@ -4,10 +4,11 @@
 class Enrollment < ActiveRecord::Base
   # Access Control
   # using_access_control
-  scope :alphabetical, joins(:student).where(active: true).order("users.last_name", "users.first_name")
-  scope :current, { joins: { section: { subject: :school } }, conditions: ["sections.school_year_id = schools.school_year_id"] }
-  scope :old,     { joins: { section: { subject: :school } }, conditions: ["sections.school_year_id != schools.school_year_id"] }
-  scope :active_enrollment, where(active: true)
+  scope :alphabetical, -> { joins(:student).where(active: true).order("users.last_name", "users.first_name") }
+  scope :current, -> { joins(section: { subject: :school }).where("sections.school_year_id = schools.school_year_id") }
+  scope :old, -> { joins(section: { subject: :school }).where("sections.school_year_id != schools.school_year_id") }
+
+  scope :active_enrollment, -> { where(active: true)}
 
   # Relationships
   belongs_to                    :student

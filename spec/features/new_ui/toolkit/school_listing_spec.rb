@@ -351,7 +351,6 @@ describe "School Listing", js:true do
     end # has_valid_schools_summary
 
     def has_valid_school_navigations(role)
-
       # confirm sidebar only shows the school listing toolkit item if allowed
       if (role == :system_administrator || role == :researcher)
         page.should have_css("li#side-schools a[href='/schools']")
@@ -573,16 +572,19 @@ describe "School Listing", js:true do
       page.should have_css('#school-city', text: "Changed-City")
       if (ServerConfig.first.try(:allow_subject_mgr) != true)
         page.should_not have_content("Allow Subject Managers")
+        page.should have_css('#school-use-family-name', text: "true")
+        page.should have_css('#school-sort-by', text: "true")
+        page.should have_css('#username-from-email', text: "true")
       else
       page.should have_css('#allow-subject-mgr', text: "true")
-      end
-      page.should have_css('#school-marking-periods', text: "4")
       page.should have_css('#school-use-family-name', text: "false")
       page.should have_css('#school-sort-by', text: "false")
+      page.should have_css('#username-from-email', text: "false")
+      end
+      page.should have_css('#school-marking-periods', text: "4")
       page.should have_css('#school-min-grade', text: "8")
       page.should have_css('#school-max-grade', text: "11")
-      page.should have_css('#school-grade-in-subject', text: "false")
-      page.should have_css('#username-from-email', text: "false")
+      page.should have_css('#school-grade-in-subject', text: "true")
       page.should have_css('#school-year-start', text: "10-2001")
       page.should have_css('#school-year-end', text: "5-2002")
     end # end valid_edit_school

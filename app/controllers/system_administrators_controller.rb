@@ -3,12 +3,22 @@
 #
 class SystemAdministratorsController < ApplicationController
 
+  USER_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :street_address,
+    :city,
+    :state,
+    :zip_code,
+  ]
+
   # New UI - System Administrator Dashboard
   def show
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])
     @model_school = School.includes(:school_year).find(1)
-    @school = get_current_school 
+    @school = get_current_school
     @schools = School.includes(:school_year).accessible_by(current_ability).order('name')
     respond_to do |format|
       format.html
@@ -46,24 +56,24 @@ class SystemAdministratorsController < ApplicationController
     @user = User.new
 
     if params['role'] == 'system_administrator'
-      set_role(@user, 'system_administrator', true) 
-      set_role(@user, 'researcher', false) 
+      set_role(@user, 'system_administrator', true)
+      set_role(@user, 'researcher', false)
     elsif params['role'] == 'researcher'
       set_role(@user, 'researcher', true)
       set_role(@user, 'system_administrator', false)
     else
       @user.errors.add(:base, 'Role is required!')
     end
-    @user.assign_attributes(params[:user])
+    @user.assign_attributes(user_params)
     @user.set_unique_username
     @user.set_temporary_password
-    if params[:user][:first_name].blank?
+    if user_params[:first_name].blank?
       @user.errors.add(:first_name, "Given/First Name is required")
     end
-    if params[:user][:last_name].blank?
+    if user_params[:last_name].blank?
       @user.errors.add(:last_name, "Family/Last Name is required")
     end
-    if params[:user][:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
+    if user_params[:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
       @user.errors.add(:email, "Email is required")
     end
 
@@ -94,21 +104,22 @@ class SystemAdministratorsController < ApplicationController
     @user = User.find(params[:id])
 
     if params['role'] == 'system_administrator'
-      set_role(@user, 'system_administrator', true) 
-      set_role(@user, 'researcher', false) 
+      set_role(@user, 'system_administrator', true)
+      set_role(@user, 'researcher', false)
     elsif params['role'] == 'researcher'
       set_role(@user, 'researcher', true)
-      set_role(@user, 'system_administrator', false) 
+      set_role(@user, 'system_administrator', false)
     end
-    @user.assign_attributes(params[:user])
+    # @user.assign_attributes(params[:user])
+    @user.assign_attributes(user_params)
     respond_to do |format|
-      if params[:user][:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
+      if user_params[:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
         @user.errors.add(:email, "email is required")
         Rails.logger.error("*** @user.errors: #{@user.errors.inspect}")
         format.js
       else
         if @user.errors.count == 0
-          @user.update_attributes(params[:user])
+          @user.update_attributes(user_params)
           Rails.logger.error("*** after update_attributes @user.errors: #{@user.errors.inspect}")
         else
           Rails.logger.error("*** no update_attributes @user.errors: #{@user.errors.inspect}")
@@ -132,5 +143,10 @@ class SystemAdministratorsController < ApplicationController
       end
     end
 
+  private
+
+  def user_params
+    params.require('user').permit(USER_PARAMS)
+  end
 
 end

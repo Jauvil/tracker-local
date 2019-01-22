@@ -14,11 +14,11 @@ class Generate
   # validates_length_of :content, :maximum => 500
   validates_with GenerateValidator
 
-  def initialize(attributes = {})
-    attributes.each do |name, value|
-      send("#{name}=", value)
-    end
-  end
+  # def initialize(attributes = {})
+  #   attributes.each do |name, value|
+  #     send("#{name}=", value)
+  #   end
+  # end
 
   def persisted?
     false

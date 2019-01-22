@@ -5,6 +5,10 @@ class SubjectOutcomesController < ApplicationController
 
   include SubjectOutcomesHelper
 
+  SUBJECT_OUTCOME_PARAMS = [
+    :section_id
+  ]
+
   def index
     #
     # todo - remove this code - dead code - uses with_permissions_to from declarative_authorization gem
@@ -17,7 +21,7 @@ class SubjectOutcomesController < ApplicationController
   end
 
   def create
-    @subject_outcome = SubjectOutcome.new(params[:subject_outcome])
+    @subject_outcome = SubjectOutcome.new(subject_outcome_params)
     @subjects = Subject.all #with_permissions_to(:manage_subject_outcomes)
     respond_to do |format|
       if @subject_outcome.save
@@ -40,7 +44,7 @@ class SubjectOutcomesController < ApplicationController
     @subject_outcome = SubjectOutcome.find_by_id(params[:id])
 
     respond_to do |format|
-      if @subject_outcome.update_attributes(params[:subject_outcome])
+      if @subject_outcome.update_attributes(subject_outcome_params)
         format.html { redirect_to session[:return_to], :notice => 'Learning Outcome was successfully updated.' }
       else
         format.html { render :action => :edit }
@@ -615,5 +619,9 @@ class SubjectOutcomesController < ApplicationController
   end
 
   private
+
+  def subject_outcome_params
+    params.require(:subject_outcome).permit(SUBJECT_OUTCOME_PARAMS)
+  end
 
 end

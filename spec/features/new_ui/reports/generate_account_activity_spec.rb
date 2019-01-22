@@ -117,6 +117,7 @@ describe "Generate Account Activity Report", js:true do
 
     # generate a report with no user types
     within("#page-content") do
+      sleep 40
       within('form#new_generate') do
         page.should have_selector("select#generate-type")
         select('Account Activity Report', from: "generate-type")

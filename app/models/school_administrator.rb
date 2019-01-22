@@ -3,7 +3,7 @@
 #
 class SchoolAdministrator < User
   # using_access_control
-  default_scope where(school_administrator: true)
+  default_scope { where(school_administrator: true) }
 
   # Relationships
   belongs_to                    :school

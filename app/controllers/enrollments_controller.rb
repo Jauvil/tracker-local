@@ -6,7 +6,13 @@ class EnrollmentsController < ApplicationController
 
   load_and_authorize_resource
 
+  ENROLLMENT_PARAMS = [
+    :student_id,
+    :section_id
+  ]
+
   def show
+    Rails.logger.debug("*** enrollments ***")
     @section = Section.includes(:section_outcomes).find(@enrollment.section_id)
     @student                  = @enrollment.student
     @evidence_ratings         = @student.section_evidence_ratings @enrollment.section_id
@@ -16,8 +22,9 @@ class EnrollmentsController < ApplicationController
     @section_outcome_ratings  = @student.section_section_outcome_ratings @section.id
 
     @marking_periods = Range::new(1,@section.school.marking_periods)
-
+    Rails.logger.debug("***** enrollments_controller line 25")
     @ratings = @enrollment.hash_of_section_outcome_rating_counts
+    Rails.logger.debug("***** enrollments_controller line 27")
     @ratings.each do |r|
       Rails.logger.debug("*** r: #{r.inspect.to_s}")
     end
@@ -33,6 +40,7 @@ class EnrollmentsController < ApplicationController
   # No practical use for an index action at this time.
 
   def new
+    Rails.logger.debug("*** new enrollments ***")
     respond_to do |format|
       format.html
     end
@@ -40,9 +48,12 @@ class EnrollmentsController < ApplicationController
   end
 
   def create
-    @enrollment = Enrollment.find_or_initialize_by_student_id_and_section_id(params[:enrollment][:student_id], params[:enrollment][:section_id])
+    Rails.logger.debug("*** create enrollments ***")
+    @enrollment = Enrollment.find_or_initialize_by(student_id: enrollment_params[:student_id], section_id: enrollment_params[:section_id])
+    # @enrollment = Enrollment.find_or_initialize_by_student_id_and_section_id(enrollment_params[:student_id], enrollment_params[:section_id])
+
     @enrollment.active = true
-    @student = Student.find(params[:enrollment][:student_id])
+    @student = Student.find(enrollment_params[:student_id])
     @enrollment.student_grade_level = @student.grade_level
 
     respond_to do |format|
@@ -54,8 +65,8 @@ class EnrollmentsController < ApplicationController
         @existing_enrollment = Enrollment.find(
           :first,
           :conditions => {
-            :student_id => params[:enrollment][:student_id],
-            :section_id => params[:enrollment][:section_id],
+            :student_id => enrollment_params[:student_id],
+            :section_id => enrollment_params[:section_id],
             :active => false
           }
         )
@@ -74,7 +85,7 @@ class EnrollmentsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @enrollment.update_attributes params[:enrollment]
+      if @enrollment.update_attributes enrollment_params
         format.js { render js: "window.location.reload();" }
       else
         format.js { render js: "alert('Enrollment not successfully updated.');"}
@@ -237,9 +248,9 @@ class EnrollmentsController < ApplicationController
     @school = get_current_school
     @errors[:base] = add_error(@errors[:base], 'Need to assign school.') if @school.id.blank?
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
-      @students = Student.accessible_by(current_ability).order(:first_name, :last_name).scoped
+      @students = Student.accessible_by(current_ability).order(:first_name, :last_name) #.scoped
     else
-      @students = Student.accessible_by(current_ability).order(:last_name, :first_name).scoped
+      @students = Student.accessible_by(current_ability).order(:last_name, :first_name) #.scoped
     end
     @students = @students.where(school_id: @school.id) if @school.id.present?
   end
@@ -294,5 +305,11 @@ class EnrollmentsController < ApplicationController
     Rails.logger.debug("*** @selected_student_ids: #{@selected_student_ids}")
     Rails.logger.debug("*** prep_for_bulk_view done")
 
+  end
+
+  private
+
+  def enrollment_params
+    params.require(:enrollment).permit(ENROLLMENT_PARAMS)
   end
 end

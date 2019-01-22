@@ -3,6 +3,10 @@
 #
 class DisciplinesController < ApplicationController
 
+  DISCIPLINE_PARAMS = [
+    :name
+  ]
+
   def show
     @discipline = Discipline.find(params[:id])
     authorize! :read, @discipline # ensure redirect to login page on timeout
@@ -13,7 +17,7 @@ class DisciplinesController < ApplicationController
   end
 
   def index
-    @disciplines = Discipline.order(:name).all
+    @disciplines = Discipline.order(:name)
     authorize! :read, Discipline # ensure redirect to login page on timeout
     respond_to do |format|
       format.html # This response is used in Evidence Type Maintenance in New UI
@@ -30,7 +34,7 @@ class DisciplinesController < ApplicationController
   end
 
   def create
-    @discipline = Discipline.new(params[:discipline])
+    @discipline = Discipline.new(discipline_params)
     authorize! :update, @discipline # only let maintainers do these things
     if @discipline.save
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.created')
@@ -53,7 +57,7 @@ class DisciplinesController < ApplicationController
   def update
     @discipline = Discipline.find(params[:id])
     authorize! :update, @discipline # only let maintainers do these things
-    if @discipline.update_attributes(params[:discipline])
+    if @discipline.update_attributes(discipline_params)
       flash[:notice] = I18n.translate('alerts.successfully') +  I18n.translate('action_titles.updated')
     else
       flash[:alert] = I18n.translate('alerts.had_errors') + I18n.translate('action_titles.update')
@@ -61,5 +65,11 @@ class DisciplinesController < ApplicationController
     respond_to do |format|
       format.js { render action: :saved }
     end
+  end
+
+  private
+
+  def discipline_params
+    params.require(:discipline).permit(DISCIPLINE_PARAMS)
   end
 end

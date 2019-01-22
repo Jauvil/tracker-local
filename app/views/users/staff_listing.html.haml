@@ -1,4 +1,5 @@
 
+
 - content_for(:title, 'Staff Listing')
 - content_for(:page_name, 'Staff Listing')
 - content_for(:page_class, 'misc')
@@ -6,14 +7,12 @@
   - breadcrumb :root # to ensure breadcrumbs always show
   - breadcrumb :staff_listing
   = help_gen_breadcrumbs
-
 / Header
 .header-block
   %h1.h3.page-title
     %strong="Staff Listing"
   %h2.h1.page-title
     %strong="All Staff for #{@school.name}"
-
 #button-block.block-section.indent-block
   .row.height-30
     .pull-left
@@ -38,7 +37,6 @@
         %a#bulk-enter-teaching-assignments.btn.btn-sm.btn-primary{ href: enter_bulk_teaching_assignments_path(), title: 'Bulk Enter Teaching Assignments'}
           %i.fa.fa-lg.fa-user
           %i.fa.fa-lg.fa-stack-overflow
-
 .row
   .col-sm-12
     .block.block-alt-style.full
@@ -76,7 +74,8 @@
               - staff.each do |s|
                 - deact_class = s.active ? 'active' : 'deactivated'
                 - if s.teacher? && s.active?
-                  - assignments = Teacher.find(s.id).sections.current.count
+                  -# ToDo: check if original code .current scope is relevant here
+                  - assignments = Teacher.includes(:sections).where("sections.id = #{s.id}").references(:sections).count
                 - else
                   - assignments = ''
                 %tr{class: deact_class, id: "user_#{s.id}"}
@@ -128,4 +127,3 @@
                       %div.show-if-deactivated
                         %a#restore-staff{href: "/users/#{s.id}.js?commit=active&#{{active: true}.to_query('user')}", data: {method: :put, remote: true, user_id: "#{s.id}", confirm: 'Are you sure?'}, title: 'Reactivate Deactivated Staff Member'}
                           %i.fa.fa-lg.fa-undo
-

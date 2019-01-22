@@ -45,7 +45,7 @@
           - if can? :account_activity_report, User
             %option{id: 'account_activity', value: 'account_activity', selected: (@generate.name == 'account_activity'), data: { ask_user_type_groupings: 1}}='Account Activity Report'
           - if can? :attendance_report, Attendance
-            / %option{id: 'section_attendance_xls', value: 'section_attendance_xls', selected: (@generate.name == 'section_attendance_xls'), data: { ask_subjects: 0, ask_grade_level: 0, ask_sections: 0, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Attendance Spreadsheet by Sections'
+            -# / %option{id: 'section_attendance_xls', value: 'section_attendance_xls', selected: (@generate.name == 'section_attendance_xls'), data: { ask_subjects: 0, ask_grade_level: 0, ask_sections: 0, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Attendance Spreadsheet by Sections'
             %option{id: 'attendance_report', value: 'attendance_report', selected: (@generate.name == 'attendance_report'), data: { ask_subjects: 1, ask_subject_sections: 1, ask_date_range: 1, ask_attendance_type: 1}}='Attendance Report'
           - if can? :student_attendance_detail_report, Attendance
             %option{id: 'student_attendance_detail_report', value: 'student_attendance_detail_report', selected: (@generate.name == 'student_attendance_detail_report'), data: { ask_student: 1, ask_date_range: 1, ask_attendance_type: 1, ask_details: 1}}='Student Attendance Detail Report'

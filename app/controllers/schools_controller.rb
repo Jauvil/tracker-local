@@ -21,7 +21,11 @@ class SchoolsController < ApplicationController
     :name,
     :school_id,
     :starts_at,
-    :school
+    :school,
+    :start_yyyy,
+    :start_mm,
+    :end_yyyy,
+    :end_mm
   ]
 
   # RESTful Methods
@@ -184,8 +188,8 @@ class SchoolsController < ApplicationController
         flash[:alert] = msg_str
         format.js
       end
-    end
-  end
+    end # end respond_to
+  end # end update
 
   # new UI, add/update subjects and LOs from Model School (for new year rollover)
   # - note subject active flag is not implemented yet, subject outcome active flags should be reviewed.
@@ -634,9 +638,9 @@ class SchoolsController < ApplicationController
     end
 
     def remove_params
-      if school_params and cannot?(:update_columns, @school)
+      if params[:school] and cannot?(:update_columns, @school)
         (School.column_names - ["id"]).map{ |a| a.to_sym }.each do |symbol|
-          school_params.delete symbol
+          params[:school].delete symbol
         end
       end
     end
@@ -675,10 +679,10 @@ class SchoolsController < ApplicationController
   private
 
   def school_params
-    params.require[:school].permit(SCHOOL_PARAMS)
+    params.require(:school).permit(SCHOOL_PARAMS)
   end
 
   def school_year_params
-    params.require[:school_year].permit(SCHOOL_YEAR_PARAMS)
+    params.require(:school_year).permit(SCHOOL_YEAR_PARAMS)
   end
 end

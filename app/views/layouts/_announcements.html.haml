@@ -1,6 +1,6 @@
 - announcements = Announcement.unrestricted.not_hidden(cookies.signed[:hidden_announcement_ids])
 - Rails.logger.debug("hidden announcement cookies: #{cookies.signed[:hidden_announcement_ids]}")
-- if can?( :edit, Announcement ) && Announcement.unrestricted.all.length > 0
+- if can?( :edit, Announcement ) && Announcement.unrestricted.length > 0
   %li#announcements-admin
     .navbar-nav-custom-content
       %a{href: announcements_path}
@@ -16,4 +16,4 @@
               %a.btn.btn-sm.btn-primary{href: "#{hide_announcement_path(announcement)}", data: {remote: true}}='Hide'
           .pull-left.announcement-text
             = announcement.content
-            
+-

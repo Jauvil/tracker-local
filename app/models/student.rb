@@ -22,20 +22,14 @@ class Student < User
   accepts_nested_attributes_for :parents
   belongs_to                    :school
   has_one                       :first_enrollment, class_name: "Enrollment", foreign_key: 'student_id'
-  has_many                      :enrollments,
-                                conditions: { active: true },
+  has_many                      :enrollments, -> { where active: true },
                                 dependent: :destroy
   accepts_nested_attributes_for :enrollments
   has_many                      :sections,
                                 through: :enrollments
-  has_many                      :current_sections,
+  has_many                      :current_sections, -> { where(enrollments: {active: true} ) },
                                 through: :enrollments,
-                                source: :section,
-                                conditions: {
-                                  enrollments: { active: true }
-                                }
-
-
+                                source: :section
   has_many                      :section_outcome_ratings,
                                 dependent: :destroy
   has_many                      :attendances,
@@ -56,14 +50,14 @@ class Student < User
 
 
   #scopes
-  default_scope where(student: true) # deprecate this ?
-  scope :active, where(active: true) # deprecate this for active_student
-  scope :active_student, where(active: true)
+  default_scope { where(student: true) }# deprecate this ?
+  scope :active, -> { where(active: ture )} # deprecate this for active_student
+  scope :active_student, -> { where(active: true) }
   scope :special_ed_status, lambda { |statuses| where(special_ed: statuses) }
-  scope :alphabetical, where(active: true).order("last_name", "first_name") # deprecate this for active_student and last_then_first
-  scope :first_last, order("first_name", "last_name") # deprecate this for first_then_last
-  scope :first_then_last, order("first_name", "last_name")
-  scope :last_then_first, order("first_name", "last_name")
+  scope :alphabetical, -> { where(active: true).order("last_name", "first_name") } # deprecate this for active_student and last_then_first
+  scope :first_last, -> { order("first_name", "last_name") } # deprecate this for first_then_last
+  scope :first_then_last, -> { order("first_name", "last_name") }
+  scope :last_then_first, -> { order("last_name", "first_name") }
 
 
   # other definitions

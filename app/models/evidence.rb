@@ -35,7 +35,8 @@ class Evidence < ActiveRecord::Base
   validates_numericality_of     :evidence_type_id, greater_than: 0
 
   # scopes
-  scope :active_evidences, conditions: {active: true}
+  scope :active_evidences, -> { where active: true }
+
 
   # Other Definitions
   def clone_into_section section_id

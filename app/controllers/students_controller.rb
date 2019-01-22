@@ -7,6 +7,30 @@ class StudentsController < ApplicationController
 
   load_and_authorize_resource except: [:new, :create]
 
+  STUDENT_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :grade_level,
+    :street_address,
+    :city,
+    :state,
+    :zip_code,
+    :race,
+    :gender,
+    :special_ed,
+    :password,
+    :temporary_password
+  ]
+
+  PARENT_PARAMS = [
+    :first_name,
+    :last_name,
+    :email,
+    :password,
+    :temporary_password
+  ]
+
   # skip_load_and_authorize_resource only: :index
 
   # New UI
@@ -25,10 +49,13 @@ class StudentsController < ApplicationController
     current_sect_ids = @active_enrollments.pluck(:section_id)
     Rails.logger.debug("*** current_sect_ids: #{current_sect_ids}")
     @ratings = @student.hash_of_section_outcome_rating_counts(section_ids: current_sect_ids)
+    Rails.logger.debug("*** ratings")
+
     @e_over_cur = @student.overall_current_evidence_ratings
     @e_weekly_cur = @student.overall_current_evidence_ratings 1.week.ago
     @missing = @student.missing_evidences_by_section
     @parent = @student.get_parent
+    Rails.logger.debug("*** parent #{@parent.inspect}")
 
     respond_to do |format|
       format.html
@@ -48,13 +75,14 @@ class StudentsController < ApplicationController
     @school = get_current_school
 
     # todo performance tune this report.  Note view calls student.rb ratings_count method which does SQL against SectionOutcomeRating table for each student.
+    # DEPRECATION WARNING: Model.scoped is deprecated. Please use Model.all instead.
 
     if template == "index"
       # @students = Student.accessible_by(current_ability).active.includes(:parent).order(:grade_level, :last_name, :first_name)
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
         @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name).scoped
       else
-        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name).scoped
+        @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name)  # .scoped
       end
     else
       authorize! :proficiency_bars, Student
@@ -106,7 +134,7 @@ class StudentsController < ApplicationController
   def create
     @school = get_current_school
     @student = Student.new
-    @student.assign_attributes(params[:student])
+    @student.assign_attributes(student_params)
     Rails.logger.debug("*** initial errors: #{@student.errors.full_messages}")
     @student.school_id = @school.id
     @student.set_unique_username
@@ -114,7 +142,7 @@ class StudentsController < ApplicationController
     @student.valid?
     Rails.logger.debug("*** set errors: #{@student.errors.full_messages}")
     @parent = Parent.new
-    @parent.assign_attributes(params[:parent])
+    @parent.assign_attributes(parent_params)
     @parent.school_id = @school.id
     parent_status = @parent.valid?
     Rails.logger.debug("*** parent initial errors: #{@parent.errors.full_messages}")
@@ -133,8 +161,8 @@ class StudentsController < ApplicationController
         if @parent.blank?
           @parent = Parent.new
         end
-        Rails.logger.debug("*** @parent.assign_attributes(#{params[:parent].inspect})")
-        @parent.assign_attributes(params[:parent])
+        Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
+        @parent.assign_attributes(parent_params)
         Rails.logger.debug("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
         Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
         @parent.school_id = @school.id
@@ -182,18 +210,18 @@ class StudentsController < ApplicationController
   # Edit Student from Students listing via js
   def update
     @school = get_current_school
-    lname = params[:student][:last_name]
+    lname = student_params[:last_name]
     reload_student_list = (lname.present? && lname != @student.last_name && lname[0] != @student.last_name[0]) ? true : false
 
-    student_status = @student.update_attributes(params[:student])
-    if student_status && params[:student][:password].present? && params[:student][:temporary_password].present?
+    student_status = @student.update_attributes(student_params)
+    if student_status && student_params[:password].present? && student_params[:temporary_password].present?
       UserMailer.changed_user_password(@student, @school, get_server_config).deliver # deliver after save
     end
     parent_status = true
     @parent = @student.parent
     @parenta = @student.get_parent
     @parentb = @student.parents.first
-    parent_status = @parent.update_attributes(params[:parent])
+    parent_status = @parent.update_attributes(parent_params)
 
     respond_to do |format|
       if student_status && parent_status
@@ -447,5 +475,15 @@ class StudentsController < ApplicationController
 
   #####################################################################################
   protected
+
+  private
+
+  def student_params
+    params.require(:student).permit(STUDENT_PARAMS)
+  end
+
+  def parent_params
+    params.require(:parent).permit(PARENT_PARAMS)
+  end
 
 end

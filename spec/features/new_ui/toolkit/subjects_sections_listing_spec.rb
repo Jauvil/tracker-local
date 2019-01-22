@@ -394,16 +394,12 @@ describe "Subjects Sections Listing", js:true do
           sleep 1
           page.click_button('Save')
         end
-        Rails.logger.debug("+++ popup closed")
       end
 
-      Rails.logger.debug("+++ back to Subjects list page")
-      Rails.logger.debug("+++ check if NEW subject exist")
       #page.should have_content("Newsubj")
 
       # if user is a regular teacher can not perform Edit Subject
 
-      Rails.logger.debug("+++ start editing subject")
       # click on edit subject should show edit subject popup
       page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
       find("a[href='/subjects/#{@subject1.id}/edit']").click
@@ -456,7 +452,6 @@ describe "Subjects Sections Listing", js:true do
       if (this_user == @teacher3)
         page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
       else
-        sleep 1
         page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
         find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
         within("tr#sect_#{@section1_2.id}") do

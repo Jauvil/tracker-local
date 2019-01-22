@@ -2,6 +2,11 @@
 # see license.txt in this software package
 #
 class TeachingResourcesController < ApplicationController
+  TEACHING_RESOURCE_PARAMS = [
+    :discipline_id,
+    :title
+  ]
+
   def index
     @disciplines = Discipline.include_teaching_resources
   end
@@ -12,7 +17,7 @@ class TeachingResourcesController < ApplicationController
   end
 
   def create
-    @teaching_resource = TeachingResource.new(params[:teaching_resource])
+    @teaching_resource = TeachingResource.new(teaching_resource_params)
 
     respond_to do |format|
       if @teaching_resource.save
@@ -21,5 +26,11 @@ class TeachingResourcesController < ApplicationController
         format.html { render :action => :new }
       end
     end
+  end
+
+  private
+
+  def teaching_resource_params
+    params.require(:teaching_resource).permit(TEACHING_RESOURCE_PARAMS)
   end
 end

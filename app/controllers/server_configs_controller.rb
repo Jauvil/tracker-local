@@ -3,6 +3,16 @@
 #
 class ServerConfigsController < ApplicationController
 
+  SERVER_CONFIG_PARAMS = [
+    :support_email,
+    :support_team,
+    :school_support_team,
+    :allow_subject_mgr,
+    :server_url,
+    :server_name,
+    :web_server_name
+  ]
+
   # New UI - System Administrator Dashboard
   def show
     authorize! :sys_admin_links, User
@@ -28,12 +38,13 @@ class ServerConfigsController < ApplicationController
   end
 
   def edit
+    puts "+++ server_config edit"
     authorize! :sys_admin_links, User
     server_configs = ServerConfig.all
     if server_configs.count == 0
       err_msg = "ERROR: Server Config did not exist, Default one Created, Please Edit! "
       Rails.logger.error(err_msg)
-      @server_config = ServerConfig.new
+      @server_config = ServerConfig.new(server_config_params)
       @server_config.id = 1 # make sure id is 1 - ensure only one exists and is found by ID 1
       @server_config.save
       flash[:alert] = err_msg
@@ -54,12 +65,18 @@ class ServerConfigsController < ApplicationController
     authorize! :sys_admin_links, User
     @server_config = ServerConfig.first
     respond_to do |format|
-      if @server_config.update_attributes(params[:config])
+      if @server_config.update_attributes(server_config_params)
         format.html { render action: :show }
       else
         format.html { render action: :edit }
       end
     end
+  end
+
+  private
+
+  def server_config_params
+    params.require(:config).permit(SERVER_CONFIG_PARAMS)
   end
 
 end
