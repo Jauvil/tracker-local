@@ -74,6 +74,7 @@
               - staff.each do |s|
                 - deact_class = s.active ? 'active' : 'deactivated'
                 - if s.teacher? && s.active?
+                  -# ToDo: check if original code .current scope is relevant here
                   - assignments = Teacher.includes(:sections).where("sections.id = #{s.id}").references(:sections).count
                 - else
                   - assignments = ''
