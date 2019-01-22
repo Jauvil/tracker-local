@@ -6,13 +6,22 @@ class GeneratesController < ApplicationController
   # Not hooked up to a database table / ActiveRecord model like the other controllers. Used to serve
   # semi-static pages that still need some server information.
   GENERATE_PARAMS = [
-    :start_date,
-    :end_date,
+    :name,
     :subject_id,
     :subject_section_id,
-    :attendance_type_id,
+    :grade_level,
+    :section_id,
+    :section_outcome_id,
     :student_id,
-    :details
+    :single_student_id,
+    :marking_period,
+    :start_date,
+    :end_date,
+    :details,
+    :attendance_type_id,
+    :user_type_staff,
+    :user_type_students,
+    :user_type_parents
   ]
 
   # new UI
