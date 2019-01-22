@@ -122,12 +122,12 @@ describe "ReportCardRequest" do
     end
 
     pending 'Counselor cannot generate report card' do
-		before do
-			@counselor = create :counselor, school: @school
-			sign_in @counselor
-			visit report_card_path
-		end
-		it_should_behave_like 'cannot generate report card'
+			before do
+				@counselor = create :counselor, school: @school
+				sign_in @counselor
+				visit report_card_path
+			end
+			it_should_behave_like 'cannot generate report card'
     end
 
     describe 'Researcher cannot generate report card' do

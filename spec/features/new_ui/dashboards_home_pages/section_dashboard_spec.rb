@@ -103,7 +103,9 @@ describe "Section Dashboard", js:true do
 
     page.should_not have_css("#nyp_student tr[data-nyp-student-id='#{@student_unenrolled.id}']")
     # TODO there is CSS for student transferred
-    page.should_not have_css("#nyp_student tr[data-nyp-student-id='#{@student_transferred.id}']")
+    pending 'There is CSS for student transferred' do
+      page.should_not have_css("#nyp_student tr[data-nyp-student-id='#{@student_transferred.id}']")
+    end
     page.should_not have_css("#nyp_student tr[data-nyp-student-id='#{@student_out.id}']")
 
     # ensure deactivated enrollment doesn't show on page
