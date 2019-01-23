@@ -149,7 +149,6 @@ describe "Announcements", js:true do
 
   ##################################################
   # test methods
-  sleep 50
   def has_valid_announcements(role)
     # has first announcement in header
     within("#announcements #announcement_#{@announcement1.id}") do
