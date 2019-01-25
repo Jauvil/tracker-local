@@ -80,7 +80,7 @@ class GeneratesController < ApplicationController
     puts "+++ create Generate Report"
     authorize! :read, Generate
     Rails.logger.debug("*** params: #{params.inspect}")
-    generate_params = params[:generate]
+    # generate_params = params[:generate]
     @generate = Generate.new(generate_params)
     Rails.logger.debug ("@generate = #{@generate.inspect.to_s}")
     if @generate.valid?   #see validators/generate_validator.rb
