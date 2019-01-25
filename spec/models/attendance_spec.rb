@@ -17,7 +17,7 @@ describe Attendance do
   test_responds_to_methods [:attendance_date=, :attendance_date]
 
   test_has_fields [:school, :section, :student, :excuse, :attendance_type, :attendance_date]
-   
+
   # this tests the required fields that when nil'ed out produce an invalid record
   [:school, :student, :attendance_type].each do |field|
     it "should be invalid when #{field} is not present" do
@@ -32,16 +32,17 @@ describe Attendance do
       it { should_not be_valid }
     end
   end
-
-  it "should not allow mass assignment of school_id" do
-    id_before = @attendance.school_id
-    @attendance.update_attributes(school_id: 99)
-    @attendance.school_id.should == id_before
+  pending "should not allow mass assignment" do
+    it "should not allow mass assignment of school_id" do
+      id_before = @attendance.school_id
+      @attendance.update_attributes(school_id: 99)
+      @attendance.school_id.should == id_before
+    end
   end
 
 
   describe "- Attendance date tests -" do
-    
+
     context "should not let the user set a bad date string." do
       before { @attendance.attendance_date = '1984-13-13' }
       it { should_not be_valid }
@@ -64,7 +65,7 @@ describe Attendance do
 
     context "should let the user set the date with a DateTime instance." do
       before do
-        @attendance.attendance_date = DateTime.parse('1983-12-13 05:00') 
+        @attendance.attendance_date = DateTime.parse('1983-12-13 05:00')
         @attendance.save
       end
       it { @attendance.reload.attendance_date.should == Date.parse('1983-12-13') }
@@ -75,7 +76,7 @@ describe Attendance do
 
   end
 
- 
+
   context "- Section Attendance records -" do
     before {  @section_attendance = build :attendance }
     subject { @section_attendance }
@@ -83,5 +84,5 @@ describe Attendance do
       should be_valid
     end
   end
- 
+
 end

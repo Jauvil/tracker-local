@@ -25,12 +25,14 @@ describe AttendanceType do
     end
   end
 
-  context "custom attendance types tests" do
-    it "should not allow mass assignment of school_id" do
-      id_before = @attendance_type.school_id
-      @attendance_type.update_attributes(school_id: 99)
-      @attendance_type.school_id.should == id_before
+  pending "should not allow duplicate descriptions per school" do
+    context "custom attendance types tests" do
+      it "should not allow mass assignment of school_id" do
+        id_before = @attendance_type.school_id
+        @attendance_type.update_attributes(school_id: 99)
+        @attendance_type.school_id.should == id_before
+      end
     end
   end
-  pending "should not allow duplicate descriptions per school"
+
 end
