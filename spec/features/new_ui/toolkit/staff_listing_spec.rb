@@ -302,11 +302,11 @@ describe "Staff Listing", js:true do
         within('.user-roles') do
           page.should have_content('teacher')
           # Counselor disabled?
-          # if [:school_administrator, :system_administrator].include?(role)
-          #   page.should have_content('counselor')
-          # else
-          #   page.should_not have_content('counselor')
-          # end
+          if [:school_administrator, :system_administrator].include?(role)
+            page.should have_content('counselor')
+          else
+            page.should_not have_content('counselor')
+          end
         end
       end
     end

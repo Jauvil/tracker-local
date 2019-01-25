@@ -5,6 +5,7 @@
 class GeneratesController < ApplicationController
   # Not hooked up to a database table / ActiveRecord model like the other controllers. Used to serve
   # semi-static pages that still need some server information.
+
   GENERATE_PARAMS = [
     :name,
     :subject_id,
@@ -79,7 +80,7 @@ class GeneratesController < ApplicationController
     puts "+++ create Generate Report"
     authorize! :read, Generate
     Rails.logger.debug("*** params: #{params.inspect}")
-    # params_gen = generate_params
+    # generate_params = params[:generate]
     @generate = Generate.new(generate_params)
     Rails.logger.debug ("@generate = #{@generate.inspect.to_s}")
     if @generate.valid?   #see validators/generate_validator.rb
