@@ -4,7 +4,6 @@
 class ReportCardRequest
 	include ActiveModel::Validations
 	include ActiveModel::Conversion
-	include ActiveModel::MassAssignmentSecurity
 	extend  ActiveModel::Naming
 
 attr_accessor :grade_level
