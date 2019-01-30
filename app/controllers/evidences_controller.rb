@@ -5,7 +5,7 @@ class EvidencesController < ApplicationController
   load_and_authorize_resource except: :rate
 
   EVIDENCE_PARAMS = [
-    :evidence_section_outcomes_attributes
+    :evidence_section_outcomes_attributes,
     :reassessment
   ]
 
@@ -90,6 +90,7 @@ class EvidencesController < ApplicationController
   # process updates from:
   # - sections/#/new_evidence - Toolkit - Add Evidence.
   def create
+    Rails.logger.debug("*** params: #{params.inspect}")
     errors = 0
     error_str = ''
 
@@ -130,6 +131,7 @@ class EvidencesController < ApplicationController
     # get selected section outcomes
     selected_sos = []
     so_ids = evidence_params[:evidence_section_outcomes_attributes]
+    Rails.logger.debug("*** so_ids (params): #{so_ids.inspect}")
     if so_ids.length > 0
       so_ids.each do |ik, iv|
         iv.each do |sok, sov|

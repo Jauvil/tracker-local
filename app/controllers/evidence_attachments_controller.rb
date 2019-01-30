@@ -49,4 +49,11 @@ class EvidenceAttachmentsController < ApplicationController
       format.html { redirect_to session[:return_to] }
     end
   end
+
+
+  private
+
+  # Check to see if there are nested params for this
+  # if so, then see how to handle nested strong params
+
 end
