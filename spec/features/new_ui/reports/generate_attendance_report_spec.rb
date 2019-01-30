@@ -216,7 +216,7 @@ describe "Generate Attendance Report", js:true do
         page.should have_css('fieldset#ask-subjects', visible: true)
         page.should have_css('fieldset#ask-date-range', visible: true)
         within("fieldset#ask-subjects") do
-          page.should have_content('is a required field')
+          page.should have_content('translation missing: en.errors.is_required')
         end
         # # not consistently displaying
         # within("fieldset#ask-date-range") do

@@ -228,7 +228,7 @@ describe "Generate Student Attendance Detail Report", js:true do
           page.should_not have_content('is a required field')
         end
         within("fieldset#ask-date-range") do
-          page.should have_content('was an invalid value')
+          page.should have_content('translation missing: en.errors.was_invalid')
         end
 
         # fill in values for the attendance report (detail report for all students with deactivated types)

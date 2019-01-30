@@ -108,6 +108,23 @@ class SchoolsController < ApplicationController
         @state = 'show_school_form'
         @model_school = get_model_school('MOD')
         @school_year = get_school_year(@school, @model_school)
+        'use_family_name,user_by_first_last,grade_in_subject_name,username_from_email'
+
+        # set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
+        #set_flag(@school, `school[flag_pars][#{School::USE_FAMILY_NAME}]`) if `school[flag_pars][#{School::USE_FAMILY_NAME}]`
+
+
+        # if params['flags'] == 'use_family_name'
+        #   set_flag(@school, 'school[flag_pars][#{School::GRADE_IN_SUBJECT_NAME}]', true)
+        # elsif params['flags'] == 'user_by_first_last'
+        #   set_flag(@school, 'user_by_first_last', true)
+        # elsif params['flags'] == 'grade_in_subject_name'
+        #   set_role(@school, 'grade_in_subject_name', true)
+        # elsif params['flags'] == 'username_from_email'
+        #   set_role(@school, 'username_from_email', true)
+        # else
+        #   @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
+        # end
         ActiveRecord::Base.transaction do
           if @school.save
             # copy subjects and LOs from Model school to new school
