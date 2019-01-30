@@ -118,7 +118,7 @@ Tracker2::Application.routes.draw do
     member do
       get 'view_subject_outcomes', defaults: {format: :js} # new UI
       get 'edit_subject_outcomes'
-      put 'update_subject_outcomes'
+      patch 'update_subject_outcomes'
     end
     collection do
       get 'list_editable_subjects'

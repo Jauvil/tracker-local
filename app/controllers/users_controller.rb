@@ -18,18 +18,26 @@ class UsersController < ApplicationController
     :street_address,
     :city,
     :state,
-    :zip_code,
-    :active,
-    :grade_level,
-    :gender,
-    :race,
-    :special_ed,
-    :child_id,
-    :password,
-    :password_confirmation,
-    :subscription_status,
-    :school_id,
-    :username
+    :zip_code
+    # ToDo check to see if these are entered on forms
+    # :active,
+    # :grade_level,
+    # :gender,
+    # :race,
+    # :special_ed,
+    # :child_id,
+    # :password,
+    # :password_confirmation,
+    # :subscription_status,
+    # :school_id,
+    # :username
+  ]
+
+  # only Staff roles are processed by this controller
+  ROLE_PARAMS = [
+    'school_administrator',
+    'counselor',
+    'teacher'
   ]
 
   def show
@@ -93,6 +101,8 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
+    # ToDo - rework this for strong params
+    # ToDo - see how roles are turned off
     set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
     set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
     set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
@@ -101,6 +111,7 @@ class UsersController < ApplicationController
     set_role(@user, 'student', user_params['student']) if user_params['student']
     set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
+    # ToDo move this into case statement
     @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
 
     respond_to do |format|
@@ -143,6 +154,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @school = get_current_school
 
+    # ToDo - rework this for strong params
+    # ToDo - see how roles are turned off
     set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
     set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
     set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
@@ -151,6 +164,7 @@ class UsersController < ApplicationController
     set_role(@user, 'student', user_params['student']) if user_params['student']
     set_role(@user, 'parent', user_params['parent']) if user_params['parent']
 
+    # ToDo move this into case statement
     @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
     respond_to do |format|
@@ -511,6 +525,10 @@ class UsersController < ApplicationController
 
   def user_params
     params.require('user').permit(USER_PARAMS)
+  end
+
+  def role_params
+    params.require('user').permit(ROLE_PARAMS)
   end
 
 end

@@ -171,6 +171,7 @@ class SchoolsController < ApplicationController
         @school_year = get_school_year(@school, @model_school)
         ActiveRecord::Base.transaction do
           if @school.update_attributes(school_params)
+            # ToDo Update School flags here
             set_school_year_record(@school_year, school_year_params) if school_year_params
             # don't copy of subjects and learning outcomes on update
             # this will be done on the subjects sections listing
