@@ -1,13 +1,10 @@
 # staff_listing_spec.rb
 require 'spec_helper'
-
-
 describe "Staff Listing", js:true do
   describe "US System" do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
-
       @school = FactoryBot.create :school, :us
       @teacher = FactoryBot.create :teacher, school: @school
       @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
@@ -15,17 +12,13 @@ describe "Staff Listing", js:true do
       @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
-
-
     end
-
     describe "as teacher" do
       before do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
     end
-
     describe "as school administrator" do
       before do
         @school_administrator = FactoryBot.create :school_administrator, school: @school
@@ -33,7 +26,6 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:school_administrator) }
     end
-
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
     #   before do
@@ -42,7 +34,6 @@ describe "Staff Listing", js:true do
     #   end
     #   it { has_valid_staff_listing(:counselor) }
     # end
-
     describe "as researcher" do
       before do
         @researcher = FactoryBot.create :researcher
@@ -51,7 +42,6 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:researcher) }
     end
-
     describe "as system administrator" do
       before do
         @system_administrator = FactoryBot.create :system_administrator
@@ -60,14 +50,12 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:system_administrator) }
     end
-
     describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
     end
-
     describe "as parent" do
       before do
         sign_in(@student.parent)
@@ -75,12 +63,10 @@ describe "Staff Listing", js:true do
       it { has_no_staff_listing }
     end
   end
-
   describe "Egypt System" do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
-
       @school = FactoryBot.create :school, :arabic
       @teacher = FactoryBot.create :teacher, school: @school
       @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
@@ -88,17 +74,13 @@ describe "Staff Listing", js:true do
       @section = FactoryBot.create :section, subject: @subject
       @discipline = @subject.discipline
       load_test_section(@section, @teacher)
-
-
     end
-
     describe "as teacher" do
       before do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
     end
-
     describe "as school administrator" do
       before do
         @school_administrator = FactoryBot.create :school_administrator, school: @school
@@ -106,7 +88,6 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:school_administrator) }
     end
-
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
     #   before do
@@ -115,7 +96,6 @@ describe "Staff Listing", js:true do
     #   end
     #   it { has_valid_staff_listing(:counselor) }
     # end
-
     describe "as researcher" do
       before do
         @researcher = FactoryBot.create :researcher
@@ -124,7 +104,6 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:researcher) }
     end
-
     describe "as system administrator" do
       before do
         @system_administrator = FactoryBot.create :system_administrator
@@ -133,14 +112,12 @@ describe "Staff Listing", js:true do
       end
       it { has_valid_staff_listing(:system_administrator) }
     end
-
     describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
     end
-
     describe "as parent" do
       before do
         sign_in(@student.parent)
@@ -148,15 +125,12 @@ describe "Staff Listing", js:true do
       it { has_no_staff_listing }
     end
   end
-
   ##################################################
   # test methods
-
   def has_no_staff_listing
     visit staff_listing_users_path
     assert_not_equal("/users/staff_listing", current_path)
   end
-
   def has_valid_staff_listing(role)
     visit staff_listing_users_path
     assert_equal("/users/staff_listing", current_path)
@@ -172,7 +146,6 @@ describe "Staff Listing", js:true do
         page.should have_content("#{@teacher.email}")
       end
     end
-
     ########################
     # Dashboard visiblity and availability testing
     # all who can see staff listing (teachers, admins, counselor, researcher) can see any teacher's dashboard
@@ -186,8 +159,6 @@ describe "Staff Listing", js:true do
     # note will get redirected to primary role for user, in this case is teacher
     assert_equal("/teachers/#{@teacher.id}", current_path)
     page.should have_content("Teacher: #{@teacher.full_name}")
-
-
     ########################
     # Section Listing visiblity and availability testing
     # teachers can see section listing or tracker pages that are their own
@@ -216,8 +187,6 @@ describe "Staff Listing", js:true do
         end
       end
     end
-
-
     ########################
     # View Staff Information visiblity and availability testing
     # teachers can see their own user information
@@ -251,7 +220,6 @@ describe "Staff Listing", js:true do
         end
       end
     end
-
     ########################
     # Edit Staff Information visiblity and availability testing
     # teachers can edit their own user information for themselves
@@ -278,6 +246,7 @@ describe "Staff Listing", js:true do
             page.should have_css('fieldset#role-teach')
             page.should have_css('fieldset#role-couns')
             check('user[counselor]')
+            # check('user[counselor]')
             # add counselor role to @teacher
           else # teacher editing
             assert_equal(page.all("fieldset.role-field").count.should, 0)
@@ -307,6 +276,11 @@ describe "Staff Listing", js:true do
           else
             page.should_not have_content('counselor')
           end
+          # if [:school_administrator, :system_administrator].include?(role)
+          #   page.should have_content('counselor')
+          # else
+          #   page.should_not have_content('counselor')
+          # end
         end
       end
     end
@@ -320,8 +294,6 @@ describe "Staff Listing", js:true do
         page.should_not have_css("a[data-url='/users/#{@teacher_deact.id}.js'] i.fa-edit")
       end
     end
-
-
     ########################
     # Staff Security Information visiblity and availability testing
     # Only admins can view and reset security information for staff
@@ -351,8 +323,6 @@ describe "Staff Listing", js:true do
         end
       end
     end
-
-
     #########################
     # only admins can deactivate or reactivate staff members
     if [:teacher, :counselor, :researcher].include?(role)
@@ -372,6 +342,8 @@ describe "Staff Listing", js:true do
       # confirm the teacher is deactivated
       page.should have_css("tr#user_#{@teacher.id}.deactivated")
       page.should_not have_css("tr#user_#{@teacher.id}.active")
+      #age.should have_css("tr#user_#{@teacher.id}.deactivated")
+      # page.should_not have_css("tr#user_#{@teacher.id}.active")
       # reactivate the originally deactivated teacher
       page.should have_css("tr#user_#{@teacher_deact.id}")
       page.should have_css("tr#user_#{@teacher_deact.id}.deactivated")
@@ -389,37 +361,80 @@ describe "Staff Listing", js:true do
       # confirm the user is deactivated
       page.should have_css("tr#user_#{@teacher_deact.id}.active")
       page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
+      # page.should have_css("tr#user_#{@teacher_deact.id}.active")
+      # page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
     else
       # no other roles should be tested here
       assert_equal(true, false)
     end # within("#page-content") do
-
-
     ########################
     # Add New Staff visiblity and availability testing
     # Only admins can create new staff
     # visit staff_listing_users_path
+    # Add New Staff
     assert_equal("/users/staff_listing", current_path)
     if [:school_administrator, :system_administrator].include?(role)
       within("#page-content #button-block") do
-        page.should have_css("i.fa-plus-square")
-        page.should have_css("a[data-url='/users/new/new_staff'] i.fa-plus-square")
+@@ -418,7 +418,63 @@ def has_valid_staff_listing(role)
+      end
+    end
+
+
+    # Add New Staff and check Error for not adding role while adding a new staff
+    assert_equal("/users/staff_listing", current_path)
+    if [:school_administrator, :system_administrator].include?(role)
+      within("#page-content #button-block") do
+        sleep 2
+        page.find("a[data-url='/users/new/new_staff']").click
+      end
+      # Error showing for not selecting a role
+      within("#modal_popup") do
+        page.should have_css("h2", text: 'Create Staff Member')
+        # Make sure all roles are unchecked and error is showing
+        sleep 2
+        expect(page).to have_field('[role] user[school_administrator]', checked: false)
+        expect(page).to have_field('[role] user[teacher]', checked: false)
+        expect(page).to have_field('[role] user[counselor]', checked: false)
+        page.should have_css('#staff_first_name', value: @teacher.first_name)
+        page.should have_css('#staff_last_name', value: @teacher.last_name)
+        page.fill_in 'staff_first_name', :with => 'First Name'
+        page.fill_in 'staff_last_name', :with => 'Last Name'
+        page.should have_css("button", text: 'Save')
+        find("button", text: 'Save').click
+        within('div.ui-error') do
+          page.should have_content('You must select at least one role!')
+        end
+        sleep 2
+        find("button", text: 'Cancel').click
+      end
+      # Add Staff
+      assert_equal("/users/staff_listing", current_path)
+      within("#page-content #button-block") do
+        sleep 2
         page.find("a[data-url='/users/new/new_staff']").click
       end
       within("#modal_popup") do
-        page.should have_css("h2", text: 'Create Staff Member')
-        page.find("form.new_user button", text: 'Cancel').click
+        # Add teacher
+        sleep 2
+        find("input[name='role[teacher]']").set(true)
+        page.fill_in 'staff_first_name', :with => 'FN'
+        page.fill_in 'staff_last_name', :with => 'LN'
+        page.should have_css("button", text: 'Save')
+        find("button", text: 'Save').click
       end
+      # check if new staff was added
       assert_equal("/users/staff_listing", current_path)
+      within("#page-content") do
+        sleep 1
+        within("tr#user_#{@teacher.id}") do
+          page.should have_content("FN")
+          page.should have_content("LN")
+        end
+      end
     else
       within("#page-content #button-block") do
         page.should_not have_css("i.fa-plus-square")
         page.should_not have_css("a[data-url='/users/new/new_staff'] i.fa-plus-square")
       end
     end
-
-
   end # def has_valid_subjects_listing
-
-
-end
