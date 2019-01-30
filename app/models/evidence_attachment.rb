@@ -9,7 +9,7 @@ class EvidenceAttachment < ActiveRecord::Base
 
   # Relationships
   belongs_to              :evidence, counter_cache: true
-  # has_attached_file       :attachment
+  has_attached_file       :attachment
 
   # Validations
   validates_presence_of(

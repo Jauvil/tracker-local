@@ -114,7 +114,7 @@ describe "Teacher Tracker", js:true do
       find("#evid-current-los .block-title i").click
       find("span.add_lo_to_evid[data-so-id='#{@section_outcomes.first[1].id}'] i").click
       find("#evid-other-los .block-title i").click
-      sleep 20
+      # Save Button not working
       find('button', text: 'Save').click
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do

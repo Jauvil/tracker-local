@@ -146,7 +146,7 @@ class EvidencesController < ApplicationController
     @other_sos = SectionOutcome.where(section_id: @section.id, active: true).includes("subject_outcome")
 
     # Check to make sure assigned to at least one section outcome
-    if selected_sos.to_s.length == 0
+    if selected_sos.length == 0
       error_str +=  ', Must be assigned to at least one Learning Outcome'
       @lo_errors = 'Must be assigned to at least one Learning Outcome.'
       errors += 1
