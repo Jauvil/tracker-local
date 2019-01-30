@@ -246,7 +246,7 @@ describe "Staff Listing", js:true do
             page.should have_css('fieldset#role-teach')
             page.should have_css('fieldset#role-couns')
             check('user[counselor]')
-            # check('user[counselor]')
+            check('user[counselor]')
             # add counselor role to @teacher
           else # teacher editing
             assert_equal(page.all("fieldset.role-field").count.should, 0)
@@ -276,11 +276,11 @@ describe "Staff Listing", js:true do
           else
             page.should_not have_content('counselor')
           end
-          # if [:school_administrator, :system_administrator].include?(role)
-          #   page.should have_content('counselor')
-          # else
-          #   page.should_not have_content('counselor')
-          # end
+          if [:school_administrator, :system_administrator].include?(role)
+            page.should have_content('counselor')
+          else
+            page.should_not have_content('counselor')
+          end
         end
       end
     end
@@ -343,8 +343,8 @@ describe "Staff Listing", js:true do
       page.should have_css("tr#user_#{@teacher.id}.deactivated")
       page.should_not have_css("tr#user_#{@teacher.id}.active")
       #age.should have_css("tr#user_#{@teacher.id}.deactivated")
-      # page.should_not have_css("tr#user_#{@teacher.id}.active")
-      # reactivate the originally deactivated teacher
+      page.should_not have_css("tr#user_#{@teacher.id}.active")
+      reactivate the originally deactivated teacher
       page.should have_css("tr#user_#{@teacher_deact.id}")
       page.should have_css("tr#user_#{@teacher_deact.id}.deactivated")
       page.should_not have_css("tr#user_#{@teacher_deact.id}.active")
@@ -361,8 +361,8 @@ describe "Staff Listing", js:true do
       # confirm the user is deactivated
       page.should have_css("tr#user_#{@teacher_deact.id}.active")
       page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
-      # page.should have_css("tr#user_#{@teacher_deact.id}.active")
-      # page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
+      page.should have_css("tr#user_#{@teacher_deact.id}.active")
+      page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
     else
       # no other roles should be tested here
       assert_equal(true, false)
