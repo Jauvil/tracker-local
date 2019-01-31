@@ -222,6 +222,7 @@ describe "Staff Listing", js:true do
     end
     ########################
     # Edit Staff Information visiblity and availability testing
+    # Change Staff Role test
     # teachers can edit their own user information for themselves
     # admins can edit all staff user information
     # visit staff_listing_users_path
@@ -245,6 +246,8 @@ describe "Staff Listing", js:true do
             page.should have_css('fieldset#role-sch-admin')
             page.should have_css('fieldset#role-teach')
             page.should have_css('fieldset#role-couns')
+            # Update roles
+            uncheck('user[teacher]')
             check('user[counselor]')
             # add counselor role to @teacher
           else # teacher editing
@@ -261,41 +264,16 @@ describe "Staff Listing", js:true do
           find("button", text: 'Save').click
         end
       end
-      # Test Role change (from teacher to counselor)
-      assert_equal("/users/staff_listing", current_path)
-      within("#page-content") do
-        within("tr#user_#{@teacher.id}") do
-          page.should have_content("teacher")
-          page.should have_css("i.fa-edit")
-          page.should have_css("a[data-url='/users/#{@teacher.id}/edit.js'] i.fa-edit")
-          page.find("a[data-url='/users/#{@teacher.id}/edit.js']").click
-        end
-        if [:school_administrator, :system_administrator].include?(role)
-          find("input[name='user[teacher]']").set(false)
-          find("input[name='user[counselor]']").set(true)
-          page.should have_css("button", text: 'Save')
-          find("button", text: 'Save').click
-        else # teacher editing
-          assert_equal(page.all("fieldset.role-field").count.should, 0)
-          page.should_not have_css('fieldset#role-sch-admin')
-          page.should_not have_css('fieldset#role-teach')
-          page.should_not have_css('fieldset#role-couns')
-        end
-        # Ensure role changed correctly
-        assert_equal("/users/staff_listing", current_path)
-        within("tr#user_#{@teacher.id}") do
-          page.should have_content("counselor")
-        end
-      end
-
+      # Ensure role, changed from teacher to counselor
+      # Ensure first and last names changed
       assert_equal("/users/staff_listing", current_path)
       within("#page-content table #user_#{@teacher.id}") do
+        page.should have_content("counselor")
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
         sleep 1
         within('.user-roles') do
-          page.should have_content('teacher')
-          # Counselor disabled?
+          page.should have_content('counselor')
           if [:school_administrator, :system_administrator].include?(role)
             page.should have_content('counselor')
           else

@@ -181,6 +181,7 @@ class ApplicationController < ActionController::Base
     end
     if load_sections
       Rails.logger.debug("*** load users sections")
+      #ToDo toolkit_current_sections DEPRECATION WARNING lines 193 & 195
       if current_user.student? && user_loaded.methods.include?(:enrollments)
         @toolkit_current_enrollments = user_loaded.enrollments.current
         @toolkit_past_enrollments = user_loaded.enrollments.old
@@ -190,9 +191,9 @@ class ApplicationController < ActionController::Base
       end
       if user_loaded.staff? && user_loaded.methods.include?(:sections)
         @toolkit_current_sections = user_loaded.sections.current #.all
-        @toolkit_current_section_ids = @toolkit_current_sections.map(&:id)
+        @toolkit_current_section_ids = @toolkit_current_sections.to_a.map(&:id)
         @toolkit_past_sections = user_loaded.sections.old #.all
-        @toolkit_past_section_ids = @toolkit_past_sections.map(&:id)
+        @toolkit_past_section_ids = @toolkit_past_sections.to_a.map(&:id)
       end
     end
     # if load_sections

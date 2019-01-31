@@ -14,7 +14,13 @@ class SchoolsController < ApplicationController
     :school_year,
     :flag_pars,
     :min_grade,
-    :max_grade
+    :max_grade,
+    :allow_subject_mgr
+    # Add strong params for the following
+    # USE_FAMILY_NAME
+    # USER_BY_FIRST_LAST
+    # GRADE_IN_SUBJECT_NAME
+    # USERNAME_FROM_EMAIL
   ]
   SCHOOL_YEAR_PARAMS = [
     :ends_at,
