@@ -228,7 +228,6 @@ describe "Generate Student Attendance Detail Report", js:true do
           page.should_not have_content('is a required field')
         end
         within("fieldset#ask-date-range") do
-          sleep 40
           page.should have_content('was an invalid value')
         end
 

@@ -359,8 +359,6 @@ describe "Staff Listing", js:true do
       # confirm the user is deactivated
       page.should have_css("tr#user_#{@teacher_deact.id}.active")
       page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
-      page.should have_css("tr#user_#{@teacher_deact.id}.active")
-      page.should_not have_css("tr#user_#{@teacher_deact.id}.deactivated")
     else
       # no other roles should be tested here
       assert_equal(true, false)
