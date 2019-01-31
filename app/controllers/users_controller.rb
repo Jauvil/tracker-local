@@ -98,6 +98,7 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
+    # This should probably be school administrator
     if user_params['system_administrator']
       set_role(@user, 'system_administrator', user_params['system_administrator'])
       Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
