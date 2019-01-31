@@ -182,6 +182,7 @@ class ApplicationController < ActionController::Base
     if load_sections
       Rails.logger.debug("*** load users sections")
       #ToDo toolkit_current_sections DEPRECATION WARNING lines 193 & 195
+      # .map on scoped recordset is deprecated
       if current_user.student? && user_loaded.methods.include?(:enrollments)
         @toolkit_current_enrollments = user_loaded.enrollments.current
         @toolkit_past_enrollments = user_loaded.enrollments.old
