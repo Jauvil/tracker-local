@@ -16,7 +16,8 @@ class SchoolsController < ApplicationController
     :min_grade,
     :max_grade,
     :allow_subject_mgr
-    # Add strong params for the following
+    # ToDo Add strong params for the following
+    # probably needed for flag updates
     # USE_FAMILY_NAME
     # USER_BY_FIRST_LAST
     # GRADE_IN_SUBJECT_NAME
