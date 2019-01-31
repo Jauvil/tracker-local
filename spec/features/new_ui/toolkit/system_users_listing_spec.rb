@@ -280,6 +280,7 @@ describe "System Users Listing", js:true do
         page.should have_css("input#staff_first_name", value: 'Added')
         page.should have_css("input#staff_last_name", value: 'System User')
         page.should have_css("input#staff_email", value: 'testing@sample.com')
+        # Role change test
         page.choose('researcher')
         page.fill_in('staff_first_name', with: 'Changed')
         page.fill_in('staff_last_name', with: 'To Researcher')

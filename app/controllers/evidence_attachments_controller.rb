@@ -52,7 +52,6 @@ class EvidenceAttachmentsController < ApplicationController
 
 
   private
-
   # Check to see if there are nested params for this
   # if so, then see how to handle nested strong params
 

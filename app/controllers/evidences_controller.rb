@@ -9,7 +9,6 @@ class EvidencesController < ApplicationController
     :reassessment
   ]
 
-
   # RESTful Methods
 
   # looks like part of rating
