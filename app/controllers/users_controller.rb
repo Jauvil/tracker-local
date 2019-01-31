@@ -167,7 +167,7 @@ class UsersController < ApplicationController
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
-
+  # ToDo this should probably be school admin
     if user_params['system_administrator']
       set_role(@user, 'system_administrator', user_params['system_administrator'])
       Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
