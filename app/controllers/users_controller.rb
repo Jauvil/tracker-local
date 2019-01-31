@@ -18,7 +18,10 @@ class UsersController < ApplicationController
     :street_address,
     :city,
     :state,
-    :zip_code
+    :zip_code,
+    :school_administrator,
+    :counselor,
+    :teacher
     # ToDo check to see if these are entered on forms
     # :active,
     # :grade_level,
@@ -34,11 +37,11 @@ class UsersController < ApplicationController
   ]
 
   # only Staff roles are processed by this controller
-  ROLE_PARAMS = [
-    'school_administrator',
-    'counselor',
-    'teacher'
-  ]
+  # ROLE_PARAMS = [
+  #   'school_administrator',
+  #   'counselor',
+  #   'teacher'
+  # ]
 
   def show
     # remove_school_context
@@ -92,6 +95,7 @@ class UsersController < ApplicationController
 
   # New UI
   def create
+    Rails.logger.debug("*** PARAMS #{params.inspect}")
     # @user = User.new(params[:user])
     @user = User.new(user_params)
 
@@ -102,25 +106,46 @@ class UsersController < ApplicationController
     @school = get_current_school
 
 
-    if params['role'] == 'school_administrator'
-      set_role(@user, 'school_administrator', true)
-    elsif params['role'] == 'teacher'
-      set_role(@user, 'teacher', true)
-    elsif params['role'] == 'counselor'
-      set_role(@user, 'counselor', true)
-    else
-      @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
-    end
+    # if params['role'] == 'school_administrator'
+    #   set_role(@user, 'school_administrator', true)
+    # elsif params['role'] == 'teacher'
+    #   set_role(@user, 'teacher', true)
+    # elsif params['role'] == 'counselor'
+    #   set_role(@user, 'counselor', true)
+    # else
+    #   @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
+    # end
 
     # ToDo - rework this for strong params
     # ToDo - see how roles are turned off
     # set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
     # set_role(@user, 'researcher', user_params['researcher']) if user_params['researcher']
     # set_role(@user, 'school_administrator', user_params['school_administrator']) if user_params['school_administrator']
-    # set_role(@user, 'counselor', user_params['counselor']) if user_params['counselor']
     # set_role(@user, 'teacher', user_params['teacher']) if user_params['teacher']
     # set_role(@user, 'student', user_params['student']) if user_params['student']
     # set_role(@user, 'parent', user_params['parent']) if user_params['parent']
+
+    if user_params['system_administrator']
+      set_role(@user, 'system_administrator', user_params['system_administrator'])
+      Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
+    else
+      Rails.logger.debug("*** NO SYSTEM ADMINISTRATOR PARAMS")
+    end
+
+
+    if user_params['teacher']
+      set_role(@user, 'teacher', user_params['teacher'])
+      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+    else
+      Rails.logger.debug("*** NO TEACHER PARAMS")
+    end
+
+    if user_params['counselor']
+      set_role(@user, 'counselor', user_params['counselor'])
+      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+    else
+      Rails.logger.debug("*** NO COUNSELOR PARAMS")
+    end
 
     # # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
@@ -165,17 +190,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @school = get_current_school
 
-
-    if params['role'] == 'school_administrator'
-      set_role(@user, 'school_administrator', true)
-    elsif params['role'] == 'teacher'
-      set_role(@user, 'teacher', true)
-    elsif params['role'] == 'counselor'
-      set_role(@user, 'counselor', true)
-    else
-      @user.errors.add(:base, "not allowed to create this type of user: #{@user.role_symbols.inspect}") if !can?(:create, @user)
-    end
-
     # ToDo - rework this for strong params
     # ToDo - see how roles are turned off
     # set_role(@user, 'system_administrator', user_params['system_administrator']) if user_params['system_administrator']
@@ -188,6 +202,29 @@ class UsersController < ApplicationController
 
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
+
+
+    if user_params['system_administrator']
+      set_role(@user, 'system_administrator', user_params['system_administrator'])
+      Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
+    else
+      Rails.logger.debug("*** NO SYSTEM ADMINISTRATOR PARAMS")
+    end
+
+
+    if user_params['teacher']
+      set_role(@user, 'teacher', user_params['teacher'])
+      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+    else
+      Rails.logger.debug("*** NO TEACHER PARAMS")
+    end
+
+    if user_params['counselor']
+      set_role(@user, 'counselor', user_params['counselor'])
+      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+    else
+      Rails.logger.debug("*** NO COUNSELOR PARAMS")
+    end
 
     respond_to do |format|
       lname = user_params[:last_name]

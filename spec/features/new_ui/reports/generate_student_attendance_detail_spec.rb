@@ -229,7 +229,7 @@ describe "Generate Student Attendance Detail Report", js:true do
         end
         within("fieldset#ask-date-range") do
           sleep 40
-          page.should have_content('translation missing: en.errors.was_invalid')
+          page.should have_content('was an invalid value')
         end
 
         # fill in values for the attendance report (detail report for all students with deactivated types)
