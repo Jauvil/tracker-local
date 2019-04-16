@@ -73,28 +73,29 @@ gem 'nokogiri', '1.6.3.1'
 gem 'rack-cache', '1.6.1'
 gem 'devise', '3.0.0'   # Authentication
 
-
-group :development, :test do
+group :test do
   gem 'rspec-rails', '2.14.0'
   gem 'rspec-mocks', '2.14.2'
   gem 'rspec-expectations', '2.14.0'
   gem 'rspec-core', '2.14.4'
-  gem 'letter_opener', '1.1.2'
-  gem 'launchy', '2.3.0'
-  gem 'addressable', '2.3.5'
-  gem 'sshkit', '1.3.0'
+  gem 'webdrivers'
   gem 'capybara', '1.1.2'
   gem 'factory_bot_rails', require: false
   gem 'guard-rspec'
-  gem 'simplecov'
-  gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
-  gem "ruby-prof", "~> 0.13.0"
+  gem 'simplecov', require: false
+end
+
+group :development, :test do
+  # gem "ruby-prof", "~> 0.13.0"
 end
 
 group :development do
+  gem 'letter_opener', '1.1.2'
+  gem 'launchy', '2.3.0'
+  gem 'addressable', '2.3.5'
   #gem 'bullet'
   gem 'capistrano', '3.0.1'
   gem 'capistrano-rails', '1.1.0'
   gem 'capistrano-rvm', '0.0.3'
+  gem 'sshkit', '1.3.0'
 end
