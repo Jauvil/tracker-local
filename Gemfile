@@ -1,9 +1,9 @@
   source 'http://rubygems.org'
 
-  gem 'rails', '4.0.13'
-  gem 'railties',  '4.0.13'
-  gem 'passenger', '3.0.18'       # Production web server.
-  gem 'whenever','~>0.9', require: false
+  gem 'rails', '~> 4.0.13'
+  gem 'railties',  '~> 4.0.13'
+  gem 'passenger', '~> 3.0.18'       # Production web server.
+  gem 'whenever','~> 0.9', require: false
   # gem 'rake', '10.1.0' # for Rails 3.2
   gem 'rake', '< 11.0' # for rails 4.0
 
@@ -44,7 +44,7 @@ gem 'prawn'           # Serve dynamically generated PDF's
 gem 'axlsx_rails'
 gem 'delayed_job_active_record', "~> 4.0.0"
 gem "daemons", "~> 1.1.9" # needed to run delayed_job in production as daemon process.
-gem 'faker', '1.0.1'    # Generate fake strings, names etc for populating random data.
+gem 'faker', '~> 1.0.1'    # Generate fake strings, names etc for populating random data.
 gem 'text'
 
 # Application Monitoring / performance
@@ -59,27 +59,27 @@ gem 'jquery-rails'
 # todo - fix problems with 'i18n-js'
 # gem 'i18n-js', '2.1.2'
 # gem 'gretel', '~> 3.0.7'    # breadcrumbs for Rails 3.2
-gem 'gretel', '3.0.9'    # breadcrumbs ( last release for this gem )
+gem 'gretel', '~> 3.0.9'    # breadcrumbs ( last release for this gem )
 
 #gem 'letter_opener', group: :development # Opens emails in new window in development.
 
 #need this until we upgrade passenger gem. See: http://stackoverflow.com/questions/15076887/failed-to-build-gem-native-extension-ruby-2-0-upgrade-fastthread
 
-gem 'fastthread', '1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
+gem 'fastthread', '~> 1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 
 # fixes for being old:
 # gem 'bullet', '4.6.0', group: :development
-gem 'nokogiri', '1.6.3.1'
-gem 'rack-cache', '1.6.1'
-gem 'devise', '3.0.0'   # Authentication
+gem 'nokogiri', '~> 1.6.3.1'
+gem 'rack-cache', '~> 1.6.1'
+gem 'devise', '~> 3.0.0'   # Authentication
 
 group :test do
-  gem 'rspec-rails', '2.14.0'
-  gem 'rspec-mocks', '2.14.2'
-  gem 'rspec-expectations', '2.14.0'
-  gem 'rspec-core', '2.14.4'
+  gem 'rspec-rails', '~> 2.14.0'
+  gem 'rspec-mocks', '~> 2.14.2'
+  gem 'rspec-expectations', '~> 2.14.0'
+  gem 'rspec-core', '~> 2.14.4'
   gem 'webdrivers'
-  gem 'capybara', '1.1.2'
+  gem 'capybara', '~> 1.1.2'
   gem 'factory_bot_rails', require: false
   gem 'guard-rspec'
   gem 'simplecov', require: false
@@ -90,12 +90,13 @@ group :development, :test do
 end
 
 group :development do
-  gem 'letter_opener', '1.1.2'
-  gem 'launchy', '2.3.0'
-  gem 'addressable', '2.3.5'
+  gem 'letter_opener', '~> 1.1.2'
+  gem 'launchy', '~> 2.3.0'
+  gem 'addressable', '~> 2.3.5'
   #gem 'bullet'
   gem 'capistrano', '3.0.1'
   gem 'capistrano-rails', '1.1.0'
   gem 'capistrano-rvm', '0.0.3'
   gem 'sshkit', '1.3.0'
+  # gem 'ten_years_rails' # wait for rails 4.1.13 to use this
 end
