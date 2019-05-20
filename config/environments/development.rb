@@ -7,8 +7,7 @@ Tracker2::Application.configure do
   config.cache_classes = false
 
   # Log error messages when you accidentally call methods on nil.
-  # # This was turned off by the rake app:update to Rails 4.0 ????
-  # config.whiny_nils = true
+  config.whiny_nils = true
 
   # Do not eager load code on boot.
   config.eager_load = false
@@ -20,35 +19,29 @@ Tracker2::Application.configure do
   # config.action_view.debug_rjs             = true
 
   # Do care if the mailer can't send.
-  # # This was turned off by the rake app:update to Rails 4.0 ????
-  config.action_mailer.raise_delivery_errors = true
+  # # This was turned off by the rake app:update to Rails 4.0
+  # config.action_mailer.raise_delivery_errors = true
   # # Don't care if the mailer can't send.
-  # # This was set by the rake app:update to Rails 4.0 ????
-  # config.action_mailer.raise_delivery_errors = false
+  # # This was set by the rake app:update to Rails 4.0
+  config.action_mailer.raise_delivery_errors = false
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
   # Only use best-standards-support built into browsers
-  # # This was removed by the rake rails:update to Rails 4.0 ????
-  # config.action_dispatch.best_standards_support = :builtin
+  config.action_dispatch.best_standards_support = :builtin
 
   # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
 
+  # Expands the lines which load the assets
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
-  # # This was added by the rake rails:update to Rails 4.0 ????
-  # config.assets.debug = true
+  config.assets.debug = true
 
-    # Do not compress assets
-  # # This was removed by the rake rails:update to Rails 4.0 ????
+  # Do not compress assets
   config.assets.compress = false
-
-  # Expands the lines which load the assets
-  # # This was removed by the rake rails:update to Rails 4.0 ????
-  config.assets.debug = false
 
 
   # Raises error for missing translations
@@ -56,11 +49,9 @@ Tracker2::Application.configure do
 
 
   # Open emails to be sent in a new browser window.
-  # # This was removed by the rake rails:update to Rails 4.0 ????
   config.action_mailer.delivery_method = :letter_opener
 
   # run delayed jobs inline for development
-  # # This was removed by the rake rails:update to Rails 4.0 ????
   Delayed::Worker.delay_jobs = false
 
 end
