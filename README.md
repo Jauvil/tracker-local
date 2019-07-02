@@ -6,9 +6,21 @@ PARLO Progress Tracker
 Installation for development
 
 ```bash
-git clone https://github.com/21pstem/tracker
+git clone git@github.com:21pstem/tracker.git
 cd tracker
-bundle install
-printf "development:\n  adapter: sqlite3\n  database: db/devel.sqlite3\n  pool: 5\n  timeout: 5000\ntest:\n  adapter: sqlite3 \n  database: db/test.sqlite3\n  pool: 5\n  timeout: 5000" > config/database.yml
-rake db:migrate && rake db:seed
+rbenv version
+  # 2.0.0-p648 
+  # (set by ./.ruby-version)
+cat .ruby-version
+  # 2.0.0-p648
+bundle install --without=production
+cp config/developer/database.yml config/
+bundle exec rake db:migrate
+bundle exec rake test:prepare
+COVERAGE=true bundle exec rspec spec
+```
+Run Tests showing Coverage
+
+```bash
+COVERAGE=true bundle exec rspec spec
 ```
