@@ -21,7 +21,9 @@ class UsersController < ApplicationController
     :zip_code,
     :school_administrator,
     :counselor,
-    :teacher
+    :teacher,
+    :password,
+    :password_confirmation
     # ToDo check to see if these are entered on forms
     # :active,
     # :grade_level,
@@ -29,8 +31,6 @@ class UsersController < ApplicationController
     # :race,
     # :special_ed,
     # :child_id,
-    # :password,
-    # :password_confirmation,
     # :subscription_status,
     # :school_id,
     # :username
