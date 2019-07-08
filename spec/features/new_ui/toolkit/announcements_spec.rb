@@ -221,11 +221,10 @@ describe "Announcements", js:true do
       announcements = page.all("#announcements tr")
 
       # announcements.length.should == 4
-      page.should have_css("#announcements #announcement_#{@announcement1.id}")
-      page.should have_css("#announcements #announcement_#{@announcement2.id}")
-      page.should have_css("#announcements #announcement_4")
+      page.should have_css("#announcements #announcement_1")
+      page.should have_css("#announcements #announcement_2")
       page.should have_css("#announcements #announcement_3")
-
+      page.should have_css("#announcements #announcement_4")
 
       #############################################
       # confirm edit new announcement works properly
@@ -240,7 +239,7 @@ describe "Announcements", js:true do
       page.should have_content('System Alert Message')
       sleep 1
       fill_in("announcement_content", with: 'This is a changed Announcement!')
-      find("#modal_popup form#edit_announcement_#{@announcement1.id} input[type='submit']").click
+      find("#modal_popup form#edit_announcement_1 input[type='submit']").click
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
@@ -249,7 +248,7 @@ describe "Announcements", js:true do
       end
 
       # delete announcement
-      within(announcements[2]) do
+      within("#announcements tr#announcement_2") do
         find('a#delete-item').click
       end
       #click OK in javascript confirmation popup
@@ -257,14 +256,13 @@ describe "Announcements", js:true do
 
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
-      announcements = page.all("#announcements tr")
-      # announcements.length.should == 3
-      page.should have_css("#announcements #announcement_#{@announcement1.id}")
-      page.should have_css("#announcements #announcement_4")
-      # deleted
       sleep 1
-      page.should_not have_css("#announcements #announcement_#{@announcement2.id}")
+      announcements = page.all("#announcements tr")
+      announcements.length.should == 3
       page.should have_css("#announcements #announcement_1")
+      page.should_not have_css("#announcements #announcement_2")
+      page.should have_css("#announcements #announcement_3")
+      page.should have_css("#announcements #announcement_4")
 
       # confirm new announcement is no longer in the alert box at the top of the page
       within("#announcements") do
@@ -279,21 +277,18 @@ describe "Announcements", js:true do
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
-      within("#announcements") do
-        within(announcements[1]) do
-          find('a#delete-item').click
-        end
+      within("#announcement_1") do
+        find('a#delete-item').click
       end
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
-      within("#announcements") do
-        within(announcements[0]) do
-          find('a#delete-item').click
-        end
-      end
+
+      save_and_open_page
+      assert_equal(current_path, '/announcements')
+      find("#announcement_3 a[href='/announcements/3.js']").click
       page.driver.browser.switch_to.alert.accept
 
-      find("#announcements #announcement_3 a[href='/announcements/3.js']").click
+      find("#announcement_4 a[href='/announcements/4.js']").click
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 
