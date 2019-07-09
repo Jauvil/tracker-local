@@ -264,16 +264,15 @@ describe "Staff Listing", js:true do
           find("button", text: 'Save').click
         end
       end
+
       # Ensure role, changed from teacher to counselor
       # Ensure first and last names changed
       assert_equal("/users/staff_listing", current_path)
       within("#page-content table #user_#{@teacher.id}") do
-        page.should have_content("counselor")
         page.should have_css('.user-first-name', 'Changed First Name')
         page.should have_css('.user-last-name', 'Changed Last Name')
         sleep 1
         within('.user-roles') do
-          page.should have_content('counselor')
           if [:school_administrator, :system_administrator].include?(role)
             page.should have_content('counselor')
           else
