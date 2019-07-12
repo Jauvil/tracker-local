@@ -1,5 +1,7 @@
 
 .page-form.alternate-highlight
+  - if @user_errors && @user_errors.length > 0
+    %div.ui-error.text-center=@user_errors[0]
   - if @errors[:base] && @errors[:base] != []
     %div.ui-error.text-center=@errors[:base]
   - if current_user.system_administrator? || current_user.school_administrator?
