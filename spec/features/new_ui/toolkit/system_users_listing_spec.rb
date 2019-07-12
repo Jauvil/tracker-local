@@ -332,6 +332,7 @@ describe "System Users Listing", js:true do
     end
     # click OK in javascript confirmation popup
     page.driver.browser.switch_to.alert.accept
+    sleep 1
     page.should have_css("tr#user_#{new_system_user_id}.deactivated")
 
 

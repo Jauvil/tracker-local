@@ -206,14 +206,14 @@ describe "Announcements", js:true do
 
       # add an announcement
       find("a#show-add[data-url='/announcements/new.js']").click
+      page.find("#announcement_content", wait: 5).set('First new one')
       sleep 1
-      fill_in("announcement_content", with: 'This is the first new Announcement!')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # add another announcement
       find("a#show-add[data-url='/announcements/new.js']").click
+      page.find("#announcement_content", wait: 5).set('Second new one')
       sleep 1
-      fill_in("announcement_content", with: 'This is the second new Announcement!')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # confirm at announcements page with the new announcement listed
@@ -237,14 +237,14 @@ describe "Announcements", js:true do
 
       # confirm on edit page
       page.should have_content('System Alert Message')
+      page.find("#announcement_content", wait: 5).set('This is changed')
       sleep 1
-      fill_in("announcement_content", with: 'This is a changed Announcement!')
       find("#modal_popup form#edit_announcement_1 input[type='submit']").click
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
       within("#announcements tr#announcement_1") do
-        page.should have_content('This is a changed Announcement!')
+        page.should have_content('This is changed')
       end
 
       # delete announcement
@@ -283,7 +283,6 @@ describe "Announcements", js:true do
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 
-      save_and_open_page
       assert_equal(current_path, '/announcements')
       find("#announcement_3 a[href='/announcements/3.js']").click
       page.driver.browser.switch_to.alert.accept

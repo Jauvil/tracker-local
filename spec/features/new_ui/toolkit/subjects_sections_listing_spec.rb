@@ -390,7 +390,7 @@ describe "Subjects Sections Listing", js:true do
         end
         within('#new_subject') do
           select(@discipline.name[1], from: 'subject-discipline-id')
-          page.fill_in 'subject[name]', :with => 'Newsubj'
+          page.find('input#subject-name', wait: 5).set('Newsubj')
           sleep 1
           page.click_button('Save')
         end
@@ -401,8 +401,7 @@ describe "Subjects Sections Listing", js:true do
       # if user is a regular teacher can not perform Edit Subject
 
       # click on edit subject should show edit subject popup
-      page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
-      find("a[href='/subjects/#{@subject1.id}/edit']").click
+      page.find("a[href='/subjects/#{@subject1.id}/edit']", wait: 5).click
       within('#modal-body') do
         within('h3') do
           page.should have_content("Edit Subject - #{@subject1.name}")
@@ -433,15 +432,16 @@ describe "Subjects Sections Listing", js:true do
 
       Rails.logger.debug("+++ create section")
       # create section
-      page.should have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
-      find("a[href='/sections/new?subject_id=#{@subject1.id}']").click
+      page.find("a[href='/sections/new?subject_id=#{@subject1.id}']", wait: 5).click
+      sleep 5
       within("#modal_content") do
         within("h2.h1") do
           page.should have_content("Create Section")
         end
         within('.block-content-full') do
-          page.fill_in 'section[line_number]', :with => 'Newsect'
-        end
+          # page.fill_in 'section[line_number]', :with => 'Newsect'
+          page.find('input#section_line_number', wait: 5).set('Newsect')
+          end
         sleep 1
         page.click_button('Save')
       end
@@ -475,7 +475,7 @@ describe "Subjects Sections Listing", js:true do
           end
           Rails.logger.debug("+++ should have line number")
           page.should have_selector("#section_line_number", value: "#{@section1_3.line_number}")
-          page.fill_in 'section[line_number]', :with => 'Changed'
+          page.find('input#section_line_number', wait: 5).set('Changed')
           # within('#section_message') do
           #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
           #   page.should have_content(@section1_2.message)
