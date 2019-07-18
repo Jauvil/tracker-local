@@ -42,7 +42,7 @@ Tracker2::Application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+    Capybara::Selenium::Driver.new(app, :browser => :chrome)
   end
 
   # # sets all logs to stdout (including active record sql statements)
