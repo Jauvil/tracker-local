@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SectionOutcomeRating do
 
@@ -44,7 +44,7 @@ describe SectionOutcomeRating do
   context "it has no effect during creation or update if there are no duplicate ratings" do
     before { @section_outcome_rating.update_attributes(rating: "H") }
     it do
-      @section_outcome_rating.reload.rating.should eq("H") 
+      @section_outcome_rating.reload.rating.should eq("H")
       @section_outcome_rating.persisted?.should eq(true)
     end
   end

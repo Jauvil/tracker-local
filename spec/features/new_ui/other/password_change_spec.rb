@@ -1,5 +1,5 @@
 # password_change_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "User can change password", js:true do

@@ -1,6 +1,6 @@
 # bulk_enter_teacher_assignments_spec.rb
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe "Bulk Enter Teacher Assignments", js:true do
 

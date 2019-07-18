@@ -1,5 +1,5 @@
 # generate_student_attendance_detail_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Student Attendance Detail Report", js:true do

@@ -1,5 +1,5 @@
 # generate_tracker_usage_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Tracker Usage Report", js:true do

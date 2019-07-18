@@ -1,5 +1,5 @@
 # school_listing_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 describe "School Listing", js:true do
   describe "US System" do

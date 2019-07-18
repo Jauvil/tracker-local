@@ -1,5 +1,5 @@
 # evidence_type_maint_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Evidence Type Maintenance", js:true do

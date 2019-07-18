@@ -1,5 +1,5 @@
 # server_config_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Server Configuration Maintenance", js:true do

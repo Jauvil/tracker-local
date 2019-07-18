@@ -1,5 +1,5 @@
 # system_admin_home_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "System Administrator Home Page", js:true do

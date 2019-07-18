@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe EvidenceSectionOutcomeRating do
 
@@ -6,16 +6,16 @@ describe EvidenceSectionOutcomeRating do
     @school   = create :school
     @student  = create :student, school: @school
     @eso      = create :evidence_section_outcome
-    @esor     = create :evidence_section_outcome_rating, rating: 'Y', student: @student, 
-                evidence_section_outcome: @eso   
+    @esor     = create :evidence_section_outcome_rating, rating: 'Y', student: @student,
+                evidence_section_outcome: @eso
   end
   subject { @esor }
-  
+
   it { should be_valid }
 
   context "should remove duplicate ratings when created" do
   # via uniquify before_validation filter
-    before do 
+    before do
       @duplicate = create :evidence_section_outcome_rating, rating: 'G', student: @student,
                 evidence_section_outcome: @eso
     end

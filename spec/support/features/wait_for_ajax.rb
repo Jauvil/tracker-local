@@ -3,7 +3,8 @@
 
 # Note: not currently used.  Is this useful?
 
-module WaitForAjax
+module Features
+  # module name changed per: https://github.com/thoughtbot/suspenders/issues/142
   def wait_for_ajax
     Timeout.timeout(Capybara.default_wait_time) do
       loop until finished_all_ajax_requests?
@@ -15,6 +16,3 @@ module WaitForAjax
   end
 end
 
-RSpec.configure do |config|
-  config.include WaitForAjax, type: :feature
-end

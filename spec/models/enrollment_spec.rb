@@ -1,9 +1,9 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Enrollment do
 	before do
 		@section = create :section
-		@student = create :student, school: @section.school	
+		@student = create :student, school: @section.school
 		@enrollment = create :enrollment, student: @student, section: @section, student_grade_level: @student.grade_level
 	end
 
@@ -51,7 +51,7 @@ describe Enrollment do
 		 @enrollment.save
 		end
 		it do
-			@enrollment.subsection.should == 0 
+			@enrollment.subsection.should == 0
 			@enrollment.should be_valid
 		end
 

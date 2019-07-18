@@ -1,5 +1,5 @@
 # generate_reports_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Reports", js:true do

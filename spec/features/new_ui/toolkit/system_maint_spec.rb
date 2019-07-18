@@ -1,5 +1,5 @@
 # system_and_user_maint_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "System and User Maintenance", js:true do

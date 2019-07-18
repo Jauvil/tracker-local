@@ -1,5 +1,5 @@
 # student_dashboard_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Student Dashboard", js:true do

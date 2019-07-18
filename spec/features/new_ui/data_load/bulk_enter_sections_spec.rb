@@ -1,6 +1,6 @@
 # bulk_enter_sections_spec.rb
 
-require 'spec_helper'
+require 'rails_helper'
 describe "Bulk Enter Sections", js:true do
 
   describe "US System", js:true do

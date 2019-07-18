@@ -1,5 +1,5 @@
 # subject_sections_listing_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Subjects Sections Listing", js:true do

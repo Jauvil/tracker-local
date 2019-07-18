@@ -3,7 +3,7 @@
 # this tests the school year rollover processes
 # Note: The learning outcome upload and rollover process is tested in subject_outcomes_upload_lo_file_spec.rb
 
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Rollover School Year", js:true do

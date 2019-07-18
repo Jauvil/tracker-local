@@ -1,5 +1,5 @@
 # announcements_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Announcements", js:true do

@@ -1,5 +1,5 @@
 # staff_listing_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Student Listing", js:true do
@@ -247,6 +247,9 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
+    # Capybara.page.driver.browser.manage.current_window.maximize
+    Capybara.page.current_window.maximize
+
     visit students_path
     assert_equal("/students", current_path)
     within("#page-content") do
@@ -442,13 +445,21 @@ describe "Student Listing", js:true do
     within("#user_#{student.id}.student-temp-pwd") do
       page.should_not have_content('(Reset Password')
     end
-    page.click_button('Close')
+    sleep 5
+    # save_and_open_page
+    page.find('div.modal-dialog button').click
+    # sleep 5
+    # save_and_open_page
   end
 
   def can_change_student(student)
-    within("tr#student_#{student.id}") do
-      page.find("a[data-url='/students/#{student.id}/edit.js']", wait: 5).click
-    end
+    puts("+++ student - id: #{student.id}, #{student.inspect}")
+    # within("tr#student_#{student.id}") do
+    #   page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
+    #   page.find("a[data-url='/students/#{student.id}/edit.js']", wait: 5).click
+    # end
+    page.find("a#edit_#{student.id}", wait: 5).click
+    sleep 30
     page.should have_content("Edit Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
@@ -479,7 +490,9 @@ describe "Student Listing", js:true do
         page.find('#student_last_name', wait: 5).set('Ln')
         #page.should have_css('span.ui-error', text:'Email is required.')
         page.find('#student_email', wait: 5).set('f@a.com')
-        sleep 1
+        # sleep 1
+        sleep 5
+        save_and_open_page
         page.click_button('Save')
       end
     end

@@ -74,12 +74,12 @@ gem 'rack-cache', '~> 1.6.1'
 gem 'devise', '~> 3.0.0'   # Authentication
 
 group :test do
-  gem 'rspec-rails', '~> 2.14.0'
-  gem 'rspec-mocks', '~> 2.14.2'
-  gem 'rspec-expectations', '~> 2.14.0'
-  gem 'rspec-core', '~> 2.14.4'
-  gem 'webdrivers'
-  gem 'capybara', '~> 1.1.2'
+  gem 'rspec-rails', '~> 3.8.2'
+  # gem 'webdrivers'
+  gem 'chromedriver-helper'
+  gem 'geckodriver-helper'
+  gem 'capybara', '~> 2.18.0'
+  gem 'selenium-webdriver', '~> 3.8.0'
   gem 'factory_bot_rails', require: false
   gem 'guard-rspec'
   gem 'simplecov', require: false

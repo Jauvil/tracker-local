@@ -1,5 +1,5 @@
 # subject_outcomes_upload_lo_file_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Subject Outcomes Bulk Upload LOs", js:true do

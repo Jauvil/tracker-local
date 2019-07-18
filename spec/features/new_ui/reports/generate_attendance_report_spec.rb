@@ -1,5 +1,5 @@
 # generate_attendance-report_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Attendance Report", js:true do

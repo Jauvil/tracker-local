@@ -1,5 +1,5 @@
 # researcher_home_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Researcher Home Page", js:true do

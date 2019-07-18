@@ -1,5 +1,5 @@
 # generate_account_activity_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Account Activity Report", js:true do

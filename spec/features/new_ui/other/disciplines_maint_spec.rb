@@ -1,5 +1,5 @@
 # disciplines_maint_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Disciplines Maintenance", js:true do

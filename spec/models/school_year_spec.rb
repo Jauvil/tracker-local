@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SchoolYear do
-  
+
 
   it "Properly validates school year dates" do
     [nil, DateTime.parse("2013-01-01")].each do |end_date|
@@ -75,12 +75,12 @@ describe SchoolYear do
       @old_section.save
 
       @student = create :student, school: @section.school
-      
+
       @enrollment = create :enrollment, student: @student, section: @section
     end
 
     context "correctly determines current sections for students" do
-      it do     
+      it do
         @student.sections.current.count.should eq(1)
         @student.sections.current.first.id.should eq(@section.id)
       end

@@ -1,5 +1,5 @@
 # section_dashboard_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Section Dashboard", js:true do
