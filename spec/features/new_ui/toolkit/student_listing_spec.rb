@@ -247,8 +247,9 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
+    # Capybara.page.driver.browser.manage.window.maximize
     # Capybara.page.driver.browser.manage.current_window.maximize
-    Capybara.page.current_window.maximize
+    # Capybara.page.current_window.maximize
 
     visit students_path
     assert_equal("/students", current_path)

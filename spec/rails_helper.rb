@@ -60,6 +60,11 @@ RSpec.configure do |config|
 
   #Allows us to call factories without prefacing with FactoryBot
   config.include FactoryBot::Syntax::Methods
+
+  # temporarily allow should syntax without deprecation warnings
+  # To Do - replace all should tests with expect tests (many hundreds)
+  # see: https://relishapp.com/rspec/rspec-expectations/docs/syntax-configuration
+  config.expect_with(:rspec) { |c| c.syntax = :should }
 end
 
 class ActiveRecord::Base
