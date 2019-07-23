@@ -54,5 +54,5 @@ Tracker2::Application.configure do
   # config.log_level = :debug
 
   # silence deprecation warnings
-  ActiveSupport::Deprecation.silenced = true
+  ActiveSupport::Deprecation.silenced = false
 end

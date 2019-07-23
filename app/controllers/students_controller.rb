@@ -28,7 +28,8 @@ class StudentsController < ApplicationController
     :last_name,
     :email,
     :password,
-    :temporary_password
+    :temporary_password,
+    :subscription_status
   ]
 
   # skip_load_and_authorize_resource only: :index
@@ -135,41 +136,43 @@ class StudentsController < ApplicationController
     @school = get_current_school
     @student = Student.new
     @student.assign_attributes(student_params)
-    Rails.logger.debug("*** initial errors: #{@student.errors.full_messages}")
+    # puts("*** initial errors: #{@student.errors.full_messages}")
     @student.school_id = @school.id
     @student.set_unique_username
     @student.set_temporary_password
     @student.valid?
-    Rails.logger.debug("*** set errors: #{@student.errors.full_messages}")
+    # puts("*** set errors: #{@student.errors.full_messages}")
+    # ensure instance variable exists, even if errors
+    # don't create parent until after successful student create
     @parent = Parent.new
-    @parent.assign_attributes(parent_params)
-    @parent.school_id = @school.id
-    parent_status = @parent.valid?
-    Rails.logger.debug("*** parent initial errors: #{@parent.errors.full_messages}")
 
     respond_to do |format|
-
       @student.save if @student.errors.count == 0
+      # puts("*** after no errors save, errors: #{@student.errors.full_messages}")
       if @student.errors.count == 0
+        # puts("*** no student errors after save")
         begin
           UserMailer.welcome_user(@student, @school, get_server_config).deliver
         rescue => e
           Rails.logger.error("Error: Student Email missing ServerConfigs record with support_email address")
           raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
         end
+        # use parent if created already in student create
         @parent = @student.parents.first
         if @parent.blank?
           @parent = Parent.new
         end
         Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
         @parent.assign_attributes(parent_params)
-        Rails.logger.debug("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
+        # puts("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
         Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
         @parent.school_id = @school.id
+        @parent.set_unique_username
+        @parent.set_temporary_password
         parent_status = @parent.save
-        Rails.logger.debug("*** save @parent.errors: #{@parent.errors.inspect}")
+        # puts("*** save @parent.errors: #{@parent.errors.inspect}")
         Rails.logger.debug("*** save @parent.errors.count: #{@parent.errors.count}")
-        Rails.logger.debug("*** save parent_status: #{parent_status.inspect}")
+        # puts("*** save parent_status: #{parent_status.inspect}")
         begin
           UserMailer.welcome_user(@parent, @school, get_server_config).deliver
         rescue => e
@@ -182,10 +185,10 @@ class StudentsController < ApplicationController
       else
         err_msgs = []
         err_msgs << @student.errors.full_messages if @student.errors.count > 0
-        Rails.logger.debug("*** unsuccessful")
+        # puts("*** unsuccessful before or after student save")
       end
-      Rails.logger.debug("*** final errors: #{@student.errors.full_messages}")
-      Rails.logger.debug("*** final errors count: #{@student.errors.count}")
+      # puts("*** final errors: #{@student.errors.full_messages}")
+      # puts("*** final errors count: #{@student.errors.count}")
       flash[:alert] = err_msgs.join(', ') if err_msgs.length > 0
       flash.each do |name, msg|
         Rails.logger.debug("*** flash message: #{msg}") if msg.is_a?(String)

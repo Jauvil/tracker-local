@@ -119,7 +119,7 @@ describe "Teacher Tracker", js:true do
       find('button', text: 'Save').click
       sleep 5
       wait_for_ajax
-      save_and_open_page
+      # save_and_open_page
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
       find("div#expand-all-los-button").click

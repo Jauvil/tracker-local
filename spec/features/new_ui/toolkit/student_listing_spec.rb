@@ -247,7 +247,7 @@ describe "Student Listing", js:true do
 
   def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
 
-    # Capybara.page.driver.browser.manage.window.maximize
+    page.driver.browser.manage.window.maximize
     # Capybara.page.driver.browser.manage.current_window.maximize
     # Capybara.page.current_window.maximize
 
@@ -387,7 +387,7 @@ describe "Student Listing", js:true do
       if can_see_all  #can_see_prior_year_student_sections
         page.should have_css("a[href='/enrollments/#{enrollment_s2.id}']")
         find("a[href='/enrollments/#{enrollment_s2.id}']").click
-        sleep 2
+        # sleep 2
         assert_equal("/enrollments/#{enrollment_s2.id}", current_path)
         page.should have_content("Evidence Statistics")
         page.should have_content("Overall Learning Outcome Performance")
@@ -438,19 +438,17 @@ describe "Student Listing", js:true do
       page.should have_css("a[data-url='/students/#{student.id}/security.js']")
       find("a[data-url='/students/#{student.id}/security.js']").click
     end
+    sleep 1
     page.should have_content("Student/Parent Security and Access")
-    sleep 2 # wait for javascript to do its thing ???
     within("#user_#{student.id}") do
       page.find("a[href='/students/#{student.id}/set_student_temporary_password']", wait: 5).click
     end
     within("#user_#{student.id}.student-temp-pwd") do
       page.should_not have_content('(Reset Password')
     end
-    sleep 5
-    # save_and_open_page
-    page.find('div.modal-dialog button').click
-    # sleep 5
-    # save_and_open_page
+    # page.find('div.modal-dialog button').click
+    sleep 1
+    page.click_button('Close')
   end
 
   def can_change_student(student)
@@ -459,8 +457,8 @@ describe "Student Listing", js:true do
     #   page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
     #   page.find("a[data-url='/students/#{student.id}/edit.js']", wait: 5).click
     # end
-    page.find("a#edit_#{student.id}", wait: 5).click
-    sleep 30
+    page.find("tr#student_#{student.id} a[data-url='/students/#{student.id}/edit.js']", wait: 5).click
+    sleep 1
     page.should have_content("Edit Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
@@ -475,7 +473,7 @@ describe "Student Listing", js:true do
           page.should_not have_css("#email span.ui-required")
         end
         page.fill_in 'student_email', :with => ''
-        sleep 2
+        # sleep 2
         page.click_button('Save')
       end
     end
@@ -491,21 +489,18 @@ describe "Student Listing", js:true do
         page.find('#student_last_name', wait: 5).set('Ln')
         #page.should have_css('span.ui-error', text:'Email is required.')
         page.find('#student_email', wait: 5).set('f@a.com')
-        # sleep 1
-        sleep 5
-        save_and_open_page
         page.click_button('Save')
       end
     end
     # Rails.logger.debug("+++ page.should_not have_css edit student")
 
     # page.should_not have_css("#modal_popup form#edit_student_#{student.id}")
-    sleep 5
+    # sleep 5
     assert_equal("/students", current_path)
     within("tr#student_#{student.id}") do
       page.find("a[data-url='/students/#{student.id}.js']", wait: 5).click
     end
-    sleep 5
+    # sleep 5
     page.should have_content("View Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       page.should have_content('Fn')
@@ -516,13 +511,14 @@ describe "Student Listing", js:true do
 
   def can_create_student(student)
     visit students_path
-    sleep 10
+    # sleep 10
     assert_equal("/students", current_path)
     within("div#page-content") do
       page.should have_css("i.fa-plus-square")
-      page.find("a[data-url='/students/new.js']", wait: 15).click
+      page.find("a[data-url='/students/new.js']", wait: 5).click
     end
 
+    sleep 1
     page.should have_content("Create New Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#new_student") do
@@ -536,10 +532,10 @@ describe "Student Listing", js:true do
         end
         page.find('#student_email', wait: 5).set('')
         page.find('#student_grade_level', wait: 5).set('4')
-        sleep 1
         page.click_button('Save')
       end
     end
+    sleep 1
     # ensure that blank email gets an error on creates
     # confirm email was saved during create
     page.should have_css("#modal_popup form#new_student")
@@ -553,11 +549,11 @@ describe "Student Listing", js:true do
         page.find('#student_last_name', wait: 5).set('NLname')
         page.find('#student_email', wait: 5).set('new@ba.com')
         page.find('#student_grade_level', wait: 5).set('2')
-        sleep 1
         page.click_button('Save')
       end
     end
     assert_equal("/students", current_path)
+    sleep 1
     page.should_not have_css("#modal_popup form#new_student")
     # expect(page.text).to match(/New\sFname/) # alternate syntax
     page.text.should match(/NFname/)
@@ -573,8 +569,7 @@ describe "Student Listing", js:true do
       find("a[data-url='/students/#{new_student_id}/security.js']").click
     end
     page.should have_content("Student/Parent Security and Access")
-    sleep 1
-    page.find('button').click
+    page.click_button('Close')
 
     visit students_path
     assert_equal("/students", current_path)
@@ -583,8 +578,9 @@ describe "Student Listing", js:true do
       page.find("a[data-url='/students/new.js']", wait: 5).click
     end
 
+    sleep 1
     page.find("form#new_student", wait: 5)
-    within('#modal_popup h2') do
+    within('#modal_popup .header-block h2') do
       page.should have_content("Create New Student")
     end
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
@@ -597,8 +593,8 @@ describe "Student Listing", js:true do
         page.click_button('Save')
       end
     end
+    sleep 1
     assert_equal("/students", current_path)
-    sleep 5
     page.should_not have_css("#modal_popup form#new_student")
     # expect(page.text).to match(/New\sFname/) # alternate syntax
     page.text.should match(/NFname/)
@@ -617,9 +613,9 @@ describe "Student Listing", js:true do
       page.should have_css("a[data-url='/students/#{another_student_id}/security.js']")
       find("a[data-url='/students/#{another_student_id}/security.js']").click
     end
+    sleep 1
     page.should have_content("Student/Parent Security and Access")
-    sleep 1 # fix for button not visible ?!?
-    page.find('button').click
+    page.click_button('Close')
   end
 
   def can_change_graduate(student)
@@ -634,11 +630,10 @@ describe "Student Listing", js:true do
       within("form#edit_student_#{student.id}") do
         page.find('#student_first_name', wait: 5).set('CFn')
         page.find('#student_last_name', wait: 5).set('CLn')
-        sleep 8
         page.click_button('Save')
       end
     end
-    sleep 2
+    sleep 1
     assert_equal("/students", current_path)
     page.find("tr#student_#{student.id}.deactivated", wait: 5)
     within("tr#student_#{student.id}.deactivated") do
