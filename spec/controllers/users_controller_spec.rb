@@ -17,7 +17,7 @@ describe UsersController do
     end
   end
 
-  pending "GET show" do
+  skip "GET show" do
     it "removes school context for a system administrator" do
       sign_in @system_administrator
       session[:school_context] = @school.id

@@ -24,14 +24,14 @@ describe "Staff Listing", js:true do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     describe "as school administrator" do
       before do
         sign_in(@school_administrator)
       end
       it { has_valid_staff_listing(:school_administrator) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
@@ -47,7 +47,7 @@ describe "Staff Listing", js:true do
         set_users_school(@school)
       end
       it { has_valid_staff_listing(:researcher) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     describe "as system administrator" do
       before do
@@ -55,21 +55,21 @@ describe "Staff Listing", js:true do
         set_users_school(@school)
       end
       it { has_valid_staff_listing(:system_administrator) }
-      pending { can_edit_counselors()}
+      skip { can_edit_counselors()}
     end
     describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
-      pending { cannot_see_counselors()}
+      skip { cannot_see_counselors()}
     end
     describe "as parent" do
       before do
         sign_in(@student.parent)
       end
       it { has_no_staff_listing }
-      pending { cannot_see_counselors()}
+      skip { cannot_see_counselors()}
     end
   end
   describe "Egypt System" do
@@ -95,14 +95,14 @@ describe "Staff Listing", js:true do
         sign_in(@teacher)
       end
       it { has_valid_staff_listing(:teacher) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     describe "as school administrator" do
       before do
         sign_in(@school_administrator)
       end
       it { has_valid_staff_listing(:school_administrator) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     # to do - do this once toolkit and home page for counselor exists
     # describe "as counselor" do
@@ -118,7 +118,7 @@ describe "Staff Listing", js:true do
         set_users_school(@school)
       end
       it { has_valid_staff_listing(:researcher) }
-      pending { can_see_counselors()}
+      skip { can_see_counselors()}
     end
     describe "as system administrator" do
       before do
@@ -127,22 +127,22 @@ describe "Staff Listing", js:true do
         set_users_school(@school)
       end
       it { has_valid_staff_listing(:system_administrator) }
-      pending { can_edit_counselors()}
-      pending { test_somewhere_add_user_without_email }
+      skip { can_edit_counselors()}
+      skip { test_somewhere_add_user_without_email }
     end
     describe "as student" do
       before do
         sign_in(@student)
       end
       it { has_no_staff_listing }
-      pending { cannot_see_counselors()}
+      skip { cannot_see_counselors()}
     end
     describe "as parent" do
       before do
         sign_in(@student.parent)
       end
       it { has_no_staff_listing }
-      pending { cannot_see_counselors()}
+      skip { cannot_see_counselors()}
     end
   end
 

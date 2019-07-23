@@ -22,10 +22,13 @@ require 'paperclip/matchers'
 require 'coffee_script'
 require 'factory_bot_rails'
 require 'model_helper'
+require "test/unit/assertions"
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+
+include Test::Unit::Assertions
 
 RSpec.configure do |config|
   # ## Mock Framework

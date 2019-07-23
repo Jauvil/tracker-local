@@ -46,7 +46,7 @@ describe Excuse do
       field_val.should == @excuse.send("#{field}")
     end
   end
-  pending " " do
+  skip " " do
     context "custom excuse tests" do
       it "should not allow mass assignment of school_id" do
         id_before = @excuse.school_id

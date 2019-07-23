@@ -32,7 +32,7 @@ describe Attendance do
       it { should_not be_valid }
     end
   end
-  pending "should not allow mass assignment" do
+  skip "should not allow mass assignment" do
     it "should not allow mass assignment of school_id" do
       id_before = @attendance.school_id
       @attendance.update_attributes(school_id: 99)
@@ -71,8 +71,8 @@ describe Attendance do
       it { @attendance.reload.attendance_date.should == Date.parse('1983-12-13') }
     end
 
-    pending "Investigate if we need to Test that attendance date is within the school year"
-    pending "Address mass updates in the app, especially as related to attendance"
+    skip "Investigate if we need to Test that attendance date is within the school year"
+    skip "Address mass updates in the app, especially as related to attendance"
 
   end
 
