@@ -81,10 +81,12 @@ describe "Student Dashboard", js:true do
   # test methods
 
   def role_display_is_valid(dual_role=false)
+    page.driver.browser.manage.window.maximize
     visit root_path()
     assert_equal("/#{@current_role.pluralize}/#{@test_user.id}", current_path)
     if @test_user.role_symbols.length > 1
       page.should have_css('li#side-role')
+      page.find("li#side-role a").click
       within("li#side-role") do
         if @test_user.system_administrator?
           page.should have_content('Sys Admin')
@@ -128,11 +130,11 @@ describe "Student Dashboard", js:true do
           wait_for_ajax
         end
         # change role to teacher if school admin and teacher
-
-        page.should have_css("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']", visible: true)
+        page.should have_css("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']", wait: 5, visible: true)
         find("#side-role a[href='/teachers/#{@teacher.id}?role=teacher']").click
       end
       page.should have_css('li#side-current')
+      page.find('li#side-current').click # open up the list of classes
       within ('li#side-current') do
         page.should have_css('a.sidebar-nav-menu')
         page.should_not have_css('a.sidebar-nav-menu.disabled')
