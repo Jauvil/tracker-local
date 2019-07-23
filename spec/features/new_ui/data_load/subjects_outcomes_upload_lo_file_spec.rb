@@ -581,9 +581,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
       find('#upload').click
 
       page.should have_content('Match Old LOs to New LOs')
-      within('#breadcrumb-flash-msgs') do
-        page.should_not have_content('No Curriculum Records to upload.')
-      end
+      page.should_not have_css('#breadcrumb-flash-msgs')
       # 'Save Matches' button should be showing
       page.should have_button("Reconcile Subject")
       page.should_not have_css("#save_all")
@@ -643,7 +641,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
 
       assert_equal("/subject_outcomes/upload_lo_file", current_path)
       page.should have_content('Match Old LOs to New LOs')
-      within('h3.ui-error') do
+      within('h3.ui-error', match: :first) do
         page.should have_content('Note: When save is done, all unmatched new records will be added, and all unmatched old records will be deactivated.')
       end
 
@@ -652,16 +650,16 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
       end
 
       page.should have_css("tr[data-new-rec-id='13'] select#selections_13")
-      page.should have_css("tr[data-new-rec-id='14'] input[type='hidden'][name='selections[14]']")
-      page.should have_css("tr[data-new-rec-id='15'] input[type='hidden'][name='selections[15]']")
-      page.should have_css("tr[data-new-rec-id='16'] input[type='hidden'][name='selections[16]']")
-      page.should have_css("tr[data-new-rec-id='17'] input[type='hidden'][name='selections[17]']")
-      page.should have_css("tr[data-new-rec-id='18'] input[type='hidden'][name='selections[18]']")
-      page.should have_css("tr[data-new-rec-id='19'] input[type='hidden'][name='selections[19]']")
-      page.should have_css("tr[data-new-rec-id='20'] input[type='hidden'][name='selections[20]']")
-      page.should have_css("tr[data-new-rec-id='21'] input[type='hidden'][name='selections[21]']")
+      page.should_not have_css("tr[data-new-rec-id='14'] input[name='selections[14]']")
+      page.should_not have_css("tr[data-new-rec-id='15'] input[name='selections[15]']")
+      page.should_not have_css("tr[data-new-rec-id='16'] input[name='selections[16]']")
+      page.should_not have_css("tr[data-new-rec-id='17'] input[name='selections[17]']")
+      page.should_not have_css("tr[data-new-rec-id='18'] input[name='selections[18]']")
+      page.should_not have_css("tr[data-new-rec-id='19'] input[name='selections[19]']")
+      page.should_not have_css("tr[data-new-rec-id='20'] input[name='selections[20]']")
+      page.should_not have_css("tr[data-new-rec-id='21'] input[name='selections[21]']")
       page.should have_css("tr[data-new-rec-id='22'] select#selections_22")
-      page.should have_css("tr[data-new-rec-id='23'] input[type='hidden'][name='selections[23]']")
+      page.should_not have_css("tr[data-new-rec-id='23'] input[name='selections[23]']")
 
       page.should have_css("tr[data-old-db-id='27'] td.old_lo_desc")
       page.should_not have_css("tr[data-old-db-id='27'] td.old_lo_desc.gray-out")
@@ -704,7 +702,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
       within('.flash_notify') do
         page.should have_content(@subj_math_1.name)
       end
-      within('h3.ui-error') do
+      within('h3.ui-error', match: :first) do
         page.should have_content('Note: When save is done, all unmatched new records will be added, and all unmatched old records will be deactivated.')
       end
       within('.block-title h3') do
@@ -712,23 +710,23 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
       end
 
       within("tr[data-new-rec-id='24']") do
-        page.should have_css("input[type='hidden'][name='selections[24]']")
+        page.should_not have_css("input[name='selections[24]']")
         page.should have_css(".ui-error", text: 'Duplicate Description')
       end
       within("tr[data-new-rec-id='25']") do
-        page.should have_css("input[type='hidden'][name='selections[25]']")
+        page.should_not have_css("input[name='selections[25]']")
         page.should have_css(".ui-error", text: 'Duplicate Description')
       end
       within("tr[data-new-rec-id='26']") do
-        page.should have_css("input[type='hidden'][name='selections[26]']")
+        page.should_not have_css("input[name='selections[26]']")
         page.should have_css(".ui-error", text: 'Duplicate Description')
       end
       within("tr[data-new-rec-id='27']") do
-        page.should have_css("input[type='hidden'][name='selections[27]']")
+        page.should_not have_css("input[name='selections[27]']")
         page.should have_css(".ui-error", text: 'Duplicate Description')
       end
       within("tr[data-new-rec-id='28']") do
-        page.should have_css("input[type='hidden'][name='selections[28]']")
+        page.should_not have_css("input[name='selections[28]']")
         page.should have_css(".ui-error", text: 'Duplicate Code')
       end
       within("tr[data-new-rec-id='29']") do
@@ -794,7 +792,7 @@ describe "Subject Outcomes Bulk Upload LOs", js:true do
       within('.flash_notify') do
         page.should have_content('Automatically Updated Subjects counts:')
       end
-      within('h3.ui-error') do
+      within('h3.ui-error', match: :first) do
         page.should have_content('Note: When save is done, all unmatched new records will be added, and all unmatched old records will be deactivated.')
       end
       within('.block-title h3') do
