@@ -167,8 +167,9 @@ describe "Generate Student Attendance Detail Report", js:true do
     # should fail when running attendance report directly
     visit student_attendance_detail_report_attendances_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
@@ -183,8 +184,9 @@ describe "Generate Student Attendance Detail Report", js:true do
     # should fail when running attendance report directly
     visit student_attendance_detail_report_attendances_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 

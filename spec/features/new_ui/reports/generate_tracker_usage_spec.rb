@@ -129,9 +129,11 @@ describe "Generate Tracker Usage Report", js:true do
     # should fail when running tracker usage report directly
     visit tracker_usage_teachers_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
+
   end
 
   def has_no_tracker_usage_report
@@ -149,8 +151,9 @@ describe "Generate Tracker Usage Report", js:true do
     # should fail when running tracker usage report directly
     visit tracker_usage_teachers_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
