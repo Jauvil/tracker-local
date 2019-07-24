@@ -85,8 +85,9 @@ describe "Generate Account Activity Report", js:true do
     # should fail when running tracker usage report directly
     visit account_activity_report_users_path
     assert_equal(@home_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
@@ -105,17 +106,24 @@ describe "Generate Account Activity Report", js:true do
     # should fail when running tracker usage report directly
     visit account_activity_report_users_path
     assert_equal(@home_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
   def has_valid_account_activity_report(role)
+    # page.driver.browser.manage.window.maximize
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
 
     # generate a report with no user types
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Account Activity Report').click
     within("#page-content") do
       within('form#new_generate') do
         page.should have_selector("select#generate-type")
@@ -154,10 +162,13 @@ describe "Generate Account Activity Report", js:true do
       page.should have_css("#side-reports a", text: 'Generate Reports')
       find("#side-reports a", text: 'Generate Reports').click
       page.should have_content('Generate Reports')
+      page.should have_selector("select#generate-type")
+        # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+      # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+      page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+      page.find("ul#select2-results-2 li div", text: 'Account Activity Report').click
       within("#page-content") do
         within('form#new_generate') do
-          page.should have_selector("select#generate-type")
-          select('Account Activity Report', from: "generate-type")
           find("select#generate-type").value.should == "account_activity"
           check('generate[user_type_staff]')
           find("button", text: 'Generate').click
@@ -188,10 +199,13 @@ describe "Generate Account Activity Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Account Activity Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_selector("select#generate-type")
-        select('Account Activity Report', from: "generate-type")
         find("select#generate-type").value.should == "account_activity"
         check('generate[user_type_students]')
         find("button", text: 'Generate').click
@@ -231,10 +245,13 @@ describe "Generate Account Activity Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Account Activity Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_selector("select#generate-type")
-        select('Account Activity Report', from: "generate-type")
         find("select#generate-type").value.should == "account_activity"
         check('generate[user_type_parents]')
         find("button", text: 'Generate').click
@@ -273,10 +290,13 @@ describe "Generate Account Activity Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Account Activity Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_selector("select#generate-type")
-        select('Account Activity Report', from: "generate-type")
         find("select#generate-type").value.should == "account_activity"
         if [:system_administrator, :school_administrator].include?(role)
           check('generate[user_type_staff]')
@@ -313,7 +333,7 @@ describe "Generate Account Activity Report", js:true do
       end
     end
 
-  end # def has_valid_tracker_usage_report
+  end # def has_valid_account_activity_report
 
 
 end
