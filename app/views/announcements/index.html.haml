@@ -36,9 +36,9 @@
             %tr
               %th='Message'
               %th{colspan: 2}='Actions'
-          %tbody#announcements
+          %tbody#announcement_list
             - @announcements.each do |an|
-              %tr{id: "announcement_#{an.id}"}
+              %tr{id: "announcement_list_#{an.id}"}
                 %td#announcement-message=an.content
                 %td
                   - if can? :update, an
