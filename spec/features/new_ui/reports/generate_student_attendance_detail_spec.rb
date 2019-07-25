@@ -198,12 +198,12 @@ describe "Generate Student Attendance Detail Report", js:true do
     find("#side-reports a", text: 'Generate Reports').click
 
     page.should have_content('Generate Reports')
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Student Attendance Detail Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Student Attendance Detail Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
-        select('Student Attendance Detail Report', from: "generate-type")
         find("select#generate-type").value.should == "student_attendance_detail_report"
         page.should have_css('fieldset#ask-student', visible: true)
         page.should have_css('fieldset#ask-date-range', visible: true)
@@ -250,7 +250,6 @@ describe "Generate Student Attendance Detail Report", js:true do
 
     assert_equal(student_attendance_detail_report_attendances_path(), current_path)
     page.should_not have_content('Internal Server Error')
-
     within("#page-content") do
       page.should have_content("Student Attendance Detail Report")
       within('.report-body') do
@@ -363,7 +362,7 @@ describe "Generate Student Attendance Detail Report", js:true do
         end
 
         # total @student
-        within("table tr.total-row[data-student-id='#{@student2.id}']") do
+        within("table tr.total-student-row[data-student-id='#{@student2.id}']") do
           page.should have_css("td[data-type-id='#{@at_absent.id}']", text: '1')
           page.should have_css("td[data-type-id='#{@at_tardy.id}']", text: '0')
           page.should have_css("td[data-type-id='9999999']", text: '0')
@@ -384,9 +383,9 @@ describe "Generate Student Attendance Detail Report", js:true do
         end
 
         # total @student
-        within("table tr.total-row[data-student-id='#{@student3.id}']") do
+        within("table tr.total-student-row[data-student-id='#{@student3.id}']") do
           page.should have_css("td[data-type-id='#{@at_absent.id}']", text: '0')
-          page.should have_css("td[data-type-id='#{@at_tardy.id}']", text: '1')
+          page.should have_css("td[data-type-id='#{@at_tardy.id}']", text: '2')
           page.should have_css("td[data-type-id='9999999']", text: '0')
         end
 
@@ -400,11 +399,17 @@ describe "Generate Student Attendance Detail Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Student Attendance Detail Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Student Attendance Detail Report').click
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select(@student.full_name, from: 'student')
+    page.find("form#new_generate fieldset#ask-student", wait: 5).click
+    page.find("ul#select2-results-7 li div", text: @student.full_name).click
     within("#page-content") do
       within('form#new_generate') do
-        select('Student Attendance Detail Report', from: "generate-type")
         find("select#generate-type").value.should == "student_attendance_detail_report"
-        select(@student.full_name, from: 'student')
         page.execute_script("$('#start-date').val('2015-09-02')")
         page.execute_script("$('#end-date').val('2015-09-04')")
         find("button", text: 'Generate').click
@@ -464,13 +469,18 @@ describe "Generate Student Attendance Detail Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Student Attendance Detail Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Student Attendance Detail Report').click
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select("Deactivated", from: "attendance-type-select")
+    page.find("form#new_generate fieldset#ask-attendance-type", wait: 5).click
+    page.find("ul#select2-results-9 li div", text: 'Deactivated').click
     within("#page-content") do
       within('form#new_generate') do
-        select('Student Attendance Detail Report', from: "generate-type")
-        # select(@student.full_name, from: 'student')
         page.execute_script("$('#start-date').val('2015-09-01')")
         page.execute_script("$('#end-date').val('2015-09-04')")
-        select("Deactivated", from: "attendance-type-select")
         find('fieldset#ask-details #details-box').should_not be_checked
         find('fieldset#ask-details #details-box').click
         find('fieldset#ask-details #details-box').should be_checked
