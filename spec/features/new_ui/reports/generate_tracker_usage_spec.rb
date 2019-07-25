@@ -161,12 +161,12 @@ describe "Generate Tracker Usage Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Tracker Usage', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Tracker Usage').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
-        select('Tracker Usage', from: "generate-type")
         find("select#generate-type").value.should == "tracker_usage"
         find("button", text: 'Generate').click
       end
