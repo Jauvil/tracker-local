@@ -67,7 +67,7 @@ RSpec.configure do |config|
   # temporarily allow should syntax without deprecation warnings
   # To Do - replace all should tests with expect tests (many hundreds)
   # see: https://relishapp.com/rspec/rspec-expectations/docs/syntax-configuration
-  config.expect_with(:rspec) { |c| c.syntax = :should }
+  config.expect_with(:rspec) { |c| c.syntax = :should, :expect}
 end
 
 class ActiveRecord::Base
