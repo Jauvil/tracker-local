@@ -437,13 +437,8 @@ describe "Staff Listing", js:true do
         page.should have_css("a[data-url='/users/new/new_staff'] i.fa-plus-square")
         page.find("a[data-url='/users/new/new_staff']").click
       end
-      # Error showing for not selecting a role
-      # page.should have_css('#staff_first_name', value: @teacher.first_name)
-      # page.should have_css('#staff_last_name', value: @teacher.last_name)
-      within('h3') do
-        page.should have_content(@teacher.first_name)
-        page.should have_content(@teacher.last_name)
-      end
+
+      save_and_open_page
       within("#modal_popup") do
         page.should have_css("h2", text: 'Create Staff Member')
         # Make sure all roles are unchecked and error is showing
@@ -457,8 +452,8 @@ describe "Staff Listing", js:true do
         # should have test for missing email error for schools requiring email addresses
         page.fill_in 'staff_email', :with => 'changed@sample.com'
         page.find("button", text: 'Save').click
-        page.find('div.ui-error', wait: 5)
-        within('div.ui-error') do
+        err_elem = page.find('div.ui-error', match: :first, wait: 5)
+        within(err_elem) do
           page.should have_content('There are Errors')
         end
         find("button", text: 'Cancel', wait: 2).click
