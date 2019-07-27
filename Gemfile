@@ -76,7 +76,7 @@ gem 'devise', '~> 3.0.0'   # Authentication
 group :test do
   gem 'rspec-rails', '~> 3.8.2'
   # gem 'webdrivers'
-  gem 'chromedriver-helper'
+  # gem 'chromedriver-helper'
   gem 'geckodriver-helper'
   gem 'capybara', '~> 2.18.0'
   gem 'selenium-webdriver', '~> 3.8.0'

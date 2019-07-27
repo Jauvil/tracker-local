@@ -70,9 +70,6 @@ GEM
       xpath (>= 2.0, < 4.0)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
-    chromedriver-helper (1.1.0)
-      archive-zip (~> 0.7.0)
-      nokogiri (~> 1.6)
     chronic (0.10.2)
     climate_control (0.2.0)
     cocaine (0.5.8)
@@ -313,7 +310,6 @@ DEPENDENCIES
   capistrano-rails (= 1.1.0)
   capistrano-rvm (= 0.0.3)
   capybara (~> 2.18.0)
-  chromedriver-helper
   coffee-rails
   daemons (~> 1.1.9)
   delayed_job_active_record (~> 4.0.0)
