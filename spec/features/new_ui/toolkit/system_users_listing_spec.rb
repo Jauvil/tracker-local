@@ -193,7 +193,7 @@ describe "System Users Listing", js:true do
 
     find("#page-content a#add-system-user").click
     within('#modal_popup #modal_content #modal-body') do
-      within('h2') do
+      within('h2', match: :first) do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
@@ -204,7 +204,7 @@ describe "System Users Listing", js:true do
     end
     within('#modal_popup #modal_content #modal-body') do
       # should remain in dialog box with errors
-      within('h2') do
+      within('h2', match: :first) do
         page.should have_content('Add System User')
       end
       within('form#new_user') do
@@ -271,15 +271,15 @@ describe "System Users Listing", js:true do
 
     within('#modal_popup #modal_content #modal-body') do
       # edit dialog box should pop up
-      within('h2') do
+      within('h2', match: :first) do
         page.should have_content('Edit System User')
       end
       within("form#edit_user_#{new_system_user_id}.edit_user") do
-        page.has_checked_field?('researcher').should be_false
-        page.has_checked_field?('sys-admin').should be_true
-        page.should have_css("input#staff_first_name", value: 'Added')
-        page.should have_css("input#staff_last_name", value: 'System User')
-        page.should have_css("input#staff_email", value: 'testing@sample.com')
+        page.has_checked_field?('researcher').should be_falsey
+        page.has_checked_field?('sys-admin').should be_truthy
+        page.should have_css("input#staff_first_name[value='Added']")
+        page.should have_css("input#staff_last_name[value='System User']")
+        page.should have_css("input#staff_email[value='testing@sample.com']")
         # Role change test
         page.choose('researcher')
         page.fill_in('staff_first_name', with: 'Changed')
@@ -303,7 +303,7 @@ describe "System Users Listing", js:true do
 
     within('#modal_popup #modal_content #modal-body') do
       # view/show dialog box should pop up
-      within('h2') do
+      within('h2', match: :first) do
         page.should have_content('View Staff')
       end
       within(".page-form") do
