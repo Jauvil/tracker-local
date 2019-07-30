@@ -161,7 +161,7 @@ class Ability
           { id: user.school_id }
 
         # Section
-        can [:create, :new_enrollment, :new_evidence, :new_section_outcome,
+        can [:new_enrollment, :new_evidence, :new_section_outcome,
             :section_outcomes, :show, :sort, :update, :restore_evidence, :section_summary_outcome,
             :section_summary_student, :nyp_student, :nyp_outcome, :student_info_handout,
             :progress_rpt_gen, :class_dashboard, :edit_section_message, :exp_col_all_evid,
@@ -169,17 +169,19 @@ class Ability
           Section,
           { teaching_assignments: {teacher_id: user.id }}
 
-        # teachers can create new section in their school for any subject
+        # allow new for everyone, but secure the create section command.
         can [:new],
           Section
 
-        can [:create],
-          Section,
-          { subject: { school_id: user.school_id } }
+        # # To Do - review this for US Schools
+        # can [:create],
+        #   Section,
+        #   { subject: { school_id: user.school_id } }
 
-        can [:create, :edit],
-          Section,
-          { subject: { subject_manager_id: user.id }}
+        # # To Do - Review this for US Schools
+        # can [:create, :edit],
+        #   Section,
+        #   { subject: { subject_manager_id: user.id }}
 
         # all teachers can edit & see all section outcomes for their school (same as subject outcomes)
         # This will be turned on & off by Teachers Edit Outcomes Flags

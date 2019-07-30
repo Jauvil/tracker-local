@@ -26,8 +26,8 @@ Create development data
 ```bash
 bundle exec rake initialize_dev:create
 ```
-Initialize Server Configuration
 
+Initialize Server Configuration
 ```
 http://localhost:3000
 username: admin
@@ -50,7 +50,16 @@ click save
 - create the lookup records for attendance (Attendance Types and Excuses)
 click the _Attendance Maint._ link in the Toolkit
 add and save all attendance types and excuses (plus arrows in upper right of each section)
+```
 
+Optional Setups
+
+```bash
+- load up the training school (takes a while)
+bundle exec rake stem_egypt_training_data:build_training_school
+
+- create and load up the keystone high school (takes a while)
+bundle exec rake keystone_school:create
 ```
 
 Run Tests showing Coverage
