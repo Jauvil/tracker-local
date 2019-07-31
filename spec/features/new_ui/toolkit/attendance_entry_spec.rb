@@ -1,5 +1,5 @@
 # attendance_entry_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Attendance Entry", js:true do

@@ -1,5 +1,5 @@
 # announcements_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Announcements", js:true do
@@ -159,12 +159,10 @@ describe "Announcements", js:true do
     end
     # hide first announcement
     page.should have_css("#announcements #announcement_#{@announcement1.id}")
-    sleep 1
     within("#announcements #announcement_#{@announcement1.id} .announcement-alert .hide-alert") do
       # find 'id new annoucement then click HIDE'
       page.find("a[href='/announcements/#{@announcement1.id}/hide']").click
     end
-    sleep 1
     # confirm javascript hid the first announcement
     page.should_not have_css("#announcements #announcement_#{@announcement1.id}")
 
@@ -200,74 +198,68 @@ describe "Announcements", js:true do
       page.should_not have_css("#announcements")
       find("#announcements-admin a[href='/announcements']").click
       assert_equal(current_path, '/announcements')
-      sleep 1
-      announcements = page.all("#announcements tr")
+      announcements = page.all("#announcement_list tr")
       announcements.length.should == 2
 
       # add an announcement
       find("a#show-add[data-url='/announcements/new.js']").click
-      sleep 1
-      fill_in("announcement_content", with: 'This is the first new Announcement!')
+      page.find("#announcement_content", wait: 5).set('First new one')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # add another announcement
       find("a#show-add[data-url='/announcements/new.js']").click
-      sleep 1
-      fill_in("announcement_content", with: 'This is the second new Announcement!')
+      page.find("#announcement_content", wait: 5).set('Second new one')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # confirm at announcements page with the new announcement listed
       assert_equal(current_path, '/announcements')
-      announcements = page.all("#announcements tr")
+      announcements = page.all("#announcement_list tr")
 
       # announcements.length.should == 4
-      page.should have_css("#announcements #announcement_#{@announcement1.id}")
-      page.should have_css("#announcements #announcement_#{@announcement2.id}")
-      page.should have_css("#announcements #announcement_4")
-      page.should have_css("#announcements #announcement_3")
-
+      page.should have_css("#announcement_list #announcement_list_1")
+      page.should have_css("#announcement_list #announcement_list_2")
+      page.should have_css("#announcement_list #announcement_list_3")
+      page.should have_css("#announcement_list #announcement_list_4")
 
       #############################################
       # confirm edit new announcement works properly
 
       # get id of new announcement from returned announcement elements and go to edit popup
       # announcement_id = announcements[3][:id].split('_')[1]
-      within("#announcements tr#announcement_1") do
+      within("#announcement_list tr#announcement_list_1") do
         find("a[data-target='#modal_popup']").click
       end
 
       # confirm on edit page
       page.should have_content('System Alert Message')
-      sleep 1
-      fill_in("announcement_content", with: 'This is a changed Announcement!')
-      find("#modal_popup form#edit_announcement_#{@announcement1.id} input[type='submit']").click
+      page.find("#announcement_content", wait: 5).set('This is changed')
+      find("#modal_popup form#edit_announcement_1 input[type='submit']").click
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
-      within("#announcements tr#announcement_1") do
-        page.should have_content('This is a changed Announcement!')
+      within("#announcement_list tr#announcement_list_1") do
+        page.should have_content('This is changed')
       end
 
       # delete announcement
-      within(announcements[2]) do
+      within("#announcement_list tr#announcement_list_2") do
         find('a#delete-item').click
       end
+
       #click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
-
+      sleep 1
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
-      announcements = page.all("#announcements tr")
-      # announcements.length.should == 3
-      page.should have_css("#announcements #announcement_#{@announcement1.id}")
-      page.should have_css("#announcements #announcement_4")
-      # deleted
-      sleep 1
-      page.should_not have_css("#announcements #announcement_#{@announcement2.id}")
-      page.should have_css("#announcements #announcement_1")
 
+      announcements = page.all("#announcement_list tr")
+      announcements.length.should == 3
+      page.should have_css("#announcement_list #announcement_list_1")
+      page.should_not have_css("#announcement_list #announcement_list_2")
+      page.should have_css("#announcement_list #announcement_list_3")
+      page.should have_css("#announcement_list #announcement_list_4")
       # confirm new announcement is no longer in the alert box at the top of the page
-      within("#announcements") do
+      within("#announcement_list") do
         page.should_not have_content('Announcement Content 2')
       end
 
@@ -279,21 +271,17 @@ describe "Announcements", js:true do
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
-      within("#announcements") do
-        within(announcements[1]) do
-          find('a#delete-item').click
-        end
+      within("#announcement_list_1") do
+        find('a#delete-item').click
       end
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
-      within("#announcements") do
-        within(announcements[0]) do
-          find('a#delete-item').click
-        end
-      end
+
+      assert_equal(current_path, '/announcements')
+      find("#announcement_list_3 a[href='/announcements/3.js']").click
       page.driver.browser.switch_to.alert.accept
 
-      find("#announcements #announcement_3 a[href='/announcements/3.js']").click
+      find("#announcement_list_4 a[href='/announcements/4.js']").click
       # click OK in javascript confirmation popup
       page.driver.browser.switch_to.alert.accept
 

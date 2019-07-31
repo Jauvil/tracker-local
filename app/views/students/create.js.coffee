@@ -1,6 +1,5 @@
 
 errors_count = <%= @student.errors.count %>
-console.log "errors_count= #{errors_count}"
 if errors_count.toString() != '0'
   # display flash messages if any
   $('#breadcrumb-flash-msgs').html("<%= escape_javascript(render('layouts/messages')) %>")

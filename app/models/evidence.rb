@@ -76,6 +76,7 @@ class Evidence < ActiveRecord::Base
   end
 
   def hash_of_evidence_ratings
+    # To Do - fix duplicate key rating in the return-value default
     return_value      = Hash.new { |h,k| h[k] = Hash.new({rating: "", comment: "", rating: false}) }
     evidence_ratings  = evidence_section_outcome_ratings
     evidence_ratings.each do |e|

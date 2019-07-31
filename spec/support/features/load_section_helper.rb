@@ -1,5 +1,6 @@
 
-module LoadSectionHelper
+module Features
+  # module name changed per: https://github.com/thoughtbot/suspenders/issues/142
   def load_test_section(section, teacher, create_server_config=true)
 
     if create_server_config

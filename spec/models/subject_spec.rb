@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe Subject do
 
@@ -11,9 +11,9 @@ describe Subject do
   describe "school should be set up with arabic flags" do
     it do
       @school.should be_valid
-      @school.has_flag?(School::USE_FAMILY_NAME).should be_true
-      @school.has_flag?(School::USER_BY_FIRST_LAST).should be_true
-      @school.has_flag?(School::GRADE_IN_SUBJECT_NAME).should be_true
+      @school.has_flag?(School::USE_FAMILY_NAME).should be_truthy
+      @school.has_flag?(School::USER_BY_FIRST_LAST).should be_truthy
+      @school.has_flag?(School::GRADE_IN_SUBJECT_NAME).should be_truthy
     end
   end
 

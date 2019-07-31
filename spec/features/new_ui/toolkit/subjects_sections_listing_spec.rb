@@ -1,5 +1,5 @@
 # subject_sections_listing_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Subjects Sections Listing", js:true do
@@ -50,7 +50,7 @@ describe "Subjects Sections Listing", js:true do
         sign_in(@teacher1)
         #if @teacher isn't Subject manager then they can't edit LO'S.
       end
-      it { has_valid_subjects_listing(@teacher1, false, true) }
+      it { has_valid_subjects_listing(@teacher1, false, false) }
     end
 
     describe "as Regular teacher" do
@@ -58,7 +58,7 @@ describe "Subjects Sections Listing", js:true do
         sign_in(@teacher3)
         #if @teacher isn't Subject manager then they can't edit LO'S.
       end
-      it { has_valid_subjects_listing(@teacher3, false, true) }
+      it { has_valid_subjects_listing(@teacher3, false, false) }
     end
 
     describe "as school administrator" do
@@ -149,7 +149,7 @@ describe "Subjects Sections Listing", js:true do
         sign_in(@teacher1)
         #if @teacher isn't Subject manager then they can't edit LO'S.
       end
-      it { has_valid_subjects_listing(@teacher1, false, true) }
+      it { has_valid_subjects_listing(@teacher1, false, false) }
     end
 
     describe "as Regular teacher" do
@@ -157,7 +157,7 @@ describe "Subjects Sections Listing", js:true do
         sign_in(@teacher3)
         #if @teacher isn't Subject manager then they can't edit LO'S.
       end
-      it { has_valid_subjects_listing(@teacher3, false, true) }
+      it { has_valid_subjects_listing(@teacher3, false, false) }
     end
 
     describe "as school administrator" do
@@ -289,9 +289,20 @@ describe "Subjects Sections Listing", js:true do
     # end
 
     # all users should be able to view section outcomes (since they can see subject outcomes)
+
+    # open up sections for @subject1
+    page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
+    # click on down arrow should maximize subject
+    page.find("#subj_header_#{@subject1.id}_a", wait: 5).click
+    page.should have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
     page.should have_css("a[data-url='/sections/#{@section1_1.id}/section_outcomes.js']")
     page.should have_css("a[data-url='/sections/#{@section1_2.id}/section_outcomes.js']")
     page.should have_css("a[data-url='/sections/#{@section1_3.id}/section_outcomes.js']")
+
+    # open up sections for @subject2
+    page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
+    page.find("#subj_header_#{@subject2.id}_a", wait: 5).click
+    page.should have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
     page.should have_css("a[data-url='/sections/#{@section2_1.id}/section_outcomes.js']")
     page.should have_css("a[data-url='/sections/#{@section2_2.id}/section_outcomes.js']")
     page.should have_css("a[data-url='/sections/#{@section2_3.id}/section_outcomes.js']")
@@ -355,23 +366,22 @@ describe "Subjects Sections Listing", js:true do
         page.should_not have_css("#sect_#{@section1_2.id}")
         page.should_not have_css("#sect_#{@section1_3.id}")
       end
-
-      # click on right arrow should minimize subject
+      # subjects are currently maximized.
+      # click on down arrow should minimize subject
+      page.should have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
+      find("a#subj_header_#{@subject1.id}_a").click
       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
-      page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
+      # click on right arrow should minimize subject
       find("a#subj_header_#{@subject1.id}_a").click
       page.should have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
-      # click on down arrow should maximize subject
-      find("a#subj_header_#{@subject1.id}_a").click
-      page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
 
 
-      # todo - click on down arrow at top of page should maximize all subjects
+      # Click on down arrow at top of page should maximize all subjects
       find("a#expand-all-tbodies").click
       page.should have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
       page.should have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
 
-      # todo - click on right arrow at top of page should minimize all subjects
+      # Click on right arrow at top of page should minimize all subjects
       find("a#collapse-all-tbodies").click
       page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
       page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
@@ -389,8 +399,8 @@ describe "Subjects Sections Listing", js:true do
           page.should have_content('Create Subject')
         end
         within('#new_subject') do
-          select(@discipline.name[1], from: 'subject-discipline-id')
-          page.fill_in 'subject[name]', :with => 'Newsubj'
+          select(@discipline.name, from: 'subject-discipline-id')
+          page.find('input#subject-name', wait: 5).set('Newsubj')
           sleep 1
           page.click_button('Save')
         end
@@ -401,15 +411,14 @@ describe "Subjects Sections Listing", js:true do
       # if user is a regular teacher can not perform Edit Subject
 
       # click on edit subject should show edit subject popup
-      page.should have_css("a[href='/subjects/#{@subject1.id}/edit']")
-      find("a[href='/subjects/#{@subject1.id}/edit']").click
+      page.find("a[href='/subjects/#{@subject1.id}/edit']", wait: 5).click
       within('#modal-body') do
         within('h3') do
           page.should have_content("Edit Subject - #{@subject1.name}")
         end
         within('.edit_subject') do
           #find the properties for NAME and DISCIPLINE to update subject
-          select(@discipline.name[2], from: 'subject-discipline-id')
+          select(@discipline.name, from: 'subject-discipline-id')
           page.fill_in 'subject-name', :with => 'Subname'
           sleep 1
           page.click_button('Save')
@@ -422,76 +431,54 @@ describe "Subjects Sections Listing", js:true do
 
 
     if (can_create_section)
-      Rails.logger.debug("+++ can_create_section")
-
-      find("a#collapse-all-tbodies").click
-      page.should_not have_css("tbody#subj_header_#{@subject1.id}.show-tbody-body")
-      page.should_not have_css("tbody#subj_header_#{@subject2.id}.show-tbody-body")
-      #find("a#subj_header_#{@subject1.id}_a").click
-      find("a#expand-all-tbodies").click
-      Rails.logger.debug("+++ found subject?")
-
-      Rails.logger.debug("+++ create section")
+      # note: regular teachers should not be able to create sections (for now)
+      this_user.id.should_not equal(@teacher3.id)
       # create section
-      page.should have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
-      find("a[href='/sections/new?subject_id=#{@subject1.id}']").click
+      page.find("a[href='/sections/new?subject_id=#{@subject1.id}']", wait: 5).click
+      sleep 1
       within("#modal_content") do
         within("h2.h1") do
           page.should have_content("Create Section")
         end
-        within('.block-content-full') do
-          page.fill_in 'section[line_number]', :with => 'Newsect'
-        end
-        sleep 1
+        page.find('input#section_line_number', wait: 5).set('Newsect')
         page.click_button('Save')
-      end
-
-      # click on edit section should show edit section popup
-      # Teacher 3 (Regular Teacher) don't have permission to Edit sections
-      Rails.logger.debug("+++ Start editing section")
-      if (this_user == @teacher3)
-        page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-      else
-        page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-        find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
-        within("tr#sect_#{@section1_2.id}") do
-          page.should have_content(@section1_2.line_number)
-        end
-
-        within('#modal-body') do
-          # Rails.logger.debug("+++ in popup")
-          #  within('h2') do
-          #      if(can_create_subject)
-          #        page.should have_content("Edit Section: Changed Subject Name - #{@section1_2.line_number}")
-          #      else
-          #        page.should have_content("Edit Section: Subname - CLASS 83")
-          #        page.should have_content("Edit Section: #{@section1_2.name} - #{@section1_2.line_number}")
-          #      end
-          #  end
-
-          Rails.logger.debug("+++ should have line number name")
-          within('#section_line_number') do
-            page.should_not have_content(@section1_2.subject.name)
-          end
-          Rails.logger.debug("+++ should have line number")
-          page.should have_selector("#section_line_number", value: "#{@section1_3.line_number}")
-          page.fill_in 'section[line_number]', :with => 'Changed'
-          # within('#section_message') do
-          #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
-          #   page.should have_content(@section1_2.message)
-          # end
-          page.should have_selector("#section_school_year_id", value: "#{@section1_3.school_year.name}")
-          sleep 1
-          Rails.logger.debug("+++ click save")
-          page.click_button('Save')
-          Rails.logger.debug("+++ done with popup")
-        end
-        Rails.logger.debug("+++ out of popup")
         sleep 1
-        within("tr#sect_#{@section1_2.id}") do
-          page.should have_content("Changed")
-        end
       end
+
+      page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
+      find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
+      within("tr#sect_#{@section1_2.id}") do
+        page.should have_content(@section1_2.line_number)
+      end
+
+      within('#modal-body') do
+
+        if (can_create_subject)
+          page.should have_content("Subname")
+          page.should_not have_content(@section1_2.subject.name)
+        else
+          page.should_not have_content("Subname")
+          page.should have_content(@section1_2.subject.name)
+        end
+        page.should have_selector("#section_line_number[value='#{@section1_2.line_number}']", wait: 5)
+        page.find('input#section_line_number', wait: 5).set('Changed')
+        # within('#section_message') do
+        #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
+        #   page.should have_content(@section1_2.message)
+        # end
+        within("#section_school_year_id") {page.should have_content("#{@section1_2.school_year.name}")}
+        page.click_button('Save')
+        sleep 1
+      end
+      within("tr#sect_#{@section1_2.id}") do
+        page.should have_content("Changed")
+      end
+    else
+      # regular teachers have not been given create or edit section ability
+      puts("+++ cannot create section - this_user: #{this_user.inspect}")
+      puts("+++ cannot create section - regular teacher - @teacher3: #{@teacher3.inspect}")
+      page.should_not have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
+      page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
     end
     Rails.logger.debug("+++ end has_valid_subjects_listing")
   end # def has_valid_subjects_listing

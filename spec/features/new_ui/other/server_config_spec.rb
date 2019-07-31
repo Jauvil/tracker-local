@@ -1,5 +1,5 @@
 # server_config_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Server Configuration Maintenance", js:true do
@@ -176,9 +176,7 @@ describe "Server Configuration Maintenance", js:true do
 
     #confirm that viewing at the server config record automatically creates one
     page.find('#overall #sys-admin-links #server-config a').click
-    within('#breadcrumb-flash-msgs') do
-      page.should_not have_content('ERROR: Server Config did not exist, Default one Created, Please Edit!')
-    end
+    page.should_not have_content("#breadcrumb-flash-msgs")
 
 
 
@@ -212,14 +210,13 @@ describe "Server Configuration Maintenance", js:true do
       find('button', text: 'Save').click
     end
 
-    Rails.logger.debug("+++ edit server config")
     # confirm that we are still in the edit server config page with errors
     page.should have_css('h2 strong', text: 'Edit Server Configuration')
     within('form#edit_server_config_1') do
       page.should have_css('fieldset#support-email span.ui-error')
       page.should have_css('fieldset#support-team span.ui-error')
       page.should have_css('fieldset#school-support-team span.ui-error')
-      page.should have_css('fieldset#server-url span.ui-error')
+      # page.should have_css('fieldset#server-url span.ui-error') # not required
       page.should have_css('fieldset#server-name span.ui-error')
       page.should have_css('fieldset#web-server-name span.ui-error')
     end

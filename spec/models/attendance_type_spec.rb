@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe AttendanceType do
 
@@ -25,7 +25,7 @@ describe AttendanceType do
     end
   end
 
-  pending "should not allow duplicate descriptions per school" do
+  skip "should not allow duplicate descriptions per school" do
     context "custom attendance types tests" do
       it "should not allow mass assignment of school_id" do
         id_before = @attendance_type.school_id

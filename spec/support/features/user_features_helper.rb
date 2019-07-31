@@ -1,5 +1,6 @@
 
-module UserFeaturesHelper
+module Features
+  # module name changed per: https://github.com/thoughtbot/suspenders/issues/142
   def set_users_school(school)
     visit schools_path
     assert_match("/schools", current_path)

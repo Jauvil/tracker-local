@@ -42,7 +42,7 @@ Tracker2::Application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+    Capybara::Selenium::Driver.new(app, :browser => :firefox)
   end
 
   # # sets all logs to stdout (including active record sql statements)
@@ -50,6 +50,9 @@ Tracker2::Application.configure do
 
   # # set logger level to one of [:debug, :info, :warn, :error, :fatal]
   # # note: this will display to console when config.logger is set to STDOUT (see above)
-  config.log_level = :warn
+  # config.log_level = :info
+  config.log_level = :debug
 
+  # silence deprecation warnings
+  ActiveSupport::Deprecation.silenced = true
 end

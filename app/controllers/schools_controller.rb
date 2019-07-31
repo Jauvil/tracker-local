@@ -12,6 +12,13 @@ class SchoolsController < ApplicationController
     :city,
     :marking_periods,
     :school_year,
+    {flag_pars: [
+      :subject_manager,
+      :use_family_name,
+      :user_by_first_last,
+      :grade_in_subject_name,
+      :username_from_email]
+    },
     :flag_pars,
     :min_grade,
     :max_grade,
@@ -23,6 +30,7 @@ class SchoolsController < ApplicationController
     # GRADE_IN_SUBJECT_NAME
     # USERNAME_FROM_EMAIL
   ]
+
   SCHOOL_YEAR_PARAMS = [
     :ends_at,
     :name,

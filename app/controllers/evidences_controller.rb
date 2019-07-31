@@ -4,10 +4,23 @@
 class EvidencesController < ApplicationController
   load_and_authorize_resource except: :rate
 
-  EVIDENCE_PARAMS = [
-    :evidence_section_outcomes_attributes,
+  EVIDENCE_PARAM_KEY = :evidence
+  EVIDENCE_PARAMS = [ :section_id,
+    :name,
+    :description,
+    :evidence_type_id,
+    :assignment_date,
     :reassessment
   ]
+
+  ESO_PARAM_KEY = :evidence_section_outcomes_attributes
+
+
+  # MISC_PARAMS = [
+  #   :eso_id,
+  #   :section_id,
+  #   :send_email
+  # ]
 
   # RESTful Methods
 
@@ -89,7 +102,8 @@ class EvidencesController < ApplicationController
   # process updates from:
   # - sections/#/new_evidence - Toolkit - Add Evidence.
   def create
-    Rails.logger.debug("*** params: #{params.inspect}")
+    Rails.logger.debug("+++ params: #{params.inspect}")
+    Rails.logger.debug("+++ evidence_params: #{evidence_params.inspect}")
     errors = 0
     error_str = ''
 
@@ -129,7 +143,7 @@ class EvidencesController < ApplicationController
 
     # get selected section outcomes
     selected_sos = []
-    so_ids = evidence_params[:evidence_section_outcomes_attributes]
+    so_ids = params[:evidence][:evidence_section_outcomes_attributes]
     Rails.logger.debug("*** so_ids (params): #{so_ids.inspect}")
     if so_ids.length > 0
       so_ids.each do |ik, iv|
@@ -161,7 +175,6 @@ class EvidencesController < ApplicationController
           # an array of section ID's and creates the evidence, any absent learning outcomes, evidence
           # attachments, and evidence_section_outcomes in the additional sections.
           if params[:sections]
-            Rails.logger.debug("*** copy evidence to other sections")
             params[:sections].each do |section_id|
               @evidence.clone_into_section section_id
               if @evidence.errors.count > 0
@@ -366,7 +379,12 @@ class EvidencesController < ApplicationController
   private
 
   def evidence_params
-    params.require(:evidence).permit(EVIDENCE_PARAMS)
+    # coded to white list :evidence_section_outcomes_attributes (ESO_PARAM_KEY)
+    # see: https://github.com/rails/rails/issues/9454
+    params.require(EVIDENCE_PARAM_KEY).permit(EVIDENCE_PARAMS).tap do |whitelisted|
+      whitelisted[ESO_PARAM_KEY] =
+        params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY]
+    end
   end
 
 end

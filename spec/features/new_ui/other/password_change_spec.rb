@@ -1,5 +1,5 @@
 # password_change_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "User can change password", js:true do
@@ -118,8 +118,10 @@ describe "User can change password", js:true do
         find("a[data-url='/students/#{@student.id}/security.js']").click
       end
 
+      sleep 10
+
       # confirm display of temporary password if there is one, and confirm the display of the reset password button
-      within("#modal-body") do
+      within("#modal_content") do
         within("td#user_#{@student.parent.id}.parent-temp-pwd") do
           page.should have_css("span.temp-pwd")
           page.should have_css("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']")
@@ -132,7 +134,7 @@ describe "User can change password", js:true do
       end
 
       # confirm student now has a temporary password
-      within("#modal-body") do
+      within("#modal_content") do
         # confirm screen has changed with new temp password
         within("td#user_#{@student.id}.student-temp-pwd") do
           within("span.temp-pwd") do
@@ -149,7 +151,7 @@ describe "User can change password", js:true do
       end
 
 
-      within("#modal-body") do
+      within("#modal_content") do
         # confirm screen has changed with new temp password
         within("td#user_#{@student.parent.id}.parent-temp-pwd") do
           within("span.temp-pwd") do
@@ -164,7 +166,7 @@ describe "User can change password", js:true do
       # logout and back in as student, to confirm logging in with new password works correctly
       @student.reload
       student_email = @student.email
-      page.find('#modal_popup #modal-body button', text: 'Close').click
+      page.find('#modal_popup #modal_content button', text: 'Close').click
 
       sleep 1
       find("#main-container header .dropdown-toggle").click
@@ -186,7 +188,7 @@ describe "User can change password", js:true do
 
       assert_equal("/students/#{@student.id}", current_path)
       @student.reload
-      pending 'Cannot see assert_equal(student_email, @student.email)' do
+      skip 'Cannot see assert_equal(student_email, @student.email)' do
         assert_equal(student_email, @student.email)  # ToDo-what page is this?
       end
 
@@ -214,7 +216,7 @@ describe "User can change password", js:true do
       end
 
       # confirm display of temporary password if there is one, and confirm the display of the reset password button
-      within("#modal-body") do
+      within("#modal_content") do
         within("td#user_#{@student_no_email.id}.student-temp-pwd") do
           page.should_not have_css("span.temp-pwd")
           sleep 1
@@ -224,7 +226,7 @@ describe "User can change password", js:true do
       end
 
       @student_no_email.reload
-      page.find('#modal_popup #modal-body button', text: 'Close').click
+      page.find('#modal_popup #modal_content button', text: 'Close').click
       sleep 1
       # signin with reset temporary password, then set password
       page.find("#main-container header .dropdown-toggle").click
@@ -272,7 +274,7 @@ describe "User can change password", js:true do
         find("a[data-url='/users/#{@teacher1.id}/security.js']").click
       end
 
-      within("#modal-body") do
+      within("#modal_content") do
         within("td#user_#{@teacher1.id}") do
           sleep 1
           page.should_not have_css("span.temp-pwd")
@@ -280,7 +282,7 @@ describe "User can change password", js:true do
         end
       end
 
-      within("#modal-body") do
+      within("#modal_content") do
         # confirm screen has changed with new temp password
         within("td#user_#{@teacher1.id}") do
           within("span.temp-pwd") do

@@ -1,7 +1,7 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe SchoolYear do
-  
+
 
   it "Properly validates school year dates" do
     [nil, DateTime.parse("2013-01-01")].each do |end_date|
@@ -43,24 +43,24 @@ describe SchoolYear do
     it "date_in_school_year? should allow the first date of the school year" do
       in_year = @school_year.date_in_school_year?(@year_start)
       @school_year.errors.count.should == 0
-      in_year.should be_true
+      in_year.should be_truthy
     end
 
     it "date_in_school_year? should allow the last date of the school year" do
       in_year = @school_year.date_in_school_year?(@year_end)
       @school_year.errors.count.should == 0
-      in_year.should be_true
+      in_year.should be_truthy
     end
 
     it "date_in_school_year? should not allow the day before the first date of the school year" do
       in_year = @school_year.date_in_school_year?(@year_start - 1.day)
-      in_year.should be_false
+      in_year.should be_falsey
     end
 
     it "date_in_school_year? should not allow the day after the last date of the school year" do
 
       in_year = @school_year.date_in_school_year?(@year_end + 1.day)
-      in_year.should be_false
+      in_year.should be_falsey
     end
 
   end
@@ -75,12 +75,12 @@ describe SchoolYear do
       @old_section.save
 
       @student = create :student, school: @section.school
-      
+
       @enrollment = create :enrollment, student: @student, section: @section
     end
 
     context "correctly determines current sections for students" do
-      it do     
+      it do
         @student.sections.current.count.should eq(1)
         @student.sections.current.first.id.should eq(@section.id)
       end

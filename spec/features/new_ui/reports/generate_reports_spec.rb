@@ -1,5 +1,5 @@
 # generate_reports_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Reports", js:true do
@@ -79,8 +79,9 @@ describe "Generate Reports", js:true do
     # should fail when running attendance report directly
     visit attendance_report_attendances_path
     assert_equal(@home_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
@@ -105,14 +106,13 @@ describe "Generate Reports", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Attendance Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
-
         # confirm correct input fields for attendance report are presented
-        select('Attendance Report', from: "generate-type")
         find("select#generate-type").value.should == "attendance_report"
         page.should have_css('fieldset#ask-subjects', visible: true)
         page.should have_css('fieldset#ask-date-range', visible: true)

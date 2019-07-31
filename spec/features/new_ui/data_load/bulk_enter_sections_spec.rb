@@ -1,6 +1,6 @@
 # bulk_enter_sections_spec.rb
 
-require 'spec_helper'
+require 'rails_helper'
 describe "Bulk Enter Sections", js:true do
 
   describe "US System", js:true do
@@ -185,7 +185,7 @@ describe "Bulk Enter Sections", js:true do
       page.fill_in "section_0_1_value", :with => 'c-d'
       page.fill_in "section_0_2_value", :with => 'e-f'
     end
-    page.click_button('SAVE')
+    page.first('#save').click
 
     page.should have_content("Total Sections Entered: 3")
     page.click_button('Show entered report')
@@ -232,9 +232,9 @@ describe "Bulk Enter Sections", js:true do
 
     page.should have_css("tr#subject_#{@subj_art_1.id}")
     within("tr#subject_#{@subj_art_1.id}") do
-      page.should have_css("input#section_0_0_value", value: 'a-b')
-      page.should have_css("input#section_0_1_value", value: 'c-d')
-      page.should have_css("input#section_0_2_value", value: 'e-f')
+      page.should have_css("#section_0_0_value[value='a-b']")
+      page.should have_css("#section_0_1_value[value='c-d']")
+      page.should have_css("#section_0_2_value[value='e-f']")
     end
 
     page.should have_css("tr#subject_#{@subj_art_2.id}")
@@ -244,7 +244,7 @@ describe "Bulk Enter Sections", js:true do
       page.fill_in "section_1_2_value", :with => '5-6'
     end
 
-    page.click_button('SAVE')
+    page.first('#save').click
 
     page.should have_content("Total Sections Entered: 6")
     page.click_button('Show entered report')

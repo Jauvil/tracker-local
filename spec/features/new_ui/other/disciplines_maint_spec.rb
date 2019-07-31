@@ -1,5 +1,5 @@
 # disciplines_maint_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Disciplines Maintenance", js:true do
@@ -154,7 +154,7 @@ describe "Disciplines Maintenance", js:true do
     ###########################
     # Show Discipline test
 
-    page.find("#d_#{@discipline.id} a[href='/disciplines/#{@discipline.id}']").click
+    page.find("#d_#{@discipline.id} a[href='/disciplines/#{@discipline.id}']", match: :first).click
     assert_equal("/disciplines/#{@discipline.id}", current_path)
     within("#discipline") do
       page.should have_css("a#show-to-list[href='/disciplines']")

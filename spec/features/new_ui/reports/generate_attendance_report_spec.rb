@@ -1,5 +1,5 @@
 # generate_attendance-report_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Generate Attendance Report", js:true do
@@ -160,8 +160,9 @@ describe "Generate Attendance Report", js:true do
     # should fail when running attendance report directly
     visit attendance_report_attendances_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
@@ -176,8 +177,9 @@ describe "Generate Attendance Report", js:true do
     # should fail when running attendance report directly
     visit attendance_report_attendances_path
     assert_equal(@err_page, current_path)
-    within('head title') do
-      page.should_not have_content('Internal Server Error')
+    page.should_not have_content('Internal Server Error')
+    within("#breadcrumb-flash-msgs") do
+      page.should have_content('You are not authorized to access this page.')
     end
   end
 
@@ -188,12 +190,13 @@ describe "Generate Attendance Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
     within("#page-content") do
       within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
-        select('Attendance Report', from: "generate-type")
         find("select#generate-type").value.should == "attendance_report"
         page.should have_css('fieldset#ask-subjects', visible: true)
         page.should have_css('fieldset#ask-date-range', visible: true)
@@ -212,19 +215,24 @@ describe "Generate Attendance Report", js:true do
       within('form#new_generate') do
 
         # confirm that the required fields errors are displaying
-        find("select#generate-type").value.should == "attendance_report"
+        find("#select2-chosen-2").text.should == "Attendance Report"
         page.should have_css('fieldset#ask-subjects', visible: true)
         page.should have_css('fieldset#ask-date-range', visible: true)
         within("fieldset#ask-subjects") do
           page.should have_content('is a required field')
         end
-        # # not consistently displaying
-        # within("fieldset#ask-date-range") do
-        #   page.should have_content('was an invalid value')
-        # end
-
-        # fill in values for the attendance report
-        select(@subject1.name, from: 'subject')
+        # not consistently displaying
+        within("fieldset#ask-date-range") do
+          page.should have_content('was an invalid value')
+        end
+      end
+    end
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select(@subject1.name, from: 'subject')
+    page.find("form#new_generate fieldset", text: 'Select Subject:', wait: 5).click
+    page.find("ul#select2-results-3 li div", text: @subject1.name).click
+    within("#page-content") do
+      within('form#new_generate') do
         # page.fill_in 'start-date', :with => '2015-06-02'
         # page.fill_in 'end-date', :with => '2015-06-08'
         # need to use javascript to fill in datepicker value
@@ -272,25 +280,10 @@ describe "Generate Attendance Report", js:true do
         end
         # should have inactive types dates listed at bottom of report
         page.should_not have_content('02 Sep 2015')
-
         # confirm link to student goes to student
-        within("table tbody.tbody-header tr[data-student-id='#{@student.id}']") do
-          find("a[href='/students/#{@student.id}']").click
-        end
+        page.should have_css("table tbody.tbody-header tr[data-student-id='#{@student.id}'] a[href='/students/#{@student.id}']", wait: 5)
       end # within('.report-body')
     end # within("#page-content")
-
-    assert_equal(student_path(@student.id), current_path)
-    within("#main-container #page-content .header-block") do
-      within("h1.h3") do
-        page.should have_content('Dashboard')
-      end
-      within("h2.h1") do
-        page.should have_content(@student.last_name)
-        page.should have_content(@student.first_name)
-      end
-    end
-
 
 
     ###############################################################################
@@ -298,10 +291,16 @@ describe "Generate Attendance Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
+    # this does not work anymore: # select(@subject1.name, from: 'subject')
+    page.find("form#new_generate fieldset", text: 'Select Subject:', wait: 5).click
+    page.find("ul#select2-results-3 li div", text: @subject1.name).click
     within("#page-content") do
       within('form#new_generate') do
-        select('Attendance Report', from: "generate-type")
-        select(@subject1.name, from: 'subject')
         # javascript to fill in datepicker value
         page.execute_script("$('#start-date').val('2015-09-02')")
         page.execute_script("$('#end-date').val('2015-09-02')")
@@ -358,10 +357,16 @@ describe "Generate Attendance Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
+    # this does not work anymore: # select(@section2_1.subject.name, from: 'subject')
+    page.find("form#new_generate fieldset", text: 'Select Subject:', wait: 5).click
+    page.find("ul#select2-results-3 li div", text: @section2_1.subject.name).click
     within("#page-content") do
       within('form#new_generate') do
-        select('Attendance Report', from: "generate-type")
-        select(@section2_1.subject.name, from: 'subject')
         # javascript to fill in datepicker value
         page.execute_script("$('#start-date').val('2015-09-01')")
         page.execute_script("$('#end-date').val('2015-09-02')")
@@ -434,14 +439,19 @@ describe "Generate Attendance Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
-
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
+    # this does not work anymore: # select(@section2_1.subject.name, from: 'subject')
+    page.find("form#new_generate fieldset", text: 'Select Subject:', wait: 5).click
+    page.find("ul#select2-results-3 li div", text: @section2_1.subject.name).click
+    # this does not work anymore: # select(@section2_1.section_name, from: 'subject-section-select')
+    page.find("form#new_generate fieldset", text: 'Section:', wait: 5).click
+    page.find("ul#select2-results-4 li div", text: @section2_1.section_name).click
     within("#page-content") do
       within('form#new_generate') do
-        select('Attendance Report', from: "generate-type")
-        page.should have_css('fieldset#ask-subject-sections', visible: false)
-        select(@section2_1.subject.name, from: 'subject')
-        page.should have_css('fieldset#ask-subject-sections', visible: true)
-        select(@section2_1.section_name, from: 'subject-section-select')
         # javascript to fill in datepicker value
         page.execute_script("$('#start-date').val('2015-09-02')")
         page.execute_script("$('#end-date').val('2015-09-02')")
@@ -496,18 +506,25 @@ describe "Generate Attendance Report", js:true do
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
-
+    page.should have_selector("select#generate-type")
+    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
+    # this does not work anymore: # select('Account Activity Report', from: "generate-type")
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
+    # this does not work anymore: # select(@section2_1.subject.name, from: 'subject')
+    page.find("form#new_generate fieldset", text: 'Select Subject:', wait: 5).click
+    page.find("ul#select2-results-3 li div", text: @section2_1.subject.name).click
+    # this does not work anymore: # select(@section2_1.section_name, from: 'subject-section-select')
+    page.find("form#new_generate fieldset", text: 'Section:', wait: 5).click
+    page.find("ul#select2-results-4 li div", text: @section2_1.section_name).click
+    # this does not work anymore: # select(@at_tardy.description, from: "attendance-type-select")
+    page.find("form#new_generate fieldset", text: 'Attendance Type:', wait: 5).click
+    page.find("ul#select2-results-9 li div", text: @at_tardy.description).click
     within("#page-content") do
       within('form#new_generate') do
-        select('Attendance Report', from: "generate-type")
-        page.should have_css('fieldset#ask-subject-sections', visible: false)
-        select(@section2_1.subject.name, from: 'subject')
-        page.should have_css('fieldset#ask-subject-sections', visible: true)
-        select(@section2_1.section_name, from: 'subject-section-select')
         # javascript to fill in datepicker value
         page.execute_script("$('#start-date').val('2015-09-01')")
         page.execute_script("$('#end-date').val('2015-09-02')")
-        select(@at_tardy.description, from: "attendance-type-select")
         # page.find('#date-details-box').set(true)
         # submit the request for the attendance report
         find("button", text: 'Generate').click

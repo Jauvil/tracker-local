@@ -3,7 +3,7 @@
 # this tests the school year rollover processes
 # Note: The learning outcome upload and rollover process is tested in subject_outcomes_upload_lo_file_spec.rb
 
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "Rollover School Year", js:true do
@@ -507,7 +507,7 @@ describe "Rollover School Year", js:true do
     if sys_admin
 
       # go to model school
-      find("a[href='/schools']").click
+      find("a[href='/schools']", match: :first).click
       assert_equal("/schools", current_path)
       page.should have_css("tr#school-#{@school1.id}")
       find("a[href='/schools/1']").click
@@ -528,7 +528,7 @@ describe "Rollover School Year", js:true do
       page.should have_content("#{@subject2_1.discipline.name} : New Subject")
       page.all("tbody.tbody-subject").count.should == 7
       # go back to @school2
-      find("a[href='/schools']").click
+      find("a[href='/schools']", match: :first).click
       find("a[href='/schools/#{@school2.id}']").click
       find("a[href='/subjects']").click
       # confirm new subject is not in @school2
@@ -547,9 +547,10 @@ describe "Rollover School Year", js:true do
     within("#subj_header_#{@s2_subj_CP3s1.id}") {page.should have_content("#{@subj_capstone_3s1.discipline.name} : #{@s2_subj_CP3s1.name}")}
     within("#subj_header_#{@s2_subj_math_1.id}") {page.should have_content("#{@s2_subj_math_1.discipline.name} : #{@s2_subj_math_1.name}")}
     within("#subj_header_#{@subject2_1.id}") {page.should have_content("#{@subject2_1.discipline.name} : #{@subject2_1.name}")}
-
+    # open up sections for @subject2_1
+    page.find("#subj_header_#{@subject2_1.id}_a").click
     # confirm @subject2_1 exists and has sections
-    page.should have_css("tbody#subj_header_#{@subject2_1.id}")
+    page.should have_css("tbody#subj_header_#{@subject2_1.id}", wait: 5)
     within("tbody#subj_header_#{@subject2_1.id}") do
       page.should have_content(@subject2_1.name)
     end

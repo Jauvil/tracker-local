@@ -1,5 +1,5 @@
 # teacher_dashboard_spec.rb
-require 'spec_helper'
+require 'rails_helper'
 
 
 describe "School Admin Dashboard", js:true do
