@@ -67,8 +67,8 @@ describe "Teacher Tracker", js:true do
   def teacher_tracker_is_valid(editable)
     visit section_path(@section.id)
     assert_equal("/sections/#{@section.id}", current_path)
+    # On Teacher Tracker Page
     page.should have_content("All Learning Outcomes")
-
     within("table[data-section-id='#{@section.id}']") do
       page.should have_content("#{@subject_outcomes.values[0].name}")
       page.should have_css('tbody.tbody-header')
@@ -88,8 +88,8 @@ describe "Teacher Tracker", js:true do
         end
       end
     end
+    # Collapse all Learning Outcomes (to hide evidences)
     find("div#collapse-all-los-button").click
-
     page.should have_content("#{@subject_outcomes.values[0].name}")
     page.should have_css('tbody.tbody-header')
     page.should have_css("*[data-so-id='#{@subject_outcomes.values[0].id}']")
@@ -97,34 +97,30 @@ describe "Teacher Tracker", js:true do
     page.should_not have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}'].tbody-open")
 
     if editable
+      # Click on Toolkit to add a new piece of evidence
       page.should have_css("li#side-add-evid a[href='/sections/#{@section.id}/new_evidence']")
       find("li#side-add-evid a[href='/sections/#{@section.id}/new_evidence']").click
-
+      # Add Evidence page
       assert_equal("/sections/#{@section.id}/new_evidence", current_path)
       page.should have_content('Add Evidence')
       page.fill_in 'evidence_name', :with => 'Add and Notify'
       page.fill_in 'evidence_description', :with => 'Add and notify student by email.'
       find("#evidence_evidence_type_id option[value='7']").select_option
-      page.execute_script("$('#evid-date_evidence_assignment_date').val('2015-09-01')")
+      page.execute_script("$('#evidence_assignment_date_evid-date').val('2015-09-01')")
       find("input#send_email").should_not be_checked
       find("input#send_email").click
       find("input#send_email").should be_checked
-
       # add evidence to one learning outcome
       find("#evid-current-los .block-title i").click
       find("span.add_lo_to_evid[data-so-id='#{@section_outcomes.first[1].id}'] i").click
       find("#evid-other-los .block-title i").click
-      sleep 5
       # Save Button not working
       find('button', text: 'Save').click
-      sleep 5
       wait_for_ajax
-      # save_and_open_page
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
       find("div#expand-all-los-button").click
       # end
-
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should have_content('Add and Notify')
       end
