@@ -62,14 +62,13 @@ class EnrollmentsController < ApplicationController
         # @student.import_subject_outcome_ratings! @enrollment.section.subject.id, @enrollment.section.id
         format.html { redirect_to(@enrollment.section, :notice => 'Enrollment was successfully created.') }
       else
-        @existing_enrollment = Enrollment.find(
-          :first,
+        @existing_enrollment = Enrollment.where(
           :conditions => {
             :student_id => enrollment_params[:student_id],
             :section_id => enrollment_params[:section_id],
             :active => false
           }
-        )
+        ).first
         if @existing_enrollment.nil?
           format.html { render :action => "new" }
         else
