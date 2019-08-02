@@ -247,18 +247,14 @@ Tracker2::Application.routes.draw do
   resources :section_outcome_ratings, except: :destroy
   resources :evidence_attachments
   resources :posts
-  # resources :teaching_assignments, only: [] do
-  #   collection do
-  #     get 'enter_bulk'
-  #     post 'update_bulk'
 
-  # update to rails 4.1 security fixes
-  # match 'teaching_assignments/enter_bulk' => 'teaching_assignments#enter_bulk',
-  #   as: 'enter_bulk_teaching_assignments',
-  #   via: :get #new UI
-  # match 'teaching_assignments/update_bulk' => 'teaching_assignments#update_bulk',
-  #   as: 'update_bulk_teaching_assignments',
-  #   via: :post #new UI
+  resources :teaching_assignments, only: [] do
+    collection do
+      get 'enter_bulk'
+      post 'update_bulk'
+    end
+  end
+
   resources :teaching_resources
   root :to => "home#index"
 
