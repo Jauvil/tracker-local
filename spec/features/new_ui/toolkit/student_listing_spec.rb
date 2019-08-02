@@ -72,7 +72,7 @@ describe "Student Listing", js:true do
       before do
         sign_in(@teacher1)
       end
-      it { has_valid_student_listing(true, false, false) }
+      it { has_valid_student_listing(true, false, false, false) }
     end
 
     describe "as school administrator" do
@@ -80,7 +80,7 @@ describe "Student Listing", js:true do
         @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
-      it { has_valid_student_listing(true, true, true) }
+      it { has_valid_student_listing(true, true, true, false) }
     end
 
     describe "as researcher" do
@@ -98,7 +98,7 @@ describe "Student Listing", js:true do
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
-      it { has_valid_student_listing(true, true, true) }
+      it { has_valid_student_listing(true, true, true, false) }
     end
 
     describe "as student" do
@@ -185,7 +185,7 @@ describe "Student Listing", js:true do
       before do
         sign_in(@teacher1)
       end
-      it { has_valid_student_listing(true, false, false) }
+      it { has_valid_student_listing(true, false, false, false) }
     end
 
     describe "as school administrator" do
@@ -193,7 +193,7 @@ describe "Student Listing", js:true do
         @school_administrator = FactoryBot.create :school_administrator, school: @school1
         sign_in(@school_administrator)
       end
-      it { has_valid_student_listing(true, true, true) }
+      it { has_valid_student_listing(true, true, true, false) }
     end
 
     describe "as researcher" do
@@ -211,7 +211,7 @@ describe "Student Listing", js:true do
         sign_in(@system_administrator)
         set_users_school(@school1)
       end
-      it { has_valid_student_listing(true, true, true) }
+      it { has_valid_student_listing(true, true, true, false) }
     end
 
     describe "as student" do
@@ -245,11 +245,10 @@ describe "Student Listing", js:true do
     end
   end
 
-  def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only=false)
-
-    page.driver.browser.manage.window.maximize
-    # Capybara.page.driver.browser.manage.current_window.maximize
-    # Capybara.page.current_window.maximize
+  def has_valid_student_listing(can_create, can_deactivate, can_see_all, read_only)
+    # page.driver.browser.manage.window.maximize
+    # # Capybara.page.driver.browser.manage.current_window.maximize
+    # # Capybara.page.current_window.maximize
 
     visit students_path
     assert_equal("/students", current_path)
@@ -545,15 +544,15 @@ describe "Student Listing", js:true do
         page.should have_css('#last-name span.ui-error', text:'["can\'t be blank"]')
         # page.should have_css('#email span.ui-error', text:'["Email is required."]')
         # page.should have_css('#grade-level span.ui-error', text:'["Grade Level is invalid"]')
-        page.find('#student_first_name', wait: 5).set('NFname')
-        page.find('#student_last_name', wait: 5).set('NLname')
-        page.find('#student_email', wait: 5).set('new@ba.com')
-        page.find('#student_grade_level', wait: 5).set('2')
+        page.find('#student_first_name').set('NFname')
+        page.find('#student_last_name').set('NLname')
+        page.find('#student_email').set('new@ba.com')
+        page.find('#student_grade_level').set('2')
         page.click_button('Save')
+        sleep 2
       end
     end
     assert_equal("/students", current_path)
-    sleep 1
     page.should_not have_css("#modal_popup form#new_student")
     # expect(page.text).to match(/New\sFname/) # alternate syntax
     page.text.should match(/NFname/)
@@ -622,8 +621,8 @@ describe "Student Listing", js:true do
     within("tr#student_#{student.id}.deactivated") do
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
+      sleep 1
     end
-
     page.find("form#edit_student_#{student.id}", wait: 5)
     page.should have_content("Edit Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do

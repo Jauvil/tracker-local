@@ -17,7 +17,7 @@ describe "Generate Reports", js:true do
       sign_in(@teacher)
       @home_page = "/teachers/#{@teacher.id}"
     end
-    it { has_valid_generate_reports }
+    it { has_valid_generate_reports(:teacher) }
   end
 
   describe "as school administrator" do
@@ -26,7 +26,7 @@ describe "Generate Reports", js:true do
       sign_in(@school_administrator)
       @home_page = "/school_administrators/#{@school_administrator.id}"
     end
-    it { has_valid_generate_reports }
+    it { has_valid_generate_reports(:school_administrator) }
   end
 
   describe "as researcher" do
@@ -36,7 +36,7 @@ describe "Generate Reports", js:true do
       set_users_school(@school)
       @home_page = "/researchers/#{@researcher.id}"
     end
-    it { has_no_attendance_report }
+    it { has_valid_generate_reports(:researcher) }
   end
 
   describe "as system administrator" do
@@ -46,7 +46,7 @@ describe "Generate Reports", js:true do
       set_users_school(@school)
       @home_page = "/system_administrators/#{@system_administrator.id}"
     end
-    it { has_valid_generate_reports }
+    it { has_valid_generate_reports(:system_administrator) }
   end
 
   describe "as student" do
@@ -85,106 +85,88 @@ describe "Generate Reports", js:true do
     end
   end
 
-  def has_no_attendance_report
+  def has_valid_generate_reports(role)
     page.should have_css("#side-reports a", text: 'Generate Reports')
     find("#side-reports a", text: 'Generate Reports').click
     page.should have_content('Generate Reports')
-    within("#page-content") do
-      within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
 
-        # confirm attendance report options are not available
-        page.should have_css("select#generate-type")
-        page.should_not have_css("select#generate-type option#attendance_report")
-      end
-    end
-  end
 
-  def has_valid_generate_reports
-    page.should have_css("#side-reports a", text: 'Generate Reports')
-    find("#side-reports a", text: 'Generate Reports').click
-    page.should have_content('Generate Reports')
-    # select report using bootstrap elements (capybara cannot scroll into view the bootstrap options)
-    # this does not work anymore: # select('Attendance Report', from: "generate-type")
+    # select report uses bootstrap, and rspec3 and capybara cannot scroll the bootstrap elements into view.
+    # thus cannot: # select('Attendance Report', from: "generate-type")
+    # need to click on the fieldset to open up the list of reports
+    # then click on the report in the bootstrap list of reports
+
+    # make sure all reports are available to user based upon their role.
     page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
-    page.find("ul#select2-results-2 li div", text: 'Attendance Report').click
-    within("#page-content") do
-      within('form#new_generate') do
-        # confirm correct input fields for attendance report are presented
-        find("select#generate-type").value.should == "attendance_report"
-        page.should have_css('fieldset#ask-subjects', visible: true)
-        page.should have_css('fieldset#ask-date-range', visible: true)
-
+    within("ul#select2-results-2") do
+      if [:system_administrator].include?(role)
+        # only system administrators can see these
       end
+      if [:system_administrator, :school_administrator].include?(role)
+        # only administrators can see these
+        page.should have_css("li div", text: 'Tracker Usage / Activity')
+        page.should have_css("li div", text: 'Student Information Handout By Grade Level')
+        page.should have_css("li div", text: 'Proficiency Bars by Student')
+        page.should have_css("li div", text: 'Proficiency Bars By Subject')
+        page.should have_css("li div", text: 'Progress Meters by Subject')
+        page.should have_css("li div", text: 'Report Cards')
+      end
+      if [:system_administrator, :school_administrator, :teacher].include?(role)
+        # Teachers and administrators can see these
+        page.should have_css("li div", text: 'Attendance Report')
+        page.should have_css("li div", text: 'Student Attendance Detail Report')
+        page.should have_css("li div", text: 'Student Information Handout')
+      end
+      # all staff can see these
+      page.should have_css("li div", text: 'Progress Reports')
+      page.should have_css("li div", text: 'Section Summary by Learning Outcome')
+      page.should have_css("li div", text: 'Section Summary by Student')
+      page.should have_css("li div", text: 'Not Yet Proficient by Learning Outcome')
+      page.should have_css("li div", text: 'Not Yet Proficient by Student')
+
     end
+
+    # check all reports have the correct questions, and then the report is properly generated
+    # To Do - finish adding all reports
+    if [:system_administrator].include?(role)
+      # only system administrators can see these
+    end
+    if [:system_administrator, :school_administrator].include?(role)
+      can_run_proficiency_bars_by_student
+    end
+    if [:system_administrator, :school_administrator, :teacher].include?(role)
+    end
+
   end # has_valid_generate_reports
 
-  def has_valid_attendance_report
-    page.should have_css("#side-reports a", text: 'Generate Reports')
-    find("#side-reports a", text: 'Generate Reports').click
-    page.should have_content('Generate Reports')
-    within("#page-content") do
-      within('form#new_generate') do
-        page.should have_css('fieldset#ask-subjects', visible: false)
-        page.should have_css('fieldset#ask-date-range', visible: false)
-        page.should have_selector("select#generate-type")
-        select('Attendance Report', from: "generate-type")
-        find("select#generate-type").value.should == "attendance_report"
-        page.should have_css('fieldset#ask-subjects', visible: true)
-        page.should have_css('fieldset#ask-date-range', visible: true)
-        find("button", text: 'Generate').click
-      end
+  def can_run_proficiency_bars_by_student
+    # page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Proficiency Bars by Student').click
+    within("#page-content form#new_generate") do
+      # confirm correct input fields for attendance report are presented
+      find("select#generate-type").value.should == "proficiency_bars_by_student"
+      page.should_not have_css('fieldset#ask-subjects', visible: true)
+      page.should_not have_css('fieldset#ask-subject-sections', visible: true)
+      page.should_not have_css('fieldset#ask-grade-level', visible: true)
+      page.should_not have_css('fieldset#ask-section', visible: true)
+      page.should_not have_css('fieldset#ask-los', visible: true)
+      page.should_not have_css('fieldset#ask-single-student', visible: true)
+      page.should_not have_css('fieldset#ask-marking-periods', visible: true)
+      page.should_not have_css('fieldset#ask-date-range', visible: true)
+      page.should_not have_css('fieldset#ask-attendance-type', visible: true)
+      page.should_not have_css('fieldset#ask-details', visible: true)
+      page.should_not have_css('fieldset#ask-activity-staff', visible: true)
+      page.should_not have_css('fieldset#ask-activity-students', visible: true)
+      page.should_not have_css('fieldset#ask-activity-parents', visible: true)
+      find("button", text: 'Generate').click
     end
-    # should return back to generate reports page with required fields errors
-    assert_equal("/generates", current_path)
-    page.should have_content('Generate Reports')
-    page.should_not have_content('Internal Server Error')
-    within("#page-content") do
-      within('form#new_generate') do
-
-        # confirm that the required fields errors are displaying
-        find("select#generate-type").value.should == "attendance_report"
-        page.should have_css('fieldset#ask-subjects', visible: true)
-        page.should have_css('fieldset#ask-date-range', visible: true)
-        within("fieldset#ask-subjects span.ui-error") do
-          page.should have_content('is a required field')
-        end
-        # within("fieldset#ask-date-range") do
-        #   page.should have_css('span.ui-error', text: '["is a required field"]')
-        # end
-
-        # fill in values for the attendance report
-        select(@section.subject.name, from: 'subject')
-        page.fill_in 'start-date', :with => '2015-06-02'
-        page.fill_in 'end-date', :with => '2015-06-08'
-
-
-        # submit the request for the attendance report
-        find("button", text: 'Generate').click
-      end
-    end
-
-    assert_equal(attendance_report_attendances_path(), current_path)
+    assert_equal(students_report_path('proficiency_bar_chart'), current_path)
     page.should_not have_content('Internal Server Error')
 
-    within("#page-content") do
-      within('.report-body') do
-
-        page.should have_content("Attendance Report")
-        # within('table thead.table-title') do
-        #   page.should have_content('ID')
-        #   page.should have_content('Student Name')
-        #   page.should have_content(@at_tardy.description)
-        #   page.should have_content(@at_absent.description)
-        #   page.should have_content('Comment')
-        # end
-      end
+    within("#page-content h2.h1") do
+      page.should have_content("Proficiency Bar Charts By Student")
     end
 
-
-  end # def has_valid_attendance_report
-
+  end
 
 end

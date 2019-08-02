@@ -438,7 +438,6 @@ describe "Staff Listing", js:true do
         page.find("a[data-url='/users/new/new_staff']").click
       end
 
-      save_and_open_page
       within("#modal_popup") do
         page.should have_css("h2", text: 'Create Staff Member')
         # Make sure all roles are unchecked and error is showing

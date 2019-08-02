@@ -174,9 +174,7 @@ describe "Bulk Enter Teacher Assignments", js:true do
     within("tr#school-#{@school1.id} td.school-year") do
       page.should have_content(get_std_current_school_year_name)
     end
-
     visit enter_bulk_teaching_assignments_path
-
     assert_equal("/teaching_assignments/enter_bulk", current_path)
 
     within("form[action='/teaching_assignments/update_bulk']") do
