@@ -111,10 +111,18 @@ Tracker2::Application.routes.draw do
   # update to rails 4.1 security fixes
   # match "schools/:id/:report" => "schools#show", via: [:get, :post], as: "school_report"
 
-  # update to rails 4.1 security fixes
-  # match "report_card" => "report_card#new", via: :get
-  # match "report_card" => "report_card#create", via: :post
-  # match "create_report_card" => "report_card#forward", via: :get
+  match "report_card" => "report_card#new", via: :get
+  match "report_card" => "report_card#create", via: :post
+  match "create_report_card" => "report_card#forward", via: :get
+  # # failed attempt to remove above matches with standard resources statement
+  # # - above work, below gets errors with missing :delete
+  # # included index because otherwise it creates the following erroreous entry:
+  # # report_card_index    POST   /report_card(.:format)   report_card#create
+  # resources :report_card, except: [:show, :edit, :update] do
+  #   member do
+  #     get 'forward'
+  #   end
+  # end
 
   match "subjects/update_subject_outcomes" => "home#index", via: :get
   resources :subjects do
@@ -258,9 +266,6 @@ Tracker2::Application.routes.draw do
   resources :teaching_resources
   root :to => "home#index"
 
-  # update to rails 4.1 security fixes
-  # match "home/plc_schedule"         => "home#plc_schedule", :via => [:get], :as => "plc_schedule"
-  # match "home/math_resources"       => "home#math_resources", :via => [:get], :as => "math_resources"
   get 'upload_bulk_templates', to: 'misc#upload_bulk_templates'
   resources :excuses, except: [:show, :destroy]
   resources :attendance_types, except: [:show, :destroy]
@@ -284,8 +289,6 @@ Tracker2::Application.routes.draw do
 
   resources :server_configs, only: [:show, :edit, :update]
 
-  # match "ui/save_cell_size" => "ui#save_cell_size", via: :put, defaults: { format: :js } #new UI
-  # match "ui/save_toolkit" => "ui#save_toolkit", via: :put, defaults: { format: :js } #new UI
   resources :ui, only: [] do
     collection do
       put 'save_cell_size'
