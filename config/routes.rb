@@ -284,9 +284,14 @@ Tracker2::Application.routes.draw do
 
   resources :server_configs, only: [:show, :edit, :update]
 
-  # update to rails 4.1 security fixes
   # match "ui/save_cell_size" => "ui#save_cell_size", via: :put, defaults: { format: :js } #new UI
   # match "ui/save_toolkit" => "ui#save_toolkit", via: :put, defaults: { format: :js } #new UI
+  resources :ui, only: [] do
+    collection do
+      put 'save_cell_size'
+      put 'save_toolkit'
+    end
+  end
 
   # any unmatched posts go to home page.
   match "*path" => "home#index", via: [:post]
