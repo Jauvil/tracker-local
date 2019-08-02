@@ -1,4 +1,4 @@
-Tracker2::Application.configure do
+Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -32,8 +32,13 @@ Tracker2::Application.configure do
   # Generate digests for assets URLs.
   config.assets.digest = true
 
-  # Version of your assets, change this if you want to expire all your assets.
-  config.assets.version = '1.0'
+  # `config.assets.precompile` and `config.assets.version`
+  #    have moved to config/initializers/assets.rb
+  #    config.assets.version = '1.0'
+  # Precompile additional assets.
+  # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
+  # config.assets.precompile += %w( search.js )
+
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
@@ -56,10 +61,6 @@ Tracker2::Application.configure do
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
-
-  # Precompile additional assets.
-  # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-  # config.assets.precompile += %w( search.js )
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -94,5 +95,9 @@ Tracker2::Application.configure do
     location: "/usr/sbin/sendmail",
     arguments: nil
   }
+
+
+  # Do not dump schema after migrations.
+  config.active_record.dump_schema_after_migration = false
 
 end
