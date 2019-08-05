@@ -34,10 +34,10 @@ class Section < ActiveRecord::Base
   # Scopes
   # scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
   # scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
-  scope :current, -> { includes(subject: :school).where("sections.school_year_id = schools.school_year_id") }
-  scope :old, -> { includes(subject: :school).where("sections.school_year_id != schools.school_year_id") }
+  scope :current, -> { includes(subject: :school).references(subject: :school).where("sections.school_year_id = schools.school_year_id") }
+  scope :old, -> { includes(subject: :school).references(subject: :school).where("sections.school_year_id != schools.school_year_id") }
 
-  scope :published_articles, -> { includes(:articles).where(articles: { published: true}) }
+  scope :published_articles, -> { includes(:articles).references(:articles).where(articles: { published: true}) }
 
   def active_student_enrollments
    enrollments.where(
