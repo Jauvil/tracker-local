@@ -259,7 +259,7 @@ class EnrollmentsController < ApplicationController
 
     school = get_current_school
 
-    @disciplines = Discipline.includes(subjects: {sections: :teachers }).order('disciplines.name, subjects.name, sections.line_number')
+    @disciplines = Discipline.includes(subjects: {sections: :teachers }).references(subjects: {sections: :teachers }).order('disciplines.name, subjects.name, sections.line_number')
 
     ta_params = params['enrollments_attributes']
     Rails.logger.debug("*** ta_params: #{ta_params.inspect}")

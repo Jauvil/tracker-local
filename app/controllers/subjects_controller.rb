@@ -33,7 +33,7 @@ class SubjectsController < ApplicationController
     end
     # note this does not preread teaching assignments
     # @disciplines = Discipline.includes(subjects: {sections: {teachers: :teaching_assignments} }).where(subjects: {school_id: current_school_id}).order('disciplines.name, subjects.name, sections.line_number')
-    @disciplines = Discipline.includes(subjects: {sections: :teachers }).where(subjects: {school_id: current_school_id}).order('disciplines.name, subjects.name, sections.line_number')
+    @disciplines = Discipline.includes(subjects: {sections: :teachers }).references(subjects: {sections: :teachers }).where(subjects: {school_id: current_school_id}).order('disciplines.name, subjects.name, sections.line_number')
     @show_subject_id = params[:show_subject_id].present? ? params[:show_subject_id].to_i : ''
 
     respond_to do |format|

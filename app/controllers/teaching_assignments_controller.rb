@@ -87,7 +87,7 @@ class TeachingAssignmentsController < ApplicationController
     all_section_ids = Section.where(subject_id: all_subject_ids, school_year_id: @school.school_year_id).pluck(:id)
     assigned_subject_section_ids = TeachingAssignment.where(section_id: all_section_ids).pluck(:section_id)
     unassigned_subject_section_ids = all_section_ids - assigned_subject_section_ids
-    @disciplines = Discipline.includes(subjects: {sections: :teachers }).where('sections.id in (?)', unassigned_subject_section_ids).order('disciplines.name, subjects.name, sections.line_number')
+    @disciplines = Discipline.includes(subjects: {sections: :teachers }).references(subjects: {sections: :teachers }).where('sections.id in (?)', unassigned_subject_section_ids).order('disciplines.name, subjects.name, sections.line_number')
     # @teachers = Teacher.where(school_id: current_school_id)
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
       @teachers = Teacher.where(school_id: current_school_id).accessible_by(current_ability).order(:first_name, :last_name)
