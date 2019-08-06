@@ -3,6 +3,10 @@
 #
 class Teacher < User
   default_scope { where(teacher: true, active: true) }
+
+  scope :active_teachers, -> { where(teacher: true, active: true) }
+  scope :inactive_teachers, -> { where(teacher: true, active: false) }
+  scope :all_teachers, -> { where(teacher: true) }
   # default_scope order: 'LOWER(users.last_name), LOWER(users.first_name) ASC'
 
   # Access Control

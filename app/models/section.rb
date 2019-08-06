@@ -175,6 +175,9 @@ class Section < ActiveRecord::Base
     eso_ids = EvidenceSectionOutcome.where(section_outcome_id: section_outcomes.pluck(:id), evidence_id: evidences)
     EvidenceSectionOutcomeRating.where(evidence_section_outcome_id: eso_ids, rating: ['B', 'G', 'Y', 'R']).select('DISTINCT evidence_section_outcome_ratings.evidence_section_outcome_id').count
   end
+  def all_evidence_section_outcomes_count
+    EvidenceSectionOutcome.where(section_outcome_id: section_outcomes.pluck(:id), evidence_id: evidences).count
+  end
 
   def count_ratings_by_outcome
     return_value      = Hash.new { |l, k| l[k] = Hash.new(0) }
