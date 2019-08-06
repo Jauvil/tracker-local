@@ -169,11 +169,13 @@ describe "Generate Tracker Usage Report", js:true do
       within('form#new_generate') do
         find("select#generate-type").value.should == "tracker_usage"
         find("button", text: 'Generate').click
+        sleep 1
       end
     end
     assert_equal(tracker_usage_teachers_path(), current_path)
     page.should_not have_content('Internal Server Error')
 
+    page.should have_css("#page-content .report-header", wait: 5)
     within("#page-content") do
       within('.report-header') do
         page.should have_content("Tracker Activity for School #{@school1.name}")

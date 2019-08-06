@@ -100,7 +100,7 @@ class TeachersController < ApplicationController
   def tracker_usage
     # currently for all teacher in only one school
     @school = get_current_school
-    @teachers = Teacher.includes(sections: :section_outcomes).where(school_id: @school.id, active: true)
+    @teachers = Teacher.active_teachers.includes(:sections).where(school_id: @school.id)
     respond_to do |format|
       format.html
     end

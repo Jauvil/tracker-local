@@ -1,4 +1,4 @@
-Tracker2::Application.configure do
+Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -43,9 +43,13 @@ Tracker2::Application.configure do
   # Do not compress assets
   config.assets.compress = false
 
-
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = true
+
+  # Adds additional error checking when serving assets at runtime.
+  # Checks for improperly declared sprockets dependencies.
+  # Raises helpful error messages.
+  config.assets.raise_runtime_errors = true
 
 
   # Open emails to be sent in a new browser window.

@@ -34,10 +34,10 @@ class Section < ActiveRecord::Base
   # Scopes
   # scope                 :current, { include: { subject: :school }, conditions: ["sections.school_year_id = schools.school_year_id"] }
   # scope                 :old,     { include: { subject: :school }, conditions: ["sections.school_year_id != schools.school_year_id"] }
-  scope :current, -> { includes(subject: :school).where("sections.school_year_id = schools.school_year_id") }
-  scope :old, -> { includes(subject: :school).where("sections.school_year_id != schools.school_year_id") }
+  scope :current, -> { includes(subject: :school).references(subject: :school).where("sections.school_year_id = schools.school_year_id") }
+  scope :old, -> { includes(subject: :school).references(subject: :school).where("sections.school_year_id != schools.school_year_id") }
 
-  scope :published_articles, -> { includes(:articles).where(articles: { published: true}) }
+  scope :published_articles, -> { includes(:articles).references(:articles).where(articles: { published: true}) }
 
   def active_student_enrollments
    enrollments.where(
@@ -174,6 +174,9 @@ class Section < ActiveRecord::Base
   def rated_evidence_section_outcomes_count
     eso_ids = EvidenceSectionOutcome.where(section_outcome_id: section_outcomes.pluck(:id), evidence_id: evidences)
     EvidenceSectionOutcomeRating.where(evidence_section_outcome_id: eso_ids, rating: ['B', 'G', 'Y', 'R']).select('DISTINCT evidence_section_outcome_ratings.evidence_section_outcome_id').count
+  end
+  def all_evidence_section_outcomes_count
+    EvidenceSectionOutcome.where(section_outcome_id: section_outcomes.pluck(:id), evidence_id: evidences).count
   end
 
   def count_ratings_by_outcome

@@ -200,11 +200,11 @@ class AttendancesController < ApplicationController
         # error
         rpt_sections = []
       end
-      @attendances = Attendance.includes(:student, :section => :subject).where(school_id: @school.id, attendance_date: start_date..end_date, section_id: rpt_sections).scoped
+      @attendances = Attendance.includes(:student, :section => :subject).where(school_id: @school.id, attendance_date: start_date..end_date, section_id: rpt_sections) # .scoped
       # see if attendance type filter is set
       if params[:attendance_type_id].present?
         # attendance report for only attendance type specified
-        @attendances = @attendances.where(attendance_type_id: params[:attendance_type_id]).scoped
+        @attendances = @attendances.where(attendance_type_id: params[:attendance_type_id]) # .scoped
         @attendance_types = AttendanceType.where(school_id: @school.id, id: params[:attendance_type_id])
         @deact_attendance_types = []
         @attendance_count_deactivated = 0
@@ -255,27 +255,27 @@ class AttendancesController < ApplicationController
     if @school.id.present?
       @school_year = SchoolYear.where(id: @school.school_year_id).first
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
-        @attendances = Attendance.includes(:student).order("users.first_name, users.last_name", "attendances.attendance_date").accessible_by(current_ability).scoped
+        @attendances = Attendance.includes(:student).order("users.first_name, users.last_name", "attendances.attendance_date").accessible_by(current_ability) # .scoped
       else
-        @attendances = Attendance.includes(:student).order("users.last_name, users.first_name", "attendances.attendance_date").accessible_by(current_ability).scoped
+        @attendances = Attendance.includes(:student).order("users.last_name, users.first_name", "attendances.attendance_date").accessible_by(current_ability) # .scoped
       end
       # see if attendance type filter is set
       if params[:attendance_type_id].present?
         # attendance report for only attendance type specified
-        @attendances = @attendances.where(school_id: @school.id, attendance_date: start_date..end_date, attendance_type_id: params[:attendance_type_id]).scoped
+        @attendances = @attendances.where(school_id: @school.id, attendance_date: start_date..end_date, attendance_type_id: params[:attendance_type_id]) # .scoped
         @attendance_types = AttendanceType.where(id: params[:attendance_type_id])
         @deact_attendance_types = []
         @attendance_count_deactivated = 0
       else
         # regular attendance report (for all attendance_types)
-        @attendances = @attendances.where(school_id: @school.id, attendance_date: start_date..end_date).scoped
+        @attendances = @attendances.where(school_id: @school.id, attendance_date: start_date..end_date) # .scoped
         @attendance_types = AttendanceType.where(school_id: @school.id, active: true).order(:description)
         @deact_attendance_types = AttendanceType.where(school_id: @school.id, active: false)
         @attendance_count_deactivated = @attendances.where(attendance_type_id: @deact_attendance_types.pluck(:id)).count
       end
     else
       # empty scope
-      @attendances.where('false').scoped
+      @attendances.where('false') # .scoped
     end
     if @student.present?
       @attendances = @attendances.where(user_id: @student.id)

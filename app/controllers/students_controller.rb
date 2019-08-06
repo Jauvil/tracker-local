@@ -81,13 +81,13 @@ class StudentsController < ApplicationController
     if template == "index"
       # @students = Student.accessible_by(current_ability).active.includes(:parent).order(:grade_level, :last_name, :first_name)
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
-        @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name).scoped
+        @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name) # .scoped
       else
         @students = Student.includes(:parent).accessible_by(current_ability).order(:last_name, :first_name)  # .scoped
       end
     else
       authorize! :proficiency_bars, Student
-      @students = Student.accessible_by(current_ability).active.order(:last_name, :first_name).scoped
+      @students = Student.accessible_by(current_ability).active.order(:last_name, :first_name) # .scoped
     end
 
     respond_to do |format|

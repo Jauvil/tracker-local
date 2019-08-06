@@ -104,31 +104,28 @@ describe "User can change password", js:true do
       # if user has to pick a school, pick it and go to home page
       if !user.school_id.present?
         find("#side-schools a[href='/schools']").click
-        within("table tbody tr#school-#{@school1.id}") do
-          find("a[href='/schools/#{@school1.id}']").click
+        within("table tbody tr#school-#{@school1.id}", wait: 5) do
+          find("a[href='/schools/#{@school1.id}']", wait: 5).click
         end
       end
 
       # reset student's password
-      within('#side-students') do
-        find("a[href='/students']").click
+      within('#side-students', wait: 5) do
+        find("a[href='/students']", wait: 5).click
       end
       assert_equal('/students', current_path)
-      within("#student_#{@student.id}") do
+      within("#student_#{@student.id}", wait: 5) do
         find("a[data-url='/students/#{@student.id}/security.js']").click
       end
 
-      sleep 10
-
       # confirm display of temporary password if there is one, and confirm the display of the reset password button
       within("#modal_content") do
-        within("td#user_#{@student.parent.id}.parent-temp-pwd") do
+        within("td#user_#{@student.parent.id}.parent-temp-pwd", wait: 5) do
           page.should have_css("span.temp-pwd")
           page.should have_css("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']")
         end
         within("td#user_#{@student.id}.student-temp-pwd") do
           page.should_not have_css("span.temp-pwd")
-          sleep 1
           find("a[href='/students/#{@student.id}/set_student_temporary_password']").click
         end
       end
@@ -136,7 +133,7 @@ describe "User can change password", js:true do
       # confirm student now has a temporary password
       within("#modal_content") do
         # confirm screen has changed with new temp password
-        within("td#user_#{@student.id}.student-temp-pwd") do
+        within("td#user_#{@student.id}.student-temp-pwd", wait: 5) do
           within("span.temp-pwd") do
             page.should have_content("#{@student.temporary_password}")
           end
@@ -145,8 +142,7 @@ describe "User can change password", js:true do
         # reset parent's password after confirming screen is correct
         within("td#user_#{@student.parent.id}.parent-temp-pwd") do
           page.should have_css("span.temp-pwd")
-          sleep 1
-          find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']").click
+          find("a[href='/parents/#{@student.parent.id}/set_parent_temporary_password']", wait: 5).click
         end
       end
 
