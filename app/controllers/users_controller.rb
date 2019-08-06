@@ -310,17 +310,17 @@ class UsersController < ApplicationController
     @user_types << 'Students' if params[:user_type_students] == 'Y'
     @user_types << 'Parents' if params[:user_type_parents] == 'Y'
     @school = get_current_school
-    @users = User.where('school_id=?', @school.id).scoped
+    @users = User.where('school_id=?', @school.id) # .scoped
     if params[:user_type_staff] == 'N'
-      @users = @users.where("school_administrator IS NULL OR school_administrator = ?", false).scoped
-      @users = @users.where("teacher IS NULL OR teacher = ?", false).scoped
-      @users = @users.where("counselor IS NULL OR counselor = ?", false).scoped
+      @users = @users.where("school_administrator IS NULL OR school_administrator = ?", false) # .scoped
+      @users = @users.where("teacher IS NULL OR teacher = ?", false) # .scoped
+      @users = @users.where("counselor IS NULL OR counselor = ?", false) # .scoped
     end
     if params[:user_type_students] == 'N'
-      @users = @users.where("student IS NULL OR student = ?", false).scoped
+      @users = @users.where("student IS NULL OR student = ?", false) # .scoped
     end
     if params[:user_type_parents] == 'N'
-      @users = @users.where("parent IS NULL OR parent = ?", false).scoped
+      @users = @users.where("parent IS NULL OR parent = ?", false) # .scoped
     end
     # if @school.has_flag?(School::USER_BY_FIRST_LAST)
     #    @users = @users.order(:first_name, :last_name)
