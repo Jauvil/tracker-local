@@ -27,7 +27,7 @@ gem 'mysql2', group: :production
 gem 'sqlite3', '~> 1.3.0', group: [:development, :test]
 
 # gem 'cancan'          # Authorization : See /app/models/ability.rb
-gem 'cancancan', '~> 1.10'
+gem 'cancancan', '~> 3.0.1'
 
 gem 'acts_as_list'    # Drag and drop reordering, 'position' column.
 
@@ -56,7 +56,7 @@ gem 'fastthread', '~> 1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 
 gem 'nokogiri', '~> 1.6.3.1'
 gem 'rack-cache', '~> 1.6.1'
-gem 'devise', '~> 3.0.0'   # Authentication
+gem 'devise' , '~> 4.6.2'   # Authentication
 
 group :test do
   gem 'rspec-rails', '~> 3.8.2'
