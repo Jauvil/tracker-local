@@ -38,6 +38,9 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # Randomize the order test cases are executed.
+  config.active_support.test_order = :random
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
@@ -52,7 +55,4 @@ Rails.application.configure do
   # # note: this will display to console when config.logger is set to STDOUT (see above)
   config.log_level = :info
   # config.log_level = :debug
-
-  # silence deprecation warnings
-  ActiveSupport::Deprecation.silenced = false
 end
