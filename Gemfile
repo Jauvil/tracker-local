@@ -1,8 +1,8 @@
   source 'http://rubygems.org'
 
-  gem 'rails', '~> 4.1.11'
-  gem 'railties',  '~> 4.1.11'
-  gem 'passenger', '~> 3.0.21'       # Production web server.
+  gem 'rails', '~> 4.2.10'
+  # gem 'railties',  '~> 4.1.11'
+  # gem 'passenger', '~> 3.0.21'       # Production web server.
 
   # Use unicorn as the app server
 	# gem 'unicorn'
