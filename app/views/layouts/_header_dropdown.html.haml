@@ -21,7 +21,5 @@
   %a{href: "#{profile_user_path(current_user)}"}
     %i.fa.fa-cog.fa-fw.pull-right
     Settings
-  %a{href: "#{destroy_user_session_path}"}
-    %i.fa.fa-power-off.fa-fw.pull-right
-    Logout
+  = link_to "#{content_tag(:i, nil, class: 'fa fa-power-off fa-fw pull-right')} Logout".html_safe, destroy_user_session_path, :method => :delete
 = content_for?(:header_contextual_dropdown) ? yield(:header_contextual_dropdown) : ""

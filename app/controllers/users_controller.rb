@@ -193,7 +193,7 @@ class UsersController < ApplicationController
           format.js
         elsif @user.password and @user.password_confirmation
           Rails.logger.debug("*** change password.")
-          if @user.reset_password!(@user.password, @user.password_confirmation)
+          if @user.reset_password(@user.password, @user.password_confirmation)
             @user.temporary_password = nil unless @user.temporary_password == @user.password
             @user.save
             if user_params[:password].present? && user_params[:temporary_password].present?
