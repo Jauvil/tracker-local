@@ -58,6 +58,9 @@ gem 'nokogiri', '~> 1.6.3.1'
 gem 'rack-cache', '~> 1.6.1'
 gem 'devise' , '~> 4.6.2'   # Authentication
 
+# respond_with and the class-level respond_to methods have been extracted to the responders gem
+gem 'responders', '~> 2.0'
+
 group :test do
   gem 'rspec-rails', '~> 3.8.2'
   # gem 'webdrivers'
@@ -90,8 +93,8 @@ group :development do
   # gem 'ten_years_rails', '~> 0.2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
-  # # Access an IRB console on exception pages or by using <%= console %> in views
-  # gem 'web-console', '~> 2.0'
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
 
 end
 

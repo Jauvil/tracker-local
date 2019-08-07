@@ -53,6 +53,6 @@ Rails.application.configure do
 
   # # set logger level to one of [:debug, :info, :warn, :error, :fatal]
   # # note: this will display to console when config.logger is set to STDOUT (see above)
-  config.log_level = :info
+  config.log_level = :warn
   # config.log_level = :debug
 end
