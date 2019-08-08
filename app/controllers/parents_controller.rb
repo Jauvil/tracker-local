@@ -44,7 +44,7 @@ class ParentsController < ApplicationController
       parent_status = @parent.update_attributes(parent_params)
       if parent_status
         if parent_params[:password].present? && parent_params[:temporary_password].present?
-          UserMailer.changed_user_password(@parent, @school, get_server_config).deliver # deliver after save
+          UserMailer.changed_user_password(@parent, @school, get_server_config).deliver_now # deliver_now_now after save
           puts " +++ UserMailer"
         end
         puts " +++  format.js"
@@ -60,7 +60,7 @@ class ParentsController < ApplicationController
     @school = get_current_school
     @parent.set_temporary_password
     @parent.save
-    UserMailer.changed_user_password(@parent, @school, get_server_config).deliver # deliver after save
+    UserMailer.changed_user_password(@parent, @school, get_server_config).deliver_now # deliver after save
 
     respond_to do |format|
       format.js

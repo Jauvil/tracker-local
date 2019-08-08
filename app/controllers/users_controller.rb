@@ -124,7 +124,7 @@ class UsersController < ApplicationController
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
       elsif @user.errors.count == 0 && @user.save
-        UserMailer.welcome_user(@user, @school, get_server_config).deliver # deliver after save
+        UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
         format.js
       else
         # to do - find out why these @user.errors are not displaying in tests
@@ -197,7 +197,7 @@ class UsersController < ApplicationController
             @user.temporary_password = nil unless @user.temporary_password == @user.password
             @user.save
             if user_params[:password].present? && user_params[:temporary_password].present?
-              UserMailer.changed_user_password(@user, @school, get_server_config).deliver # deliver after save
+              UserMailer.changed_user_password(@user, @school, get_server_config).deliver_now # deliver after save
             end
             format.html { redirect_to(root_path, :notice => 'Password was successfully updated.') }
           else
@@ -288,7 +288,7 @@ class UsersController < ApplicationController
     @school = get_current_school
     @user.set_temporary_password
     @user.save
-    UserMailer.changed_user_password(@user, @school, get_server_config).deliver # deliver after save
+    UserMailer.changed_user_password(@user, @school, get_server_config).deliver_now # deliver after save
 
     respond_to do |format|
       format.js
@@ -500,7 +500,7 @@ class UsersController < ApplicationController
               staff.username = rx[COL_USERNAME] # use the username from stage 4
               staff.save!
               @records[ix][COL_SUCCESS] = 'Created'
-              UserMailer.welcome_user(staff, @school, get_server_config).deliver # deliver after save
+              UserMailer.welcome_user(staff, @school, get_server_config).deliver_now # deliver after save
             end # @records loop
             # raise "Testing report output without update."
           end #transaction

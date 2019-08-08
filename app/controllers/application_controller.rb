@@ -563,7 +563,7 @@ class ApplicationController < ActionController::Base
     if ex
       Rails.logger.error("Exception: #{ex.message}")
       Rails.logger.error("Error: Send email message to support.")
-      SupportMailer.show(ex, request, session).deliver
+      SupportMailer.show(ex, request, session).deliver_now
       flash[:notice] = "Exception: #{ex.message}"
     end
     redirect_to(root_path)
