@@ -490,7 +490,7 @@ class ApplicationController < ActionController::Base
       else
         yield
       end
-    rescue Exception => e
+    rescue => e
       Rails.logger.error("WARNING in application_controller.profile: Exception #{e.message}")
     end
 
@@ -566,7 +566,29 @@ class ApplicationController < ActionController::Base
       SupportMailer.show(ex, request, session).deliver_now
       flash[:notice] = "Exception: #{ex.message}"
     end
-    redirect_to(root_path)
+
+    # on error 500 send user back to home / dashboard page, unless 500 error on home/dashboard page
+    redirectToError = false
+    begin
+      # detect if path is a user home / dashboard page
+      # do not sent back to dashboard page again, avoiding infinite loop
+      Rails.logger.debug("***  request.original_url: #{request.original_url}")
+      controllerNameA = request.original_url[request.base_url.length..-1]
+      controllerName = request.original_url[request.base_url.length..-1].split('/')[1]
+      dashboardPages = %w(students parents teachers counselors school_administrators researchers system_administrators)
+      if dashboardPages.include?(controllerName)
+        Rails.logger.error("ERROR: FATAL error on dashboard page #{controllerName}")
+        redirectToError = true
+      end
+    rescue => e
+      # send to user root path
+    end
+
+    if redirectToError
+      redirect_to('/500')
+    else
+      redirect_to(root_path)
+    end
   end
 
   # Possible approach to capturing various other problematic errors
