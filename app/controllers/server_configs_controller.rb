@@ -38,7 +38,6 @@ class ServerConfigsController < ApplicationController
   end
 
   def edit
-    puts "+++ server_config edit"
     authorize! :sys_admin_links, User
     server_configs = ServerConfig.all
     if server_configs.count == 0
