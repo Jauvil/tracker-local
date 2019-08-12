@@ -271,20 +271,23 @@ describe "Announcements", js:true do
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
-      within("#announcement_list_1") do
-        find('a#delete-item').click
-      end
+      find("#announcement_list_1 a#delete-item", wait: 5).click
       # click OK in javascript confirmation popup
+      sleep 1
       page.driver.browser.switch_to.alert.accept
-
+      wait_for_ajax
       assert_equal(current_path, '/announcements')
-      find("#announcement_list_3 a[href='/announcements/3.js']").click
-      page.driver.browser.switch_to.alert.accept
-
-      find("#announcement_list_4 a[href='/announcements/4.js']").click
+      find("#announcement_list_3 a#delete-item", wait: 5).click
       # click OK in javascript confirmation popup
+      sleep 1
       page.driver.browser.switch_to.alert.accept
-
+      wait_for_ajax
+      assert_equal(current_path, '/announcements')
+      find("#announcement_list_4 a#delete-item", wait: 5).click
+      # click OK in javascript confirmation popup
+      sleep 1
+      page.driver.browser.switch_to.alert.accept
+      wait_for_ajax
       # confirm announcements maintenance icon is no longer shown
       page.should_not have_css("#announcements-admin a[href='/announcements']")
     else
