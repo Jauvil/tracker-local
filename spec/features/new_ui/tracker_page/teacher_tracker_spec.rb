@@ -111,9 +111,9 @@ describe "Teacher Tracker", js:true do
       find("input#send_email").click
       find("input#send_email").should be_checked
       # add evidence to one learning outcome
-      find("#evid-current-los .block-title i").click
+      # find("#evid-current-los .block-title i").click
       find("span.add_lo_to_evid[data-so-id='#{@section_outcomes.first[1].id}'] i").click
-      find("#evid-other-los .block-title i").click
+      # find("#evid-other-los .block-title i").click
       # Save Button not working
       find('button', text: 'Save').click
       wait_for_ajax
