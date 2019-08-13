@@ -91,7 +91,7 @@ class SectionsController < ApplicationController
   end
 
   def create
-    Rails.logger.debug("*** create section")
+    Rails.logger.debug("*** create section - params: #{params.inspect}")
     @school = get_current_school
     @section.school_year_id = @school.school_year_id
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
@@ -105,8 +105,11 @@ class SectionsController < ApplicationController
         @teaching_assignments = []
         params[:teaching_assignment_attributes].each do |tapk, tapv|
           if !tapv[:id]
-            tapv[:section_id] = @section.id
-            @teaching_assignment = TeachingAssignment.create(tapv)
+            # tapv[:section_id] = @section.id
+            tapv_rec = TeachingAssignment.new()
+            tapv_rec.section_id = @section_id
+            tapv_rec.teacher_id = tapv[:teacher_id]
+            @teaching_assignment = tapv_rec.save
           end
           @teaching_assignments << @teaching_assignment
         end
@@ -157,8 +160,11 @@ class SectionsController < ApplicationController
           if params[:teaching_assignment_attributes]
             params[:teaching_assignment_attributes].each do |tapk, tapv|
               if !tapv[:id]
-                tapv[:section_id] = @section.id
-                @teaching_assignment = TeachingAssignment.create(tapv)
+                # tapv[:section_id] = @section.id
+                tapv_rec = TeachingAssignment.new()
+                tapv_rec.section_id = @section_id
+                tapv_rec.teacher_id = tapv[:teacher_id]
+                @teaching_assignment = tapv_rec.save
               else
                 @teaching_assignment = TeachingAssignment.find(tapv[:id])
                 TeachingAssignment.destroy(tapv[:id])

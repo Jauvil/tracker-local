@@ -442,9 +442,7 @@ describe "Subjects Sections Listing", js:true do
         end
         page.find('input#section_line_number', wait: 5).set('Newsect')
         page.click_button('Save')
-        sleep 1
       end
-
       page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
       find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
       within("tr#sect_#{@section1_2.id}") do
@@ -462,10 +460,6 @@ describe "Subjects Sections Listing", js:true do
         end
         page.should have_selector("#section_line_number[value='#{@section1_2.line_number}']", wait: 5)
         page.find('input#section_line_number', wait: 5).set('Changed')
-        # within('#section_message') do
-        #   Rails.logger.debug("+++ section message: #{@section1_2.message}")
-        #   page.should have_content(@section1_2.message)
-        # end
         within("#section_school_year_id") {page.should have_content("#{@section1_2.school_year.name}")}
         page.click_button('Save')
         sleep 1
