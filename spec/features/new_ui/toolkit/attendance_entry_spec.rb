@@ -418,94 +418,84 @@ describe "Attendance Entry", js:true do
     find("#attendance_date_field").value.should == Date.today.to_s
     page.execute_script("$('#attendance_date_field').val('2015-09-01')")
     page.execute_script("$('#attendance_date_field').trigger('change')")
+
+    # confirm updated and displaying correctly
     within("form .block-title") do
       page.should have_content("Section Attendance for 2015-09-01")
     end
-
     # confirm only school1 attendance types are listed
-    within("table#attendance_table tbody tr#attendance_#{@student_fname1.id} select#attendance_#{@student_fname1.id}_attendance_type_id") do
+    within("table#attendance_table tbody tr#attendance_user_#{@student_fname1.id} select#attendance_user_id_#{@student_fname1.id}_attendance_type_id") do
+      page.should have_content('Tardy')
+      page.should have_content('Absent')
+      page.should have_content('Deactivated')
       page.should_not have_content('Tardy2')
     end
-    within("table#attendance_table tbody tr#attendance_#{@student_fname1.id} select#attendance_#{@student_fname1.id}_excuse_id") do
+    within("table#attendance_table tbody tr#attendance_user_#{@student_fname1.id} select#attendance_user_id_#{@student_fname1.id}_excuse_id") do
+      page.should have_content('Excused')
+      page.should have_content("Doctor's note")
+      page.should have_content('Field Trip')
       page.should_not have_content('Out of school')
     end
-    # confirm students are listed in correct order, and values already loaded are displayed.
+    # confirm First student is displayed
     within("table#attendance_table") do
       page.should have_content("First Shows First")
       page.should have_content("#{@student_fname1.full_name}")
-      find("select#attendance_#{@student_fname1.id}_attendance_type_id").value.should == @at_deact.id.to_s
-      find("select#attendance_#{@student_fname1.id}_excuse_id").value.should == @attendance1.excuse.id.to_s
-      find("input#attendance_#{@student_fname1.id}_comment").value.should == @attendance1.comment
+      find("select#attendance_user_id_#{@student_fname1.id}_attendance_type_id").value.should == @at_deact.id.to_s
+      find("select#attendance_user_id_#{@student_fname1.id}_excuse_id").value.should == @excuse1.id.to_s
+      find("input#attendance_user_id_#{@student_fname1.id}_comment").value.should == @attendance1.comment
     end
+    # confirm students are listed in correct order, and values already loaded are displayed.
+
     if (ServerConfig.first.try(:allow_subject_mgr)) != true
-      # arabic school
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student_fname1.id}']")
-      within("table#attendance_table tbody tr:nth-of-type(2)") do
-        page.should have_content("#{@student.full_name}")
-        find("select#attendance_#{@student.id}_attendance_type_id").value.should == ""
-        find("select#attendance_#{@student.id}_excuse_id").value.should ==  ""
-        find("input#attendance_#{@student.id}_comment").value.should == ""
-      end
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(2)[id='attendance_#{@student.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(3)[id='attendance_#{@student2.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(4)[id='attendance_#{@student3.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(5)[id='attendance_#{@student4.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student5.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(7)[id='attendance_#{@student6.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_new.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(9)[id='attendance_#{@student_transferred.id}']")
+      # arabic school sorted by first name, then last name
+      within("table#attendance_table tbody tr:nth-of-type(2) #attendance_user_#{@student.id}_name") {page.should have_content(@student.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(3) #attendance_user_#{@student2.id}_name") {page.should have_content(@student2.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(4) #attendance_user_#{@student3.id}_name") {page.should have_content(@student3.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(5) #attendance_user_#{@student4.id}_name") {page.should have_content(@student4.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(6) #attendance_user_#{@student5.id}_name") {page.should have_content(@student5.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(7) #attendance_user_#{@student6.id}_name") {page.should have_content(@student6.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(8) #attendance_user_#{@student_new.id}_name") {page.should have_content(@student_new.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(1) #attendance_user_#{@student_fname1.id}_name") {page.should have_content(@student_fname1.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(9) #attendance_user_#{@student_transferred.id}_name") {page.should have_content(@student_transferred.full_name)}
     else
-      # us school
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_fname1.id}']")
-      within("table#attendance_table tbody tr:nth-of-type(1)") do
-        page.should have_content("#{@student.full_name}")
-        find("select#attendance_#{@student.id}_attendance_type_id").value.should == ""
-        find("select#attendance_#{@student.id}_excuse_id").value.should ==  ""
-        find("input#attendance_#{@student.id}_comment").value.should == ""
-      end
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(2)[id='attendance_#{@student2.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(3)[id='attendance_#{@student3.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(4)[id='attendance_#{@student4.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(5)[id='attendance_#{@student5.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(6)[id='attendance_#{@student6.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(7)[id='attendance_#{@student_new.id}']")
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(9)[id='attendance_#{@student_transferred.id}']")
+      # us school by last name, then first name
+      within("table#attendance_table tbody tr:nth-of-type(1) #attendance_user_#{@student.id}_name") {page.should have_content(@student.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(2) #attendance_user_#{@student2.id}_name") {page.should have_content(@student2.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(3) #attendance_user_#{@student3.id}_name") {page.should have_content(@student3.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(4) #attendance_user_#{@student4.id}_name") {page.should have_content(@student4.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(5) #attendance_user_#{@student5.id}_name") {page.should have_content(@student5.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(6) #attendance_user_#{@student6.id}_name") {page.should have_content(@student6.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(7) #attendance_user_#{@student_new.id}_name") {page.should have_content(@student_new.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(8) #attendance_user_#{@student_fname1.id}_name") {page.should have_content(@student_fname1.full_name)}
+      within("table#attendance_table tbody tr:nth-of-type(9) #attendance_user_#{@student_transferred.id}_name") {page.should have_content(@student_transferred.full_name)}
     end
 
-    # navbar-nav-custom-content
-    page.fill_in "attendance_#{@student_fname1.id}_comment", :with => 'Changed comment!'
-    select('Tardy', from: "attendance_#{@student.id}_attendance_type_id")
-    select('Field Trip', from: "attendance_#{@student.id}_excuse_id")
+    # Update @student record
+    page.fill_in "attendance_user_id_#{@student_fname1.id}_comment", :with => 'Changed comment!'
+    select('Tardy', from: "attendance_user_id_#{@student.id}_attendance_type_id")
+    select('Field Trip', from: "attendance_user_id_#{@student.id}_excuse_id")
     page.should have_css("input#save_attendance", visible: true)
     find("input#save_attendance").click
 
-    if (ServerConfig.first.try(:allow_subject_mgr)) != true
-      # confirm updated values are displayed.
-      within("table#attendance_table tbody tr:nth-of-type(1)") do
-        find("input#attendance_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
-      end
-    else
-      within("table#attendance_table tbody tr:nth-of-type(8)") do
-        find("input#attendance_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
-      end
+    # confirm updated and displayed correctly
+    within("table#attendance_table tbody") do
+      find("input#attendance_user_id_#{@student_fname1.id}_comment").value.should == 'Changed comment!'
     end
+    # adjust for position change of users from name sorting
     if (ServerConfig.first.try(:allow_subject_mgr)) != true
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(1)[id='attendance_#{@student_fname1.id}']")
-      within("table#attendance_table tbody tr:nth-of-type(2)") do
-        page.should have_content("#{@student.full_name}")
-        find("select#attendance_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
-        find("select#attendance_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
-        find("input#attendance_#{@student.id}_comment").value.should == ""
-      end
+      student_n = 2
+      student_fname_n = 1
     else
-      page.should have_css("table#attendance_table tbody tr:nth-of-type(8)[id='attendance_#{@student_fname1.id}']")
-      within("table#attendance_table tbody tr:nth-of-type(1)") do
-        page.should have_content("#{@student.full_name}")
-        find("select#attendance_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
-        find("select#attendance_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
-        find("input#attendance_#{@student.id}_comment").value.should == ""
-      end
+      student_n = 1
+      student_fname_n = 8
+    end
+    # confirm @student is updated correctly
+    # page.should have_css("table#attendance_table tbody tr:nth-of-type(#{student_fname_n})[id='attendance_#{@student_fname1.id}']")
+    within("table#attendance_table tbody tr:nth-of-type(#{student_n})") do
+      page.should have_content("#{@student.full_name}")
+      find("select#attendance_user_id_#{@student.id}_attendance_type_id").value.should == @at_tardy.id.to_s
+      find("select#attendance_user_id_#{@student.id}_excuse_id").value.should ==  @excuse3.id.to_s
+      find("input#attendance_user_id_#{@student.id}_comment").value.should == ""
     end
   end  # section_attendance_entry_is_valid
 

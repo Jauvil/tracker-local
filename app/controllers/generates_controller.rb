@@ -30,7 +30,6 @@ class GeneratesController < ApplicationController
   # - listings - Toolkit - Generate Listings
   # GET "/generates/new"
   def new
-    puts "+++ new generate report"
     authorize! :read, Generate
     @generate = Generate.new
     @section_id = params[:section_id] if params[:section_id]
@@ -77,7 +76,6 @@ class GeneratesController < ApplicationController
   # otherwise send errors back to form for resubmission.
   # POST "/generates"
   def create
-    puts "+++ create Generate Report"
     authorize! :read, Generate
     Rails.logger.debug("*** params: #{params.inspect}")
     # generate_params = params[:generate]

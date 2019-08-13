@@ -44,31 +44,31 @@
       .block.block-alt-style
         #evid-current-los
           .block-title.text-center
-            %h2='Learning Outcomes'
-            #show-los-to-add.pull-right.col.btn.btn-sm.btn-primary.pointer-cursor
-              %i.fa.fa-lg.fa-plus
+            %h2='Associated Learning Outcomes'
+            -#show-los-to-add.pull-right.col.btn.btn-sm.btn-primary.pointer-cursor
+            -#  %i.fa.fa-lg.fa-plus
           %ul
             %li#error-row{class: (@lo_errors.present? ? '' : 'display-none')}=@lo_errors
             - @esos.each do |eso|
               %li.lo-row
-                %span.btn.btn-sm.remove_lo_from_evid.pointer-cursor{data: {so_id: "#{eso.section_outcome_id}", rate_count: "#{eso.evidence_section_outcome_ratings.count}"}}
+                %span.btn.btn-lg.remove_lo_from_evid.pointer-cursor{data: {so_id: "#{eso.section_outcome_id}", rate_count: "#{eso.evidence_section_outcome_ratings.count}"}}
                   %i.fa.fa-times-circle
-                %span.btn.btn-sm.add_lo_to_evid.pointer-cursor{data: {so_id: "#{eso.section_outcome_id}"}}
+                %span.btn.btn-lg.add_lo_to_evid.pointer-cursor{data: {so_id: "#{eso.section_outcome_id}"}}
                   %i.fa.fa-plus-circle
                 %span.lo_name="#{eso.section_outcome.subject_outcome.name}"
                 %input.remove-this-lo.display-none{type: 'hidden', name: "evidence[evidence_section_outcomes_attributes][#{eso.id}][_destroy]", value: "0"}
                 %input.display-none{type: 'hidden', name: "evidence[evidence_section_outcomes_attributes][#{eso.id}][id]", value: "#{eso.id}"}
-        #evid-other-los.display-none
+        #evid-other-los
           .block-title.text-center
-            %h2='Adding Learning Outcomes'
-            #hide-los-to-add.pull-right.col.btn.btn-sm.btn-primary.pointer-cursor
-              %i.fa.fa-lg.fa-reply
+            %h2='Available Learning Outcomes'
+            -#hide-los-to-add.pull-right.col.btn.btn-sm.btn-primary.pointer-cursor
+            -#  %i.fa.fa-lg.fa-reply
           %ul
             - @other_sos.each do |so|
               %li.lo-row
-                %span.btn.btn-sm.remove_lo_from_evid.pointer-cursor{data: {so_id: "#{so.id}"}}
+                %span.btn.btn-lg.remove_lo_from_evid.pointer-cursor{data: {so_id: "#{so.id}"}}
                   %i.fa.fa-times-circle
-                %span.btn.btn-sm.add_lo_to_evid.pointer-cursor{data: {so_id: "#{so.id}"}}
+                %span.btn.btn-lg.add_lo_to_evid.pointer-cursor{data: {so_id: "#{so.id}"}}
                   %i.fa.fa-plus-circle
                 %span.lo-name
                   ="#{so.subject_outcome.name}"

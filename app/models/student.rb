@@ -219,9 +219,6 @@ class Student < User
       evidences: { section_id: section_id, active: true }
     )
     if start_date.present?
-      query = query.where(updated_at.to_date >= start_date.to_date)
-    end
-    if start_date.present?
       as_date = start_date.to_date
       query = query.where(updated_at: as_date..1.day.from_now.to_date)
     end

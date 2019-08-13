@@ -75,6 +75,6 @@ class EvidenceSectionOutcomesController < ApplicationController
   private
 
   def evidence_section_outcome
-    params.require[:evidence_section_outcome].permit(EVIDENCE_SECTION_OUTCOME_PARAMS)
+    params.require(:evidence_section_outcome).permit(EVIDENCE_SECTION_OUTCOME_PARAMS)
   end
 end

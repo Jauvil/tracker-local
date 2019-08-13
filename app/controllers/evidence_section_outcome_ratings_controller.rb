@@ -82,6 +82,6 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
   private
 
   def evidence_section_outcome_rating
-    params.require[:evidence_section_outcome_rating].permit(EVIDENCE_SECTION_OUTCOME_RATING_PARAMS)
+    params.require(:evidence_section_outcome_rating).permit(EVIDENCE_SECTION_OUTCOME_RATING_PARAMS)
   end
 end

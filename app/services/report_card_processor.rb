@@ -19,9 +19,9 @@ class ReportCardProcessor
 			outfile = Tempfile.new(["#{acronym}_reportcard", '.pdf'])
 			build_report_cards @grade, outfile
 			# everything is fine if we get here
-			ReportCardMailer.report_success_email(@email,@grade,@full_name,outfile.path,@school).deliver
+			ReportCardMailer.report_success_email(@email,@grade,@full_name,outfile.path,@school).deliver_now
 		rescue NoStudentsFoundException
-			ReportCardMailer.no_students_email(@email,@grade,@full_name,@school).deliver
+			ReportCardMailer.no_students_email(@email,@grade,@full_name,@school).deliver_now
 		rescue Exception => e
 			# Log the execption
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] An unknown error occured when attempting to create report cards for:
@@ -29,7 +29,7 @@ class ReportCardProcessor
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
 
-			ReportCardMailer.generic_exception_email(@email,@grade,@full_name,@school).deliver
+			ReportCardMailer.generic_exception_email(@email,@grade,@full_name,@school).deliver_now
 		ensure
 			outfile.close
 			outfile.unlink

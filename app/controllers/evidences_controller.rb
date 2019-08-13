@@ -197,7 +197,7 @@ class EvidencesController < ApplicationController
       @section.active_enrollments.each do |e|
         # send new evidence email to student
         Rails.logger.debug("+++ main section send new evidence email to student: #{e.student.full_name}")
-        StudentMailer.new_evidence_notify(@section, e, request).deliver
+        StudentMailer.new_evidence_notify(@section, e, request).deliver_now
       end
       if params[:sections]
         params[:sections].each do |section_id|
@@ -205,7 +205,7 @@ class EvidencesController < ApplicationController
           section.active_enrollments.each do |e|
             # send new evidence email to student
             Rails.logger.debug("+++ other section send new evidence email to student: #{e.student.full_name}")
-            StudentMailer.new_evidence_notify(section, e, request).deliver
+            StudentMailer.new_evidence_notify(section, e, request).deliver_now
           end
         end
       end

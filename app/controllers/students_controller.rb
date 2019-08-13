@@ -152,7 +152,7 @@ class StudentsController < ApplicationController
       if @student.errors.count == 0
         # puts("*** no student errors after save")
         begin
-          UserMailer.welcome_user(@student, @school, get_server_config).deliver
+          UserMailer.welcome_user(@student, @school, get_server_config).deliver_now
         rescue => e
           Rails.logger.error("Error: Student Email missing ServerConfigs record with support_email address")
           raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
@@ -174,7 +174,7 @@ class StudentsController < ApplicationController
         Rails.logger.debug("*** save @parent.errors.count: #{@parent.errors.count}")
         # puts("*** save parent_status: #{parent_status.inspect}")
         begin
-          UserMailer.welcome_user(@parent, @school, get_server_config).deliver
+          UserMailer.welcome_user(@parent, @school, get_server_config).deliver_now
         rescue => e
           Rails.logger.error("Error: Parent Email missing ServerConfigs record with support_email address")
           raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
@@ -218,7 +218,7 @@ class StudentsController < ApplicationController
 
     student_status = @student.update_attributes(student_params)
     if student_status && student_params[:password].present? && student_params[:temporary_password].present?
-      UserMailer.changed_user_password(@student, @school, get_server_config).deliver # deliver after save
+      UserMailer.changed_user_password(@student, @school, get_server_config).deliver_now # deliver after save
     end
     parent_status = true
     @parent = @student.parent
@@ -269,7 +269,7 @@ class StudentsController < ApplicationController
       flash[:alert] = "Error: #{@student.errors.full_messages}"
       @student.reload
     else
-      UserMailer.changed_user_password(@student, @school, get_server_config).deliver
+      UserMailer.changed_user_password(@student, @school, get_server_config).deliver_now
     end
     respond_to do |format|
       format.js
@@ -444,13 +444,13 @@ class StudentsController < ApplicationController
               student = build_student(rx)
               student.username = rx[COL_USERNAME] # use the username from stage 4
               student.save!
-              UserMailer.welcome_user(student, @school, get_server_config).deliver # deliver after update attributes
+              UserMailer.welcome_user(student, @school, get_server_config).deliver_now # deliver after update attributes
               if rx[COL_PAR_EMAIL].present? && student.parent.present?
                 rx[COL_PAR_USERNAME] = student.username + "_p"
                 parent = build_parent(student, rx)
                 parent.save!
                 @records2[ix][COL_PAR_USERNAME] = student.username + "_p"
-                UserMailer.welcome_user(parent, @school, get_server_config).deliver # deliver after update attributes
+                UserMailer.welcome_user(parent, @school, get_server_config).deliver_now # deliver after update attributes
               end
               @records2[ix][COL_SUCCESS] = 'Created'
             end # @records2 loop

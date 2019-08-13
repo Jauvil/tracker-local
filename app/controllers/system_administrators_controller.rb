@@ -79,8 +79,8 @@ class SystemAdministratorsController < ApplicationController
 
     if @user.errors.count == 0
       if @user.save
-         # deliver after successful save
-        UserMailer.welcome_system_user(@user, get_server_config).deliver
+         # deliver_now after successful save
+        UserMailer.welcome_system_user(@user, get_server_config).deliver_now
       end
     end
 

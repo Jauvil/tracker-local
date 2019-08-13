@@ -91,7 +91,7 @@ class ExcusesController < ApplicationController
   end
 
   def excuse
-    params.require[:excuse].permit(EXCUSE_PARAMS)
+    params.require(:excuse).permit(EXCUSE_PARAMS)
   end
 
 end

@@ -10,12 +10,15 @@ class AttendancesController < ApplicationController
   before_filter :valid_current_school
 
   ATTENDANCE_PARAMS = [
-    :user_id,
-    :comment,
+    :section_id,
     :attendance_date,
-    :attendance_type_id,
-    :excuse_id
+    :school_id
   ]
+  #   :user_id,
+  #   :comment,
+  #   :attendance_type_id,
+  #   :excuse_id
+  # ]
 
   def index
     @attendance = Attendance.new
@@ -134,25 +137,23 @@ class AttendancesController < ApplicationController
 
   # POST /attendances/section_attendance_update
   def section_attendance_update
-    @section_id = params[:section_id] ? params[:section_id] : params[:id]
     @test_auth_item = Attendance.new
     @test_auth_item.school_id = current_school_id
     a_user = User.where(school_id: current_school_id).first
     @test_auth_item.user_id = a_user.id
-    @test_auth_item.section_id = params[:section_id] if params[:section_id]
+    @test_auth_item.section_id = attendance_params[:section_id]
     authorize! :manage, @test_auth_item # only let maintainers do these things
 
-    @attendance_date_field = params[:attendance_date] ? params[:attendance_date] : I18n.localize(Time.now.to_date)
-    load_non_attendance_section_attendance_fields(@section_id)
+    load_non_attendance_section_attendance_fields(@test_auth_item.section_id)
     # loop through each student attendance parameter group (attendance_####)
     # build the @attendances array for display back to the user
     @attendances = []
-    params.each do |key, value|
+    attendance_params[:user].each do |key, value|
       key_split = key.split(/_/)
-      if key_split[0] == 'attendance' && key_split[1] == value['user_id']
+      if key_split[0] == 'id' && key_split[1] == value['user_id']
         record = process_attendance_update(value, current_school_id, @test_auth_item.section_id)
         @attendances << record
-      end # end if attendance_#### parameter
+      end # end if
     end # end params loop
     session[:close_to_path] = section_path(params[:section_id])
     flash[:notice] = I18n.translate('alerts.success') if flash[:alert].blank? && flash.now[:alert].blank?
@@ -322,7 +323,9 @@ private
   end
 
   def attendance_params
-    params.require(:attendance).permit(ATTENDANCE_PARAMS)
+    params.require(:attendance).permit(ATTENDANCE_PARAMS).tap do |whitelisted|
+      whitelisted[:user] = params[:attendance][:user]
+    end
   end
 
 end

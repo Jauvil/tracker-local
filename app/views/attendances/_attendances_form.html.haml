@@ -76,6 +76,9 @@
             = hidden_field_tag("section_id", @section.id.to_s)
             = hidden_field_tag "attendance_date", @attendance_date_field
             = hidden_field_tag "school_id", @school.id.to_s
+            = hidden_field_tag("attendance[section_id]", @section.id.to_s)
+            = hidden_field_tag "attendance[attendance_date]", @attendance_date_field
+            = hidden_field_tag "attendance[school_id]", @school.id.to_s
 
       .block.block-alt-style.full
         .block-content-full.rounded-title-container
@@ -89,15 +92,15 @@
                 %th
             %tbody
               - @attendances.each do |a|
-                %tr{:id => "attendance_#{a.user_id.to_s}", :class => ('field_with_errors' if a.errors.count > 0) }
-                  = hidden_field_tag "attendance_#{a.user_id.to_s}[id]", a.id.to_s
-                  = hidden_field_tag "attendance_#{a.user_id.to_s}[user_id]", a.user_id.to_s
-                  = hidden_field_tag "attendance_#{a.user_id.to_s}[attendance_date]", a.attendance_date
-                  %td{id: "attendance_#{a.user_id.to_s}_full_name"}= a.student.full_name  #  User.find(a.user_id).full_name
-                  %td= collection_select("attendance_#{a.user_id.to_s}", :attendance_type_id, AttendanceType.valid_options(@school.id, a.attendance_type_id), :id, :description, {include_blank: '', selected: a.attendance_type_id}, class: 'form-control')
+                %tr{:id => "attendance_user_#{a.user_id.to_s}", :class => ('field_with_errors' if a.errors.count > 0) }
+                  = hidden_field_tag "user[id_#{a.user_id.to_s}][id]", a.id.to_s
+                  = hidden_field_tag "attendance[user][id_#{a.user_id.to_s}][user_id]", a.user_id.to_s
+                  = hidden_field_tag "attendance[user][id_#{a.user_id.to_s}][attendance_date]", a.attendance_date
+                  %td{id: "attendance_user_#{a.user_id.to_s}_name"}= a.student.full_name  #  User.find(a.user_id).full_name
+                  %td= collection_select("attendance[user][id_#{a.user_id.to_s}]", :attendance_type_id, AttendanceType.valid_options(@school.id, a.attendance_type_id), :id, :description, {include_blank: '', selected: a.attendance_type_id}, class: 'form-control')
                   %td
-                    = collection_select( "attendance_#{a.user_id.to_s}", :excuse_id, Excuse.valid_options(@school.id, a.excuse_id), :id, :description, {include_blank: '', selected: a.excuse_id}, class: 'form-control')
-                  %td= text_field_tag :comment, a.comment, placeholder: "enter comment here.", id: "attendance_#{a.user_id.to_s}_comment", name: "attendance_#{a.user_id.to_s}[comment]"
+                    = collection_select( "attendance[user][id_#{a.user_id.to_s}]", :excuse_id, Excuse.valid_options(@school.id, a.excuse_id), :id, :description, {include_blank: '', selected: a.excuse_id}, class: 'form-control')
+                  %td= text_field_tag :comment, a.comment, placeholder: "enter comment here.", id: "attendance_user_id_#{a.user_id.to_s}_comment", name: "attendance[user][id_#{a.user_id.to_s}][comment]"
                   %td.form-control.ui-error= a.errors.count > 0 ? a.errors.full_messages.first : ''
           %div{:class => 'clear'}
             %p{:class => 'float_right'}

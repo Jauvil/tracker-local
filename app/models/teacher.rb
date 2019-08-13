@@ -32,13 +32,13 @@ class Teacher < User
   # end
 
   def section_outcomes
-    SectionOutcome.where(section_id: sections.map{ |a| [a.id] })
+    SectionOutcome.where(section_id: sections.map{ |a| a.id })
   end
   def active_evidences
-    Evidence.where(section_id: sections.map{ |a| [a.id] }, active: true)
+    Evidence.where(section_id: sections.map{ |a| a.id }, active: true)
   end
   def active_section_outcomes
-    SectionOutcome.where(section_id: sections.map{ |a| [a.id] }, active: true)
+    SectionOutcome.where(section_id: sections.map{ |a| a.id }, active: true)
   end
   def rated_section_outcomes_count
     SectionOutcomeRating.where(section_outcome_id: active_section_outcomes.pluck(:id), rating: ['H', 'P', 'N']).select("DISTINCT section_outcome_ratings.section_outcome_id").count

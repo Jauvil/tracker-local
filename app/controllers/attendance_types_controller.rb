@@ -89,7 +89,7 @@ class AttendanceTypesController < ApplicationController
   end
 
   def attendance_type_params
-    params.require[:attendance_type].permit(ATTENDANCE_TYPE_PARAMS)
+    params.require(:attendance_type).permit(ATTENDANCE_TYPE_PARAMS)
   end
 
 end
