@@ -200,5 +200,5 @@ Devise.setup do |config|
   #   vi .bashrc
   #     SECRET_KEY_BASE="(number from running 'bundle exec rake secret')"
   #     export SECRET_KEY_BASE
-  config.secret_key = ENV["SECRET_KEY_BASE"] if Rails.env.production?
+  config.secret_key = ENV["SECRET_KEY_BASE"] if Rails.env.production? || Rails.env.staging?
 end
