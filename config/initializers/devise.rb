@@ -193,4 +193,12 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
+
+  # fix production deploy error 'Devise.secret_key was not set.'
+  # Use secret key environment variable used by rails for cookies
+  # to set:
+  #   vi .bashrc
+  #     SECRET_KEY_BASE="(number from running 'bundle exec rake secret')"
+  #     export SECRET_KEY_BASE
+  config.secret_key = ENV["SECRET_KEY_BASE"] if Rails.env.production?
 end
