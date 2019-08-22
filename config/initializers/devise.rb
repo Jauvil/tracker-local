@@ -202,9 +202,9 @@ Devise.setup do |config|
   #     export SECRET_KEY_BASE
   if Rails.env.production? || Rails.env.staging?
     config.secret_key = ENV["SECRET_KEY_BASE"]
-  elsif Rails.env.en_stage
+  elsif Rails.env.en_stage?
     config.secret_key = ENV["US_STAGE_SECRET_KEY_BASE"]
-  elsif Rails.env.eg_stage
+  elsif Rails.env.eg_stage?
     config.secret_key = ENV["EG_STAGE_SECRET_KEY_BASE"]
   end
 end
