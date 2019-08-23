@@ -7,20 +7,20 @@ staging:
   port: 3306
   pool: 10
   timeout: 5000
-eg_stage:
+egstage:
   adapter: mysql2
-  database: stem_eg_stage
-  username: stem_eg_stage_user
-  password: stem_eg_stage_pwd
+  database: eg_stage
+  username: eg_stage_user
+  password: eg_stage_pwd
   host: 127.0.0.1
   port: 3306
   pool: 10
   timeout: 5000
-en_stage:
+enstage:
   adapter: mysql2
-  database: stem_en_stage
-  username: stem_en_stage_user
-  password: stem_en_stage_pwd
+  database: en_stage
+  username: en_stage_user
+  password: en_stage_pwd
   host: 127.0.0.1
   port: 3306
   pool: 10
