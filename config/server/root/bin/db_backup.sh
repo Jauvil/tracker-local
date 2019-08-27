@@ -35,12 +35,12 @@ function do_db_backup () {
     user=`get_field username`
     database=`get_field database`
 
-    date=`date '+%Y_%m_%d_%H_%M_%S'`
-    backup_file=daily_db_${environment}_${database}_$date.sql.bz2
+    date=`date '+%Y-%m-%d_%H:%M:%S'`
+    backup_file=daily_db_${environment}_${database}_$date.sql.gz
 
-    /usr/bin/mysqldump -u $user --password=$pwd --databases $database | /usr/bin/bzip2 -9 > $backup_path/$backup_file
+    /usr/bin/mysqldump -u $user --password=$pwd --databases $database | /usr/bin/gzip -9 > $backup_path/$backup_file
     trim_backups
 }
 
-### EGYPT ENVIRONMENT ####
-do_db_backup /web/parlo-tracker/stem-egypt/current/config/database.yml /root/db_backups/StemEgypt production
+### proui staging ENVIRONMENT ####
+do_db_backup /web/parlo-tracker/proui/current/config/database.yml /root/db_backups/StemEgypt staging
