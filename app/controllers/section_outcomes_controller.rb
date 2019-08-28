@@ -15,8 +15,7 @@ class SectionOutcomesController < ApplicationController
   def show
 
     # set @section to only include the current section outcome
-    @section = Section.scoped
-    @section = @section.includes(
+    @section = Section.includes(
       section_outcomes: [ :section, :subject_outcome ]
     )
     @section = @section.where(section_outcomes: {id: @section_outcome.id})

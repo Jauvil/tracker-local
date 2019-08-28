@@ -8,9 +8,9 @@
 - else
   - order_first_last = false
 
-/ bulk rating of Section Outcome Ratings display in Tracker format
+-#/ bulk rating of Section Outcome Ratings display in Tracker format
 #tracker-header{data: {section_id: "#{@section.id}"}, so_id: "#{@section_outcome.id}"}
-  / DISPLAY Bread Crumbs
+  -#/ DISPLAY Bread Crumbs
   #breadcrumb-flash
     .last
       %a{href: session[:last_original_url]}= 'Last Page'
@@ -37,15 +37,15 @@
         - if @section.school.subsection == true
           - subsection_qs = ".html?subsection=#{params[:subsection]}"
           %li
-            / Subsection Select Box
+            -#/ Subsection Select Box
             Subsection:
             %select#subsection-select.select-select2{name: "subsection-select", data: {placeholder: "Subsection"}}
               = options_for_select(["All"] + @section.subsections, selected = params[:subsection])
           %li
-            / edit subsections icon
+            -#/ edit subsections icon
             %a#edit_subsections.btn.btn-sm.btn-primary{href: "#{edit_section_path(@section, subsection: params[:subsection])}", data: {current_subsection: params[:subsection]}}
               %i.fa.fa-lg.fa-edit
-      / rest of header (originally in left of tracker-table header)
+      -#/ rest of header (originally in left of tracker-table header)
       %h2
         .ellipsis.strong
           Rate:
@@ -99,9 +99,9 @@
             %li
               %a#tr-set-widermode{href: "javascript:void(0)"} |&nbsp;&nbsp;&nbsp;&nbsp;|
 
-/ DISPLAY Content
+-#/ DISPLAY Content
 .block.full.block-alt-noborder.tracker-content
-  / RENDER Content Body
+  -#/ RENDER Content Body
   #tracker-table-container-outer
     #tracker-table-container
       %table.tracker-table{ class: (@cell_size.nil? ? 'regular-mode' : @cell_size)}
@@ -130,18 +130,18 @@
           - match_marking_period = sel_mp.nil? || sel_mp == 0 ? true : false
           - match_marking_period = true if section_outcome.marking_period_array.include? sel_mp
           %tbody.tbody-header.tbody-open.showLO.bulk-rate{data: {so_id: "#{section_outcome.id}"}}
-            / {:class => [section_outcome.minimized ? '' : 'tbody-open' , match_marking_period ? 'showLO' : '' ], }
+            -#/ {:class => [section_outcome.minimized ? '' : 'tbody-open' , match_marking_period ? 'showLO' : '' ], }
             %tr
               %td.tracker-firstcol
                 .clearfix
-                  / .tracker-cell-toggle.section_outcome_toggle
-                  /   %i.fa.fa-caret-right
+                  -#/ .tracker-cell-toggle.section_outcome_toggle
+                  -#/   %i.fa.fa-caret-right
                   .tracker-cell-spacer
                   .tracker-cell-title
                     %span.section_outcome_name
-                      / {id: "section_outcome_#{section_outcome.id}", data_url: "section_outcomes/#{section_outcome.id}.json sections/#{section_outcome.section_id}.json", data_template: "section_outcomes/rate", title: section_outcome.name}
+                      -#/ {id: "section_outcome_#{section_outcome.id}", data_url: "section_outcomes/#{section_outcome.id}.json sections/#{section_outcome.section_id}.json", data_template: "section_outcomes/rate", title: section_outcome.name}
                       = section_outcome.name
-                    / Tracker Page Marking Period and options
+                    -#/ Tracker Page Marking Period and options
 
               - @student_ids.each do |student_id|
                 - full_rating = @section_outcome_ratings[section_outcome.id][student_id][0]
@@ -166,28 +166,28 @@
               %tr{data: {eso_id: "#{eso.id}"}}
                 %td.tracker-firstcol
                   .clearfix
-                    / .tracker-cell-attachment{data_template: "evidences/edit_name_and_description", data_url: "evidences/#{eso.evidence_id}.json"}
-                    /   %i.fa.fa-paperclip
-                    /   = eso.evidence_attachments.size + eso.evidence_hyperlinks.size
+                    -#/ .tracker-cell-attachment{data_template: "evidences/edit_name_and_description", data_url: "evidences/#{eso.evidence_id}.json"}
+                    -#/   %i.fa.fa-paperclip
+                    -#/   = eso.evidence_attachments.size + eso.evidence_hyperlinks.size
                     .evid-selector{style: 'float: left; margin: 0 10px;'}
                       %input{type: 'radio', name: 'evid_selector'}
                     .tracker-cell-title.evidence_name
-                      / { data: {url: "/evidences/#{eso.evidence_id}/rate.js", toggle: 'modal', target: '#modal_popup'}, title: "#{eso.description}"}
+                      -#/ { data: {url: "/evidences/#{eso.evidence_id}/rate.js", toggle: 'modal', target: '#modal_popup'}, title: "#{eso.description}"}
                       - if eso.evidence.reassessment
                         %span.reassess-icon.fa-stack.fa
                           %i.fa.fa-circle-o.fa-stack-2x
                           %i.strong.fa.fa-stack-1x R
                       = eso.name
-                    / Tracker Page Marking Period and options
+                    -#/ Tracker Page Marking Period and options
 
                 - @student_ids.each do |student_id|
                   %td.evid-cell
                     - rating = @evidence_ratings[section_outcome.id][eso.evidence_id][student_id][0]
                     - rating = (rating.nil? || rating == '' ) ? '' : rating.chars.first.upcase
                     - comment = @evidence_ratings[section_outcome.id][eso.evidence_id][student_id][1]
-                    / - erid = @evidence_ratings[section_outcome.id][eso.evidence_id][student_id][2]
+                    -#/ - erid = @evidence_ratings[section_outcome.id][eso.evidence_id][student_id][2]
                     %a.arrow-cursor{class: ('commented' if !comment.blank?), data: {student_id: "#{student_id}", comment: comment}}
-                      / .btn.esor{id: "e_s_o_r_#{erid}", class: ('commented' if comment.present? && comment.length > 0), href: "javascript:void(0)", data: {id: erid, student_id: "#{student_id}", rating: rating, comment: comment}}
+                      -# / .btn.esor{id: "e_s_o_r_#{erid}", class: ('commented' if comment.present? && comment.length > 0), href: "javascript:void(0)", data: {id: erid, student_id: "#{student_id}", rating: rating, comment: comment}}
                       - case rating
                       - when 'B'
                         %i.fa.fa-asterisk.text-blue2
@@ -203,7 +203,7 @@
                         %i.fa.fa-circle.text-unrated2
                       - else
                         %i.fa.text-empty2
-                / last column to fill out page to right (so last student diagonal name displays)
+                -#/ last column to fill out page to right (so last student diagonal name displays)
                 %td.evid-cell
-  / END Gradebook Table
+  -#/ END Gradebook Table
   #tracker_table_bottom_buffer
