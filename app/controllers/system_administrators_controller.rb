@@ -56,11 +56,11 @@ class SystemAdministratorsController < ApplicationController
     @user = User.new
 
     if params['role'] == 'system_administrator'
-      set_role(@user, 'system_administrator', true)
-      set_role(@user, 'researcher', false)
+      # set_role(@user, 'system_administrator', true)
+      # set_role(@user, 'researcher', false)
     elsif params['role'] == 'researcher'
-      set_role(@user, 'researcher', true)
-      set_role(@user, 'system_administrator', false)
+      # set_role(@user, 'researcher', true)
+      # set_role(@user, 'system_administrator', false)
     else
       @user.errors.add(:base, 'Role is required!')
     end
@@ -104,11 +104,11 @@ class SystemAdministratorsController < ApplicationController
     @user = User.find(params[:id])
 
     if params['role'] == 'system_administrator'
-      set_role(@user, 'system_administrator', true)
-      set_role(@user, 'researcher', false)
+      # set_role(@user, 'system_administrator', true)
+      # set_role(@user, 'researcher', false)
     elsif params['role'] == 'researcher'
-      set_role(@user, 'researcher', true)
-      set_role(@user, 'system_administrator', false)
+      # set_role(@user, 'researcher', true)
+      # set_role(@user, 'system_administrator', false)
     end
     # @user.assign_attributes(params[:user])
     @user.assign_attributes(user_params)
@@ -132,16 +132,16 @@ class SystemAdministratorsController < ApplicationController
   #####################################################################################
   protected
 
-    # cloned from users_controller !!!
-    def set_role(user_in, role, value)
-      Rails.logger.debug("*** set_role(#{role}, #{value}")
-      if !can?(:update, role.to_s.camelize.constantize)
-        Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
-        user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
-      else
-        user_in.send(role+'=', value)
-      end
-    end
+    # # cloned from users_controller !!!
+    # def set_role(user_in, role, value)
+    #   Rails.logger.debug("*** set_role(#{role}, #{value}")
+    #   if !can?(:update, role.to_s.camelize.constantize)
+    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+    #   else
+    #     user_in.send(role+'=', value)
+    #   end
+    # end
 
   private
 

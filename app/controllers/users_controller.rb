@@ -99,20 +99,20 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
-    if user_params['school_administrator']
-      set_role(@user, 'school_administrator', user_params['school_administrator'])
-      Rails.logger.debug("*** user_params['school_administrator'] #{user_params['school_administrator'].inspect}")
-    end
+    # if user_params['school_administrator']
+    #   set_role(@user, 'school_administrator', user_params['school_administrator'])
+    #   Rails.logger.debug("*** user_params['school_administrator'] #{user_params['school_administrator'].inspect}")
+    # end
 
-    if user_params['teacher']
-      set_role(@user, 'teacher', user_params['teacher'])
-      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
-    end
+    # if user_params['teacher']
+    #   set_role(@user, 'teacher', user_params['teacher'])
+    #   Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+    # end
 
-    if user_params['counselor']
-      set_role(@user, 'counselor', user_params['counselor'])
-      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
-    end
+    # if user_params['counselor']
+    #   set_role(@user, 'counselor', user_params['counselor'])
+    #   Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+    # end
 
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
@@ -166,22 +166,22 @@ class UsersController < ApplicationController
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
-  # ToDo this should probably be school admin
-    if user_params['system_administrator']
-      set_role(@user, 'system_administrator', user_params['system_administrator'])
-      Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
-    end
+  # # ToDo this should probably be school admin
+  #   if user_params['system_administrator']
+  #     set_role(@user, 'system_administrator', user_params['system_administrator'])
+  #     Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
+  #   end
 
 
-    if user_params['teacher']
-      set_role(@user, 'teacher', user_params['teacher'])
-      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
-    end
+  #   if user_params['teacher']
+  #     set_role(@user, 'teacher', user_params['teacher'])
+  #     Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+  #   end
 
-    if user_params['counselor']
-      set_role(@user, 'counselor', user_params['counselor'])
-      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
-    end
+  #   if user_params['counselor']
+  #     set_role(@user, 'counselor', user_params['counselor'])
+  #     Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+  #   end
 
     respond_to do |format|
       lname = user_params[:last_name]
@@ -529,15 +529,29 @@ class UsersController < ApplicationController
   #####################################################################################
   protected
 
-    def set_role(user_in, role, value)
-      Rails.logger.debug("*** set_role(#{role}, #{value}")
-      if !can?(:update, role.to_s.camelize.constantize)
-        Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
-        user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
-      else
-        user_in.send(role+'=', value)
-      end
-    end
+    # To Do: Implement this to ensure user maintenance hierarchy.
+    # def valid_set_role(role)
+    #   Rails.logger.debug("*** valid_set_role(#{role}")
+    #   if !can?(:update, role.to_s.camelize.constantize)
+    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+    #     return true
+    #   else
+    #     return false
+    #   end
+    # end
+
+    # To Do: Remove this
+    # def set_role(user_in, role, value)
+    #   Rails.logger.debug("*** set_role(#{role}, #{value}")
+    #   if !can?(:update, role.to_s.camelize.constantize)
+    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+    #   else
+    #     user_in.send(role+'=', value)
+    #     Rails.logger.debug("*** user_in: #{user_in.inspect}")
+    #   end
+    # end
 
   private
 
