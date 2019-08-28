@@ -123,15 +123,16 @@ class UsersController < ApplicationController
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
+        format.js { render js: "window.location.reload(true);" }
       elsif @user.errors.count == 0 && @user.save
         UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
-        format.js
+        format.js { render js: "window.location.reload(true);" }
       else
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
         flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        format.js
+        format.js { render js: "window.location.reload(true);" }
       end
     end
   end
@@ -204,7 +205,7 @@ class UsersController < ApplicationController
             format.html { render :action => "change_password" }
           end
         else
-          Rails.logger.error("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
+          Rails.logger.debug("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
           if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
             @user.errors.add(:email, "email is required")
             @user_errors = ['There are Errors']
