@@ -219,20 +219,6 @@ class User < ActiveRecord::Base
     self.temporary_password     = temporary_string
   end
 
-  # deprecate this - use instead is_unique_username
-  # this is bad coding, as it loads all users when the user should be looked up!
-  # Because usernames are generated automatically for school personnel, students, and parents,
-  # this method is called to determine whether the generated username is in fact unique. The controllers
-  # for those personnel types are responsible for handling the result of this method.
-  def unique_username?
-    users = User.all
-    usernames = users.collect{|u| u.username}
-    if new_record?
-      !(usernames.include? username) && !(username.nil?)
-    else
-      usernames.count(username) == 1 or usernames.count(username) == 0
-    end
-  end
   def is_unique_username
     if self.username.blank?
       return false
@@ -266,7 +252,6 @@ class User < ActiveRecord::Base
     end
     self.username  = base_username
     i = 2
-    # until unique_username?
     until is_unique_username
       self.username = (base_username + i.to_s).downcase
       i += 1
