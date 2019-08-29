@@ -99,20 +99,20 @@ class UsersController < ApplicationController
 
     @school = get_current_school
 
-    if user_params['school_administrator']
-      set_role(@user, 'school_administrator', user_params['school_administrator'])
-      Rails.logger.debug("*** user_params['school_administrator'] #{user_params['school_administrator'].inspect}")
-    end
+    # if user_params['school_administrator']
+    #   set_role(@user, 'school_administrator', user_params['school_administrator'])
+    #   Rails.logger.debug("*** user_params['school_administrator'] #{user_params['school_administrator'].inspect}")
+    # end
 
-    if user_params['teacher']
-      set_role(@user, 'teacher', user_params['teacher'])
-      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
-    end
+    # if user_params['teacher']
+    #   set_role(@user, 'teacher', user_params['teacher'])
+    #   Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+    # end
 
-    if user_params['counselor']
-      set_role(@user, 'counselor', user_params['counselor'])
-      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
-    end
+    # if user_params['counselor']
+    #   set_role(@user, 'counselor', user_params['counselor'])
+    #   Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+    # end
 
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
@@ -123,15 +123,16 @@ class UsersController < ApplicationController
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
+        format.js { render js: "window.location.reload(true);" }
       elsif @user.errors.count == 0 && @user.save
         UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
-        format.js
+        format.js { render js: "window.location.reload(true);" }
       else
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
         flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        format.js
+        format.js { render js: "window.location.reload(true);" }
       end
     end
   end
@@ -166,22 +167,22 @@ class UsersController < ApplicationController
     # ToDo move this into case statement
     # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
 
-  # ToDo this should probably be school admin
-    if user_params['system_administrator']
-      set_role(@user, 'system_administrator', user_params['system_administrator'])
-      Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
-    end
+  # # ToDo this should probably be school admin
+  #   if user_params['system_administrator']
+  #     set_role(@user, 'system_administrator', user_params['system_administrator'])
+  #     Rails.logger.debug("*** user_params['system_administrator'] #{user_params['counselor'].inspect}")
+  #   end
 
 
-    if user_params['teacher']
-      set_role(@user, 'teacher', user_params['teacher'])
-      Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
-    end
+  #   if user_params['teacher']
+  #     set_role(@user, 'teacher', user_params['teacher'])
+  #     Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
+  #   end
 
-    if user_params['counselor']
-      set_role(@user, 'counselor', user_params['counselor'])
-      Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
-    end
+  #   if user_params['counselor']
+  #     set_role(@user, 'counselor', user_params['counselor'])
+  #     Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
+  #   end
 
     respond_to do |format|
       lname = user_params[:last_name]
@@ -204,7 +205,7 @@ class UsersController < ApplicationController
             format.html { render :action => "change_password" }
           end
         else
-          Rails.logger.error("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
+          Rails.logger.debug("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
           if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
             @user.errors.add(:email, "email is required")
             @user_errors = ['There are Errors']
@@ -529,15 +530,29 @@ class UsersController < ApplicationController
   #####################################################################################
   protected
 
-    def set_role(user_in, role, value)
-      Rails.logger.debug("*** set_role(#{role}, #{value}")
-      if !can?(:update, role.to_s.camelize.constantize)
-        Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
-        user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
-      else
-        user_in.send(role+'=', value)
-      end
-    end
+    # To Do: Implement this to ensure user maintenance hierarchy.
+    # def valid_set_role(role)
+    #   Rails.logger.debug("*** valid_set_role(#{role}")
+    #   if !can?(:update, role.to_s.camelize.constantize)
+    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+    #     return true
+    #   else
+    #     return false
+    #   end
+    # end
+
+    # To Do: Remove this
+    # def set_role(user_in, role, value)
+    #   Rails.logger.debug("*** set_role(#{role}, #{value}")
+    #   if !can?(:update, role.to_s.camelize.constantize)
+    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+    #   else
+    #     user_in.send(role+'=', value)
+    #     Rails.logger.debug("*** user_in: #{user_in.inspect}")
+    #   end
+    # end
 
   private
 

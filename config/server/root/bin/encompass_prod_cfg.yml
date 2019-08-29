@@ -1,0 +1,4 @@
+  database: encompass_prod
+  username: backup_user
+  password: <password>
+

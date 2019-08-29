@@ -675,7 +675,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # check to make sure school already exists
-    schools = School.includes(:school_year).where(id: TRAINING_SCHOOL_ID)
+    schools = School.includes(:school_year).references(:school_year).where(id: TRAINING_SCHOOL_ID)
     if schools.count == 0
       raise "!!!!! ERROR: Training School does not exist!!!!!"
       # next
@@ -707,7 +707,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # get all Section Outcomes for the school
-    section_outcomes = SectionOutcome.includes(:section).where('sections.school_year_id = ?', school_year.id)
+    section_outcomes = SectionOutcome.includes(:section).references(:section).where('sections.school_year_id = ?', school_year.id)
     if section_outcomes.count > 0
       input = ''
       STDOUT.puts "Section Outcomes already exist.  If you wish to recreate them, hit enter to continue"
@@ -894,12 +894,12 @@ namespace :stem_egypt_training_data do
         has_subjo = SubjectOutcome.where(subject_id: subj.id, lo_code: tmp_subjo.lo_code, description: tmp_subjo.description)
         if has_subjo.count == 0
           subjo = SubjectOutcome.new
-          subjo.name = lo[4]
+          subjo.name = lo[4][0..255]
           subjo.marking_period = lo[2]
           subjo.subject_id = subj.id
-          raise("ERROR: error saving Subject Outcome #{subj.name} - #{lo[4]}") if !subjo.save
+          raise("ERROR: error saving Subject Outcome #{subj.name} - #{lo[4][0..255]}") if !subjo.save
         else
-          STDOUT.puts "WARNING: LO Exists already: #{subj.name} - #{lo[4]}"
+          STDOUT.puts "WARNING: LO Exists already: #{subj.name} - #{lo[4][0..255]}"
           subjo = has_subjo.first
         end
         # copy LOs to all sections corresponding with this subject
@@ -912,7 +912,7 @@ namespace :stem_egypt_training_data do
             secto.section_id = sect.id
             secto.subject_outcome_id = subjo.id
             secto.marking_period = lo[2]
-            raise("ERROR: error saving Section Outcome #{subj.name} - #{lo[4]} - #{sect.line_number} - error: #{secto.errors.full_messages}") if !secto.save
+            raise("ERROR: error saving Section Outcome #{subj.name} - #{lo[4][0..255]} - #{sect.line_number} - error: #{secto.errors.full_messages}") if !secto.save
           end
         end
       else
@@ -928,7 +928,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # check to make sure school already exists
-    schools = School.includes(:school_year).where(id: TRAINING_SCHOOL_ID)
+    schools = School.includes(:school_year).references(:school_year).where(id: TRAINING_SCHOOL_ID)
     if schools.count == 0
       raise "!!!!! ERROR: Training School does not exist!!!!!"
       # next
@@ -946,7 +946,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # get all Section Outcomes for the school
-    section_outcomes = SectionOutcome.includes(:section).where('sections.school_year_id = ?', school_year.id)
+    section_outcomes = SectionOutcome.includes(:section).references(:section).where('sections.school_year_id = ?', school_year.id)
     if section_outcomes.count == 0
       puts "!!!!!\nERROR: Missing Section Outcomes.  Run create_los.\n!!!!!"
       next
@@ -1048,7 +1048,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # check to make sure school already exists
-    schools = School.includes(:school_year).where(id: TRAINING_SCHOOL_ID)
+    schools = School.includes(:school_year).references(:school_year).where(id: TRAINING_SCHOOL_ID)
     if schools.count == 0
       raise "!!!!! ERROR: Training School does not exist!!!!!"
       # next
@@ -1174,7 +1174,7 @@ namespace :stem_egypt_training_data do
 
     ###########################################################
     # check to make sure school already exists
-    schools = School.includes(:school_year).where(id: TRAINING_SCHOOL_ID)
+    schools = School.includes(:school_year).references(:school_year).where(id: TRAINING_SCHOOL_ID)
     if schools.count == 0
       raise "!!!!! ERROR: Training School does not exist!!!!!"
       # next

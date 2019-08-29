@@ -16,11 +16,11 @@ egstage:
   port: 3306
   pool: 10
   timeout: 5000
-enstage:
+usstage:
   adapter: mysql2
-  database: en_stage
-  username: en_stage_user
-  password: en_stage_pwd
+  database: us_stage
+  username: us_stage_user
+  password: us_stage_pwd
   host: 127.0.0.1
   port: 3306
   pool: 10

@@ -1,4 +1,4 @@
-# teacher_dashboard_spec.rb
+# teacher_tracker_spec.rb
 require 'rails_helper'
 
 
@@ -96,6 +96,7 @@ describe "Teacher Tracker", js:true do
     page.should have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}']")
     page.should_not have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}'].tbody-open")
 
+    # Test Adding a Piece of Evidencd
     if editable
       # Click on Toolkit to add a new piece of evidence
       page.should have_css("li#side-add-evid a[href='/sections/#{@section.id}/new_evidence']")
@@ -126,6 +127,18 @@ describe "Teacher Tracker", js:true do
       end
     else
       page.should have_css("#side-add-evid a[href='/sections/#{@section.id}/new_evidence'].disabled")
+    end
+
+    # Test Bulk Rate Evidence page
+    if editable
+      puts ("section_outcomes/#{@section_outcomes.first[1].id}")
+      page.find("#tracker-table-container table[data-section-id='#{@section.id}'] a[href='/section_outcomes/#{@section_outcomes.first[1].id}']", wait: 5).click
+      # got to bulk rating page
+      assert_equal("/section_outcomes/#{@section_outcomes.first[1].id}", current_path)
+      # To Do : confirm bulk rating works correctly
+    else
+      # To Do: Prevent Researchers from seeing bulk rate LO page?
+      # page.should have_css("#tracker-table-container table[data-section-id='#{@section.id}'] a[href='/section_outcomes/#{@section_outcomes.first[1].id}'].disabled")
     end
 
 

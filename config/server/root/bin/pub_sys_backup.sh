@@ -29,4 +29,4 @@ function do_pub_sys_backup () {
 }
 
 ### EGYPT ENVIRONMENT ####
-do_pub_sys_backup /web/parlo-tracker/stem-egypt/current/public/system /root/pub_sys_backups/StemEgypt
+do_pub_sys_backup /web/parlo-tracker/proui/current/public/system /root/pub_sys_backups/StemEgypt
