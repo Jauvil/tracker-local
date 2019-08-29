@@ -53,7 +53,7 @@ class Evidence < ActiveRecord::Base
 
     # Verify the existence of and/or create the section outcome(s)
     evidence_section_outcomes.each do |e|
-      section_outcome = SectionOutcome.find_or_initialize_by_section_id_and_subject_outcome_id(section_id, e.subject_outcome.id)
+      section_outcome = SectionOutcome.find_or_initialize_by(section_id: section_id, subject_outcome_id: e.subject_outcome.id)
       section_outcome.marking_period ||= e.section_outcome.marking_period
       section_outcome.save
 

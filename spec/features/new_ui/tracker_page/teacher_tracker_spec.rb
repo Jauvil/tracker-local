@@ -8,6 +8,10 @@ describe "Teacher Tracker", js:true do
     @teacher = FactoryBot.create :teacher, school: @section.school
     #for method def, see: load_section_helper.rb
     load_test_section(@section, @teacher)
+    # add second section to be able to copy evidence to
+    @secondSection = FactoryBot.create :section, subject: @section.subject, school_year: @section.school.school_year
+    @seondTeachingAssignment = FactoryBot.create :teaching_assignment, teacher: @teacher, section: @secondSection
+    @thirdSection = FactoryBot.create :section, subject: @section.subject, school_year: @section.school.school_year
   end
 #to do: teacher, school administrator and system administrator should be able to rate a single LO
   describe "as teacher" do
@@ -126,6 +130,8 @@ describe "Teacher Tracker", js:true do
       # find("#evid-current-los .block-title i").click
       find("span.add_lo_to_evid[data-so-id='#{@section_outcomes.first[1].id}'] i").click
       # find("#evid-other-los .block-title i").click
+
+      page.find(".sectioned-list input[name='sections[]'][value='2']", wait: 5).set(true)
       # Save Button not working
       find('button', text: 'Save').click
       wait_for_ajax
