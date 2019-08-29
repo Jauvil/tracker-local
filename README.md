@@ -9,10 +9,9 @@ Installation for development
 git clone git@github.com:21pstem/tracker.git
 cd tracker
 rbenv version
-  # 2.0.0-p648
-  # (set by ./.ruby-version)
+  # > rbenv version 2.2.9 (set by .../.ruby-version)
 cat .ruby-version
-  # 2.0.0-p648
+  # 2.2.9
 bundle install --without=production
 cp config/developer/database.yml config/
 bundle exec rake db:migrate
