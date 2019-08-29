@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20181126155532) do
 
-  create_table "announcements", force: true do |t|
+  create_table "announcements", force: :cascade do |t|
     t.text     "content"
     t.boolean  "restrict_to_staff", default: false
     t.datetime "start_at"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "announcements", ["restrict_to_staff"], name: "index_announcements_on_restrict_to_staff"
   add_index "announcements", ["start_at"], name: "index_announcements_on_start_at"
 
-  create_table "attendance_types", force: true do |t|
+  create_table "attendance_types", force: :cascade do |t|
     t.string   "description"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "attendance_types", ["school_id"], name: "index_attendance_types_on_school_id"
 
-  create_table "attendances", force: true do |t|
+  create_table "attendances", force: :cascade do |t|
     t.integer  "school_id"
     t.integer  "section_id"
     t.integer  "user_id"
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "attendances", ["section_id"], name: "index_attendances_on_section_id"
   add_index "attendances", ["user_id"], name: "index_attendances_on_user_id"
 
-  create_table "delayed_jobs", force: true do |t|
+  create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0
     t.integer  "attempts",   default: 0
     t.text     "handler"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
-  create_table "disciplines", force: true do |t|
+  create_table "disciplines", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "disciplines", ["name"], name: "index_disciplines_on_name"
 
-  create_table "enrollments", force: true do |t|
+  create_table "enrollments", force: :cascade do |t|
     t.integer  "student_id"
     t.integer  "section_id"
     t.datetime "created_at"
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "enrollments", ["student_id"], name: "index_enrollments_on_student_id"
   add_index "enrollments", ["subsection"], name: "index_enrollments_on_subsection"
 
-  create_table "evidence_attachments", force: true do |t|
+  create_table "evidence_attachments", force: :cascade do |t|
     t.string   "name"
     t.integer  "evidence_id"
     t.datetime "created_at"
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "evidence_attachments", ["evidence_id"], name: "index_evidence_attachments_on_evidence_id"
 
-  create_table "evidence_hyperlinks", force: true do |t|
+  create_table "evidence_hyperlinks", force: :cascade do |t|
     t.integer  "evidence_id"
     t.string   "title"
     t.string   "hyperlink"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "evidence_hyperlinks", ["evidence_id"], name: "index_evidence_hyperlinks_on_evidence_id"
 
-  create_table "evidence_ratings", force: true do |t|
+  create_table "evidence_ratings", force: :cascade do |t|
     t.string   "rating"
     t.string   "comment"
     t.integer  "student_id"
@@ -133,7 +133,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "evidence_ratings", ["evidence_id"], name: "index_evidence_ratings_on_evidence_id"
   add_index "evidence_ratings", ["student_id"], name: "index_evidence_ratings_on_student_id"
 
-  create_table "evidence_section_outcome_ratings", force: true do |t|
+  create_table "evidence_section_outcome_ratings", force: :cascade do |t|
     t.string   "rating"
     t.string   "comment"
     t.datetime "created_at"
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "evidence_section_outcome_ratings", ["evidence_section_outcome_id"], name: "evidence_section_outcome_ratings_on_eso_id"
   add_index "evidence_section_outcome_ratings", ["student_id"], name: "index_evidence_section_outcome_ratings_on_student_id"
 
-  create_table "evidence_section_outcomes", force: true do |t|
+  create_table "evidence_section_outcomes", force: :cascade do |t|
     t.integer  "evidence_id"
     t.integer  "section_outcome_id"
     t.datetime "created_at"
@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "evidence_section_outcomes", ["position"], name: "index_evidence_section_outcomes_on_position"
   add_index "evidence_section_outcomes", ["section_outcome_id"], name: "index_evidence_section_outcomes_on_section_outcome_id"
 
-  create_table "evidence_template_subject_outcomes", force: true do |t|
+  create_table "evidence_template_subject_outcomes", force: :cascade do |t|
     t.integer  "evidence_template_id"
     t.integer  "subject_outcome_id"
     t.datetime "created_at"
@@ -169,7 +169,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "evidence_template_subject_outcomes", ["evidence_template_id"], name: "evidence_temp_subj_outc_on_temp_id"
   add_index "evidence_template_subject_outcomes", ["subject_outcome_id"], name: "evidence_temp_subj_outc_on_out_id"
 
-  create_table "evidence_templates", force: true do |t|
+  create_table "evidence_templates", force: :cascade do |t|
     t.integer  "subject_id"
     t.string   "name"
     t.text     "description"
@@ -179,13 +179,13 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "evidence_templates", ["subject_id"], name: "index_evidence_templates_on_subject_id"
 
-  create_table "evidence_types", force: true do |t|
+  create_table "evidence_types", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "evidences", force: true do |t|
+  create_table "evidences", force: :cascade do |t|
     t.string   "name"
     t.date     "assignment_date"
     t.integer  "position"
@@ -205,7 +205,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "evidences", ["evidence_type_id"], name: "index_evidences_on_evidence_type_id"
   add_index "evidences", ["section_id"], name: "index_evidences_on_section_id"
 
-  create_table "excuses", force: true do |t|
+  create_table "excuses", force: :cascade do |t|
     t.integer  "school_id"
     t.string   "code"
     t.string   "description"
@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "excuses", ["school_id"], name: "index_excuses_on_school_id"
 
-  create_table "posts", force: true do |t|
+  create_table "posts", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "parent_id"
     t.string   "header"
@@ -234,12 +234,12 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "posts", ["top_level_post_id"], name: "index_posts_on_top_level_post_id"
   add_index "posts", ["user_id"], name: "index_posts_on_user_id"
 
-  create_table "researchers", force: true do |t|
+  create_table "researchers", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "school_years", force: true do |t|
+  create_table "school_years", force: :cascade do |t|
     t.string   "name"
     t.integer  "school_id"
     t.date     "starts_at"
@@ -250,7 +250,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "school_years", ["school_id"], name: "index_school_years_on_school_id"
 
-  create_table "schools", force: true do |t|
+  create_table "schools", force: :cascade do |t|
     t.string   "name"
     t.string   "acronym"
     t.datetime "created_at"
@@ -271,7 +271,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "schools", ["school_year_id"], name: "index_schools_on_school_year_id"
 
-  create_table "section_attachments", force: true do |t|
+  create_table "section_attachments", force: :cascade do |t|
     t.integer  "section_id"
     t.string   "name"
     t.datetime "created_at"
@@ -284,7 +284,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "section_attachments", ["section_id"], name: "index_section_attachments_on_section_id"
 
-  create_table "section_outcome_attachments", force: true do |t|
+  create_table "section_outcome_attachments", force: :cascade do |t|
     t.string   "name"
     t.integer  "section_outcome_id"
     t.datetime "created_at"
@@ -297,7 +297,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
 
   add_index "section_outcome_attachments", ["section_outcome_id"], name: "index_section_outcome_attachments_on_section_outcome_id"
 
-  create_table "section_outcome_ratings", force: true do |t|
+  create_table "section_outcome_ratings", force: :cascade do |t|
     t.string   "rating"
     t.integer  "student_id"
     t.integer  "section_outcome_id"
@@ -309,7 +309,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "section_outcome_ratings", ["student_id", "section_outcome_id"], name: "section_outcome_ratings_multi"
   add_index "section_outcome_ratings", ["student_id"], name: "index_section_outcome_ratings_on_student_id"
 
-  create_table "section_outcomes", force: true do |t|
+  create_table "section_outcomes", force: :cascade do |t|
     t.integer  "section_id"
     t.integer  "subject_outcome_id"
     t.datetime "created_at"
@@ -326,7 +326,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "section_outcomes", ["section_id"], name: "index_section_outcomes_on_section_id"
   add_index "section_outcomes", ["subject_outcome_id"], name: "index_section_outcomes_on_subject_outcome_id"
 
-  create_table "sections", force: true do |t|
+  create_table "sections", force: :cascade do |t|
     t.string   "line_number"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -340,7 +340,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "sections", ["school_year_id"], name: "index_sections_on_school_year_id"
   add_index "sections", ["subject_id"], name: "index_sections_on_subject_id"
 
-  create_table "server_configs", force: true do |t|
+  create_table "server_configs", force: :cascade do |t|
     t.string   "district_id",         default: ""
     t.string   "district_name",       default: ""
     t.string   "support_email",       default: "trackersupport@21pstem.org"
@@ -354,7 +354,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.boolean  "allow_subject_mgr",   default: false
   end
 
-  create_table "subject_outcomes", force: true do |t|
+  create_table "subject_outcomes", force: :cascade do |t|
     t.string   "description"
     t.integer  "position"
     t.integer  "subject_id"
@@ -370,7 +370,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "subject_outcomes", ["subject_id", "description"], name: "subject_outcomes_multi"
   add_index "subject_outcomes", ["subject_id"], name: "index_subject_outcomes_on_subject_id"
 
-  create_table "subjects", force: true do |t|
+  create_table "subjects", force: :cascade do |t|
     t.string   "name"
     t.integer  "discipline_id"
     t.datetime "created_at"
@@ -386,14 +386,14 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "subjects", ["school_id"], name: "index_subjects_on_school_id"
   add_index "subjects", ["subject_manager_id"], name: "index_subjects_on_subject_manager_id"
 
-  create_table "system_administrators", force: true do |t|
+  create_table "system_administrators", force: :cascade do |t|
     t.string   "first_name"
     t.string   "last_name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "teaching_assignments", force: true do |t|
+  create_table "teaching_assignments", force: :cascade do |t|
     t.integer  "teacher_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -405,7 +405,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "teaching_assignments", ["teacher_id", "section_id"], name: "teaching_assignments_multi"
   add_index "teaching_assignments", ["teacher_id"], name: "index_teaching_assignments_on_teacher_id"
 
-  create_table "teaching_resources", force: true do |t|
+  create_table "teaching_resources", force: :cascade do |t|
     t.integer  "discipline_id"
     t.string   "title"
     t.string   "url"
@@ -418,7 +418,7 @@ ActiveRecord::Schema.define(version: 20181126155532) do
   add_index "teaching_resources", ["discipline_id"], name: "index_teaching_resources_on_discipline_id"
   add_index "teaching_resources", ["title"], name: "index_teaching_resources_on_title"
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "encrypted_password",     default: "",    null: false
     t.string   "reset_password_token"

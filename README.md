@@ -3,13 +3,22 @@ tracker
 
 PARLO Progress Tracker
 
-Installation for development
+### Installation for development (General)
+
+
 
 ```bash
-git clone git@github.com:21pstem/tracker.git
+https://github.com/21pstem/tracker 
+  #Fork repo 
+git clone git@github.com:[your github username]/tracker.git
 cd tracker
-rbenv version
-  # > rbenv version 2.2.9 (set by .../.ruby-version)
+git remote -v
+  #origin	https://github.com/[your github username]/tracker.git (fetch)
+  #origin	https://github.com/[your github username]/tracker.git (push)
+  #upstream	https://github.com/21pstem/tracker.git (fetch)
+  #upstream	https://github.com/21pstem/tracker.git (push)
+rbenv local version 2.2.9 
+  #(set by .../.ruby-version)
 cat .ruby-version
   # 2.2.9
 bundle install --without=production
@@ -20,13 +29,34 @@ bundle exec rake test:prepare
 COVERAGE=true bundle exec rspec spec
 ```
 
-Create development data
+Before ```bundle install --without=production``` can succeed, it may be necessary to install bundler with ```gem install bundler -v 1.17.3```, and other dependencies of this app with specific versions. Appropriate gem install versions can be found in Gemfile.lock in the top level directory of this project.
+
+### Troubleshooting
+```bash
+  #if problem with bundle install --without=production 
+gem install bundler -v 1.17.3
+  #libiconv is missing.  please visit
+  #http://nokogiri.org/tutorials/installing_nokogiri.html for help with installing
+  #dependencies.
+gem install nokogiri -v '1.6.3.1' --source 'http://rubygems.org/'
+  #if gem install nokogiri -v '1.6.3.1' --source 'http://rubygems.org/' fails because libiconv is missing, 
+  #see troubleshooting guide in error message
+```
+
+
+
+### Create development data
 
 ```bash
 bundle exec rake initialize_dev:create
 ```
 
-Initialize Server Configuration
+### Run Local Server 
+```
+bundle exec rails server
+```
+
+### Initialize Server Configuration
 ```
 http://localhost:3000
 username: admin
@@ -51,7 +81,7 @@ click the _Attendance Maint._ link in the Toolkit
 add and save all attendance types and excuses (plus arrows in upper right of each section)
 ```
 
-Optional Setups
+### Optional Setups
 
 ```bash
 - load up the training school (takes a while)
@@ -61,7 +91,7 @@ bundle exec rake stem_egypt_training_data:build_training_school
 bundle exec rake keystone_school:create
 ```
 
-Run Tests showing Coverage
+### Run Tests showing Coverage
 
 ```bash
 COVERAGE=true bundle exec rspec spec
