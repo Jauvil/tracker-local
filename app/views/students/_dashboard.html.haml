@@ -127,7 +127,7 @@
                   .panel-heading-sign=evid[:count]
                   %h4.panel-title
                     %a.toggle-group-body
-                      %i.fa.fa-caret-right.fa-lg
+                      %i.fa.fa-caret-down.fa-lg
                     %a{href: (can?(:show, ae) ? "#{enrollment_path(ae)}" : "javascript:void(0)"), class: (can?(:show, ae) ? "" : "deactivated arrow-cursor"), title: 'Link to Tracker Page'}
                       %i.fa.fa-check.fa-lg
                       %strong="#{evid[:subject]} | #{evid[:teacher_lname]}"
