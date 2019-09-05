@@ -6,7 +6,7 @@
     %fieldset.input-group
       %label.col-sm-5.control-label{for: 'subject[school_id]'}='School:'
       %input#subject_school_id{type: 'hidden', name: 'subject[school_id]', value: @school.id}
-      %span{name: 'subject_school_name]'}=@school.name
+      %span{name: 'subject_school_name]'}=@school.name 
       %span.ui-error="#{@errors[:school_id] if @errors[:school_id].present?}"
     %fieldset.input-group
       %label.col-sm-5.control-label{for: 'subject[school_id]'}='Discipline:'
@@ -20,13 +20,14 @@
       %input#subject-name{name: 'subject[name]', value: @subject.name}
       %span.ui-required{title: 'Required'}='*'
       %span.ui-error="#{@errors[:name] if @errors[:name].present?}"
-    %fieldset.input-group
-      %label.col-sm-5.control-label{for: 'subject[subject_manager_id]'}='Subject Manager:'
-      %select#subject_subject_manager_id.select-select2{name: "subject[subject_manager_id]", placeholder: 'Select Subject Manager:'}
-        %option{value: ""}
-        = options_from_collection_for_select(@teachers, 'id', 'full_name', @subject.subject_manager_id)
-      / %span.ui-required{title: 'Required'}='*'
-      %span.ui-error="#{@errors[:subject_manager_id] if @errors[:subject_manager_id].present?}"
+    - if ServerConfig.first.allow_subject_mgr
+      %fieldset.input-group
+        %label.col-sm-5.control-label{for: 'subject[subject_manager_id]'}='Subject Manager:'
+        %select#subject_subject_manager_id.select-select2{name: "subject[subject_manager_id]", placeholder: 'Select Subject Manager:'}
+          %option{value: ""}
+          = options_from_collection_for_select(@teachers, 'id', 'full_name', @subject.subject_manager_id)
+        / %span.ui-required{title: 'Required'}='*'
+        %span.ui-error="#{@errors[:subject_manager_id] if @errors[:subject_manager_id].present?}"
     %fieldset.text-center
       / = f.submit
       %button.btn.btn-default{"data-dismiss" => "modal", type: "button"}='Cancel'
