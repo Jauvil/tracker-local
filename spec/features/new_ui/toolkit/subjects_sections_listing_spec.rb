@@ -404,6 +404,7 @@ describe "Subjects Sections Listing", js:true do
           sleep 1
           page.click_button('Save')
         end
+        page.should have_css('select#subject_subject_manager_id')
       end
 
       #page.should have_content("Newsubj")
