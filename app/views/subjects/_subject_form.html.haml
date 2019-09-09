@@ -20,7 +20,7 @@
       %input#subject-name{name: 'subject[name]', value: @subject.name}
       %span.ui-required{title: 'Required'}='*'
       %span.ui-error="#{@errors[:name] if @errors[:name].present?}"
-    - if ServerConfig.first.allow_subject_mgr
+    - if ServerConfig.first.allow_subject_mgr && @school.has_flag?(School::SUBJECT_MANAGER)
       %fieldset.input-group
         %label.col-sm-5.control-label{for: 'subject[subject_manager_id]'}='Subject Manager:'
         %select#subject_subject_manager_id.select-select2{name: "subject[subject_manager_id]", placeholder: 'Select Subject Manager:'}
