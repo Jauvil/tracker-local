@@ -5,7 +5,7 @@ require 'rails_helper'
 describe "Subjects Sections Listing", js:true do
   describe "US System" do
     before (:each) do
-      # @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
+       @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       # two subjects in @school1
       # @section1_1 = FactoryBot.create :section
       # @subject1 = @section1_1.subject
@@ -101,10 +101,12 @@ describe "Subjects Sections Listing", js:true do
       it { has_no_subjects_listing }
     end
   end
-
+  
+  #Egypt System should fail the test:
+  # -Subjects Sections Listing Egypt System as system administrator should have visible css "select#subject_subject_manager_id.select-select2"
   describe "Egypt System" do
     before (:each) do
-      # @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
+       @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       # two subjects in @school1
       # @section1_1 = FactoryBot.create :section
       # @subject1 = @section1_1.subject
@@ -237,9 +239,9 @@ describe "Subjects Sections Listing", js:true do
 
     sleep 1
     # ensure users can edit the appropriate subject outcomes, all else can view.
-    if(this_user.id == (@subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+    if((this_user.id == @subject1.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.school_administrator? && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.system_administrator? && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # this_user.id == @subject1.subject_manager_id ||
       # this_user.has_permission?('subject_admin')
@@ -252,9 +254,9 @@ describe "Subjects Sections Listing", js:true do
     end
 
     Rails.logger.debug("+++ try to SUBJECT 2 OUTCOMES")
-    if(this_user.id == (@subject2.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('school_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
-      (this_user.has_role?('system_administrator') && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+    if((this_user.id == @subject2.subject_manager_id && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.school_administrator? && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER)) ||
+      (this_user.system_administrator? && ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
       # School administrators must be given subject administrator to see this
       # (this_user.role_symbols.include?('school_administrator'.to_sym) && this_user.school_id == @school1.id)
     )
@@ -395,6 +397,8 @@ describe "Subjects Sections Listing", js:true do
       Rails.logger.debug("+++ create subject popup")
 
       within('#modal-body') do
+        #Egypt school should fail check for 'select#subject_subject_manager_id.select-select2'
+        page.should have_css('select#subject_subject_manager_id.select-select2')
         within('h3') do
           page.should have_content('Create Subject')
         end
@@ -404,7 +408,6 @@ describe "Subjects Sections Listing", js:true do
           sleep 1
           page.click_button('Save')
         end
-        page.should have_css('select#subject_subject_manager_id')
       end
 
       #page.should have_content("Newsubj")

@@ -30,6 +30,11 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 include Test::Unit::Assertions
 
+Capybara.configure do |config|
+  # prevent test failing fron missing 'images/login_bg.png'
+  config.raise_server_errors = false
+end
+
 RSpec.configure do |config|
   # ## Mock Framework
   #
