@@ -398,7 +398,11 @@ describe "Subjects Sections Listing", js:true do
 
       within('#modal-body') do
         #Egypt school should fail check for 'select#subject_subject_manager_id.select-select2'
-        page.should have_css('select#subject_subject_manager_id.select-select2')
+        if (ServerConfig.first.try(:allow_subject_mgr) && @school1.has_flag?(School::SUBJECT_MANAGER))
+          page.should have_css('select#subject_subject_manager_id.select-select2')
+        else
+          page.should_not have_css('select#subject_subject_manager_id.select-select2')
+        end
         within('h3') do
           page.should have_content('Create Subject')
         end
