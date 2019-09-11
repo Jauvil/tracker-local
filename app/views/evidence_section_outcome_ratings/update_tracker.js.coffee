@@ -1,7 +1,7 @@
 # update tracker page after creating single evidence rating
 
 # display any errors if any
-$('#breadcrumb-flash-msgs').html("<span class='flash_error'><%= @evidence_section_outcome_rating.errors.full_messages %><span>")
+$('#breadcrumb-flash-msgs').html("<span class='flash_error'><%= @evidence_section_outcome_rating.errors.empty? ? '' : @evidence_section_outcome_rating.errors.full_messages %><span>")
 
 # clear out popup (we clear after every create or update - they can always click again)
 $('#popup-rate-single-lo').hide()
