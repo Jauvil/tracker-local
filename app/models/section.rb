@@ -91,12 +91,28 @@ class Section < ActiveRecord::Base
   def subsections
     (Enrollment.where(section_id: id).pluck(:subsection).uniq - [0]).sort.map { |a| [ALPHABET[a], a] }
   end
+  
+  #Check for missing SectionOutcomeRating records for this Section and create new ones with the rating 'U' where missing.
+  def bulk_create_missing_ratings
+    outcome_ids = SectionOutcome.where({:section_id => id}).pluck(:id)
+    student_ids = Section.find(id).enrollments.pluck(:student_id)
+    outcome_ids.each do |o|
+      student_ids.each do |student|
+        if SectionOutcomeRating.where({'section_outcome_id': o, 'student_id': student}).length == 0
+          SectionOutcomeRating.create({section_outcome_id: o, student_id: student, rating: 'U'})
+        end
+      end
+    end
+  end
+
 
   # Returns a hash of section outcome ratings hash[section_outcome_id][student_id] = rating
   # If a rating doesn't exist, returns "".
   # used only in the Teacher Tracker page, and Bulk Rate pages.
   def hash_of_section_outcome_ratings
+    bulk_create_missing_ratings
     return_value            = Hash.new { |l, k| l[k] = Hash.new(["",0]) }
+    puts id
     section_outcome_ratings = SectionOutcomeRating.select("section_outcome_ratings.id, section_outcome_ratings.rating, section_outcome_ratings.student_id, section_outcome_ratings.section_outcome_id").joins({:student => :enrollments}, {:section_outcome => :section}).where(
       :section_outcomes => {
          :section_id => id
