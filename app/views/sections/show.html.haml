@@ -179,9 +179,6 @@
                       %a.btn.btn-default.lo-x{href: "/section_outcomes/#{section_outcome.id}.js?#{{active: false}.to_query('section_outcome')}", data: {method: :put, remote: true, section_outcome_id: "#{section_outcome.id}"}}
                         %i.fa.fa-lg.fa-times-circle
               - @student_ids.each do |student_id|
-                - #BUG: @section_outcome_ratings is an empty hash on localhost 
-                - #and full_rating is empty for certain students on server
-                - #if full_rating is empty, we never enter the switch statement to define data-id
                 - full_rating = @section_outcome_ratings[section_outcome.id][student_id][0]
                 - rating = ''
                 - if !full_rating.nil? && full_rating.length > 0
@@ -193,7 +190,7 @@
                 - when 'P'
                   %td.green.r.s_o_r.pointer-cursor{id: "s_o_r_#{rid}", data: {id: "#{rid}", so_id: "#{section_outcome.id}", student_id: "#{student_id}", rating: 'P'}}= 'P'
                 - when 'N'
-                  %td.red.r.s_o_r.pointer-cursor{id: "s_o_r_#{rid}", data: {id: "#{rid}", so_id: "#{section_outcome.id}", student_id: "#{student_id}", rating: 'N', test: "#{full_rating}"}}= 'N'
+                  %td.red.r.s_o_r.pointer-cursor{id: "s_o_r_#{rid}", data: {id: "#{rid}", so_id: "#{section_outcome.id}", student_id: "#{student_id}", rating: 'N'}}= 'N'
                 - when 'U'
                   %td.unrated.r.s_o_r.pointer-cursor{id: "s_o_r_#{rid}", data: {id: "#{rid}", so_id: "#{section_outcome.id}", student_id: "#{student_id}", rating: 'U'}}= 'U'
                 - else
