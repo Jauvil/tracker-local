@@ -11,10 +11,6 @@ describe "Generate Reports", js:true do
     @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
     load_test_section(@section, @teacher)
 
-    #FactoryBot.create :section_outcome_rating, student: @student1, rating: "N", section_outcome: @section_outcome1
-    #FactoryBot.create :section_outcome_rating, student: @student2, rating: "N", section_outcome: @section_outcome1
-    #FactoryBot.create :section_outcome_rating, student: @student3, rating: "H", section_outcome: @section_outcome1
-
   end
 
   describe "as teacher" do
