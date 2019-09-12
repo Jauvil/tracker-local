@@ -11,6 +11,10 @@ describe "Generate Reports", js:true do
     @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
     load_test_section(@section, @teacher)
 
+    #FactoryBot.create :section_outcome_rating, student: @student1, rating: "N", section_outcome: @section_outcome1
+    #FactoryBot.create :section_outcome_rating, student: @student2, rating: "N", section_outcome: @section_outcome1
+    #FactoryBot.create :section_outcome_rating, student: @student3, rating: "H", section_outcome: @section_outcome1
+
   end
 
   describe "as teacher" do
@@ -134,9 +138,12 @@ describe "Generate Reports", js:true do
     end
     if [:system_administrator, :school_administrator].include?(role)
       can_run_proficiency_bars_by_student
+      find("#side-reports a", text: 'Generate Reports').click
+      page.find("form#new_generate fieldset", text: 'Select Report to generate').click
     end
     if [:system_administrator, :school_administrator, :teacher].include?(role)
       can_run_student_information_handout
+      can_run_not_yet_proficient_by_student
     end
 
   end # has_valid_generate_reports
@@ -172,8 +179,10 @@ describe "Generate Reports", js:true do
   end
 
   def can_run_student_information_handout
+      visit new_generate_path
+      page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
     # page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
-    page.find("ul#select2-results-2 li div", text: 'Student Information Handout').click
+    page.find_all("ul#select2-results-2 li div", text: 'Student Information Handout').first.click
     within("#page-content form#new_generate") do
       # confirm correct input fields for attendance report are presented
       find("select#generate-type").value.should == "student_info"
@@ -198,7 +207,28 @@ describe "Generate Reports", js:true do
 
     assert_equal(student_info_handout_section_path(@section.id), current_path)
     page.should_not have_content('Internal Server Error')
+  end
 
+  def can_run_not_yet_proficient_by_student
+    visit new_generate_path
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: "Not Yet Proficient by Student").click
+    page.find("form#new_generate fieldset", text: 'Select Section').click
+    page.find("ul#select2-results-6 li div", match: :first).click
+    page.find("form#new_generate fieldset button", text: 'Generate').click
+    within("#page-content") do
+      page.should_not have_content('Internal Server Error')
+      within (".header-block") do
+        page.should have_text('Not Yet Proficient by Student')
+        page.should have_text('Subject')
+        page.should have_text('Sections')
+        page.should have_text('Learning Outcomes')
+      end
+      page.should have_css('#nyp-by-student')
+      within ('#nyp-by-student') do
+        page.should have_css('.panel')
+      end 
+    end
   end
 
 end
