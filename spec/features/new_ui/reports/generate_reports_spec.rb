@@ -5,6 +5,7 @@ require 'rails_helper'
 describe "Generate Reports", js:true do
   before (:each) do
     @section = FactoryBot.create :section
+    @subject = @section.subject
     @school = @section.school
     @teacher = FactoryBot.create :teacher, school: @school
     @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
@@ -135,6 +136,7 @@ describe "Generate Reports", js:true do
       can_run_proficiency_bars_by_student
     end
     if [:system_administrator, :school_administrator, :teacher].include?(role)
+      can_run_student_information_handout
     end
 
   end # has_valid_generate_reports
@@ -148,7 +150,7 @@ describe "Generate Reports", js:true do
       page.should_not have_css('fieldset#ask-subjects', visible: true)
       page.should_not have_css('fieldset#ask-subject-sections', visible: true)
       page.should_not have_css('fieldset#ask-grade-level', visible: true)
-      page.should_not have_css('fieldset#ask-section', visible: true)
+      page.should_not have_css('fieldset#ask-sections', visible: true)
       page.should_not have_css('fieldset#ask-los', visible: true)
       page.should_not have_css('fieldset#ask-single-student', visible: true)
       page.should_not have_css('fieldset#ask-marking-periods', visible: true)
@@ -166,6 +168,36 @@ describe "Generate Reports", js:true do
     within("#page-content h2.h1") do
       page.should have_content("Proficiency Bar Charts By Student")
     end
+
+  end
+
+  def can_run_student_information_handout
+    # page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: 'Student Information Handout').click
+    within("#page-content form#new_generate") do
+      # confirm correct input fields for attendance report are presented
+      find("select#generate-type").value.should == "student_info"
+      page.should_not have_css('fieldset#ask-subjects', visible: true)
+      page.should_not have_css('fieldset#ask-subject-sections', visible: true)
+      page.should_not have_css('fieldset#ask-grade-level', visible: true)
+      page.should have_css('fieldset#ask-sections', visible: true)
+      page.should_not have_css('fieldset#ask-los', visible: true)
+      page.should_not have_css('fieldset#ask-single-student', visible: true)
+      page.should_not have_css('fieldset#ask-marking-periods', visible: true)
+      page.should_not have_css('fieldset#ask-date-range', visible: true)
+      page.should_not have_css('fieldset#ask-attendance-type', visible: true)
+      page.should_not have_css('fieldset#ask-details', visible: true)
+      page.should_not have_css('fieldset#ask-activity-staff', visible: true)
+      page.should_not have_css('fieldset#ask-activity-students', visible: true)
+      page.should_not have_css('fieldset#ask-activity-parents', visible: true)
+    end
+    page.find("form#new_generate fieldset", text: 'Select Section:', wait: 5).click
+    page.find("ul#select2-results-6 li div", text: "#{@subject.name} - #{@section.line_number}", wait: 5).click
+
+    find("button", text: 'Generate').click
+
+    assert_equal(student_info_handout_section_path(@section.id), current_path)
+    page.should_not have_content('Internal Server Error')
 
   end
 
