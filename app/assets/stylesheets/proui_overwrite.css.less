@@ -219,11 +219,18 @@ ul.sidebar-nav li#side-current ul.subsections {
 }
 
 #head-current-school {
-    max-width: 298px;
+    max-width: 300px;
 }
 
 #head-user-dropdown {
-    max-width: 80px;
+    max-width: 70px;
+    a.dropdown-toggle {
+      font-size: 90%;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 }
 
 .sidebar-user-custom {
@@ -240,6 +247,22 @@ ul.sidebar-nav li#side-current ul.subsections {
         font-size: 26px;
         display: inline-block;
     }
+    .text-muted {
+      max-width: 120px;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+}
+
+.navbar-nav-custom-content .text-muted:nth-child(-n+2) {
+  font-size: 90%;
+  max-width: 150px;
+}
+
+.navbar-nav-custom-content :nth-child(n+4) {
+  font-size: 70%;
 }
 
 #breadcrumb-flash {
