@@ -223,6 +223,29 @@ describe "Generate Reports", js:true do
       page.should have_css('#nyp-by-student')
       within ('#nyp-by-student') do
         page.should have_css('.panel')
+        Student.all.each do |student| 
+          nyp_ratings = student.section_outcomes_by_rating("N", @section.id)
+          #if student has NYP ratings for this section, and is still enrolled in the section.
+          if nyp_ratings.length > 0 && student.active == true && student.enrollments.where(:section_id => @section.id).length > 0
+            page.should have_css("div#stud_#{student.id}")
+            within("div#stud_#{student.id}") do 
+              nyp_ratings.each do |s_o_r|
+                page.should have_content("#{s_o_r[:name]}")
+              end
+            end
+            within(".panel-heading", text:"#{student.first_name} #{student.last_name}") do
+              within(".panel-heading-sign") do
+                #NYP counter by the students name should match the number of NYP section outcome ratings they have for this section.
+                page.should have_content("#{nyp_ratings.length}")
+              end
+            end
+          #else student doesn't have NYP ratings for this section, or is no longer enrolled in the section.
+          else
+            page.should_not have_css("div#stud_#{student.id}")
+            page.should_not have_css("#{student.first_name} #{student.last_name}")
+          end
+
+        end
       end 
     end
   end
