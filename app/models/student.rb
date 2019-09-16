@@ -291,7 +291,7 @@ class Student < User
         section_id: section_id,
         active: true
       }
-    ).order(:position).map { |a|
+    ).order("section_outcomes.position").map { |a|
       array << { id: a.section_outcome.id, name: a.section_outcome.name } if a.rating[0] == rating
     }
     array
