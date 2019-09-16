@@ -92,10 +92,15 @@ class Section < ActiveRecord::Base
     (Enrollment.where(section_id: id).pluck(:subsection).uniq - [0]).sort.map { |a| [ALPHABET[a], a] }
   end
 
+
   # Returns a hash of section outcome ratings hash[section_outcome_id][student_id] = rating
-  # If a rating doesn't exist, returns "".
+  # If a rating doesn't exist, returns ["", 0]. When teacher tracker page builds the html, 
+  # the student and section_outcome ids are populated regardless. 
+  # This is because, when it's looked up in the hash by student and outcome, it returns the value. 
+  # 
   # used only in the Teacher Tracker page, and Bulk Rate pages.
   def hash_of_section_outcome_ratings
+    #set return value to a four dimensional hash map: return_value[:section_outcome_id][:student_id][:rating][:section_outcome_rating_id]
     return_value            = Hash.new { |l, k| l[k] = Hash.new(["",0]) }
     section_outcome_ratings = SectionOutcomeRating.select("section_outcome_ratings.id, section_outcome_ratings.rating, section_outcome_ratings.student_id, section_outcome_ratings.section_outcome_id").joins({:student => :enrollments}, {:section_outcome => :section}).where(
       :section_outcomes => {

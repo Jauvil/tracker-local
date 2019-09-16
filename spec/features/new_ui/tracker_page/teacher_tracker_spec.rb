@@ -6,9 +6,10 @@ describe "Teacher Tracker", js:true do
   before (:each) do
     @section = FactoryBot.create :section
     @teacher = FactoryBot.create :teacher, school: @section.school
+    #for method def, see: load_section_helper.rb
     load_test_section(@section, @teacher)
   end
-
+#to do: teacher, school administrator and system administrator should be able to rate a single LO
   describe "as teacher" do
     before do
       sign_in(@teacher)
@@ -96,8 +97,18 @@ describe "Teacher Tracker", js:true do
     page.should have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}']")
     page.should_not have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}'].tbody-open")
 
-    # Test Adding a Piece of Evidencd
+    # Test Adding a Piece of Evidence
     if editable
+      page.should have_content("All Learning Outcomes")
+      test_ratings = [["li.blue", "H"], ["li.green", "P"], ["li.red", "N"], ["li.unrated", "U"]]
+      test_ratings.each do |r|
+        #Try to edit single section outcome rating on the tracker page for 
+        #a student with existing SectionOutcomeRatings
+        can_rate_single_LO(@student, r[0], r[1])
+        #Try to edit single section outcome rating on the tracker page for 
+        #a student without existing SectionOutcomeRatings
+        can_rate_single_LO(@student_new, r[0], r[1])
+      end
       # Click on Toolkit to add a new piece of evidence
       page.should have_css("li#side-add-evid a[href='/sections/#{@section.id}/new_evidence']")
       find("li#side-add-evid a[href='/sections/#{@section.id}/new_evidence']").click
@@ -152,6 +163,18 @@ describe "Teacher Tracker", js:true do
     # todo - validate links on page
     # page.find("tr a[href='/sections/#{@section.id}/class_dashboard']").click
     # assert_equal("/sections/#{@section.id}/class_dashboard", current_path)
+  end
+
+  #Try to rate single learning outcomes on the tracker page for 
+  #the student passed in as a param
+  def can_rate_single_LO(student, rating_selector, rating_content)
+    #Save ratings for student with existing SectionOutcomeRating 
+    page.should have_css('td.s_o_r')
+    page.first("td.s_o_r[data-student-id='#{student.id}']").click
+    #try giving the student a High Performance rating, and saving
+    page.find("div#popup-rate-single-lo #{rating_selector}").click
+    page.find("button#save-single-lo").click
+    page.first("td.s_o_r[data-student-id='#{student.id}']").should have_content(rating_content)
   end
 
 end

@@ -5,6 +5,8 @@ class SectionOutcomeRatingsController < ApplicationController
   # load_and_authorize_resource
 
   SECTION_OUTCOME_RATING_PARAMS = [
+    :student_id,
+    :section_outcome_id,
     :rating
   ]
   def show
