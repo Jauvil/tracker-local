@@ -1,5 +1,5 @@
 # display any errors if any
-$('#breadcrumb-flash-msgs').html("<span class='flash_error'><%= @section_outcome_rating.errors.full_messages %><span>")
+$('#breadcrumb-flash-msgs').html("<span class='flash_error'><%= @section_outcome_rating.errors.empty? ? '' : @section_outcome_rating.errors.full_messages %><span>")
 # clear out popup (we clear after every create or update - they can always click again)
 $('#popup-rate-single-lo').hide()
 
