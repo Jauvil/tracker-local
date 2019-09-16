@@ -102,8 +102,6 @@ class EvidencesController < ApplicationController
   # process updates from:
   # - sections/#/new_evidence - Toolkit - Add Evidence.
   def create
-    Rails.logger.debug("+++ params: #{params.inspect}")
-    Rails.logger.debug("+++ evidence_params: #{evidence_params.inspect}")
     errors = 0
     error_str = ''
 
