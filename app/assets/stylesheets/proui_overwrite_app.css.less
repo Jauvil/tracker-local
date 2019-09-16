@@ -963,8 +963,27 @@ select.select2-styles {
 }
 
 @media screen and (max-width: 774px) {
-  li#announcements {
+  #head-app-name {
     display: none;
+  }
+
+  li#head-current-school {
+    max-width: 220px;
+    .navbar-nav-custom-content .text-muted{
+      max-width: 220px;
+    }
+  }
+
+  li#announcements {
+    width: 150px;
+    overflow: scroll;
+  } 
+  li#announcements ul { 
+    padding: 5px;
+  }
+  li#announcements ul li .announcement-text {
+    width: 70px;
+    overflow: visible;
   }  
 }
 
