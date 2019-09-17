@@ -969,8 +969,15 @@ select.select2-styles {
 
   li#head-current-school {
     max-width: 220px;
-    .navbar-nav-custom-content .text-muted{
-      max-width: 220px;
+
+    .navbar-nav-custom-content .text-muted:nth-child(-n+2) {
+      font-size: 80%;
+      max-width: 135px;
+    }
+
+    .navbar-nav-custom-content :nth-child(n+4) {
+      font-size: 70%;
+      max-width: 80px;
     }
   }
 
