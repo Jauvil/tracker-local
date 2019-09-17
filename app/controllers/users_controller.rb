@@ -123,7 +123,7 @@ class UsersController < ApplicationController
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
-        format.js { render js: "window.location.reload(true);" }
+        format.js 
       elsif @user.errors.count == 0 && @user.save
         UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
         format.js { render js: "window.location.reload(true);" }
@@ -132,7 +132,7 @@ class UsersController < ApplicationController
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
         flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        format.js { render js: "window.location.reload(true);" }
+        format.js 
       end
     end
   end
