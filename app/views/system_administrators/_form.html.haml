@@ -5,12 +5,15 @@
   - if current_user.system_administrator?
     %fieldset.input-group
       %label.col-sm-4.control-label='Role:'
-      %input#sys-admin.pull-left{:name => "role", :type => "radio", checked: @user.system_administrator?, value: :system_administrator}
+      %input{type: 'hidden', name: 'user[system_administrator]', value: 'false'}
+      %input#sys-admin.pull-left{:name => "user[system_administrator]", :type => "radio", checked: @user.system_administrator?}
+      - puts :system_administrator
       %label.checkbox-right-label.pull-left="System Administrator"
       %span.ui-error="#{@errors[:system_administrator] if @errors[:system_administrator].present?}"
     %fieldset.input-group
       %label.col-sm-4.control-label='Role:'
-      %input#researcher.pull-left{:name => "role", :type => "radio", checked: @user.researcher?, value: :researcher}
+      %input{type: 'hidden', name: 'user[researcher]', value: 'false'}
+      %input#researcher.pull-left{:name => "user[researcher]", :type => "radio", checked: @user.researcher?}
       %label.checkbox-right-label.pull-left="Researcher"
       %span.ui-error="#{@errors[:researcher] if @errors[:researcher].present?}"
   %fieldset#given-name-field.input-group
