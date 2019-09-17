@@ -191,6 +191,7 @@ Header and Nav Bar Styles
 =============================
 */
 
+
 /* ??? */
 .dropdown-menu.dropdown-custom.dropdown-menu-right {
     min-width: 120px;
@@ -217,6 +218,21 @@ ul.sidebar-nav li#side-current ul.subsections {
     }
 }
 
+#head-current-school {
+    max-width: 260px;
+}
+
+#head-user-dropdown {
+    max-width: 70px;
+    a.dropdown-toggle {
+      font-size: 90%;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+}
+
 .sidebar-user-custom {
     padding: 10px 0;
 }
@@ -231,6 +247,30 @@ ul.sidebar-nav li#side-current ul.subsections {
         font-size: 26px;
         display: inline-block;
     }
+}
+
+#head-current-school .navbar-nav-custom-content {
+    height: 50px;
+    padding: 0px 8px;
+    line-height: 50px;
+    overflow: hidden;
+
+    .text-muted {
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+}
+
+.navbar-nav-custom-content .text-muted:nth-child(-n+2) {
+  font-size: 90%;
+  max-width: 170px;
+}
+
+.navbar-nav-custom-content :nth-child(n+4) {
+  font-size: 70%;
+  max-width: 120px;
 }
 
 #breadcrumb-flash {

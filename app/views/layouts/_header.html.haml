@@ -31,7 +31,7 @@
 %ul.nav.navbar-nav-custom.pull-right
   / dashboard dropdown for all users but students and parents
   - if !current_user.student? && !current_user.parent?
-    %li#head-dashboard-selector
+    %li#head-dashboard-selector{:class => (Announcement.unrestricted.not_hidden(cookies.signed[:hidden_announcement_ids]).length > 0 ? 'with-announcement' : 'without-announcement') }
       .navbar-nav-custom-content
         - if (!@section.nil? && !@section.id.nil? && current_page?(controller: 'sections', action: 'show', id: @section.id)) ? 'selected' : false
           %a{href: "#{class_dashboard_section_path(@section.id)}"}
