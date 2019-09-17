@@ -97,9 +97,17 @@ describe "School Admin Dashboard", js:true do
       page.should have_css('div.prof-rating-bar', text: '9')
       page.should have_css('div.nyp-rating-bar', text: '9')
       page.should have_css('div.unrated-rating-bar', text: '9')
-      # make sure first entry is Subject 1
-      subject_nodes = all('tbody td.subject-link a').map(&:text)
-      subject_nodes[3].should == @subject.name
+      # Test that all subjects are listed in the "Learning Outcomes Covered" table,
+      # and test that the link to the Subject matches the name of the subject displayed
+      # in the table.
+      subjects_list = [@subject, @subj_math_3, @subj_math_4, @subj_math_5]
+      subjects_list.each do |s|
+        page.should have_css("tbody td.subject-link a[href='/subjects/#{s.id}']")
+        within("tbody td.subject-link a[href='/subjects/#{s.id}']") do
+          page.should have_content("#{s.name}")
+        end
+      end
+
     end
 
     # make sure learning outcomes covered match
