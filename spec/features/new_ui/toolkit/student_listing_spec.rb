@@ -437,8 +437,7 @@ describe "Student Listing", js:true do
       page.should have_css("a[data-url='/students/#{student.id}/security.js']")
       find("a[data-url='/students/#{student.id}/security.js']").click
     end
-    sleep 1
-    page.should have_content("Student/Parent Security and Access")
+    page.find("#modal_popup h2.h1 strong", text: "Student/Parent Security and Access", wait: 5)
     within("#user_#{student.id}") do
       page.find("a[href='/students/#{student.id}/set_student_temporary_password']", wait: 5).click
     end
