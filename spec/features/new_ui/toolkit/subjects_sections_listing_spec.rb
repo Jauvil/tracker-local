@@ -443,11 +443,11 @@ describe "Subjects Sections Listing", js:true do
       this_user.id.should_not equal(@teacher3.id)
       # create section
       page.find("a[href='/sections/new?subject_id=#{@subject1.id}']", wait: 5).click
-      sleep 1
+      page.find("#modal_content h2.h1 strong", text: "Create Section", wait: 5)
       within("#modal_content") do
-        within("h2.h1") do
-          page.should have_content("Create Section")
-        end
+        # within("h2.h1") do
+        #   page.should have_content("Create Section")
+        # end
         page.find('input#section_line_number', wait: 5).set('Newsect')
         page.click_button('Save')
       end
