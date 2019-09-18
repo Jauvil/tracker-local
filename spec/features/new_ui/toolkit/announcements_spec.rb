@@ -230,8 +230,8 @@ describe "Announcements", js:true do
         find("a[data-target='#modal_popup']").click
       end
 
-      # confirm on edit page
-      page.should have_content('System Alert Message')
+      # edit the system alert message
+      page.find("#modal_popup h2", text: 'System Alert Message', wait: 5)
       page.find("#announcement_content", wait: 5).set('This is changed')
       find("#modal_popup form#edit_announcement_1 input[type='submit']").click
 
@@ -275,19 +275,19 @@ describe "Announcements", js:true do
       # click OK in javascript confirmation popup
       sleep 1
       page.driver.browser.switch_to.alert.accept
-      wait_for_ajax
+      # wait_for_ajax
       assert_equal(current_path, '/announcements')
       find("#announcement_list_3 a#delete-item", wait: 5).click
       # click OK in javascript confirmation popup
       sleep 1
       page.driver.browser.switch_to.alert.accept
-      wait_for_ajax
+      # wait_for_ajax
       assert_equal(current_path, '/announcements')
       find("#announcement_list_4 a#delete-item", wait: 5).click
       # click OK in javascript confirmation popup
       sleep 1
       page.driver.browser.switch_to.alert.accept
-      wait_for_ajax
+      # wait_for_ajax
       # confirm announcements maintenance icon is no longer shown
       page.should_not have_css("#announcements-admin a[href='/announcements']")
     else
