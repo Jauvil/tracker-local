@@ -193,22 +193,16 @@ describe "System Users Listing", js:true do
 
     find("#page-content a#add-system-user").click
     within('#modal_popup #modal_content #modal-body') do
-      within('h2', match: :first) do
-        page.should have_content('Add System User')
-      end
+      page.find("h2 strong", wait: 5, text: 'Add System User')
       within('form#new_user') do
-        sleep 1
         # submit blank form to check for errors
         find('#btn-save').click
       end
     end
     within('#modal_popup #modal_content #modal-body') do
       # should remain in dialog box with errors
-      within('h2', match: :first) do
-        page.should have_content('Add System User')
-      end
+      page.find("h2 strong", wait: 5, text: 'Add System User')
       within('form#new_user') do
-        sleep 1
         within('div.ui-error') do
           page.should have_content('Role is required')
         end
