@@ -220,9 +220,7 @@ describe "Bulk Enter Sections", js:true do
     page.should have_css("tr#school-#{@school1.id}")
 
     # confirm on next year
-    within("tr#school-#{@school1.id} td.school-year") do
-      page.should have_content(get_std_current_school_year_name)
-    end
+    page.find("tr#school-#{@school1.id} td.school-year", text: get_std_current_school_year_name, wait: 10)
 
     visit subjects_path
     page.should have_css("a[href='/sections/enter_bulk']")
