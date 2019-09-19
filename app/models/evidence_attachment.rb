@@ -19,5 +19,9 @@ class EvidenceAttachment < ActiveRecord::Base
     :attachment_file_size
   )
 
+  #Rails 4 requires either a file_type validation 
+  #or explicit instructions not to validate. 
+  do_not_validate_attachment_file_type :attachment
+
   # Other Methods
 end

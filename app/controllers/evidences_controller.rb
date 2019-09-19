@@ -13,7 +13,14 @@ class EvidencesController < ApplicationController
     :reassessment
   ]
 
+  #In the future, it might make sense to rearrange the structure of these 
+  #param structures so that the variable hash key are values instead.
+  #This seems to be a method of bypassing safe params for certain 
+  #nested parameters (see the def for evidence_params below, where 
+  #nested params for these values are whitelisted).
   ESO_PARAM_KEY = :evidence_section_outcomes_attributes
+  EAA_PARAM_KEY = :evidence_attachments_attributes
+  EHA_PARAM_KEY = :evidence_hyperlinks_attributes
 
 
   # MISC_PARAMS = [
@@ -382,6 +389,10 @@ class EvidencesController < ApplicationController
     params.require(EVIDENCE_PARAM_KEY).permit(EVIDENCE_PARAMS).tap do |whitelisted|
       whitelisted[ESO_PARAM_KEY] =
         params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY]
+      whitelisted[EAA_PARAM_KEY] =
+        params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY]
+      whitelisted[EHA_PARAM_KEY] =
+        params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY]
     end
   end
 
