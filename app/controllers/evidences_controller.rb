@@ -13,6 +13,11 @@ class EvidencesController < ApplicationController
     :reassessment
   ]
 
+  #In the future, it might make sense to rearrange the structure of these 
+  #param structures so that the variable hash key are values instead.
+  #This seems to be a method of bypassing safe params for certain 
+  #nested parameters (see the def for evidence_params below, where 
+  #nested params for these values are whitelisted).
   ESO_PARAM_KEY = :evidence_section_outcomes_attributes
   EAA_PARAM_KEY = :evidence_attachments_attributes
   EHA_PARAM_KEY = :evidence_hyperlinks_attributes
@@ -263,7 +268,6 @@ class EvidencesController < ApplicationController
   # html - evidences/#/edit?eso_id=# - tracker page - edit evidence (attached to eso) icon.
   # js - evidences/#.js?evidence[active]=false - tracker page - deactivate evidence (all ESOs as well).
   def update
-    puts "params: #{params},  PARAMS STRONG: #{evidence_params.inspect}"
     @errors = ''
     has_eso = false
     begin
@@ -301,7 +305,6 @@ class EvidencesController < ApplicationController
         raise 'evidence update errors'
       end
     rescue => e
-      puts "ERROR??? e: #{e}, insp: #{e.inspect}"
       flash[:alert] = 'ERRORS: '+@errors
       is_ok = false
     else
