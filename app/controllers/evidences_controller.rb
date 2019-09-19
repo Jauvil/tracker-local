@@ -14,6 +14,8 @@ class EvidencesController < ApplicationController
   ]
 
   ESO_PARAM_KEY = :evidence_section_outcomes_attributes
+  EAA_PARAM_KEY = :evidence_attachments_attributes
+  EHA_PARAM_KEY = :evidence_hyperlinks_attributes
 
 
   # MISC_PARAMS = [
@@ -261,6 +263,7 @@ class EvidencesController < ApplicationController
   # html - evidences/#/edit?eso_id=# - tracker page - edit evidence (attached to eso) icon.
   # js - evidences/#.js?evidence[active]=false - tracker page - deactivate evidence (all ESOs as well).
   def update
+    puts "params: #{params},  PARAMS STRONG: #{evidence_params.inspect}"
     @errors = ''
     has_eso = false
     begin
@@ -298,6 +301,7 @@ class EvidencesController < ApplicationController
         raise 'evidence update errors'
       end
     rescue => e
+      puts "ERROR??? e: #{e}, insp: #{e.inspect}"
       flash[:alert] = 'ERRORS: '+@errors
       is_ok = false
     else
@@ -382,6 +386,10 @@ class EvidencesController < ApplicationController
     params.require(EVIDENCE_PARAM_KEY).permit(EVIDENCE_PARAMS).tap do |whitelisted|
       whitelisted[ESO_PARAM_KEY] =
         params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY]
+      whitelisted[EAA_PARAM_KEY] =
+        params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY]
+            whitelisted[EHA_PARAM_KEY] =
+        params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY]
     end
   end
 

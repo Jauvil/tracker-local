@@ -19,5 +19,7 @@ class EvidenceAttachment < ActiveRecord::Base
     :attachment_file_size
   )
 
+  do_not_validate_attachment_file_type :attachment
+
   # Other Methods
 end
