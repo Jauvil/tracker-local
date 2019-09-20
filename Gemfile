@@ -32,8 +32,9 @@ gem 'cancancan', '~> 3.0.1'
 gem 'acts_as_list'    # Drag and drop reordering, 'position' column.
 
 gem 'paperclip'       # Upload / retrieve files via HTML.
-gem "prawnto_2", '~> 0.3.0', :require => "prawnto"
 gem 'prawn', '~> 2.2.2'           # Serve dynamically generated PDF's
+gem "prawnto_2", '~> 0.3.0', :require => "prawnto"
+gem 'prawn-table', '~>0.2.2'
 gem 'axlsx_rails'
 gem 'delayed_job_active_record', "~> 4.0.0"
 gem "daemons", "~> 1.1.9" # needed to run delayed_job in production as daemon process.

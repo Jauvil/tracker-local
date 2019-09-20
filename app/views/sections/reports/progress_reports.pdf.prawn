@@ -20,7 +20,7 @@ i = 0
       ["Not Yet Proficient", ratings_count[@section.id][:N]],
       ["Total Ratings", (ratings_count[@section.id][:H] + ratings_count[@section.id][:P] + ratings_count[@section.id][:N])]
     ]
-    pdf.table data, position: :center, border_style: :underline_header, font_size: 11, headers: ["Rating", "Count"], vertical_padding: 2
+    pdf.table(data , :position => :center) #, :border_style => :underline_header, :font_size => 11, :headers => ["Rating", "Count"], :vertical_padding => 2)
     pdf.horizontal_rule
     pdf.stroke
     pdf.move_down 12
@@ -46,7 +46,7 @@ i = 0
             end
             pdf.indent 20 do
               if data.length > 0
-                pdf.table(data, border_width: 1, border_style: :grid, vertical_padding: 1, font_size: 10, column_widths: { 0 => 170, 1 => 100, 2 => 30, 3 => 200 })
+                pdf.table(data) #, border_width: 1, border_style: :grid, vertical_padding: 1, font_size: 10, column_widths: { 0 => 170, 1 => 100, 2 => 30, 3 => 200 })
               end
             end
           end
