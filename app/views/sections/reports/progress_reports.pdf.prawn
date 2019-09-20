@@ -15,12 +15,13 @@ i = 0
     pdf.stroke
     ratings_count = student.hash_of_section_outcome_rating_counts(marking_periods: params[:marking_periods])
     data = [
+      ["Rating", "Count"],
       ["High Performance", ratings_count[@section.id][:H]],
       ["Proficient", ratings_count[@section.id][:P]],
       ["Not Yet Proficient", ratings_count[@section.id][:N]],
       ["Total Ratings", (ratings_count[@section.id][:H] + ratings_count[@section.id][:P] + ratings_count[@section.id][:N])]
     ]
-    pdf.table(data , :position => :center) #, :border_style => :underline_header, :font_size => 11, :headers => ["Rating", "Count"], :vertical_padding => 2)
+    pdf.table(data, :position => :center, :header => true, :cell_style => {:vertical_padding => '2', :size => 11})
     pdf.horizontal_rule
     pdf.stroke
     pdf.move_down 12
@@ -46,7 +47,7 @@ i = 0
             end
             pdf.indent 20 do
               if data.length > 0
-                pdf.table(data) #, border_width: 1, border_style: :grid, vertical_padding: 1, font_size: 10, column_widths: { 0 => 170, 1 => 100, 2 => 30, 3 => 200 })
+                pdf.table(data, :column_widths => { 0 => 170, 1 => 100, 2 => 30, 3 => 200 }, :cell_style => {size: 10})
               end
             end
           end
