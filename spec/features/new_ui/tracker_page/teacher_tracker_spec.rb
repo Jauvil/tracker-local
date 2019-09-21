@@ -135,8 +135,9 @@ describe "Teacher Tracker", js:true do
       execute_script("$('#evid-add-attachments li').clone().addClass('test-attachment-elem').appendTo('#evid-attachments-ul')")
       execute_script("$('.test-attachment-elem').first().find('.attach_remove').attr('name', $('.test-attachment-elem').first().find('.attach_remove').attr('name').replace('xxseqxx', 0))")
       execute_script("$('.test-attachment-elem').first().find('.attach_item').attr('name', $('.test-attachment-elem').first().find('.attach_item').attr('name').replace('xxseqxx', 0))")
+      execute_script("$('.test-attachment-elem').first().find('.attach_name').attr('name', $('.test-attachment-elem').first().find('.attach_name').attr('name').replace('xxseqxx', 0))")
 
-      attach_file('evidence[evidence_attachments_attributes][0][attachment]', File.join(Rails.root, '/spec/fixtures/files/StaffDataUpload.csv'))
+      attach_file('evidence[evidence_attachments_attributes][0][attachment]', File.join(Rails.root, '/spec/fixtures/rails.png'))
       within('#evid-attachments-ul') do
         page.find('.attach_name', match: :first).set("test file")
       end
@@ -144,11 +145,11 @@ describe "Teacher Tracker", js:true do
       page.find('#show-hyper-to-add').click
       page.find('#evid-hyperlinks-ul .attach_item', match: :first).set('www.google.com')
       page.find('#evid-hyperlinks-ul .attach_name', match: :first).set('test link')
-
+      
       page.find(".sectioned-list input[name='sections[]'][value='2']", wait: 5).set(true)
       # Save Button not working
       find('button', text: 'Save').click
-      sleep 10
+      
       wait_for_ajax
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
