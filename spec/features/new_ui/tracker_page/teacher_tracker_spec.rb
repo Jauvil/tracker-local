@@ -154,6 +154,13 @@ describe "Teacher Tracker", js:true do
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
       find("div#expand-all-los-button").click
+      find('.tracker-cell-attachment', match: :first).click
+
+      within('#modal-body') do
+        page.should have_css('a', text: 'test file')
+        page.should have_css('a', text: 'test link')
+        find('button', text: 'Cancel').click
+      end
       # end
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should have_content('Add and Notify')
