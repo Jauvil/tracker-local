@@ -185,6 +185,37 @@ describe "Teacher Tracker", js:true do
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should have_content('Add and Notify')
       end
+
+      ###########
+      # Test 'Inactivating' Evidence
+      ###########
+      page.find('.tracker-cell-title.evidence_name', text: 'Add and Notify').sibling('.tracker-cell-options').find('.evidence_x').click
+      page.driver.browser.switch_to.alert.accept
+      #reload page before checking whether evidence has been removed. Ensures the action has been carried out 
+      #on the back end and not only in the client view (currently an existing issue). 
+      page.execute_script('window.location.reload()')
+      find("div#expand-all-los-button").click
+      #check that the evidence does not appear on the reloaded section tracker page
+      within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
+        page.should_not have_content('Add and Notify')
+      end
+
+      #############
+      # Test Reactivating Evidence 
+      #############
+      
+      # Navigate to the "restore evidence" page from the toolkit sidebar and restore the test evidence
+      find("li#side-restore-evid a[href='/sections/#{@section.id}/restore_evidence']").click
+      page.should have_content("Restore Evidence #{@section.name}")
+      #return to tracker page and check that evidence once again appears in the section tracker
+      page.find('form.edit_evidence', text: 'Add and Notify').find('button', text: 'Restore').click
+      page.find("a[href='/sections/#{@section.id}']", text: "#{@section.name}", match: :first).click
+      find("div#expand-all-los-button").click
+      # check that the test evidence has reappeared on the section tracker page
+      within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
+        page.should have_content('Add and Notify')
+      end
+
     else
       page.should have_css("#side-add-evid a[href='/sections/#{@section.id}/new_evidence'].disabled")
     end
