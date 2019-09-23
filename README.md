@@ -25,7 +25,7 @@ bundle install --without=production
 cp config/developer/database.yml config/
 bundle exec rake db:migrate
 bundle exec rake db:seed
-bundle exec rake test:prepare
+bundle exec rake db:test:prepare
 COVERAGE=true bundle exec rspec spec
 ```
 
