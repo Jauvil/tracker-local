@@ -10,7 +10,8 @@ class EvidencesController < ApplicationController
     :description,
     :evidence_type_id,
     :assignment_date,
-    :reassessment
+    :reassessment,
+    :active
   ]
 
   #In the future, it might make sense to rearrange the structure of these 
@@ -298,7 +299,7 @@ class EvidencesController < ApplicationController
           raise err
         end
       end
-
+      
       @evidence.update_attributes(evidence_params)
       if @evidence.errors.count > 0
         @errors += ', '+@evidence.errors.full_messages.join(", ")
