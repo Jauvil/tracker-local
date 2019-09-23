@@ -11,6 +11,8 @@ class SystemAdministratorsController < ApplicationController
     :city,
     :state,
     :zip_code,
+    :system_administrator,
+    :researcher
   ]
 
   # New UI - System Administrator Dashboard
@@ -55,10 +57,12 @@ class SystemAdministratorsController < ApplicationController
     @model_school = School.find(1)
     @user = User.new
 
-    if params['role'] == 'system_administrator'
+    if user_params[:system_administrator] == 'on'
+      user_params[:system_administrator] = true
       # set_role(@user, 'system_administrator', true)
       # set_role(@user, 'researcher', false)
-    elsif params['role'] == 'researcher'
+    elsif user_params[:researcher] == 'on'
+      user_params[:researcher] = true
       # set_role(@user, 'researcher', true)
       # set_role(@user, 'system_administrator', false)
     else
