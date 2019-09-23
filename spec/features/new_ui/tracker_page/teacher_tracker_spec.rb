@@ -159,7 +159,7 @@ describe "Teacher Tracker", js:true do
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
       find("div#expand-all-los-button").click
-      find('.tracker-cell-attachment', match: :first).click
+      find('.tracker-cell-attachment  a', match: :first).click
 
       within('#modal-body') do
         #check that the attachment and hyperlink were saved with the new evidence
