@@ -194,7 +194,7 @@ describe "Teacher Tracker", js:true do
       #reload page before checking whether evidence has been removed. Ensures the action has been carried out 
       #on the back end and not only in the client view (currently an existing issue). 
       page.execute_script('window.location.reload()')
-      find("div#expand-all-los-button").click
+      find("div#expand-all-los-button", wait: 5).click
       #check that the evidence does not appear on the reloaded section tracker page
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should_not have_content('Add and Notify')
