@@ -131,13 +131,56 @@ describe "Teacher Tracker", js:true do
       find("span.add_lo_to_evid[data-so-id='#{@section_outcomes.first[1].id}'] i").click
       # find("#evid-other-los .block-title i").click
 
+      # attach clone of new attachment element template to the DOM.
+      # makes input field with the type=file appear in the evidence attachments section of the page
+      execute_script("$('#evid-add-attachments li').clone().addClass('test-attachment-elem').appendTo('#evid-attachments-ul')")
+      # replace filler value, 'xxseqxx' with the attachment's position in the list. 
+      # this value is required by the server when saving the attachment.
+      execute_script("$('.test-attachment-elem').first().find('.attach_remove').attr('name', $('.test-attachment-elem').first().find('.attach_remove').attr('name').replace('xxseqxx', 0))")
+      execute_script("$('.test-attachment-elem').first().find('.attach_item').attr('name', $('.test-attachment-elem').first().find('.attach_item').attr('name').replace('xxseqxx', 0))")
+      execute_script("$('.test-attachment-elem').first().find('.attach_name').attr('name', $('.test-attachment-elem').first().find('.attach_name').attr('name').replace('xxseqxx', 0))")
+
+      #add attachment to the form and fill in a name for the attachment
+      attach_file('evidence[evidence_attachments_attributes][0][attachment]', File.join(Rails.root, '/spec/fixtures/rails.png'))
+      within('#evid-attachments-ul') do
+        page.find('.attach_name', match: :first).set("test file")
+      end
+      
+      #add an input fields to attach a hyperlink to the new learning evidence
+      page.find('#show-hyper-to-add').click
+      page.find('#evid-hyperlinks-ul .attach_item', match: :first).set('www.google.com')
+      page.find('#evid-hyperlinks-ul .attach_name', match: :first).set('test link')
+      
       page.find(".sectioned-list input[name='sections[]'][value='2']", wait: 5).set(true)
       # Save Button not working
       find('button', text: 'Save').click
+      
       wait_for_ajax
       # ToDo 'Add Evidence' link is disabled
       # pending "'ADD EVIDENCE' link is disabled" do
       find("div#expand-all-los-button").click
+      find('.tracker-cell-attachment  a', match: :first).click
+
+      within('#modal-body') do
+        #check that the attachment and hyperlink were saved with the new evidence
+        page.should have_css('a', text: 'test file')
+        page.should have_css('a', text: 'test link')
+        find('button', text: 'Cancel').click
+      end
+
+      #TO DO'.evidence-edit'
+      
+      #edit the added evidence to remove all attachments and hyperlinks
+      page.find('.tracker-cell-title.evidence_name', text: 'Add and Notify').sibling('.tracker-cell-options').find('.fa-edit').click
+      page.find('#remove-all-attachments').click
+      page.find('#remove-all-hyperlinks').click
+      page.find('button', text: 'Save').click
+
+      find("div#expand-all-los-button").click
+      #Added evidence should no longer have an attachments link next to its title in the tracker page listing
+      page.find('.tracker-cell-title.evidence_name', text: 'Add and Notify').find(:xpath, "..").should_not have_css('.tracker-cell-attachment a')
+      
+
       # end
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should have_content('Add and Notify')
