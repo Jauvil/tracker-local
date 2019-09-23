@@ -9,7 +9,6 @@ class ReportCardController < ApplicationController
   ]
 
 	def new
-    puts "REPORT CARD NEW!!!!!! #{params}"
 	end
 
   def forward
@@ -71,7 +70,6 @@ class ReportCardController < ApplicationController
 
   # process by old report card form - to be removed
 	def create
-    puts "in report_card_controller#CREATE!!!!!"
     @grade_level = report_card_request_params[:grade_level]
     begin
       raise BlankEmailException  if current_user.email.blank?
