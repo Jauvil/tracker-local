@@ -57,12 +57,12 @@ class SystemAdministratorsController < ApplicationController
     @model_school = School.find(1)
     @user = User.new
 
-    if params[:user][:system_administrator] == 'on'
-      params[:user][:system_administrator] = true
+    if user_params[:system_administrator] == 'on'
+      user_params[:system_administrator] = true
       # set_role(@user, 'system_administrator', true)
       # set_role(@user, 'researcher', false)
-    elsif params[:user][:researcher] == 'on'
-      params[:user][:researcher] = true
+    elsif user_params[:researcher] == 'on'
+      user_params[:researcher] = true
       # set_role(@user, 'researcher', true)
       # set_role(@user, 'system_administrator', false)
     else
