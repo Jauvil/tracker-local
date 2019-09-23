@@ -9,6 +9,7 @@ class ReportCardController < ApplicationController
   ]
 
 	def new
+    puts "REPORT CARD NEW!!!!!! #{params}"
 	end
 
   def forward
@@ -19,7 +20,7 @@ class ReportCardController < ApplicationController
       raise BlankEmailException  if current_user.email.blank?
       raise UserInvalidException if current_user.invalid?
 
-      school_id = get_current_school
+      school_id = get_current_school.id
       Rails.logger.debug "*** school_id: #{school_id}"
       school = School.find(school_id)
       Rails.logger.debug "*** school: #{school.inspect}"
@@ -70,6 +71,7 @@ class ReportCardController < ApplicationController
 
   # process by old report card form - to be removed
 	def create
+    puts "in report_card_controller#CREATE!!!!!"
     @grade_level = report_card_request_params[:grade_level]
     begin
       raise BlankEmailException  if current_user.email.blank?
