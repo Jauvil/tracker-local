@@ -108,12 +108,90 @@ module Features
       FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: eso, student: @student, rating: 'M'
     end
 
-
     # deactivations from enrollment and from school
     @enrollment_unenrolled.update_attribute(:active, false) # only deactivate enrollment
     @student_transferred.update_attribute(:active, false) # only deactivate student
     @enrollment_out.update_attribute(:active, false) # deactivate both enrollment and student
     @student_out.update_attribute(:active, false) # deactivate both enrollment and student
+  end
+
+  def load_test_section_yr2(section, teacher)
+    # add additional assignment and enrollments.
+    #change the school year on the @school object before running this to get multi year assignments
+    Rails.logger.debug("***** load_test_section_yr2")
+    @teaching_assignmentY2 = FactoryBot.create :teaching_assignment, teacher: teacher, section: section
+
+    @enrollmenty2 = FactoryBot.create :enrollment, section: section, student: @student
+    @enrollment2y2 = FactoryBot.create :enrollment, section: section, student: @student2
+    @enrollment3y2 = FactoryBot.create :enrollment, section: section, student: @student3
+    @enrollment4y2 = FactoryBot.create :enrollment, section: section, student: @student4
+    @enrollment5y2 = FactoryBot.create :enrollment, section: section, student: @student5
+    @enrollment6y2 = FactoryBot.create :enrollment, section: section, student: @student6
+
+    # note: not including @student_new
+    # note: used to populate ratings, so new student gets no ratings
+    @enrollmentsy2 = [ @enrollmenty2, @enrollment2y2, @enrollment3y2, @enrollment4y2, @enrollment5y2, @enrollment6y2]
+
+
+    # set of valid ratings for populating the sor and esor records
+    val_esors = ["B", "G", "Y", "R", "M", "U"]
+    val_sors = ["H", "P", "N", "U"]
+
+    # create subject outcomes for the subject of this section
+    @subject_outcomesy2 = Hash.new
+    4.times do
+      subjo = FactoryBot.create(:subject_outcome, subject: section.subject)
+      @subject_outcomesy2[subjo.id] = subjo
+    end
+
+    # create the section outcomes for the subject outcomes
+    @section_outcomesy2 = Hash.new
+    @subject_outcomesy2.each do |sok, subject_outcome|
+      # Random.rand(1000) % 2 == 0 ? m = true : m = false #randomly minimize sections
+      secto = FactoryBot.create(:section_outcome, section: section,
+        subject_outcome: subject_outcome, minimized: false) # don't minimize any
+      @section_outcomesy2[secto.id] = secto
+    end
+
+    # create six evidences available for this section
+    @evidencesy2 = Hash.new
+    6.times do
+      ev = FactoryBot.create(:evidence, section: section)
+      @evidencesy2[ev.id] = ev
+    end
+    # create a seventh deactivated evidence for this section
+    @deact_evidencey2 = FactoryBot.create(:evidence, section: section, name: 'Deactivated', active: false)
+    @evidencesy2[@deact_evidence.id] = @deact_evidencey2
+
+    # Create Section Outcome Ratings, Evidence Section Outcomes and Evidence Section Outcome Ratings.
+    ix = 0
+    iy = 0
+    # # create an hash (@esos_by_so - by section outcome) of arrays of all of the evidence section outcomes for it
+    @sorsy2 = Hash.new
+    @sorsy2_by_so_s = Hash.new
+    @esosy2 = Hash.new
+    @esorsy2 = Hash.new
+    @section_outcomesy2.each do |kso, so|
+      @students.each do |ks, s|
+        # Create Section Outcome Rating for all section outcomes for all students.
+        sor = FactoryBot.create :section_outcome_rating, section_outcome: so, student: s, rating: val_sors[ix]
+        ix = (ix+1 >= val_sors.length) ? 0 : ix+1
+        @sorsy2[sor.id] = sor
+        @sorsy2_by_so_s["#{sor.section_outcome_id}:#{s.id}"] = sor
+      end
+      @evidencesy2.each do |ke, e|
+        # Create Evidence Section Outcome for all section outcomes for all evidences.
+        eso = FactoryBot.create :evidence_section_outcome, section_outcome: so, evidence: e
+        @esosy2[eso.id] = eso
+        # esor_by_s = Hash.new  # all esors for eso by student
+        @students.each do |ks, s|
+          # Create Evidence Section Outcome Rating for all Evidence Section Outcomes.
+          esor = FactoryBot.create :evidence_section_outcome_rating, evidence_section_outcome: eso, student: s, rating: val_esors[iy]
+          iy = (iy+1 >= val_esors.length) ? 0 : iy+1
+          @esorsy2[esor.id] = esor
+        end
+      end
+    end
   end
 
   def load_multi_schools_sections
@@ -336,6 +414,17 @@ module Features
   def get_std_current_school_year_name
     # see factories.rb::current_school_year
     return "#{Time.now.year}-#{Time.now.year+1}"
+  end
+
+  def set_current_school_year(school)
+    cur_yr_name = get_std_current_school_year_name
+    schYrs = SchoolYear.where(name: cur_yr_name, school_id: school.id)
+    if schYrs.count == 1
+      school.school_year_id = schYrs[0].id
+      school.save
+    else
+      puts "ERROR invalid school year update"
+    end
   end
 
   def get_std_prior_school_year_name
