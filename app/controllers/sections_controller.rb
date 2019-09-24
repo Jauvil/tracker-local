@@ -142,6 +142,7 @@ class SectionsController < ApplicationController
 
   def update
     # responds to edit subsections 'Update Section' button (save student subsection changes)
+    puts("+++ Update params: #{params.inspect}")
     @school = get_current_school
     if @school.has_flag?(School::USER_BY_FIRST_LAST)
       @teachers = Teacher.where(school_id: @school.id).accessible_by(current_ability).order(:first_name, :last_name)
@@ -162,7 +163,8 @@ class SectionsController < ApplicationController
               if !tapv[:id]
                 # tapv[:section_id] = @section.id
                 tapv_rec = TeachingAssignment.new()
-                tapv_rec.section_id = @section_id
+                # tapv_rec.section_id = @section_id
+                tapv_rec.section_id = @section.id
                 tapv_rec.teacher_id = tapv[:teacher_id]
                 @teaching_assignment = tapv_rec.save
               else

@@ -101,7 +101,7 @@ describe "Subjects Sections Listing", js:true do
       it { has_no_subjects_listing }
     end
   end
-  
+
   #Egypt System should fail the test:
   # -Subjects Sections Listing Egypt System as system administrator should have visible css "select#subject_subject_manager_id.select-select2"
   describe "Egypt System" do
@@ -441,47 +441,87 @@ describe "Subjects Sections Listing", js:true do
     if (can_create_section)
       # note: regular teachers should not be able to create sections (for now)
       this_user.id.should_not equal(@teacher3.id)
-      # create section
+
+      # create section without teaching assignment
       page.find("a[href='/sections/new?subject_id=#{@subject1.id}']", wait: 5).click
       page.find("#modal_content h2.h1 strong", text: "Create Section", wait: 5)
       within("#modal_content") do
-        # within("h2.h1") do
-        #   page.should have_content("Create Section")
-        # end
-        page.find('input#section_line_number', wait: 5).set('Newsect')
+        page.find("h2.h1 strong", text: "Create Section")
+        page.find('input#section_line_number', wait: 5).set('No Teacher')
+        save_and_open_page
         page.click_button('Save')
       end
-      page.should have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
-      find("a[data-url='/sections/#{@section1_2.id}/edit.js']").click
-      within("tr#sect_#{@section1_2.id}") do
-        page.should have_content(@section1_2.line_number)
+      page.find("#page-content table tbody tr td.sect-section", text: 'No Teacher', wait: 5)
+      # page.should_not have_content(@teacher1.name)
+      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 3)
+
+      # create section with teaching assignment
+      page.find("a[href='/sections/new?subject_id=#{@subject2.id}']", wait: 5).click
+      page.find("#modal_content h2.h1 strong", text: "Create Section", wait: 5)
+      puts ("+++ #{@teacher1.full_name}")
+      # sleep 40
+      within("#modal_content") do
+        page.find("h2.h1 strong", text: "Create Section")
+        page.find('input#section_line_number', wait: 5).set('With Teacher')
+        select(@teacher1.full_name, from: '#section-assignment-teacher-id') #section-assignment-teacher-id
+        page.click_button('Save')
       end
+      page.find("#page-content table tbody tr td.sect-section", text: 'With Teacher', wait: 5)
+      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 4)
 
+      # edit section - change line_number and add teacher assignment
+      page.should have_css("a[data-url='/sections/#{@section2_1.id}/edit.js']")
+      find("a[data-url='/sections/#{@section2_1.id}/edit.js']").click
+      within("tr#sect_#{@section2_1.id}") do
+        page.should have_content(@section2_1.line_number)
+      end
       within('#modal-body') do
+        page.should have_content(@section2_1.subject.full_name)
+        page.should have_selector("#section_line_number[value='#{@section2_1.line_number}']", wait: 5)
+        page.find('input#section_line_number', wait: 5).set('Added Teacher')
+        select(@teacher1.name, from: '#section-assignment-teacher-id')
 
-        if (can_create_subject)
-          page.should have_content("Subname")
-          page.should_not have_content(@section1_2.subject.name)
-        else
-          page.should_not have_content("Subname")
-          page.should have_content(@section1_2.subject.name)
-        end
-        page.should have_selector("#section_line_number[value='#{@section1_2.line_number}']", wait: 5)
-        page.find('input#section_line_number', wait: 5).set('Changed')
-        within("#section_school_year_id") {page.should have_content("#{@section1_2.school_year.name}")}
+        within("#section_school_year_id") {page.should have_content("#{@section2_1.school_year.name}")}
         page.click_button('Save')
         sleep 1
       end
-      within("tr#sect_#{@section1_2.id}") do
-        page.should have_content("Changed")
+      within("tr#sect_#{@section2_1.id}") do
+        page.should have_content("Added Teacher")
+        page.find("td.sect-teacher a").value.should equal(@teacher1.full_name)
       end
+      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 5)
+
+      # edit section - change line_number and add teacher assignment
+      page.should have_css("a[data-url='/sections/#{@section2_1.id}/edit.js']")
+      find("a[data-url='/sections/#{@section2_1.id}/edit.js']").click
+      within("tr#sect_#{@section2_1.id}") do
+        page.should have_content(@section2_1.line_number)
+      end
+      within('#modal-body') do
+        page.should have_content(@section2_1.subject.name)
+        page.should have_selector("#section_line_number[value='#{@section2_1.line_number}']", wait: 5)
+        page.find('input#section_line_number', wait: 5).set('Added Teacher')
+        select(@teacher1.name, from: '#section-assignment-teacher-id')
+
+        within("#section_school_year_id") {page.should have_content("#{@section2_1.school_year.name}")}
+        page.click_button('Save')
+        sleep 1
+      end
+      within("tr#sect_#{@section2_1.id}") do
+        page.should have_content("Added Teacher")
+        page.find("td.sect-teacher a").value.should equal(@teacher1.full_name)
+      end
+      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 5)
+
+
+
     else
       # regular teachers have not been given create or edit section ability
-      puts("+++ cannot create section - this_user: #{this_user.inspect}")
-      puts("+++ cannot create section - regular teacher - @teacher3: #{@teacher3.inspect}")
+      # puts("+++ cannot create section - this_user: #{this_user.inspect}")
+      # puts("+++ cannot create section - regular teacher - @teacher3: #{@teacher3.inspect}")
       page.should_not have_css("a[href='/sections/new?subject_id=#{@subject1.id}']")
       page.should_not have_css("a[data-url='/sections/#{@section1_2.id}/edit.js']")
     end
-    Rails.logger.debug("+++ end has_valid_subjects_listing")
+    # Rails.logger.debug("+++ end has_valid_subjects_listing")
   end # def has_valid_subjects_listing
 end
