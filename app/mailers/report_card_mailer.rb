@@ -16,7 +16,7 @@ class ReportCardMailer < ActionMailer::Base
 			mime_type: 'application/pdf',
 			content: 	report_card_content
 		}
-		mail(to: address, subject: "Completed: Grade #{@grade} Report Card Request")
+		mail(from: get_support_email, to: address, subject: "Completed: Grade #{@grade} Report Card Request")
 	end
 
 	def no_students_email(address,grade,full_name,school)

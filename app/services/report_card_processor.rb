@@ -19,6 +19,7 @@ class ReportCardProcessor
 			outfile = Tempfile.new(["#{acronym}_reportcard", '.pdf'])
 			build_report_cards @grade, outfile
 			# everything is fine if we get here
+			Delayed::Worker.logger.debug("[REPORT_CARD] outfile: #{outfile} email: #{@email}")
 			ReportCardMailer.report_success_email(@email,@grade,@full_name,outfile.path,@school).deliver_now
 		rescue NoStudentsFoundException
 			ReportCardMailer.no_students_email(@email,@grade,@full_name,@school).deliver_now
@@ -28,6 +29,10 @@ class ReportCardProcessor
 				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
+			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] An unknown error occured when attempting to create report cards for:
+				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
+			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
+			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
 
 			ReportCardMailer.generic_exception_email(@email,@grade,@full_name,@school).deliver_now
 		ensure

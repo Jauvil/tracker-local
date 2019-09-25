@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+##############################
+# Updated for New UI 
+# To Do: Move to spec/features/new_ui/ directory?
+# ############################
 shared_examples_for 'report card request form' do
 	it do
 		should have_selector 'form#new_report_card_request'
@@ -12,40 +16,35 @@ shared_examples_for 'cannot generate report card' do
 	it { current_path.should_not == report_card_path }
 end
 
-describe "ReportCardRequest" do
+describe "ReportCardRequest", js:true do
 
 	subject { page }
 
-	before do
-		@school = create :school
-		@school_administrator = create :school_administrator, school: @school
+	before (:each) do
+		# @school = create :school
+		@section = FactoryBot.create :section
+	    @subject = @section.subject
+	    @school = @section.school
+	    @school_administrator = create :school_administrator, school: @school, email: 'admin@example.com'
+	    @teacher = FactoryBot.create :teacher, school: @school
+	    @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+	    load_test_section(@section, @teacher)
 	end
 
-	skip 'Navigation as School Administrator' do
-		before { sign_in(@school_administrator, @school_administrator.password) }
-		it { should have_link 'Generate Report Cards', href: report_card_path }
 
-		describe "Click Generate Report Cards" do
-			before { click_link 'Generate Report Cards'}
-			it_should_behave_like 'report card request form'
-		end
-	end
 
-	skip 'Generate report card, grade level has student' do
+
+	describe 'Generate report card, grade level has student' do
 		before do
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
-
 			@grade = 3
 		    @student = create :student, school: @school, grade_level: @grade
 			sign_in @school_administrator
-
-			visit report_card_path
 		end
 
 		it 'cause delayed_job to send recieve and completed messages' do
-			select @grade.to_s, from: 'report_card_request_grade_level'
-			find("input[value='Request Report Card']").click
+			generate_report_card_for_grade @grade
 
 			#kick off delayed jobs
 			@successes, @failures = Delayed::Worker.new.work_off
@@ -59,20 +58,25 @@ describe "ReportCardRequest" do
 		end
 	end
 
-	skip 'Generate report card, with no students in the selected grade' do
+	describe 'Generate report card, with no students in the selected grade' do
 		before do
+			sign_in(@school_administrator) 
 			# we must clear the email queue first
 			ActionMailer::Base.deliveries.clear
 
-			sign_in(@school_administrator, @school_administrator.password)
-			visit report_card_path
+			# sign_in(@school_administrator, @school_administrator.password)
+			# visit report_card_path
 		end
 
 		it 'cause delayed_job to send recieved and no student messages' do
 			@grade = 5
-			select @grade.to_s, from: 'report_card_request_grade_level'
-			find("input[value='Request Report Card']").click
+			# select @grade.to_s, from: 'report_card_request_grade_level'
+			# find("input[value='Request Report Card']").click
+			 # p = ReportCardProcessor.new(@school.id, @grade, @school_administrator.email, @school_administrator.full_name, "")
+    #          p.generate
+    #          ReportCardMailer.delay(priority: 0).request_recieved_email(@school_administrator.email,@grade,@school_administrator.full_name,@school)
 
+            generate_report_card_for_grade @grade
 			#kick off delayed jobs
 			@successes, @failures = Delayed::Worker.new.work_off
 
@@ -85,17 +89,17 @@ describe "ReportCardRequest" do
 		end
 	end
 
-  skip 'when school administrator email is blank' do
-    before do
-      @school_administrator.email=''
-      @school_administrator.save(validate: false)
-      sign_in @school_administrator
-      visit report_card_path
-      select '8', from: 'report_card_request_grade_level'
-      find("input[value='Request Report Card']").click
+    describe 'when school administrator email is blank' do
+     before do
+       @school_administrator.email=''
+       @school_administrator.save(validate: false)
+       @grade = 3
+	   @student = create :student, school: @school, grade_level: @grade
+       sign_in @school_administrator
+       generate_report_card_for_grade @grade
+     end
+     it { should have_selector ".flash_alert", text: 'Request Submission error, Blank Email Exception' }
     end
-    it { should have_selector "#error_explanation li", text: 'email' }
-  end
 
 	describe 'Student cannot generate report card' do
 		before do
@@ -121,7 +125,7 @@ describe "ReportCardRequest" do
 		it_should_behave_like 'cannot generate report card'
     end
 
-    skip 'Counselor cannot generate report card' do
+    describe 'Counselor cannot generate report card' do
 			before do
 				@counselor = create :counselor, school: @school
 				sign_in @counselor
@@ -138,5 +142,18 @@ describe "ReportCardRequest" do
 			visit report_card_path
 		end
 		it_should_behave_like 'cannot generate report card'
+    end
+    ###########################################
+    # test methods
+    # #########################################
+    
+    def generate_report_card_for_grade grade
+	    visit new_generate_path
+		page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+		page.find("ul#select2-results-2 li div", text: "Report Cards").click
+		page.find("form#new_generate fieldset", text: "Select grade Level:").click
+		page.find("ul#select2-results-5 li div", text: "#{grade}").click
+		page.find("form#new_generate fieldset button", text: 'Generate').click
+		#sleep 2
     end
 end
