@@ -25,7 +25,7 @@ class Section < ActiveRecord::Base
   has_many                        :evidences, -> { where active: true }
   accepts_nested_attributes_for   :evidences
   has_many                        :inactive_evidences, -> { where active: false}, class_name: 'Evidence'
-  has_many                        :evidence_section_outcomes,
+  has_many                        :evidence_section_outcomes, -> { includes(:evidence).where("evidences.active" => true )  }, 
                                   through: :section_outcomes
   accepts_nested_attributes_for   :inactive_evidences
   has_many                        :evidence_section_outcome_ratings, -> { includes(:evidence) }, through: :evidence_section_outcomes

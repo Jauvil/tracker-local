@@ -19,6 +19,7 @@ class ReportCardProcessor
 			outfile = Tempfile.new(["#{acronym}_reportcard", '.pdf'])
 			build_report_cards @grade, outfile
 			# everything is fine if we get here
+			Delayed::Worker.logger.debug("[REPORT_CARD] outfile: #{outfile} email: #{@email}")
 			ReportCardMailer.report_success_email(@email,@grade,@full_name,outfile.path,@school).deliver_now
 		rescue NoStudentsFoundException
 			ReportCardMailer.no_students_email(@email,@grade,@full_name,@school).deliver_now
@@ -28,6 +29,10 @@ class ReportCardProcessor
 				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] An unknown error occured when attempting to create report cards for:
+				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
 
 			ReportCardMailer.generic_exception_email(@email,@grade,@full_name,@school).deliver_now
 		ensure
@@ -50,7 +55,6 @@ class ReportCardProcessor
     end
 
     def build_report_cards grade_level, pdf_output_file
-
 	    s_o_r = @school.hash_of_section_outcome_ratings
 	    e_r   = @school.hash_of_evidence_ratings
 
@@ -102,13 +106,19 @@ class ReportCardProcessor
 	        # start evidence ratings summary by subject
 	        pdf.move_down 6
 	        pdf.text "Evidence Ratings Summary By Subject", size: 11, align: :center, style: :bold
-	        data = []
+	        data = [
+	        	["Subject", "Teacher Name(s)", "# B", "# G", "# Y", "# R", "# Ratings", "# Possible Ratings"]
+	        ]
 	        student.sections.current.each do |section|
 	          ratings = student.count_of_section_evidence_section_outcome_ratings section.id
 	          data << [section.subject.name, section.teacher_names, ratings["B"], ratings["G"], ratings["Y"], ratings["R"], ratings["B"] + ratings["G"] + ratings["Y"] + ratings["R"], section.count_of_rated_evidence_section_outcomes]
 	        end
 	        if not data.empty?
-	          pdf.table data, position: :center, font_size: 9, column_widths: { 0 => 180, 1 => 140, 2 => 27, 3 => 27, 4 => 27, 5 => 27, 6 => 60, 7 => 60 }, align: {2 => :center, 3 => :center, 4 => :center, 5 => :center, 6 => :center, 7 => :center}, headers: ["Subject", "Teacher Name(s)", "# B", "# G", "# Y", "# R", "# Ratings", "# Possible Ratings"]
+	          pdf.table data, position: :center, cell_style: {:size => 9}, column_widths: { 0 => 180, 1 => 140, 2 => 25, 3 => 25, 4 => 25, 5 => 25, 6 => 60, 7 => 60 }, header: true do
+	          	(2..7).each do |i|
+	          	  column(i).style(:align => :center)
+	            end
+	          end
 	        else
 	          pdf.text "<i>(Not Available)</i>", align: :center, inline_format: true
 	        end
@@ -119,11 +129,12 @@ class ReportCardProcessor
 	        pdf.text "Learning Outcome Ratings Legend", size: 12, align: :center, style: :bold
 	        pdf.text "<i>Learning Outcomes appear in bold with the rating to the left. The related evidence appears underneath.</i>", size: 10, align: :center, inline_format: true
 	        pdf.table [
+	          ["Letter", "What it equals", "What does that mean?"],
 	          ["H", "High Performance", "Student has demonstrated competence on a particular learning outcome that extends beyond proficient."],
 	          ["P", "Proficient", "Student has demonstrated competence on a particular learning outcome."],
 	          ["N", "Not Yet Proficient", "Student has demonstrated a limited understanding of this particular learning outcome."],
 	          ["U", "Unrated", "There is not enough evidence to rate the student on this learning outcome at this time."]
-	        ], column_widths: { 0 => 40, 1 => 110, 2 => 390}, font_size: 9, headers: ["Letter", "What it equals", "What does that mean?"]
+	        ], column_widths: { 0 => 40, 1 => 110, 2 => 390}, cell_style: {:size => 9}, header: true
 	        pdf.move_down 8
 	        pdf.horizontal_rule
 	        pdf.stroke
@@ -134,7 +145,7 @@ class ReportCardProcessor
 	          pdf.table [
 	            ["Research Grouping", "Y"],
 	            ["Identify Thesis-Supporting Detail", "G"]
-	          ], border_width: 0, column_widths: { 0 => 225, 1 => 40, 2 => 225 }, font_size: 9
+	          ], column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 9, :border_width => 0}
 	        end
 	        pdf.move_down 2
 	        pdf.horizontal_rule
@@ -146,11 +157,12 @@ class ReportCardProcessor
 	        pdf.text "Evidence Ratings Legend", size: 11, align: :center, style: :bold
 	        pdf.text "<i>Evidence appears under the learning outcomes with the rating to the right.</i>", size: 10, align: :center, inline_format: true
 	        pdf.table [
+	          ["What you see", "What it equals", "Letter", "What does that mean?"],
 	          ["Blue (B)", "High Performing", "B", "Student has demonstrated competence on a particular piece of evidence that extends beyond proficient."],
 	          ["Green (G)", "Proficient", "G", "Student has demonstrated competence on a particular piece of evidence."],
 	          ["Yellow (Y)", "Developing", "Y", "Student has demonstrated a developed a basic understanding of concepts assessed in particular piece of evidence"],
 	          ["Red (R)", "Basic", "R", "Student has demonstrated a limited understanding of concepts assessed in particular piece of evidence"]
-	        ], column_widths: {0 => 85, 1 => 110, 2 => 45, 3 => 300}, position: :center, font_size: 9, headers: ["What you see", "What it equals", "Letter", "What does that mean?"]
+	        ], column_widths: {0 => 85, 1 => 110, 2 => 45, 3 => 300}, position: :center, cell_style: {:size => 9}, header: true
 	        # end evidence ratings legend
 
 	      # Summary done
@@ -182,7 +194,7 @@ class ReportCardProcessor
 	              end
 	              if data.length > 0
 	                pdf.indent(20) do
-	                  pdf.table data, border_width: 0, column_widths: { 0 => 225, 1 => 40, 2 => 225 }, font_size: 10
+	                  pdf.table data, column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 10, :border_width => 0}
 	                end
 	              end
 	              pdf.move_down 8

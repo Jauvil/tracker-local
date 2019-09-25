@@ -13,7 +13,7 @@ class SectionOutcome < ActiveRecord::Base
 
   accepts_nested_attributes_for :section_outcome_ratings,
                                 :reject_if  => lambda { |a| a[:rating].blank? }
-  has_many                      :evidence_section_outcomes, -> { includes(:evidence).where(evidences: {active: true} )  }
+  has_many                      :evidence_section_outcomes, -> { includes(:evidence).where("evidences.active" => true )  }
   has_many                      :evidences,
                                 through: :evidence_section_outcomes
   has_many                      :inactive_evidences, -> { where(active: true) }, through: :evidence_section_outcomes, source: :evidence

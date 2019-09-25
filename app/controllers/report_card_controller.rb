@@ -19,7 +19,7 @@ class ReportCardController < ApplicationController
       raise BlankEmailException  if current_user.email.blank?
       raise UserInvalidException if current_user.invalid?
 
-      school_id = get_current_school
+      school_id = get_current_school.id
       Rails.logger.debug "*** school_id: #{school_id}"
       school = School.find(school_id)
       Rails.logger.debug "*** school: #{school.inspect}"
