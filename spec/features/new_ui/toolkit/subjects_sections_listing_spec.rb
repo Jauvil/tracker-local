@@ -430,10 +430,8 @@ describe "Subjects Sections Listing", js:true do
           page.fill_in 'subject-name', :with => 'Subname'
           sleep 1
           page.click_button('Save')
-          Rails.logger.debug("+++ update & save new subject")
         end
       end
-      Rails.logger.debug("+++ check for EDITED subject")
       page.should have_content("Subname")
     end
 
@@ -448,7 +446,6 @@ describe "Subjects Sections Listing", js:true do
       within("#modal_content") do
         page.find("h2.h1 strong", text: "Create Section")
         page.find('input#section_line_number', wait: 5).set('No Teacher')
-        save_and_open_page
         page.click_button('Save')
       end
       page.find("#page-content table tbody tr td.sect-section", text: 'No Teacher', wait: 5)
@@ -458,60 +455,54 @@ describe "Subjects Sections Listing", js:true do
       # create section with teaching assignment
       page.find("a[href='/sections/new?subject_id=#{@subject2.id}']", wait: 5).click
       page.find("#modal_content h2.h1 strong", text: "Create Section", wait: 5)
-      puts ("+++ #{@teacher1.full_name}")
-      # sleep 40
       within("#modal_content") do
         page.find("h2.h1 strong", text: "Create Section")
         page.find('input#section_line_number', wait: 5).set('With Teacher')
-        select(@teacher1.full_name, from: '#section-assignment-teacher-id') #section-assignment-teacher-id
+        page.find('#section-assignment-teacher-id option', text: @teacher1.full_name).select_option
         page.click_button('Save')
       end
+      page.find('a#expand-all-tbodies', wait: 5).click
       page.find("#page-content table tbody tr td.sect-section", text: 'With Teacher', wait: 5)
       page.all("td.sect-teacher a", text: @teacher1.full_name, count: 4)
 
-      # edit section - change line_number and add teacher assignment
+      # edit section - add teacher assignment
       page.should have_css("a[data-url='/sections/#{@section2_1.id}/edit.js']")
       find("a[data-url='/sections/#{@section2_1.id}/edit.js']").click
-      within("tr#sect_#{@section2_1.id}") do
-        page.should have_content(@section2_1.line_number)
-      end
-      within('#modal-body') do
-        page.should have_content(@section2_1.subject.full_name)
-        page.should have_selector("#section_line_number[value='#{@section2_1.line_number}']", wait: 5)
-        page.find('input#section_line_number', wait: 5).set('Added Teacher')
-        select(@teacher1.name, from: '#section-assignment-teacher-id')
-
-        within("#section_school_year_id") {page.should have_content("#{@section2_1.school_year.name}")}
-        page.click_button('Save')
-        sleep 1
-      end
-      within("tr#sect_#{@section2_1.id}") do
-        page.should have_content("Added Teacher")
-        page.find("td.sect-teacher a").value.should equal(@teacher1.full_name)
-      end
-      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 5)
-
-      # edit section - change line_number and add teacher assignment
-      page.should have_css("a[data-url='/sections/#{@section2_1.id}/edit.js']")
-      find("a[data-url='/sections/#{@section2_1.id}/edit.js']").click
+      page.find("tr#sect_#{@section2_1.id}", wait: 5)
       within("tr#sect_#{@section2_1.id}") do
         page.should have_content(@section2_1.line_number)
       end
       within('#modal-body') do
         page.should have_content(@section2_1.subject.name)
         page.should have_selector("#section_line_number[value='#{@section2_1.line_number}']", wait: 5)
-        page.find('input#section_line_number', wait: 5).set('Added Teacher')
-        select(@teacher1.name, from: '#section-assignment-teacher-id')
+        # page.find('input#section_line_number', wait: 5).set('Added Teacher')
+        page.find('#section-assignment-teacher-id option', text: @teacher1.full_name).select_option
 
         within("#section_school_year_id") {page.should have_content("#{@section2_1.school_year.name}")}
         page.click_button('Save')
-        sleep 1
       end
+      page.find('a#expand-all-tbodies', wait: 5).click
       within("tr#sect_#{@section2_1.id}") do
-        page.should have_content("Added Teacher")
-        page.find("td.sect-teacher a").value.should equal(@teacher1.full_name)
+        page.should have_content(@section2_1.line_number)
+        page.find("td.sect-teacher a").text.should eq(@teacher1.full_name)
       end
       page.all("td.sect-teacher a", text: @teacher1.full_name, count: 5)
+
+      # edit section - remove teacher assignment
+      page.should have_css("a[data-url='/sections/#{@section2_1.id}/edit.js']")
+      find("a[data-url='/sections/#{@section2_1.id}/edit.js']").click
+      page.find("tr#sect_#{@section2_1.id}", wait: 5)
+      within("tr#sect_#{@section2_1.id}") do
+        page.should have_content(@section2_1.line_number)
+      end
+      within('#modal-body') do
+        page.should have_content(@section2_1.subject.name)
+        page.should have_selector("#section_line_number[value='#{@section2_1.line_number}']", wait: 5)
+        page.find('input.remove-teacher').set(true)
+        page.click_button('Save')
+      end
+      page.find('a#expand-all-tbodies', wait: 5).click
+      page.all("td.sect-teacher a", text: @teacher1.full_name, count: 4)
 
 
 
