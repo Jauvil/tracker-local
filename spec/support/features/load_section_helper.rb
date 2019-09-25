@@ -427,6 +427,12 @@ module Features
     end
   end
 
+  def reset_school_acronym_and_name(school, acronym, name)
+    school.acronym = acronym
+    school.name = name
+    school.save
+  end
+
   def get_std_prior_school_year_name
     # see factories.rb::prior_school_year
     return "#{Time.now.year-1}-#{Time.now.year}"
