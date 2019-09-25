@@ -152,10 +152,13 @@ module UsersHelper
       case posit.split('-')[0].upcase
       when 'T'
         # set_role(new_staff, 'teacher', true)
+        new_staff.teacher = true
       when 'A'
         # set_role(new_staff, 'school_administrator', true)
+        new_staff.school_administrator = true
       when 'C'
         # set_role(new_staff, 'counselor', true)
+        new_staff.counselor = true
       else
         raise('Invalid Role')
       end

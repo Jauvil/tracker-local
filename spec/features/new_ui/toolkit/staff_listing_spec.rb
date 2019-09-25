@@ -450,6 +450,7 @@ describe "Staff Listing", js:true do
         page.should have_css("i.fa-plus-square")
         page.should have_css("a[data-url='/users/new/new_staff'] i.fa-plus-square")
         page.find("a[data-url='/users/new/new_staff']").click
+        page.should have_css("a#upload-staff")
       end
 
       within("#modal_popup") do
@@ -505,12 +506,67 @@ describe "Staff Listing", js:true do
       # check of counts of users who are active or deactivated
       page.all("tbody.tbody-body tr.active").length.should == 4
       page.all("tbody.tbody-body tr.deactivated").length.should == 1
+
+      #Setup for bulk upload tests
+      store_school_data = [@school.acronym, @school.name]
+      reset_school_acronym_and_name(@school, "TEST", "Factory School")
+      upload_table_columns = ['Line', 'Username', 'First Name', 'Acronym', 'Email', 'Position', 'Errors']
+      
+      ##############################
+      # Check Bulk Upload Staff is working for valid .csv file in preview mode
+      # ############################
+      
+      #visit bulk upload file selection page 
+      do_bulk_upload(true) #in_preview_mode == true
+
+      page.should have_content("Staff Bulk Upload")
+      page.should have_css("div.upload-output#show-details .table-title")
+      page.should_not have_css("#show-errors h3.ui-error.text-right")
+      page.should_not have_css("td span.ui-error")
+      upload_table_columns.each do |col_name|
+        page.should have_css('th', text: col_name)
+      end
+
+      ##############################
+      # Check Bulk Upload Staff is working for valid .csv file in save mode
+      # ############################
+      
+      do_bulk_upload(false) #in_preview_mode == false
+      page.find('.show_report_btn', text: "Show entered report").click
+      
+      page.should have_content("Staff Bulk Upload")
+      page.should have_css("div.upload-output#show-details .table-title")
+      page.should_not have_css("#show-errors h3.ui-error.text-right")
+      page.should_not have_css("td span.ui-error")
+      upload_table_columns.each do |col_name|
+        page.should have_css('th', text: col_name)
+      end
+
+      visit staff_listing_users_path
+      page.find("tr", text: "Fahmy Hamada school_administrator").should have_content("principal@stemegypt.edu.eg")
+      page.find("tr", text: "Abbas Naeem Mahmoud teacher").should have_content("mahmoud.abbas@stemegypt.edu.eg")
+
+      # undo setup for bulk upload tests to avoid duplicate school names and acronyms
+      reset_school_acronym_and_name(@school, store_school_data[0], store_school_data[1])
+
     else # not an administrator, cannot add new staff
       within("#page-content #button-block") do
         page.should_not have_css("i.fa-plus-square")
         page.should_not have_css("a[data-url='/users/new/new_staff'] i.fa-plus-square")
+        page.should_not have_css("a#upload-staff")
       end
     end
   end # def has_valid_subjects_listing
+
+  def do_bulk_upload(in_preview_mode)
+      visit staff_listing_users_path
+      page.find("a#upload-staff").click
+
+      #attach csv file to form and show 'Preview' option
+      page.attach_file('file', File.join(Rails.root, '/spec/fixtures/files/StaffDataUploadValidForTest.csv'))
+      page.execute_script("$('#show-upload').show()")
+      page.find('#show-upload input[type=checkbox]').set(in_preview_mode)
+      page.find('button#upload').click
+  end
 
 end
