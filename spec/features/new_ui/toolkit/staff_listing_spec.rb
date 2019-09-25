@@ -543,8 +543,16 @@ describe "Staff Listing", js:true do
       end
 
       visit staff_listing_users_path
-      page.find("tr", text: "Fahmy Hamada school_administrator").should have_content("principal@stemegypt.edu.eg")
-      page.find("tr", text: "Abbas Naeem Mahmoud teacher").should have_content("mahmoud.abbas@stemegypt.edu.eg")
+      within("tr", text: "Fahmy") do 
+        page.should have_content("Hamada")
+        page.should have_content("school_administrator")
+        page.should have_content("principal@stemegypt.edu.eg")
+      end 
+      within("tr", text: "Abbas Naeem") do 
+        page.should have_content("Mahmoud")
+        page.should have_content("teacher")
+        page.should have_content("mahmoud.abbas@stemegypt.edu.eg")
+      end 
 
       # undo setup for bulk upload tests to avoid duplicate school names and acronyms
       reset_school_acronym_and_name(@school, store_school_data[0], store_school_data[1])
