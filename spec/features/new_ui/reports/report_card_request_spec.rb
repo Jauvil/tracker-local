@@ -70,11 +70,6 @@ describe "ReportCardRequest", js:true do
 
 		it 'cause delayed_job to send recieved and no student messages' do
 			@grade = 5
-			# select @grade.to_s, from: 'report_card_request_grade_level'
-			# find("input[value='Request Report Card']").click
-			 # p = ReportCardProcessor.new(@school.id, @grade, @school_administrator.email, @school_administrator.full_name, "")
-    #          p.generate
-    #          ReportCardMailer.delay(priority: 0).request_recieved_email(@school_administrator.email,@grade,@school_administrator.full_name,@school)
 
             generate_report_card_for_grade @grade
 			#kick off delayed jobs

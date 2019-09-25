@@ -29,10 +29,10 @@ class ReportCardProcessor
 				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
 			Rails.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
-			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] An unknown error occured when attempting to create report cards for:
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] An unknown error occured when attempting to create report cards for:
 				SCHOOL_NAME: #{@school.name} ; GRADE_LEVEL: #{@grade}, REQUESTED_BY: #{@email}")
-			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
-			Delayed::Worker.logger.debug("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] EXCEPTION: #{e}")
+			Delayed::Worker.logger.error("[#{Time.now}] [REPORT_CARDS] #{e.backtrace}")
 
 			ReportCardMailer.generic_exception_email(@email,@grade,@full_name,@school).deliver_now
 		ensure
