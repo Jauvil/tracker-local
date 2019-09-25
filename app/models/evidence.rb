@@ -76,7 +76,7 @@ class Evidence < ActiveRecord::Base
   end
 
   def hash_of_evidence_ratings
-    return_value      = Hash.new { |h,k| h[k] = Hash.new({rating: "", comment: "", id: false}) }
+    return_value      = Hash.new { |h,k| h[k] = Hash.new({rating: "", comment: "", id: 0}) }
     evidence_ratings  = evidence_section_outcome_ratings
     evidence_ratings.each do |e|
       return_value[e.student_id][e.evidence_section_outcome_id] = {rating: e[:rating], comment: e[:comment], id: e.id}
