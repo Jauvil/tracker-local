@@ -124,6 +124,7 @@ FactoryBot.define do
     school_common_attributes
     #automagically set the school year for this school
     after(:create) do |school|
+      # note: @prior_school_year and @current_school_year are not available in tests
       @prior_school_year = FactoryBot.create(:prior_school_year, school: school)
       school_year = @current_school_year = FactoryBot.create(:current_school_year, school: school)
       school.current_school_year=school_year
@@ -141,6 +142,7 @@ FactoryBot.define do
     school_common_attributes
     #automagically set the school year for this school
     after(:create) do |school|
+      # note: @prior_school_year and @current_school_year are not available in tests
       prior_school_year = @prior_school_year = FactoryBot.create(:prior_school_year, school: school)
       @current_school_year = FactoryBot.create(:current_school_year, school: school)
       school.current_school_year=prior_school_year

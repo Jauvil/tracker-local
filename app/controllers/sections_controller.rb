@@ -107,7 +107,7 @@ class SectionsController < ApplicationController
           if !tapv[:id]
             # tapv[:section_id] = @section.id
             tapv_rec = TeachingAssignment.new()
-            tapv_rec.section_id = @section_id
+            tapv_rec.section_id = @section.id
             tapv_rec.teacher_id = tapv[:teacher_id]
             @teaching_assignment = tapv_rec.save
           end
@@ -162,7 +162,7 @@ class SectionsController < ApplicationController
               if !tapv[:id]
                 # tapv[:section_id] = @section.id
                 tapv_rec = TeachingAssignment.new()
-                tapv_rec.section_id = @section_id
+                tapv_rec.section_id = @section.id
                 tapv_rec.teacher_id = tapv[:teacher_id]
                 @teaching_assignment = tapv_rec.save
               else

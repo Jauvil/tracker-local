@@ -5,7 +5,7 @@ describe "Staff Listing", js:true do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
       create_and_load_us_model_school
-      @school = FactoryBot.create :school, :us
+      @school = FactoryBot.create :school_prior_year, :us
       @teacher = FactoryBot.create :teacher, school: @school
       @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
       @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
@@ -18,6 +18,11 @@ describe "Staff Listing", js:true do
       @researcher = FactoryBot.create :researcher
       # to do - requirements for who can see and edit counselors
       @counselor = FactoryBot.create :counselor, school: @school
+
+      # go to new year
+      set_current_school_year(@school)
+      @sectiony2 = FactoryBot.create :section, subject: @subject
+      load_test_section_yr2(@sectiony2, @teacher)
     end
     describe "as teacher" do
       before do
@@ -76,7 +81,7 @@ describe "Staff Listing", js:true do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: false
       create_and_load_arabic_model_school
-      @school = FactoryBot.create :school, :arabic
+      @school = FactoryBot.create :school_prior_year, :arabic
       @teacher = FactoryBot.create :teacher, school: @school
       @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
       @subject = FactoryBot.create :subject, school: @school, subject_manager: @teacher
@@ -89,6 +94,12 @@ describe "Staff Listing", js:true do
       @researcher = FactoryBot.create :researcher
       # to do - requirements for who can see and edit counselors
       @counselor = FactoryBot.create :counselor, school: @school
+
+      # go to new year
+      set_current_school_year(@school)
+      @sectiony2 = FactoryBot.create :section, subject: @subject
+      load_test_section_yr2(@sectiony2, @teacher)
+
     end
     describe "as teacher" do
       before do
@@ -190,6 +201,9 @@ describe "Staff Listing", js:true do
         page.should have_content("#{@teacher.last_name}")
         page.should have_content("#{@teacher.first_name}")
         page.should have_content("#{@teacher.email}")
+        within("td.user-assignment-count") do
+          page.should have_content("1")
+        end
       end
     end
     ########################
