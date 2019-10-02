@@ -7,7 +7,7 @@ describe "User can change password", js:true do
     create_and_load_arabic_model_school
 
     @school1 = FactoryBot.create :school, :arabic
-    @teacher1 = FactoryBot.create :teacher, school: @school1
+    @teacher1 = FactoryBot.create :teacher, school: @school1, email: 'teach@example.com'
     @subject1 = FactoryBot.create :subject, school: @school1, subject_manager: @teacher
     @section1_1 = FactoryBot.create :section, subject: @subject1
     @discipline = @subject1.discipline
@@ -29,7 +29,7 @@ describe "User can change password", js:true do
 
   describe "as school administrator" do
     before do
-      @school_administrator = FactoryBot.create :school_administrator, school: @school1
+      @school_administrator = FactoryBot.create :school_administrator, school: @school1, email: 'schadmin@test.org'
       @school_administrator.temporary_password='temporary'
       @school_administrator.save
       sign_in(@school_administrator)
@@ -68,6 +68,7 @@ describe "User can change password", js:true do
   describe "as student" do
     before do
       @student.temporary_password='temporary'
+      @student.email = 'test@example.com'
       @student.save
       sign_in(@student)
       @username = @student.username
@@ -92,6 +93,7 @@ describe "User can change password", js:true do
 
   def can_login_first_time_and_reset_pwd(user, edit_student=false, edit_staff=false)
     # Note: user at change password page because there was a temporary password
+    user_email = user.email
     assert_equal("/users/#{user.id}/change_password", current_path)
     page.fill_in 'user_password', :with => 'newpassword'
     page.fill_in 'user_password_confirmation', :with => 'newpassword'
@@ -100,6 +102,13 @@ describe "User can change password", js:true do
     page.fill_in 'user_username', :with => @username
     page.fill_in 'user_password', :with => 'newpassword'
     find("input[name='commit']").click
+
+    #Reload test user's record from the database,
+    #then check to see if the password reset process
+    #erased their email.
+    user.reload
+    assert_equal(user_email, user.email)
+    
     if edit_student
       # if user has to pick a school, pick it and go to home page
       if !user.school_id.present?
@@ -161,7 +170,6 @@ describe "User can change password", js:true do
 
       # logout and back in as student, to confirm logging in with new password works correctly
       @student.reload
-      student_email = @student.email
       page.find('#modal_popup #modal_content button', text: 'Close').click
 
       sleep 1
@@ -183,10 +191,7 @@ describe "User can change password", js:true do
       find("input[name='commit']").click
 
       assert_equal("/students/#{@student.id}", current_path)
-      @student.reload
-      skip 'Cannot see assert_equal(student_email, @student.email)' do
-        assert_equal(student_email, @student.email)  # ToDo-what page is this?
-      end
+      
 
       # log back in as user
       page.find("#main-container header .dropdown-toggle").click
