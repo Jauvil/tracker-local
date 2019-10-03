@@ -1,4 +1,30 @@
 i = 0
+#Give broader unicode support by adding fonts (must be .ttf files).
+#To include the font family in the pdf, font files must be added 
+#to the tracker/app/assets/fonts directory. 
+font_families.update("Amiri" => { #Amiri: Arabic font
+    :normal => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Regular.ttf",
+    :italic => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Italic.ttf",
+    :bold => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Bold.ttf",
+    :bold_italic => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-BoldItalic.ttf"
+  }, 
+  # M_PLUS_1p: Supports Cyrillic (extended), Greek (extended), Hebrew, Japanese, Latin (Extended), Vienamese
+  "M_PLUS_1p" => {
+    :normal => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Regular.ttf",
+    :italic => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Light.ttf",
+    :bold => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Bold.ttf",
+    :bold_italic => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-ExtraBold.ttf"
+  },
+  # ZCOOL_XiaoWei: Chinese (simplified) font
+  "ZCOOL_XiaoWei" => {
+    :normal => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+    :italic => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+    :bold => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+    :bold_italic => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf"
+})
+
+#Set fallback fonts to use if Prawn's default font does not recognize a unicode character.
+pdf.fallback_fonts ["Amiri", "M_PLUS_1p", "ZCOOL_XiaoWei"]
 @students.each do |student|
   if params[:student_id].include? student.id.to_s
     pdf.start_new_page unless i == 0
