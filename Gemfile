@@ -25,7 +25,7 @@ gem 'rack-ssl', require: 'rack/ssl'
 
 # Database!
 gem 'mysql2', group: :production
-gem 'sqlite3', '~> 1.4.1', group: [:development, :test]
+gem 'sqlite3', '~> 1.3.6', group: [:development, :test]
 
 # gem 'cancan'          # Authorization : See /app/models/ability.rb
 gem 'cancancan', '~> 3.0.1'
