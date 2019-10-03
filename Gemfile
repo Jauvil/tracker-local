@@ -1,30 +1,31 @@
   source 'http://rubygems.org'
 
-  gem 'rails', '~> 4.2.10'
+  gem 'rails', '5.0.7.2'
   # gem 'railties',  '~> 4.1.11'
   # gem 'passenger', '~> 3.0.21'       # Production web server.
 
   # Use unicorn as the app server
 	# gem 'unicorn'
 
-  gem 'whenever','~> 0.11', require: false
-  gem 'rake', '< 11.0' # 10.5.0
+  gem 'whenever', '~> 1.0.0', require: false
+  gem 'rake', '~> 13.0.0'
 
-  gem 'sass-rails', '~> 5.0'
+  gem 'sass-rails', '~> 6.0.0'
   #   # See https://github.com/rails/execjs#readme for more supported runtimes
   gem 'therubyracer', :platforms => :ruby
   gem 'uglifier', '>= 1.3.0'
-  gem 'coffee-rails', '~> 4.1.0' # was 4.2.2
+  gem 'coffee-rails', '~> 4.2.2'
   # LESS compilation also out of asset pipeline to avoid missing vendor stylesheets
   gem 'less-rails'
 
+gem 'rails-dom-testing', '~> 2.0.3'
 
 # SSL implementation
 gem 'rack-ssl', require: 'rack/ssl'
 
 # Database!
 gem 'mysql2', group: :production
-gem 'sqlite3', '~> 1.3.0', group: [:development, :test]
+gem 'sqlite3', '~> 1.4.1', group: [:development, :test]
 
 # gem 'cancan'          # Authorization : See /app/models/ability.rb
 gem 'cancancan', '~> 3.0.1'
@@ -36,9 +37,9 @@ gem 'prawn', '~> 2.2.2'           # Serve dynamically generated PDF's
 gem "prawnto_2", '~> 0.3.0', :require => "prawnto"
 gem 'prawn-table', '~> 0.2.2'
 gem 'axlsx_rails'
-gem 'delayed_job_active_record', "~> 4.0.0"
-gem "daemons", "~> 1.1.9" # needed to run delayed_job in production as daemon process.
-gem 'faker', '~> 1.0.1'    # Generate fake strings, names etc for populating random data.
+gem 'delayed_job_active_record', '~> 4.1.4'
+gem "daemons", '~> 1.3.1' # needed to run delayed_job in production as daemon process.
+gem 'faker', '~> 2.5.0'   # Generate fake strings, names etc for populating random data.
 gem 'text'
 
 # Application Monitoring / performance
@@ -55,20 +56,22 @@ gem 'gretel', '~> 3.0.9'    # breadcrumbs ( last release for this gem )
 
 gem 'fastthread', '~> 1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 
-gem 'nokogiri', '~> 1.6.3.1'
-gem 'rack-cache', '~> 1.6.1'
-gem 'devise' , '~> 4.6.2'   # Authentication
+gem 'nokogiri', '~> 1.10.4'
+gem 'rack-cache', '~> 1.9.0'
+gem 'devise', '~> 4.7.1'  # Authentication
 
 # respond_with and the class-level respond_to methods have been extracted to the responders gem
-gem 'responders', '~> 2.0'
+gem 'responders', '~> 3.0.0'
 
 group :test do
   gem 'rspec-rails', '~> 3.8.2'
   # gem 'webdrivers'
   # gem 'chromedriver-helper'
   gem 'geckodriver-helper'
+
+  #Capybara not updated for the 5.0 upgrade- concern for test system stability. Update as needed.
   gem 'capybara', '~> 2.18.0'
-  gem 'selenium-webdriver', '~> 3.8.0'
+  gem 'selenium-webdriver', '~> 3.142.5'
   gem 'factory_bot_rails', require: false
   gem 'guard-rspec'
   gem 'simplecov', require: false
@@ -83,21 +86,24 @@ group :development, :test do
 end
 
 group :development do
-  gem 'letter_opener', '~> 1.1.2'
-  gem 'launchy', '~> 2.3.0'
-  gem 'addressable', '~> 2.3.5'
+  gem 'letter_opener', '~> 1.7.0'
+  gem 'launchy', '~> 2.4.3'
+  gem 'addressable', '~> 2.7.0'
+
+  #capistrono (-rails & -rvm) not updated for the 5.0 upgrade- concern for deployment stability. Update as needed.
   gem 'capistrano', '3.0.1'
   gem 'capistrano-rails', '1.1.0'
   gem 'capistrano-rvm', '0.0.3'
-  gem 'sshkit', '1.3.0'
+
+  gem 'sshkit', '~> 1.20.0'
   # gem to help manage version upgrades (recommended by ombu labs)
-  # gem 'ten_years_rails', '~> 0.2.0'
+  gem 'ten_years_rails', '~> 0.2.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.7.0'
 
 end
 
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0',          group: :doc
+gem 'sdoc', '1.0.0',         group: :doc
