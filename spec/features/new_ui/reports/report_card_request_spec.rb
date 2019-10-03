@@ -28,6 +28,10 @@ describe "ReportCardRequest", js:true do
 	    @school_administrator = create :school_administrator, school: @school, email: 'admin@example.com'
 	    @teacher = FactoryBot.create :teacher, school: @school
 	    @teacher_deact = FactoryBot.create :teacher, school: @school, active: false
+	    
+	    #A student and evidence section outcome ratings from the test 
+	    #section being loaded are used for  the test: 'Generate report card, 
+	    #grade level has student with multilingual comments'
 	    load_test_section(@section, @teacher)
 	end
 
@@ -40,6 +44,60 @@ describe "ReportCardRequest", js:true do
 			ActionMailer::Base.deliveries.clear
 			@grade = 3
 		    @student = create :student, school: @school, grade_level: @grade
+			sign_in @school_administrator
+		end
+
+		it 'cause delayed_job to send recieve and completed messages' do
+			generate_report_card_for_grade @grade
+
+			#kick off delayed jobs
+			@successes, @failures = Delayed::Worker.new.work_off
+
+			@successes.should == 2
+			@failures.should  == 0
+			ActionMailer::Base.deliveries.size.should == 2
+			ActionMailer::Base.deliveries.first.subject.should == "Recieved: Grade #{@grade} Report Card Request"
+			ActionMailer::Base.deliveries.last.subject.should  == "Completed: Grade #{@grade} Report Card Request"
+			ActionMailer::Base.deliveries.last.attachments.count.should == 1
+		end
+	end
+
+	#Currently tests for multiligual support for the following scripts: 
+	#Arabic, Chinese (simplified), Extended Cyrilic, Extended Greek, Hebrew, 
+	#Japanese, and Vietnamese
+	#
+	#Because Prawn did not have built-in support for Arabic script, report cards
+	#with Arabic text in them were failing to be built. 
+	#To Do: Consider refactoring the multiligual comment to a new file, so that 
+	#test text for new languages to be supported can be added in one place across 
+	#tests.
+	describe 'Generate report card, grade level has student with multilingual comments' do
+		before do
+			# we must clear the email queue first
+			ActionMailer::Base.deliveries.clear
+			@grade = 4
+		    @student = create :student, school: @school, grade_level: @grade
+		    #give @student2 (loaded with the method: load_test_section)
+		    @student2.grade_level = @grade
+			@student2.save
+
+		    multilingual_comment = "تطبيق القواعد النحوية
+		    红色火光映出锯齿形机翼的轮廓。
+		    З гучномовця над дверима скрипів записаний голос. 
+		    גלים התנפצו אל תוך הערב הכחול.
+		    Οι δύο φύσεις μου είχαν κοινές μνήμες
+		    そして夜空に最初の流れ星が現れた。
+		    Ging nói đu kia gào vào chic loa trên ca."
+		    
+		    #get EvidenceSectionOutcomeRatings for @student2
+		    student2_esor = EvidenceSectionOutcomeRating.where(:student_id => @student2.id)
+
+		    #give all of @student2's EvidenceSectionOutcomeRatings multilingual comments
+		    student2_esor.each do |esor|
+		      esor.comment = multilingual_comment
+		      esor.save
+		    end
+
 			sign_in @school_administrator
 		end
 
