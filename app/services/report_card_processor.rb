@@ -71,146 +71,165 @@ class ReportCardProcessor
 
 	    school_year_name = SchoolYear.find(@school.school_year_id).name
 	    Prawn::Document.generate(pdf_output_file) do |pdf|
+	    	
+	      #Give broader unicode support by adding fonts (must be .ttf files).
+		  #To include the font family in the pdf, font files must be added 
+		  #to the tracker/app/assets/fonts directory. 
+		  pdf.font_families.update("Amiri" => { #Amiri: Arabic font
+		    :normal => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Regular.ttf",
+		    :italic => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Italic.ttf",
+		    :bold => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-Bold.ttf",
+		    :bold_italic => "#{Rails.root}/app/assets/fonts/Amiri/Amiri-BoldItalic.ttf"
+		  }, 
+		  # M_PLUS_1p: Supports Cyrillic (extended), Greek (extended), Hebrew, Japanese, Latin (Extended), Vienamese
+		  "M_PLUS_1p" => {
+		    :normal => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Regular.ttf",
+		    :italic => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Light.ttf",
+		    :bold => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-Bold.ttf",
+		    :bold_italic => "#{Rails.root}/app/assets/fonts/M_PLUS_1p/MPLUS1p-ExtraBold.ttf"
+		  },
+		  # ZCOOL_XiaoWei: Chinese (simplified) font
+		  "ZCOOL_XiaoWei" => {
+		    :normal => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+		    :italic => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+		    :bold => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf",
+		    :bold_italic => "#{Rails.root}/app/assets/fonts/ZCOOL_XiaoWei/ZCOOLXiaoWei-Regular.ttf"
+		  })
+
+		  #Set fallback fonts to use if Prawn's default font does not recognize a unicode character.
+		  pdf.fallback_fonts ["Amiri", "M_PLUS_1p", "ZCOOL_XiaoWei"]
+
 	      students.each do |student|
-	      	pdf.font_families.update("Katibeh" => {
-			    :normal => "#{Rails.root}/app/assets/fonts/Katibeh/Katibeh-Regular.ttf",
-			    :italic => "#{Rails.root}/app/assets/fonts/Katibeh/Katibeh-Regular.ttf",
-			    :bold => "#{Rails.root}/app/assets/fonts/Katibeh/Katibeh-Regular.ttf",
-			    :bold_italic => "#{Rails.root}/app/assets/fonts/Katibeh/Katibeh-Regular.ttf"
-  			})
+	      # Draw Summary Page
+	        draw_header pdf, student, school_year_name
+	        pdf.move_cursor_to 702
+	        pdf.text "#{student.last_name_first}", size: 10
+	        pdf.text "#{student.street_address}", size: 10
+	        pdf.text "#{student.city}, #{student.state} #{student.zip_code}", size: 10
+	        pdf.text "Phone: #{student.phone.present? ? student.phone : '(unavailable)'}", size: 10
+	        # Summary Page Body
+	        pdf.move_cursor_to 670
+	        pdf.text "Summary Page", size: 13, align: :center, style: :bold
+	        pdf.move_down 4
+	        # Attendance commented out 11/26/2012 because it could be left blank for this report. Added students' parent
+	        # account information instead.
+	        # Attendance
+	        # pdf.text "Attendance Information", size: 11, align: :center, style: :bold
+	        # pdf.move_down 4
+	        # pdf.text "Mastery Level: #{student.mastery_level.present? ? student.mastery_level : '(unavailable)'}", size: 10
+	        # pdf.text "Attendance Rate: #{'%2.2f' % ((student.attendance_rate || 0) / 100) }%", size: 10
+	        # pdf.text "Absences: #{student.absences.to_i}", size: 10
+	        # pdf.text "Tardies: #{student.tardies.to_i}", size: 10
+	        pdf.move_down 4
+	        pdf.text "Parent Account Information", size: 9, align: :left, style: :bold
+	        pdf.move_down 4
+	        pdf.text "The account information below can be used to view your student's academic progress at <color rgb='#4466bb'>#{@url}</color>", size: 10, inline_format: true
+	        pdf.text "<b>Username:</b> <i>#{student.parent.try(:username)}</i>", size: 10, inline_format: true
+	        if student.parent.try(:temporary_password).present?
+	          pdf.text "<b>Temporary Password:</b> <i>#{student.parent.temporary_password}</i>", size: 10, inline_format: true
+	        else
+	          pdf.text "Password already set by parent.", size: 10
+	        end
 
-  			pdf.font("Katibeh") do
-	      		# Draw Summary Page
-		        draw_header pdf, student, school_year_name
-		        pdf.move_cursor_to 702
-		        pdf.text "#{student.last_name_first}", size: 10
-		        pdf.text "#{student.street_address}", size: 10
-		        pdf.text "#{student.city}, #{student.state} #{student.zip_code}", size: 10
-		        pdf.text "Phone: #{student.phone.present? ? student.phone : '(unavailable)'}", size: 10
-		        # Summary Page Body
-		        pdf.move_cursor_to 670
-		        pdf.text "Summary Page", size: 13, align: :center, style: :bold
-		        pdf.move_down 4
-		        # Attendance commented out 11/26/2012 because it could be left blank for this report. Added students' parent
-		        # account information instead.
-		        # Attendance
-		        # pdf.text "Attendance Information", size: 11, align: :center, style: :bold
-		        # pdf.move_down 4
-		        # pdf.text "Mastery Level: #{student.mastery_level.present? ? student.mastery_level : '(unavailable)'}", size: 10
-		        # pdf.text "Attendance Rate: #{'%2.2f' % ((student.attendance_rate || 0) / 100) }%", size: 10
-		        # pdf.text "Absences: #{student.absences.to_i}", size: 10
-		        # pdf.text "Tardies: #{student.tardies.to_i}", size: 10
-		        pdf.move_down 4
-		        pdf.text "Parent Account Information", size: 9, align: :left, style: :bold
-		        pdf.move_down 4
-		        pdf.text "The account information below can be used to view your student's academic progress at <color rgb='#4466bb'>#{@url}</color>", size: 10, inline_format: true
-		        pdf.text "<b>Username:</b> <i>#{student.parent.try(:username)}</i>", size: 10, inline_format: true
-		        if student.parent.try(:temporary_password).present?
-		          pdf.text "<b>Temporary Password:</b> <i>#{student.parent.temporary_password}</i>", size: 10, inline_format: true
-		        else
-		          pdf.text "Password already set by parent.", size: 10
-		        end
+	        # start evidence ratings summary by subject
+	        pdf.move_down 6
+	        pdf.text "Evidence Ratings Summary By Subject", size: 11, align: :center, style: :bold
+	        data = [
+	        	["Subject", "Teacher Name(s)", "# B", "# G", "# Y", "# R", "# Ratings", "# Possible Ratings"]
+	        ]
+	        student.sections.current.each do |section|
+	          ratings = student.count_of_section_evidence_section_outcome_ratings section.id
+	          data << [section.subject.name, section.teacher_names, ratings["B"], ratings["G"], ratings["Y"], ratings["R"], ratings["B"] + ratings["G"] + ratings["Y"] + ratings["R"], section.count_of_rated_evidence_section_outcomes]
+	        end
+	        if not data.empty?
+	          pdf.table data, position: :center, cell_style: {:size => 9}, column_widths: { 0 => 180, 1 => 140, 2 => 25, 3 => 25, 4 => 25, 5 => 25, 6 => 60, 7 => 60 }, header: true do
+	          	(2..7).each do |i|
+	          	  column(i).style(:align => :center)
+	            end
+	          end
+	        else
+	          pdf.text "<i>(Not Available)</i>", align: :center, inline_format: true
+	        end
+	        # end evidence ratings sumary by subject
 
-		        # start evidence ratings summary by subject
-		        pdf.move_down 6
-		        pdf.text "Evidence Ratings Summary By Subject", size: 11, align: :center, style: :bold
-		        data = [
-		        	["Subject", "Teacher Name(s)", "# B", "# G", "# Y", "# R", "# Ratings", "# Possible Ratings"]
-		        ]
-		        student.sections.current.each do |section|
-		          ratings = student.count_of_section_evidence_section_outcome_ratings section.id
-		          data << [section.subject.name, section.teacher_names, ratings["B"], ratings["G"], ratings["Y"], ratings["R"], ratings["B"] + ratings["G"] + ratings["Y"] + ratings["R"], section.count_of_rated_evidence_section_outcomes]
-		        end
-		        if not data.empty?
-		          pdf.table data, position: :center, cell_style: {:size => 9}, column_widths: { 0 => 180, 1 => 140, 2 => 25, 3 => 25, 4 => 25, 5 => 25, 6 => 60, 7 => 60 }, header: true do
-		          	(2..7).each do |i|
-		          	  column(i).style(:align => :center)
-		            end
-		          end
-		        else
-		          pdf.text "<i>(Not Available)</i>", align: :center, inline_format: true
-		        end
-		        # end evidence ratings sumary by subject
+	        # start LO ratings legend
+	        pdf.move_down 14
+	        pdf.text "Learning Outcome Ratings Legend", size: 12, align: :center, style: :bold
+	        pdf.text "<i>Learning Outcomes appear in bold with the rating to the left. The related evidence appears underneath.</i>", size: 10, align: :center, inline_format: true
+	        pdf.table [
+	          ["Letter", "What it equals", "What does that mean?"],
+	          ["H", "High Performance", "Student has demonstrated competence on a particular learning outcome that extends beyond proficient."],
+	          ["P", "Proficient", "Student has demonstrated competence on a particular learning outcome."],
+	          ["N", "Not Yet Proficient", "Student has demonstrated a limited understanding of this particular learning outcome."],
+	          ["U", "Unrated", "There is not enough evidence to rate the student on this learning outcome at this time."]
+	        ], column_widths: { 0 => 40, 1 => 110, 2 => 390}, cell_style: {:size => 9}, header: true
+	        pdf.move_down 8
+	        pdf.horizontal_rule
+	        pdf.stroke
+	        pdf.move_down 2
+	        pdf.text "<b>Sample Ratings</b>", align: :center, size: 9, inline_format: true
+	        pdf.text "<i>*<u>    U    </u> 8. Follow and evaluate the logic and reasoning of the text, including assessing whether the evidence provided is sufficient to support the claims.</i>", size: 9, style: :bold, inline_format: true
+	        pdf.indent(20) do
+	          pdf.table [
+	            ["Research Grouping", "Y"],
+	            ["Identify Thesis-Supporting Detail", "G"]
+	          ], column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 9, :border_width => 0}
+	        end
+	        pdf.move_down 2
+	        pdf.horizontal_rule
+	        pdf.stroke
+	        # end LO ratings legend
 
-		        # start LO ratings legend
-		        pdf.move_down 14
-		        pdf.text "Learning Outcome Ratings Legend", size: 12, align: :center, style: :bold
-		        pdf.text "<i>Learning Outcomes appear in bold with the rating to the left. The related evidence appears underneath.</i>", size: 10, align: :center, inline_format: true
-		        pdf.table [
-		          ["Letter", "What it equals", "What does that mean?"],
-		          ["H", "High Performance", "Student has demonstrated competence on a particular learning outcome that extends beyond proficient."],
-		          ["P", "Proficient", "Student has demonstrated competence on a particular learning outcome."],
-		          ["N", "Not Yet Proficient", "Student has demonstrated a limited understanding of this particular learning outcome."],
-		          ["U", "Unrated", "There is not enough evidence to rate the student on this learning outcome at this time."]
-		        ], column_widths: { 0 => 40, 1 => 110, 2 => 390}, cell_style: {:size => 9}, header: true
-		        pdf.move_down 8
-		        pdf.horizontal_rule
-		        pdf.stroke
-		        pdf.move_down 2
-		        pdf.text "<b>Sample Ratings</b>", align: :center, size: 9, inline_format: true
-		        pdf.text "<i>*<u>    U    </u> 8. Follow and evaluate the logic and reasoning of the text, including assessing whether the evidence provided is sufficient to support the claims.</i>", size: 9, style: :bold, inline_format: true
-		        pdf.indent(20) do
-		          pdf.table [
-		            ["Research Grouping", "Y"],
-		            ["Identify Thesis-Supporting Detail", "G"]
-		          ], column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 9, :border_width => 0}
-		        end
-		        pdf.move_down 2
-		        pdf.horizontal_rule
-		        pdf.stroke
-		        # end LO ratings legend
+	        #start evidence ratings legend
+	        pdf.move_down 14
+	        pdf.text "Evidence Ratings Legend", size: 11, align: :center, style: :bold
+	        pdf.text "<i>Evidence appears under the learning outcomes with the rating to the right.</i>", size: 10, align: :center, inline_format: true
+	        pdf.table [
+	          ["What you see", "What it equals", "Letter", "What does that mean?"],
+	          ["Blue (B)", "High Performing", "B", "Student has demonstrated competence on a particular piece of evidence that extends beyond proficient."],
+	          ["Green (G)", "Proficient", "G", "Student has demonstrated competence on a particular piece of evidence."],
+	          ["Yellow (Y)", "Developing", "Y", "Student has demonstrated a developed a basic understanding of concepts assessed in particular piece of evidence"],
+	          ["Red (R)", "Basic", "R", "Student has demonstrated a limited understanding of concepts assessed in particular piece of evidence"]
+	        ], column_widths: {0 => 85, 1 => 110, 2 => 45, 3 => 300}, position: :center, cell_style: {:size => 9}, header: true
+	        # end evidence ratings legend
 
-		        #start evidence ratings legend
-		        pdf.move_down 14
-		        pdf.text "Evidence Ratings Legend", size: 11, align: :center, style: :bold
-		        pdf.text "<i>Evidence appears under the learning outcomes with the rating to the right.</i>", size: 10, align: :center, inline_format: true
-		        pdf.table [
-		          ["What you see", "What it equals", "Letter", "What does that mean?"],
-		          ["Blue (B)", "High Performing", "B", "Student has demonstrated competence on a particular piece of evidence that extends beyond proficient."],
-		          ["Green (G)", "Proficient", "G", "Student has demonstrated competence on a particular piece of evidence."],
-		          ["Yellow (Y)", "Developing", "Y", "Student has demonstrated a developed a basic understanding of concepts assessed in particular piece of evidence"],
-		          ["Red (R)", "Basic", "R", "Student has demonstrated a limited understanding of concepts assessed in particular piece of evidence"]
-		        ], column_widths: {0 => 85, 1 => 110, 2 => 45, 3 => 300}, position: :center, cell_style: {:size => 9}, header: true
-		        # end evidence ratings legend
+	      # Summary done
 
-		      # Summary done
-
-		        # Draw the students' detailed information on each subject.
-		        pdf.start_new_page
-		        draw_header pdf, student, school_year_name
-		        student.sections.current.each do |section|
-		          if pdf.cursor < 90
-		            pdf.start_new_page
-		          end
-		          pdf.text "<b>#{section.subject.name}</b>", inline_format: true, size: 13, align: :center
-		          pdf.text "<i>Taught by #{section.teacher_names}</i>", inline_format: true, size: 11, align: :center
-		          pdf.move_down 4
-		          section.section_outcomes.each do |section_outcome|
-		            rating = s_o_r[student.id][section_outcome.id]
-		            evidence_ratings = false
-		            section_outcome.evidence_section_outcomes.each do |evidence|
-		              evidence_ratings = true if e_r[student.id][evidence.id][:rating] != "U" and e_r[student.id][evidence.id][:rating] != ""
-		            end
-		            if rating != "U" or evidence_ratings == true
-		              if pdf.cursor < 90
-		                pdf.start_new_page
-		              end
-		              pdf.text "*<u>    #{rating}    </u> #{section_outcome.name}", size: 10, style: :bold, inline_format: true
-		              data = []
-		              section_outcome.evidence_section_outcomes.each do |evidence|
-		                data << [evidence.name, "#{e_r[student.id][evidence.id][:rating]}", "#{e_r[student.id][evidence.id][:comment]}"]
-		              end
-		              if data.length > 0
-		                pdf.indent(20) do
-		                  pdf.table data, column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 10, :border_width => 0}
-		                end
-		              end
-		              pdf.move_down 8
-		            end
-		          end
-		        end
-		        pdf.start_new_page
-	        end #font family
+	        # Draw the students' detailed information on each subject.
+	        pdf.start_new_page
+	        draw_header pdf, student, school_year_name
+	        student.sections.current.each do |section|
+	          if pdf.cursor < 90
+	            pdf.start_new_page
+	          end
+	          pdf.text "<b>#{section.subject.name}</b>", inline_format: true, size: 13, align: :center
+	          pdf.text "<i>Taught by #{section.teacher_names}</i>", inline_format: true, size: 11, align: :center
+	          pdf.move_down 4
+	          section.section_outcomes.each do |section_outcome|
+	            rating = s_o_r[student.id][section_outcome.id]
+	            evidence_ratings = false
+	            section_outcome.evidence_section_outcomes.each do |evidence|
+	              evidence_ratings = true if e_r[student.id][evidence.id][:rating] != "U" and e_r[student.id][evidence.id][:rating] != ""
+	            end
+	            if rating != "U" or evidence_ratings == true
+	              if pdf.cursor < 90
+	                pdf.start_new_page
+	              end
+	              pdf.text "*<u>    #{rating}    </u> #{section_outcome.name}", size: 10, style: :bold, inline_format: true
+	              data = []
+	              section_outcome.evidence_section_outcomes.each do |evidence|
+	                data << [evidence.name, "#{e_r[student.id][evidence.id][:rating]}", "#{e_r[student.id][evidence.id][:comment]}"]
+	              end
+	              if data.length > 0
+	                pdf.indent(20) do
+	                  pdf.table data, column_widths: { 0 => 225, 1 => 40, 2 => 225 }, cell_style: {:size => 10, :border_width => 0}
+	                end
+	              end
+	              pdf.move_down 8
+	            end
+	          end
+	        end
+	        pdf.start_new_page
 	      end
 	    end
 	end
