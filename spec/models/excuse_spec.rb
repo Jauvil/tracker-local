@@ -4,12 +4,14 @@ describe Excuse do
 
   before do
     @school = create :school
-    @excuse = build :excuse
+    @excuse = build :excuse, school: @school
   end
 
   subject { @excuse }
 
   it { should be_valid }
+
+  it {@excuse.school.id.should == @school.id }
 
   # check relationships
   [:school].each do |rel|

@@ -331,7 +331,7 @@ FactoryBot.define do
   factory :excuse do
    sequence(:code) { |n| "EXCUS #{n}" }
    sequence(:description) { |n| "Dog ate #{n}" }
-   school
+   school          { FactoryBot.create(:school)}
   end
 
   factory :attendance_type do
