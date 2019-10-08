@@ -260,7 +260,7 @@ FactoryBot.define do
     sequence(:line_number) { |n| "CLASS #{n}" }
     subject
     school_year { subject.school.current_school_year }
-    message   { Faker::Lorem.words(1).first }
+    message   { Faker::Lorem.words(number: 1).first }
   end
 
   factory :enrollment do
