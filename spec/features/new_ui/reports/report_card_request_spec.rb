@@ -47,6 +47,11 @@ describe "ReportCardRequest", js:true do
       sign_in @school_administrator
     end
 
+    it 'should not generate report without grade level' do
+      generate_report_card_for_grade false
+      page.should have_css('.ui-error', text: "is a required field")
+    end
+
     it 'cause delayed_job to send recieve and completed messages' do
       generate_report_card_for_grade @grade
 
@@ -204,8 +209,8 @@ describe "ReportCardRequest", js:true do
       visit new_generate_path
     page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
     page.find("ul#select2-results-2 li div", text: "Report Cards").click
-    page.find("form#new_generate fieldset", text: "Select grade Level:").click
-    page.find("ul#select2-results-5 li div", text: "#{grade}").click
+    page.find("form#new_generate fieldset", text: "Select grade Level:").click if grade
+    page.find("ul#select2-results-5 li div", text: "#{grade}").click if grade
     page.find("form#new_generate fieldset button", text: 'Generate').click
     #sleep 2
     end

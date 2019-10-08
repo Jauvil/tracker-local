@@ -23,7 +23,7 @@ class GenerateValidator < ActiveModel::Validator
     when 'attendance_report' then attendance_report(record)
     when 'student_attendance_detail_report' then student_attendance_detail_report(record)
     else
-      record.errors[:name] = I18n.translate('errors.is_invalid')
+      record.errors.add(:name, :is_invalid, message: I18n.translate('errors.is_invalid'))
     end
   end
 
@@ -31,30 +31,30 @@ class GenerateValidator < ActiveModel::Validator
   end
 
   def validate_ss_by_lo(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def validate_ss_by_stud(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def validate_nyp_by_stud(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def validate_nyp_by_lo(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def student_info_handout(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def student_info_handout_by_grade(record)
   end
 
   def progress_rpt_gen(record)
-    record.errors[:section_id] = I18n.translate('errors.is_required') if record.section_id.blank?
+    record.errors.add(:section_id, :is_required, message: I18n.translate('errors.is_required')) if record.section_id.blank?
   end
 
   def proficiency_bars(record)
@@ -64,7 +64,7 @@ class GenerateValidator < ActiveModel::Validator
   end
 
   def report_cards(record)
-    record.errors[:grade_level] = I18n.translate('errors.is_required') if record.grade_level.blank?
+    record.errors.add(:grade_level, :is_required, message: I18n.translate('errors.is_required')) if record.grade_level.blank?
   end
 
   def account_activity(record)
@@ -78,16 +78,16 @@ class GenerateValidator < ActiveModel::Validator
     end_date = Date.parse(record.end_date) rescue nil
     Rails.logger.debug("+++ start_date: #{start_date.inspect}")
     Rails.logger.debug("+++ end_date: #{end_date.inspect}")
-    record.errors[:subject_id] = I18n.translate('errors.is_required') if record.subject_id.blank?
-    record.errors[:start_date] = I18n.translate('errors.was_invalid') if start_date.blank?
-    record.errors[:end_date] = I18n.translate('errors.was_invalid') if end_date.blank?
+    record.errors.add(:subject_id, :is_required, message: I18n.translate('errors.is_required')) if record.subject_id.blank?
+    record.errors.add(:start_date, :was_invalid, message: I18n.translate('errors.was_invalid')) if start_date.blank?
+    record.errors.add(:end_date, :was_invalid, message: I18n.translate('errors.was_invalid')) if end_date.blank?
   end
   def student_attendance_detail_report(record)
     start_date = Date.parse(record.start_date) rescue nil
     end_date = Date.parse(record.end_date) rescue nil
-    record.errors[:student_id] = I18n.translate('errors.is_required') if record.student_id.blank? # note 'all' is not blank
-    record.errors[:start_date] = I18n.translate('errors.was_invalid') if start_date.blank?
-    record.errors[:end_date] = I18n.translate('errors.was_invalid') if end_date.blank?
+    record.errors.add(:student_id, :is_required, message: I18n.translate('errors.is_required')) if record.student_id.blank? # note 'all' is not blank
+    record.errors.add(:start_date, :was_invalid, I18n.translate('errors.was_invalid')) if start_date.blank?
+    record.errors.add(:end_date, :was_invalid, I18n.translate('errors.was_invalid')) if end_date.blank?
   end
 
 end
