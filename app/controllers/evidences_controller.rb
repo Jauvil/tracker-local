@@ -389,11 +389,11 @@ class EvidencesController < ApplicationController
     # see: https://github.com/rails/rails/issues/9454
     params.require(EVIDENCE_PARAM_KEY).permit(EVIDENCE_PARAMS).tap do |whitelisted|
       whitelisted[ESO_PARAM_KEY] =
-        params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY]
+        params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY].permit! if params[EVIDENCE_PARAM_KEY][ESO_PARAM_KEY]
       whitelisted[EAA_PARAM_KEY] =
-        params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY]
+        params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY].permit! if params[EVIDENCE_PARAM_KEY][EAA_PARAM_KEY]
       whitelisted[EHA_PARAM_KEY] =
-        params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY] if params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY]
+        params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY].permit! if params[EVIDENCE_PARAM_KEY][EHA_PARAM_KEY]
     end
   end
 
