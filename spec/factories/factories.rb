@@ -341,7 +341,7 @@ FactoryBot.define do
   end
 
   factory :attendance do
-    section
+    section           { FactoryBot.create(:section)}
     school            { section.school }
     student
     attendance_type   { FactoryBot.create(:attendance_type, school: section.school) }
