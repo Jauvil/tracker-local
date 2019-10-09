@@ -369,7 +369,7 @@ class EvidencesController < ApplicationController
       evidence.save
     end
 
-    render nothing: true
+    render body: nil
   end
 
   # TODO determine if this can be eliminated, as it is simply a special case of the update action.

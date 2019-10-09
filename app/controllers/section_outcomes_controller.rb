@@ -99,7 +99,7 @@ class SectionOutcomesController < ApplicationController
       section_outcome.position = params["section_outcomes"].index(section_outcome.id.to_s).to_i + 1
       section_outcome.save
     end
-    render nothing: true
+    render body: nil
   end
 
   def evidences_left
