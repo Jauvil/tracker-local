@@ -5,7 +5,7 @@ class ExcusesController < ApplicationController
 
   respond_to :html
 
-  before_filter :valid_current_school
+  before_action :valid_current_school
 
   EXCUSE_PARAMS = [
     :code,

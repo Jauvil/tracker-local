@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   include UsersHelper
 
-  before_filter :authorize_current_user
+  before_action :authorize_current_user
   load_and_authorize_resource except: [:create, :update]
 
   USER_PARAMS = [
