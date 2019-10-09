@@ -7,7 +7,7 @@ class AttendancesController < ApplicationController
 
   respond_to :html
 
-  before_filter :valid_current_school
+  before_action :valid_current_school
 
   ATTENDANCE_PARAMS = [
     :section_id,

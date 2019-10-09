@@ -3,7 +3,7 @@
 #
 class SubjectsController < ApplicationController
   load_and_authorize_resource
-  skip_before_filter :get_referrer, only: :update_subject_outcomes
+  skip_action_callback :get_referrer, only: :update_subject_outcomes
 
   SUBJECT_PARAMS = [
     :name,

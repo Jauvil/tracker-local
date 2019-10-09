@@ -3,18 +3,19 @@
 #
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  around_filter :hide_student_names,    if:     :current_researcher
-  before_filter :get_referrer,          except: [:create, :update]
-  before_filter :cache_buster,          only:   [:new, :edit, :rate]
-  before_filter :get_flash_from_params
-  before_filter :set_current_school
-  before_filter :set_current_role
-  before_filter :toolkit_instances
+  around_action :hide_student_names,    if:     :current_researcher
+  before_action :get_referrer,          except: [:create, :update]
+  before_action :cache_buster,          only:   [:new, :edit, :rate]
+  before_action :get_flash_from_params
+  before_action :set_current_school
+  before_action :set_current_role
+  before_action :toolkit_instances
 
   # replacement for ExceptionNotification gem (which uses a hard coded email address)
   rescue_from Exception, :with => :handle_fatal_error
 
-  # removed this, as it interferes with debugging
+  # removed this, as it interferes with debugging 
+  # (Added Note: as of Rails 5, before_filter is deprecated)
   # # prepend_before_filter :set_school,    if:     :enforce_context?
   # around_filter :profile               if Rails.env == 'development'
 
@@ -273,7 +274,7 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # This before_filter is called on all controller actions except on create and update actions
+    # This before_action is called on all controller actions except on create and update actions
     # (since they generally redirect). It keeps track of where to send the users back to if the
     # application has need (i.e. send the user back to the page from which they decided to fill
     # a form.)
