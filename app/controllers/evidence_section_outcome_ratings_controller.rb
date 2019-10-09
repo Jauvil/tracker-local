@@ -31,7 +31,7 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
     authorize! :create, @evidence_section_outcome_rating # only let maintainers do these things
 
     # only update tracker page when not bulk (bulk update is refreshed)
-    render_to = (params['bulk'] == 'true' ) ? {nothing:true} : 'update_tracker'
+    render_to = (params['bulk'] == 'true' ) ? {body:nil} : 'update_tracker'
 
     respond_to do |format|
       if @evidence_section_outcome_rating.save
@@ -68,7 +68,7 @@ class EvidenceSectionOutcomeRatingsController < ApplicationController
 
     authorize! :update, @evidence_section_outcome_rating # only let maintainers do these things
 
-    render_to = (params['bulk'] == 'true' ) ? {nothing:true} : 'update_tracker'
+    render_to = (params['bulk'] == 'true' ) ? {body:nil} : 'update_tracker'
     respond_to do |format|
       if  (@evidence_section_outcome_rating.errors.count == 0) && (@evidence_section_outcome_rating.update_attributes evidence_section_outcome_rating)
         format.js {render render_to}

@@ -30,7 +30,7 @@ class SectionOutcomeRatingsController < ApplicationController
     authorize! :create, @section_outcome_rating # only let maintainers do these things
 
     # only update tracker page when not bulk (bulk update is refreshed)
-    render_to = (params['bulk'] == 'true' ) ? {nothing:true} : 'update_tracker'
+    render_to = (params['bulk'] == 'true' ) ? {body:nil} : 'update_tracker'
     respond_to do |format|
       if @section_outcome_rating.save
         format.js {render render_to}
@@ -62,7 +62,7 @@ class SectionOutcomeRatingsController < ApplicationController
 
     authorize! :update, @section_outcome_rating # only let maintainers do these things
 
-    render_to = (params['bulk'] == 'true' ) ? {nothing:true} : 'update_tracker'
+    render_to = (params['bulk'] == 'true' ) ? {body: nil} : 'update_tracker'
     respond_to do |format|
       if (@section_outcome_rating.errors.count == 0) && (@section_outcome_rating.update_attributes section_outcome_rating_params)
         format.js {render render_to}
