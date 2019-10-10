@@ -26,7 +26,7 @@
           %span#type_error.ui-error="#{@errors[:evidence_type_id] if @errors[:evidence_type_id].present?}"
         %fieldset.input-group
           %label.col-sm-4.control-label{for: 'evidence[assignment_date]'}='Assignment Date'
-          %input#evid-date.input-datepicker-close{id: 'evidence_assignment_date', name: 'evidence[assignment_date]', value: "#{@evidence.assignment_date}", type: 'text', placeholder: 'yyyy-mm-dd', data: {date_format: 'yyyy-mm-dd'}}
+          %input#evid-deadline-date.input-datepicker-close{name: 'evidence[assignment_date]', value: "#{@evidence.assignment_date}", type: 'text', placeholder: 'yyyy-mm-dd', data: {date_format: 'yyyy-mm-dd'}}
           %span.ui-required{title: 'Required'}='*'
           %span#date_error.ui-error="#{@errors[:assignment_date] if @errors[:assignment_date].present?}"
         %fieldset.input-group
