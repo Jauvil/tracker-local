@@ -247,8 +247,10 @@ describe "Announcements", js:true do
       end
 
       #click OK in javascript confirmation popup
-      page.driver.browser.switch_to.alert.accept
-      sleep 1
+      wait = Selenium::WebDriver::Wait.new timeout:20, ignore: Selenium::WebDriver::Error::NoSuchAlertError
+      alert = wait.until { page.driver.browser.switch_to.alert }
+      alert.accept
+      sleep 2
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
 
@@ -271,22 +273,28 @@ describe "Announcements", js:true do
 
       #remove changed announcement from list of announcements
       assert_equal(current_path, '/announcements')
-      find("#announcement_list_1 a#delete-item", wait: 5).click
+      find("#announcement_list_1 a#delete-item").click
       # click OK in javascript confirmation popup
       sleep 1
-      page.driver.browser.switch_to.alert.accept
+      alert = wait.until { page.driver.browser.switch_to.alert }
+      alert.accept
+      sleep 2 #need to wait for the modal window to close. probably still somewhat flaky.
       # wait_for_ajax
       assert_equal(current_path, '/announcements')
-      find("#announcement_list_3 a#delete-item", wait: 5).click
+      find("#announcement_list_3 .fa-times-circle").click
       # click OK in javascript confirmation popup
       sleep 1
-      page.driver.browser.switch_to.alert.accept
+      alert = wait.until { page.driver.browser.switch_to.alert }
+      alert.accept
+      sleep 2
       # wait_for_ajax
       assert_equal(current_path, '/announcements')
-      find("#announcement_list_4 a#delete-item", wait: 5).click
+      find("#announcement_list_4 .fa-times-circle").click
       # click OK in javascript confirmation popup
       sleep 1
-      page.driver.browser.switch_to.alert.accept
+      alert = wait.until { page.driver.browser.switch_to.alert }
+      alert.accept
+      sleep 2
       # wait_for_ajax
       # confirm announcements maintenance icon is no longer shown
       page.should_not have_css("#announcements-admin a[href='/announcements']")
