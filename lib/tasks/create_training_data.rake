@@ -19,7 +19,7 @@ namespace :training_data do
 
 		puts "create schools, school year and admins"
 
-		school_acronym = Faker::Lorem.characters(3).upcase
+		school_acronym = Faker::Lorem.characters(number: 3).upcase
 		school = School.create!(
 		  name: "#{school_acronym} Training School",
 		  acronym: school_acronym,

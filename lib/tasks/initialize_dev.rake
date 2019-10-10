@@ -24,7 +24,7 @@ namespace :initialize_dev do
 
     school = School.create!(
       name: Faker::Company.name + " Seed School",
-      acronym: Faker::Lorem.characters(4).upcase,
+      acronym: Faker::Lorem.characters(number: 4).upcase,
       street_address: "1 Stub Lane",
       city: "Conshohocken",
       state: "PA",
