@@ -128,7 +128,7 @@ class School < ActiveRecord::Base
   # the argument can be either a school_year_id, or an instance of SchoolYear
   def current_school_year=(school_year_id_or_object)
     object = school_year_id_or_object
-    if object.is_a? Fixnum # school year id was passed in
+    if object.is_a? Integer # school year id was passed in
       self.school_year_id = object
     elsif object.is_a? SchoolYear
       self.school_year_id = object.id
