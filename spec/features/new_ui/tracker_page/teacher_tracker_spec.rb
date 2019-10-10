@@ -122,7 +122,7 @@ describe "Teacher Tracker", js:true do
       page.fill_in 'evidence_name', :with => 'Add and Notify'
       page.fill_in 'evidence_description', :with => 'Add and notify student by email.'
       find("#evidence_evidence_type_id option[value='7']").select_option
-      page.execute_script("$('.input-datepicker-close').val('2015-09-01')")
+      page.execute_script("$('#evid-deadline-date').val('2015-09-01')")
       find("input#send_email").should_not be_checked
       find("input#send_email").click
       find("input#send_email").should be_checked
