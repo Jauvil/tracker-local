@@ -311,22 +311,19 @@ module SubjectOutcomesHelper
     new_los_by_rec = Hash.new
     new_los_by_lo_code = Hash.new
     records = Array.new
-    params['r'].each do |p|
-      seq = p[0]
-      pnew = p[1]
-      # Rails.logger.debug("*** pnew: #{pnew.inspect}")
+    params[:r].each do |seq, p|
       rec = Hash.new
-      rec[:rec_id] = Integer(pnew[:rec_id]) rescue 0
-      rec[:subject_id] = Integer(pnew[:subject_id]) rescue 0
-      rec[:'Course'] = pnew['Course']
-      rec[:'Grade'] = pnew['Grade']
-      rec[:'mp_bitmap'] = pnew['mp_bitmap']
-      rec[:'LO Code:'] = pnew['LO Code:']
-      rec[:'Learning Outcome'] = pnew['Learning Outcome']
+      rec[:rec_id] = Integer(p[:rec_id]) rescue 0
+      rec[:subject_id] = Integer(p[:subject_id]) rescue 0
+      rec[:'Course'] = p[:Course]
+      rec[:'Grade'] = p['Grade']
+      rec[:'mp_bitmap'] = p['mp_bitmap']
+      rec[:'LO Code:'] = p['LO Code:']
+      rec[:'Learning Outcome'] = p['Learning Outcome']
       rec[:error] =  nil
       records << rec
-      new_los_by_rec[pnew[:rec_id]] = rec
-      new_los_by_lo_code[pnew[:lo_code]] = rec
+      new_los_by_rec[p[:rec_id]] = rec
+      new_los_by_lo_code[p[:lo_code]] = rec
     end if  params['r'].present?
     return {records: records, los_by_rec: new_los_by_rec, new_los_by_lo_code: new_los_by_lo_code}
   end
