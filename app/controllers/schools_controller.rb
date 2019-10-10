@@ -4,7 +4,7 @@
 class SchoolsController < ApplicationController
 
   load_and_authorize_resource
-  before_filter :remove_params, only: [:update]
+  before_action :remove_params, only: [:update]
 
   SCHOOL_PARAMS = [
     :name,

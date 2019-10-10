@@ -2,7 +2,7 @@
 # see license.txt in this software package
 #
 class EnrollmentsController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   load_and_authorize_resource
 
