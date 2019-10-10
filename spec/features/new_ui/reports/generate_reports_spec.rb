@@ -140,6 +140,7 @@ describe "Generate Reports", js:true do
     if [:system_administrator, :school_administrator, :teacher].include?(role)
       can_run_student_information_handout
       can_run_not_yet_proficient_by_student
+      validate_progress_report_options
     end
 
   end # has_valid_generate_reports
@@ -196,6 +197,9 @@ describe "Generate Reports", js:true do
       page.should_not have_css('fieldset#ask-activity-students', visible: true)
       page.should_not have_css('fieldset#ask-activity-parents', visible: true)
     end
+    find("button", text: 'Generate').click
+    page.should have_css('.ui-error', text: "is a required field")
+
     page.find("form#new_generate fieldset", text: 'Select Section:', wait: 5).click
     page.find("ul#select2-results-6 li div", text: "#{@subject.name} - #{@section.line_number}", wait: 5).click
 
@@ -209,6 +213,8 @@ describe "Generate Reports", js:true do
     visit new_generate_path
     page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
     page.find("ul#select2-results-2 li div", text: "Not Yet Proficient by Student").click
+    find("button", text: 'Generate').click
+    page.should have_css('.ui-error', text: "is a required field")
     page.find("form#new_generate fieldset", text: 'Select Section').click
     page.find("ul#select2-results-6 li div", match: :first).click
     page.find("form#new_generate fieldset button", text: 'Generate').click
@@ -249,5 +255,15 @@ describe "Generate Reports", js:true do
       end 
     end
   end
+
+  
+  def validate_progress_report_options
+    visit new_generate_path
+    page.find("form#new_generate fieldset", text: 'Select Report to generate', wait: 5).click
+    page.find("ul#select2-results-2 li div", text: "Progress Report").click
+    page.find("form#new_generate fieldset button", text: 'Generate').click
+    page.should have_css('.ui-error', text: "is a required field")
+  end
+
 
 end
