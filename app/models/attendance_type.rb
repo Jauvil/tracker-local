@@ -19,9 +19,7 @@ class AttendanceType < ActiveRecord::Base
   # - it will include a deactivated record matching the ID passed.
   # - this is for select boxes so the attendance record can show deactivated items (if it was saved before deactivation).
   def self.valid_options(school_id, id)
-    item = id.blank? ? nil : AttendanceType.find(id)
-    active_recs = AttendanceType.where(school_id: school_id, active: true)
-    active_recs << item if item.present? && !item.active?
+    active_recs = AttendanceType.where(school_id: school_id, active: true).or(AttendanceType.where(:id => id, :active => false))
     return active_recs
   end
 
