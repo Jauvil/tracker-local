@@ -69,7 +69,7 @@ class EvidenceSectionOutcomesController < ApplicationController
       evidence_section_outcome.save
     end
 
-    render nothing: true
+    render body: nil
   end
 
   private

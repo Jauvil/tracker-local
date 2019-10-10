@@ -155,7 +155,7 @@ class SectionsController < ApplicationController
         if section_params[:selected_marking_period].present?
           # update marking period filter
           show_prep_h
-          format.js { render nothing: true }
+          format.js { render body: nil }
         else
           if params[:teaching_assignment_attributes]
             params[:teaching_assignment_attributes].each do |tapk, tapv|
@@ -364,7 +364,7 @@ class SectionsController < ApplicationController
       section.position                = params["sections"].index(section.id.to_s).to_i+1
       section.save
     end
-    render :nothing                   => true
+    render :body                   => nil
   end
 
   def show_experimental

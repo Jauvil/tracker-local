@@ -10,13 +10,13 @@ class UiController < ApplicationController
   def save_cell_size
     Rails.logger.debug("*** save_cell_size - params = #{params.inspect.to_s}")
     session[:cell_size] = params[:cell_size]
-    render nothing: true
+    render body: nil
   end
 
   def save_toolkit
     Rails.logger.debug("*** save_toolkit - params = #{params.inspect.to_s}")
     session[:toolkit] = params[:toolkit]
-    render nothing: true
+    render body: nil
     Rails.logger.debug("*** session[:toolkit] = #{session[:toolkit]}")
   end
 
