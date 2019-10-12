@@ -437,9 +437,9 @@ class SubjectOutcomesController < ApplicationController
         Rails.logger.debug("*** Will update the database from selections for this subject #####")
 
         # ensure all new records have a selection parameter
-        Rails.logger.debug("*** @selection_params.count: #{@selection_params.count}")
+        Rails.logger.debug("*** @selection_params.count: #{@selection_params.keys.count}") 
         Rails.logger.debug("*** @new_rec_ids_by_subject[@match_subject.id].count: #{@new_rec_ids_by_subject[@match_subject.id].count}")
-        @errors[:base] = append_with_comma(@errors[:base], "invalid update parameter count #{@selection_params.count} != #{@new_rec_ids_by_subject[@match_subject.id].count}") if @selection_params.count != @new_rec_ids_by_subject[@match_subject.id].count
+        @errors[:base] = append_with_comma(@errors[:base], "invalid update parameter count #{@selection_params.keys.count} != #{@new_rec_ids_by_subject[@match_subject.id].count}") if @selection_params.keys.count != @new_rec_ids_by_subject[@match_subject.id].count
 
         # check for duplicate database assignments
         counts_h = Hash.new(0)
