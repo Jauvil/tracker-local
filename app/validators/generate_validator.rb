@@ -85,9 +85,12 @@ class GenerateValidator < ActiveModel::Validator
   def student_attendance_detail_report(record)
     start_date = Date.parse(record.start_date) rescue nil
     end_date = Date.parse(record.end_date) rescue nil
+    Rails.logger.debug("+++ start_date: #{start_date.inspect}")
+    Rails.logger.debug("+++ end_date: #{end_date.inspect}")
+    Rails.logger.debug("+++ record: #{record.inspect}, errors: #{record.errors.inspect}")
     record.errors.add(:student_id, :is_required, message: I18n.translate('errors.is_required')) if record.student_id.blank? # note 'all' is not blank
-    record.errors.add(:start_date, :was_invalid, I18n.translate('errors.was_invalid')) if start_date.blank?
-    record.errors.add(:end_date, :was_invalid, I18n.translate('errors.was_invalid')) if end_date.blank?
+    record.errors.add(:start_date, :was_invalid, message: I18n.translate('errors.was_invalid')) if start_date.blank?
+    record.errors.add(:end_date, :was_invalid, message: I18n.translate('errors.was_invalid')) if end_date.blank?
   end
 
 end
