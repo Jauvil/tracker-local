@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class User < ActiveRecord::Base
+class User < ApplicationRecord
 
   # attr_accessible :duty_par, :permission_par, :xid, :first_name, :last_name, :email, :street_address, :city, :state, :zip_code, :active, :grade_level, :gender, :race, :special_ed, :child_id, :password, :password_confirmation, :subscription_status, :school_id, :username
 
