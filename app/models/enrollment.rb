@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class Enrollment < ActiveRecord::Base
+class Enrollment < ApplicationRecord
   # Access Control
   # using_access_control
   scope :alphabetical, -> { joins(:student).where(active: true).order("users.last_name", "users.first_name") }

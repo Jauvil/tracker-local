@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class EvidenceSectionOutcome < ActiveRecord::Base
+class EvidenceSectionOutcome < ApplicationRecord
   # attr_accessible :evidence_id, :position, :section_outcome_id, :evidence_section_outcome_ratings_attributes
   # default_scope   order: 'evidence_section_outcomes.position ASC'
 

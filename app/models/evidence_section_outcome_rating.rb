@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class EvidenceSectionOutcomeRating < ActiveRecord::Base
+class EvidenceSectionOutcomeRating < ApplicationRecord
   # attr_accessible             :comment, :evidence_section_outcome_id, :flagged, :rating, :student_id
 
   # Rails 4.0 has changed serialized attributes and attr_readonly to class methods only. You shouldn't use instance methods since it's now deprecated. You should change them to use class methods, e.g. self.serialized_attributes to self.class.serialized_attributes

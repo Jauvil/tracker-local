@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class Attendance < ActiveRecord::Base
+class Attendance < ApplicationRecord
   belongs_to :school
   belongs_to :section
   belongs_to :student,

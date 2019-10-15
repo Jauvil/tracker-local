@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class Discipline < ActiveRecord::Base
+class Discipline < ApplicationRecord
   # Access Control
   # using_access_control
 

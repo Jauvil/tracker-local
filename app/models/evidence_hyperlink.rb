@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class EvidenceHyperlink < ActiveRecord::Base
+class EvidenceHyperlink < ApplicationRecord
   # No controller for evidence_hyperlink
   # attr_accessible :description, :evidence_id, :hyperlink, :title
   before_save :add_http

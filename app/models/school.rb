@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class School < ActiveRecord::Base
+class School < ApplicationRecord
 
   # Flags constant values:
   # note: new schools get a default value from the model school (if it exists).

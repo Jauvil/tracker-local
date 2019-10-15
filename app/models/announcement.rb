@@ -1,7 +1,7 @@
 # Copyright (c) 2016 21st Century Partnership for STEM Education (21PSTEM)
 # see license.txt in this software package
 #
-class Announcement < ActiveRecord::Base
+class Announcement < ApplicationRecord
   # attr_accessible :content, :end_at, :restrict_to_staff, :show_staff, :show_students_and_parents, :start_at
   scope :current, -> { where("start_at <= :now and end_at >= :now", now: Time.zone.now)}
   scope :unrestricted, -> { where(restrict_to_staff: false)}
