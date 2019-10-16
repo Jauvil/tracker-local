@@ -1,3 +1,5 @@
+PARLO Tracker version v2.03.001 Oct 16, 2019
+- Upgrade to Rails 5.0
 PARLO Tracker version v2.02.011 Oct 4, 2019
 - Bug fixes for Rails 4.2
 PARLO Tracker version v2.02.010 Sept 26, 2019
