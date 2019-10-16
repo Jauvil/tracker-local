@@ -48,6 +48,8 @@ GEM
       activerecord (>= 4.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    airbrussh (1.4.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     archive-zip (0.12.0)
       io-like (~> 0.3.0)
     arel (7.1.4)
@@ -58,10 +60,11 @@ GEM
     bindex (0.8.1)
     builder (3.2.3)
     cancancan (3.0.1)
-    capistrano (3.0.1)
+    capistrano (3.11.2)
+      airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
-      sshkit (>= 0.0.23)
+      sshkit (>= 1.9.0)
     capistrano-bundler (1.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
@@ -370,7 +373,7 @@ DEPENDENCIES
   addressable (~> 2.7.0)
   axlsx_rails
   cancancan (~> 3.0.1)
-  capistrano (= 3.0.1)
+  capistrano
   capistrano-rails (= 1.1.0)
   capistrano-rvm (= 0.0.3)
   capybara (~> 2.18.0)

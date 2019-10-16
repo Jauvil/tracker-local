@@ -90,8 +90,7 @@ group :development do
   gem 'launchy', '~> 2.4.3'
   gem 'addressable', '~> 2.7.0'
 
-  #capistrono (-rails & -rvm) not updated for the 5.0 upgrade- concern for deployment stability. Update as needed.
-  gem 'capistrano', '3.0.1'
+  gem 'capistrano', '~> 3.11.2'
   gem 'capistrano-rails', '1.1.0'
   gem 'capistrano-rvm', '0.0.3'
 
