@@ -12,10 +12,10 @@ describe SchoolsController do
       sign_in @system_administrator
       session[:school_context].to_i.should eq(0)
 
-      get :show, id: @other_school.id
+      get :show, params: { id: @other_school.id }
       session[:school_context].should eq(@other_school.id)
 
-      get :show, id: @school.id
+      get :show, params: { id: @school.id } 
       session[:school_context].should eq(@school.id)
     end
   end

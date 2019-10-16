@@ -151,7 +151,7 @@ class EvidencesController < ApplicationController
     selected_sos = []
     so_ids = params[:evidence][:evidence_section_outcomes_attributes]
     Rails.logger.debug("*** so_ids (params): #{so_ids.inspect}")
-    if so_ids.length > 0
+    if !so_ids.empty?
       so_ids.each do |ik, iv|
         iv.each do |sok, sov|
           if sov[0] != 'x'
