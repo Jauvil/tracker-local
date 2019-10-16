@@ -91,8 +91,8 @@ group :development do
   gem 'addressable', '~> 2.7.0'
 
   gem 'capistrano', '~> 3.11.2'
-  gem 'capistrano-rails', '1.1.0'
-  gem 'capistrano-rvm', '0.0.3'
+  gem 'capistrano-rails', "~> 1.4.0"
+  gem 'capistrano-rvm', "~> 0.1.2"
 
   gem 'sshkit', '~> 1.20.0'
   # gem to help manage version upgrades (recommended by ombu labs)
