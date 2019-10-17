@@ -6,7 +6,8 @@ class SectionOutcomesController < ApplicationController
 
   SECTION_OUTCOME_PARAMS = [
     :section_id,
-    :subject_outcome_id
+    :subject_outcome_id,
+    :active
   ]
 
   # New UI
