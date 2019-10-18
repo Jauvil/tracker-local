@@ -293,6 +293,9 @@ describe "Teacher Tracker", js:true do
       page.fill_in 'section[message]', :with => message
       page.find('button[type="submit"]').click
     end
+    # Before checking for the message, refresh page to make sure the
+    # change persists (this has been an issue for other features on the 
+    # teacher tracker page).
     page.driver.refresh
     page.find('#tracker-comments-students').should have_content(message)
   end
