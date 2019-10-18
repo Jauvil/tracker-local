@@ -220,9 +220,13 @@ describe "Teacher Tracker", js:true do
       end
 
       #################
-      # Test 'Inactivating' Learning Outcomes
+      # Test 'Inactivating' and Reactivating Learning Outcomes
       ################
+      #
+      # On the tracker page, find the tbody of evidences containing the evidence "Add and Notify"
+      # Then record the data_so_id for that tbody
       new_evid_so_id = page.find("tbody.tbody-section", text: "Add and Notify")[:'data-so-id']
+      # Find and click remove/lo-x for the Section Outcome with data-so-id matching new_evid_so_id
       page.find("tbody.showLO[data-so-id='#{new_evid_so_id}']").find("a.lo-x").click
       #reload page before checking whether SO with evidence has been removed. Ensures the action has been carried out 
       #on the back end and not only in the client view (currently an existing issue). 
