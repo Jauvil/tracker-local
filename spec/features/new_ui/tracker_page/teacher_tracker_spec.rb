@@ -101,7 +101,10 @@ describe "Teacher Tracker", js:true do
     page.should have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}']")
     page.should_not have_css("tbody.tbody-header[data-so-id='#{@subject_outcomes.values[0].id}'].tbody-open")
 
+    ###############
     # Test Adding a Piece of Evidence
+    # Test Removing and Reactivating Evidence and LOs
+    # #############
     if editable
       page.should have_content("All Learning Outcomes")
       test_ratings = [["li.blue", "H"], ["li.green", "P"], ["li.red", "N"], ["li.unrated", "U"]]
@@ -215,6 +218,26 @@ describe "Teacher Tracker", js:true do
       within("tbody.tbody-section[data-so-id='#{@section_outcomes.first[1].id}']") do
         page.should have_content('Add and Notify')
       end
+
+      #################
+      # Test 'Inactivating' and Reactivating Learning Outcomes
+      ################
+      #
+      # On the tracker page, find the tbody of evidences containing the evidence "Add and Notify"
+      # Then record the data_so_id for that tbody
+      new_evid_so_id = page.find("tbody.tbody-section", text: "Add and Notify")[:'data-so-id']
+      # Find and click remove/lo-x for the Section Outcome with data-so-id matching new_evid_so_id
+      page.find("tbody.showLO[data-so-id='#{new_evid_so_id}']").find("a.lo-x").click
+      #reload page before checking whether SO with evidence has been removed. Ensures the action has been carried out 
+      #on the back end and not only in the client view (currently an existing issue). 
+      page.driver.refresh
+      page.should_not have_content('Add and Notify')
+      page.should_not have_css("tbody.showLO[data-so-id='#{new_evid_so_id}']")
+      page.find("a[href='/sections/#{@section.id}/new_section_outcome']").click
+      page.find("form#edit_section_outcome_#{new_evid_so_id} button[type='submit']").click
+      page.find("a[href='/sections/#{@section.id}']", text: "#{@section.name}", match: :first).click
+      page.should have_content('Add and Notify')
+      page.should have_css("tbody.showLO[data-so-id='#{new_evid_so_id}']")
 
     else
       page.should have_css("#side-add-evid a[href='/sections/#{@section.id}/new_evidence'].disabled")
