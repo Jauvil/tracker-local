@@ -19,7 +19,8 @@ class SectionsController < ApplicationController
     :subject_id,
     :line_number,
     :selected_marking_period,
-    :teaching_assignment_attributes
+    :teaching_assignment_attributes, 
+    :message
   ]
 
   # New UI Tracker Page

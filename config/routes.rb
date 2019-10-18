@@ -165,7 +165,8 @@ Rails.application.routes.draw do
       get 'class_dashboard', defaults: { format: :html } #new UI
       put 'exp_col_all_evid', defaults: {format: :js} # new UI
       get 'edit_section_message', defaults: {format: :js} # new UI
-      put 'update_section_message', defaults: {format: :js} # new UI
+      put 'update_section_message', defaults: {format: :js} # new UI      
+      patch 'update_section_message', defaults: {format: :js} # new UI
     end
     collection do
       get 'sort'

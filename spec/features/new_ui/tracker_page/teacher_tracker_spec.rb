@@ -287,6 +287,7 @@ describe "Teacher Tracker", js:true do
   def can_write_section_announcement 
     visit section_path(@section.id) if current_path != "/sections/#{@section.id}"
     message = 'Not all those who wander are lost.'
+    # Open the modal window to enter a section comment.
     page.find('a.tracker-student-comments').click
     within('.modal-dialog') do
       page.fill_in 'section[message]', :with => message
