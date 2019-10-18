@@ -285,6 +285,7 @@ describe "Teacher Tracker", js:true do
 
   # Try to write a new section announcement
   def can_write_section_announcement 
+    # visit the section tracker page for @section
     visit section_path(@section.id) if current_path != "/sections/#{@section.id}"
     message = 'Not all those who wander are lost.'
     # Open the modal window to enter a section comment.
@@ -293,6 +294,7 @@ describe "Teacher Tracker", js:true do
       page.fill_in 'section[message]', :with => message
       page.find('button[type="submit"]').click
     end
+    page.should_not have_css('.modal-dialog')
     # Before checking for the message, refresh page to make sure the
     # change persists (this has been an issue for other features on the 
     # teacher tracker page).
