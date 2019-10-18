@@ -19,6 +19,7 @@ describe "Teacher Tracker", js:true do
       sign_in(@teacher)
     end
     it { teacher_tracker_is_valid(true) }
+    it { can_write_section_announcement }
   end
 
   describe "as school administrator" do
@@ -27,6 +28,7 @@ describe "Teacher Tracker", js:true do
       sign_in(@school_administrator)
     end
     it { teacher_tracker_is_valid(true) }
+    it { can_write_section_announcement }
   end
 
   describe "as researcher" do
@@ -45,6 +47,7 @@ describe "Teacher Tracker", js:true do
       set_users_school(@section.school)
     end
     it { teacher_tracker_is_valid(true) }
+    it { can_write_section_announcement }
   end
 
   describe "as student" do
@@ -278,6 +281,19 @@ describe "Teacher Tracker", js:true do
     page.find("div#popup-rate-single-lo #{rating_selector}").click
     page.find("button#save-single-lo").click
     page.first("td.s_o_r[data-student-id='#{student.id}']").should have_content(rating_content)
+  end
+
+  # Try to write a new section announcement
+  def can_write_section_announcement 
+    visit section_path(@section.id) if current_path != "/sections/#{@section.id}"
+    message = 'Not all those who wander are lost.'
+    page.find('a.tracker-student-comments').click
+    within('.modal-dialog') do
+      page.fill_in 'section[message]', :with => message
+      page.find('button[type="submit"]').click
+    end
+    page.driver.refresh
+    page.find('#tracker-comments-students').should have_content(message)
   end
 
 end
