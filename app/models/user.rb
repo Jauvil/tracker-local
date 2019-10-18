@@ -28,6 +28,7 @@ class User < ApplicationRecord
   validates_presence_of     :username
   validates_uniqueness_of   :username
   validates                 :email, format: { with: /\A([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})\z/i }, allow_blank: true
+  validate                  :is_email_required?
 # cannot do this as is.
   # must allow for multiple parent accounts with the same email address
   # validates                 :email,
@@ -319,6 +320,22 @@ class User < ApplicationRecord
           return true if teacher.managed_subjects.size > 0
         end
         false
+    end
+
+    def is_email_required?
+      email_error = false
+      begin
+        if self.school_id.present? && !self.parent
+          school = School.find(self.school_id)
+          if school.has_flag?(School::USERNAME_FROM_EMAIL) && self.email.blank?
+            self.errors.add(:email, 'Email is required.')
+            email_error = true
+          end
+        end
+      rescue
+        Rails.logger.error("ERROR: is_email_required? school (#{self.school_id.inspect}) find error.")
+      end
+      return email_error
     end
 
     # def valid_arabic

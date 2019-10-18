@@ -1,6 +1,7 @@
 # staff_listing_spec.rb
 require 'rails_helper'
 describe "Staff Listing", js:true do
+  email_protected_tests = 0
   describe "US System" do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
@@ -99,6 +100,11 @@ describe "Staff Listing", js:true do
       set_current_school_year(@school)
       @sectiony2 = FactoryBot.create :section, subject: @subject
       load_test_section_yr2(@sectiony2, @teacher)
+
+      # assert school has the flag "username_from_email" 
+      # to ensure that test_email_attribute_protected will 
+      # be run for relevant roles.
+      expect(@school[:flags]).to include("username_from_email")
 
     end
     describe "as teacher" do
@@ -507,6 +513,14 @@ describe "Staff Listing", js:true do
       page.all("tbody.tbody-body tr.active").length.should == 4
       page.all("tbody.tbody-body tr.deactivated").length.should == 1
 
+      ############
+      # Test that emails are protected from being deleted in editing, 
+      # if email is required for this school.
+      ############
+      if @school[:flags].include?("username_from_email")
+        test_email_attribute_protected
+      end
+
       #Setup for bulk upload tests
       store_school_data = [@school.acronym, @school.name]
       reset_school_acronym_and_name(@school, "TEST", "Factory School")
@@ -575,6 +589,17 @@ describe "Staff Listing", js:true do
       page.execute_script("$('#show-upload').show()")
       page.find('#show-upload input[type=checkbox]').set(in_preview_mode)
       page.find('button#upload').click
+  end
+
+  def test_email_attribute_protected
+    visit staff_listing_users_path if current_path != staff_listing_users_path
+    page.find('tbody.tbody-body', text: 'new@sample.com').find("a i.fa-edit").click
+    page.fill_in 'staff_email', :with => ''
+    find("button", text: 'Save').click
+    page.should have_content('email is required')
+    find("button", text: 'Cancel').click
+    page.driver.refresh
+    page.should have_content('new@sample.com')
   end
 
 end
