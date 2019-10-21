@@ -137,9 +137,9 @@
                     %td
                       - if can? :deactivate, s
                         %div.show-if-active
-                          %a#remove-student{href: "/students/#{s.id}.js?#{{active: false}.to_query('student')}", data: {method: :put, remote: true, student_id: "#{s.id}", confirm: 'Are you sure?'}, title: 'Deactivate Student'}
+                          %a#remove-student{href: "/students/#{s.id}.js?#{{active: false}.to_query('student')}&#{{active: false}.to_query('parent')}", data: {method: :put, remote: true, student_id: "#{s.id}", confirm: 'Are you sure?'}, title: 'Deactivate Student'}
                             %i.fa.fa-lg.fa-times-circle
                         %div.show-if-deactivated
-                          %a#restore-student{href: "/students/#{s.id}.js?#{{active: true}.to_query('student')}", data: {method: :put, remote: true, student_id: "#{s.id}", confirm: 'Are you sure?'}, title: 'Restore Deactivated Student'}
+                          %a#restore-student{href: "/students/#{s.id}.js?#{{active: true}.to_query('student')}&#{{active: true}.to_query('parent')}", data: {method: :put, remote: true, student_id: "#{s.id}", confirm: 'Are you sure?'}, title: 'Restore Deactivated Student'}
                             %i.fa.fa-lg.fa-undo
 
