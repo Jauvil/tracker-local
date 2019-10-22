@@ -1,7 +1,6 @@
 # staff_listing_spec.rb
 require 'rails_helper'
 describe "Staff Listing", js:true do
-  email_protected_tests = 0
   describe "US System" do
     before (:each) do
       @server_config = FactoryBot.create :server_config, allow_subject_mgr: true
