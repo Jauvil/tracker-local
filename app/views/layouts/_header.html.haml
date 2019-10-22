@@ -22,9 +22,10 @@
         - if can? :dashboard, School
           %a{href: dashboard_school_path(@current_school.id), title: 'School Dashboard'}
             %i.fa.fa-lg.fa-dashboard.fa-fw
-        %span.text-muted{title: 'Current School'}= "#{@current_school.name}"
-        - if @current_school.school_year.present?
-          %span.text-muted{title: 'Current School Year'}= "(#{@current_school.school_year.name})"
+        %div.span-container
+          %span.text-muted{title: 'Current School'}= "#{@current_school.name}"
+          - if @current_school.school_year.present?
+            %span.text-muted{title: 'Current School Year'}= "(#{@current_school.school_year.name})"
   = render 'layouts/announcements'
 / END Left Header Navigation
 / Right Header Navigation
