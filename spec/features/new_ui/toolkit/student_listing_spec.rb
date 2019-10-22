@@ -318,6 +318,7 @@ describe "Student Listing", js:true do
     visit students_path
     assert_equal("/students", current_path)
     can_change_graduate(@student_grad) if !read_only
+    can_deactivate_student(@student) if can_deactivate
   end # def has_valid_subjects_listing
 
   ##################################################
@@ -638,6 +639,33 @@ describe "Student Listing", js:true do
       page.should have_content('CFn')
       page.should have_content('CLn')
     end
+  end
+
+  #deactivate and reactivate a student from the Students List
+  def can_deactivate_student(student)
+    visit students_path if current_path != "/students"
+    #student's initial state should be active
+    confirm_student_activation_status(student, true)
+    #deactivate student
+    page.should have_css("#student_#{student.id}")
+    page.find("#student_#{student.id}").find('#remove-student').click
+    wait_for_accept_alert
+    #student's state should be deactivated
+    confirm_student_activation_status(student, false)
+    #reactivate student
+    page.find("#student_#{student.id} #restore-student").click
+    wait_for_accept_alert
+    confirm_student_activation_status(student, true)
+  end
+
+  def confirm_student_activation_status(student, active)
+      #make sure that the student's status is correct
+      #in the database
+      student.reload
+      assert_equal(active, student[:active])
+      #make sure deactivated students are displayed with strikethrough text
+      #and active students are displayed without strikethrough text 
+      page.should have_css("tr#student_#{student.id}#{active ? '.active' : '.deactivated'}")
   end
 
 end

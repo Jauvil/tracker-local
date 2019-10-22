@@ -20,7 +20,8 @@ class StudentsController < ApplicationController
     :gender,
     :special_ed,
     :password,
-    :temporary_password
+    :temporary_password,
+    :active
   ]
 
   PARENT_PARAMS = [
@@ -29,7 +30,8 @@ class StudentsController < ApplicationController
     :email,
     :password,
     :temporary_password,
-    :subscription_status
+    :subscription_status,
+    :active
   ]
 
   # skip_load_and_authorize_resource only: :index
@@ -486,7 +488,11 @@ class StudentsController < ApplicationController
   end
 
   def parent_params
-    params.require(:parent).permit(PARENT_PARAMS)
+    begin
+      params.require(:parent).permit(PARENT_PARAMS)
+    rescue
+      ActionController::Parameters.new
+    end
   end
 
 end

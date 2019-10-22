@@ -2,7 +2,11 @@
 # see license.txt in this software package
 #
 class Parent < User
-  default_scope { where(parent: true, active: true) }
+  default_scope { where(parent: true) }
+  # when active: true was a condition of the default_scope, deactivating 
+  # parents removed the reference to the parent irrevesibly from their
+  # associated student record. 
+  scope :active, -> { where(active: true )} 
   # Access Control
   # using_access_control
 
