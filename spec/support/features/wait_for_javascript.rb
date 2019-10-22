@@ -54,4 +54,3 @@ module Features
   end
 
 end
-
