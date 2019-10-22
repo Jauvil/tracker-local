@@ -220,11 +220,47 @@ ul.sidebar-nav li#side-current ul.subsections {
 
 #head-current-school {
     max-width: 260px;
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    a { float: left; }
+    .span-container {
+      display: inline-block;
+      height: 50px;
+      max-width: 95%;
+      padding: 10px 0;
+      .text-muted {
+        clear: both;
+        float: left;
+        padding-left: 5px;
+        line-height: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        font-size: 90%;
+      }
+      .text-muted:first-child { float: left }
+    }
+    /**set width when sharing space with two icons**/
+    .span-container:nth-child(3) { 
+        max-width: 214px; 
+        .text-muted { max-width: 214px;}
+    }
+    /**set width when sharing space with three icons**/
+    .span-container:nth-child(4) { 
+      max-width: 206px; 
+      .text-muted { max-width: 206px; }
+    }
 }
 
 #head-user-dropdown {
     max-width: 70px;
     a.dropdown-toggle {
+      max-width: 70px;
       font-size: 90%;
       display: inline-block;
       overflow: hidden;
@@ -247,30 +283,6 @@ ul.sidebar-nav li#side-current ul.subsections {
         font-size: 26px;
         display: inline-block;
     }
-}
-
-#head-current-school .navbar-nav-custom-content {
-    height: 50px;
-    padding: 0px 8px;
-    line-height: 50px;
-    overflow: hidden;
-
-    .text-muted {
-      display: inline-block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-}
-
-.navbar-nav-custom-content .text-muted:nth-child(-n+2) {
-  font-size: 90%;
-  max-width: 170px;
-}
-
-.navbar-nav-custom-content :nth-child(n+4) {
-  font-size: 70%;
-  max-width: 120px;
 }
 
 #breadcrumb-flash {

@@ -968,16 +968,30 @@ select.select2-styles {
   }
 
   li#head-current-school {
-    max-width: 220px;
-
-    .navbar-nav-custom-content .text-muted:nth-child(-n+2) {
-      font-size: 80%;
-      max-width: 135px;
+    max-width: 220px; 
+   /**set width when sharing space with no icons**/
+    .span-container:first-child { 
+        max-width: 174px; 
+        .text-muted { 
+          max-width: 174px; 
+          font-size: 70%;
+        }
     }
-
-    .navbar-nav-custom-content :nth-child(n+4) {
-      font-size: 70%;
-      max-width: 80px;
+    /**set width when sharing space with two icons**/
+    .span-container:nth-child(3) { 
+        max-width: 174px; 
+        .text-muted { 
+          max-width: 174px;
+          font-size: 70%;
+        }
+    }
+    /**set width when sharing space with three icons**/
+    .span-container:nth-child(4) { 
+      max-width: 166px; 
+      .text-muted { 
+        max-width: 166px; 
+        font-size: 70%;
+      }
     }
   }
 
