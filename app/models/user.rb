@@ -28,7 +28,11 @@ class User < ApplicationRecord
   validates_presence_of     :username
   validates_uniqueness_of   :username
   validates                 :email, format: { with: /\A([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})\z/i }, allow_blank: true
-  validate                  :is_email_required?
+
+  # # need to do further testing on this
+  # # note deactivate employee gets 500
+  # validate                  :is_email_required?
+
 # cannot do this as is.
   # must allow for multiple parent accounts with the same email address
   # validates                 :email,
