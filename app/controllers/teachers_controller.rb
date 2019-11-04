@@ -34,7 +34,7 @@ class TeachersController < ApplicationController
 
     current_sect_ids = []
     @teacher.teaching_assignments.each do |ta|
-      current_sect_ids << ta.section_id if @teacher.school.school_year_id == ta.section.school_year_id
+      current_sect_ids << ta.section_id if ta.section && @teacher.school.school_year_id == ta.section.school_year_id
     end
 
     # used for both overall student performance and section proficiency bars
