@@ -123,7 +123,7 @@ class UsersController < ApplicationController
         # to do - find out why these @user.errors are not displaying in tests
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
-        format.js 
+        format.js
       elsif @user.errors.count == 0 && @user.save
         UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
         format.js { render js: "window.location.reload(true);" }
@@ -132,7 +132,7 @@ class UsersController < ApplicationController
         # @user_errors added to force an error message for tetst
         @user_errors=['There are Errors']
         flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        format.js 
+        format.js
       end
     end
   end
@@ -152,6 +152,8 @@ class UsersController < ApplicationController
   end
 
   def update
+    Rails.logger.debug("*** params: #{params.inspect}")
+    Rails.logger.debug("*** user_params: #{user_params.inspect}")
     if user_params[:password].blank? || user_params[:password_confirmation].blank?
       user_params.delete(:password)
       user_params.delete(:password_confirmation)
@@ -184,11 +186,20 @@ class UsersController < ApplicationController
   #     Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
   #   end
 
+    doResetPwd = @user.password && @user.password_confirmation
+    doSetActive = params[:commit] == 'active'
+
     respond_to do |format|
       lname = user_params[:last_name]
       reload_staff_list = (lname.present? && lname != @user.last_name && lname[0] != @user.last_name[0]) ? true : false
       @user.assign_attributes(user_params)
       @user.valid?
+      # do not update attributes until manual check for is_email_required?
+      Rails.logger.error("*** @user.valid? errors: #{@user.errors.inspect}")
+      if !doResetPwd && !doSetActive && @user.is_email_required?
+        @user_errors = ['There are Errors']
+        Rails.logger.error("*** @user.errors: #{@user.errors.inspect}")
+      end
       if @user.errors.count == 0 && @user.update_attributes(user_params)
         if params[:commit] == 'active'
           format.js
@@ -205,11 +216,12 @@ class UsersController < ApplicationController
             format.html { render :action => "change_password" }
           end
         else
+          # failed update attributes.  Be sure to add missing email error message here
+          @user.is_email_required?
           Rails.logger.debug("*** no pwd confirmation - @user.errors: #{@user.errors.inspect}")
-          if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
-            @user.errors.add(:email, "email is required")
-            @user_errors = ['There are Errors']
-            Rails.logger.error("*** @user.errors: #{@user.errors.inspect}")
+          if params[:commit] == 'active'
+            format.js
+          elsif @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
             format.js
           elsif params[:commit] == 'update_staff'
             if reload_staff_list
@@ -223,12 +235,13 @@ class UsersController < ApplicationController
           end
         end
       else
-        if @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
-          @user.errors.add(:email, "email is required")
-        end
         Rails.logger.error("ERROR - #{@user.errors.full_messages}")
         flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        if params[:commit] == 'update_staff'
+        if params[:commit] == 'active'
+          format.js
+        elsif @school.has_flag?(School::USERNAME_FROM_EMAIL) && user_params[:email].blank?
+          format.js
+        elsif params[:commit] == 'update_staff'
           Rails.logger.debug("*** update staff errors.")
           format.js
         else
