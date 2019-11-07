@@ -592,13 +592,14 @@ describe "Staff Listing", js:true do
 
   def test_email_attribute_protected
     visit staff_listing_users_path if current_path != staff_listing_users_path
-    page.find('tbody.tbody-body', text: 'new@sample.com', wait: 5).find("a i.fa-edit").click
+    page.find('tbody.tbody-body', text: 'new@sample.com', wait: 10).find("a i.fa-edit").click
     page.find("#staff_email", wait: 5)
     page.fill_in 'staff_email', :with => ''
     find("button", text: 'Save').click
     page.should have_content('Email is required')
     find("button", text: 'Cancel').click
     page.driver.refresh
+    page.find("td.user-email", wait: 10)
     page.should have_content('new@sample.com')
   end
 

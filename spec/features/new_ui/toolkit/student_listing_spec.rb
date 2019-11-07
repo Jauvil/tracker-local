@@ -499,7 +499,7 @@ describe "Student Listing", js:true do
     within("tr#student_#{student.id}") do
       page.find("a[data-url='/students/#{student.id}.js']", wait: 5).click
     end
-    # sleep 5
+    page.find("h2.h1 strong", text: 'View Student', wait: 5)
     page.should have_content("View Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       page.should have_content('Fn')
@@ -664,7 +664,7 @@ describe "Student Listing", js:true do
       student.reload
       assert_equal(active, student[:active])
       #make sure deactivated students are displayed with strikethrough text
-      #and active students are displayed without strikethrough text 
+      #and active students are displayed without strikethrough text
       page.should have_css("tr#student_#{student.id}#{active ? '.active' : '.deactivated'}")
   end
 

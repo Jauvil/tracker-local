@@ -203,12 +203,12 @@ describe "Announcements", js:true do
 
       # add an announcement
       find("a#show-add[data-url='/announcements/new.js']").click
-      page.find("#announcement_content", wait: 5).set('First new one')
+      page.find("#announcement_content", wait: 10).set('First new one')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # add another announcement
       find("a#show-add[data-url='/announcements/new.js']").click
-      page.find("#announcement_content", wait: 5).set('Second new one')
+      page.find("#announcement_content", wait: 10).set('Second new one')
       find("#modal_popup form#new_announcement input[type='submit']").click
 
       # confirm at announcements page with the new announcement listed
@@ -254,12 +254,11 @@ describe "Announcements", js:true do
       # confirm at announcements page without the new announcement listed
       assert_equal(current_path, '/announcements')
 
+      page.find("#announcement_list #announcement_list_1", wait: 5)
+      page.find("#announcement_list #announcement_list_3", wait: 5)
+      page.find("#announcement_list #announcement_list_4", wait: 5)
       announcements = page.all("#announcement_list tr")
       announcements.length.should == 3
-      page.should have_css("#announcement_list #announcement_list_1")
-      page.should_not have_css("#announcement_list #announcement_list_2")
-      page.should have_css("#announcement_list #announcement_list_3")
-      page.should have_css("#announcement_list #announcement_list_4")
       # confirm new announcement is no longer in the alert box at the top of the page
       within("#announcement_list") do
         page.should_not have_content('Announcement Content 2')
