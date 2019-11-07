@@ -8,8 +8,8 @@ PARLO Progress Tracker
 
 
 ```bash
-https://github.com/21pstem/tracker 
-  #Fork repo 
+https://github.com/21pstem/tracker
+  #Fork repo
 git clone git@github.com:[your github username]/tracker.git
 cd tracker
 git remote -v
@@ -17,7 +17,7 @@ git remote -v
   #origin	https://github.com/[your github username]/tracker.git (push)
   #upstream	https://github.com/21pstem/tracker.git (fetch)
   #upstream	https://github.com/21pstem/tracker.git (push)
-rbenv local version 2.5.6 (for Rails 5) 
+rbenv local version 2.5.6 (for Rails 5)
   #(set by .../.ruby-version)
 cat .ruby-version
   # 2.5.6
@@ -120,7 +120,7 @@ bundle exec rake stem_egypt_training_data:build_training_school
 bundle exec rake keystone_school:create
 ```
 
-### Run Local Server 
+### Run Local Server
 ```
 bundle exec rails server
 ```
@@ -132,15 +132,34 @@ bundle exec rails server
 COVERAGE=true bundle exec rspec spec
 ```
 
+
+### Set Up Curriculum & School Year Rollover in Development
+
+```bash
+# Create a new school (as in Egypt) using system admin web interface
+### Schools Page / Add School (+ icon), set year to prior year
+
+# Set up Subjects in Model School to match EG Curriculum
+###  Note: this can be rerun if willing to recreate all subjects
+bundle exec rake stem_egypt_model_subjects:populate
+
+# Load up initial EG curriculum into model school
+Schools Listing / Model School / Upload Learning Outcomes
+### Automatically Updated Subjects counts: Updates - 0 , Adds - 648 , Deactivates - 0 , Errors - 0
+
+# update to new curriculum into model school
+
+```
+
 ### Troubleshooting
 ```bash
-  #if problem with bundle install --without=production 
+  #if problem with bundle install --without=production
 gem install bundler -v 1.17.3
   #libiconv is missing.  please visit
   #http://nokogiri.org/tutorials/installing_nokogiri.html for help with installing
   #dependencies.
 gem install nokogiri -v '1.6.3.1' --source 'http://rubygems.org/'
-  #if gem install nokogiri -v '1.6.3.1' --source 'http://rubygems.org/' fails because libiconv is missing, 
+  #if gem install nokogiri -v '1.6.3.1' --source 'http://rubygems.org/' fails because libiconv is missing,
   #see troubleshooting guide in error message
 ```
 
