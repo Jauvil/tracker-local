@@ -195,6 +195,7 @@ li#announcements {
   width: 400px;
   height: 46px;
   overflow: hidden;
+  overflow-x: hidden !important;
   ul {
     list-style: none;
     li {
@@ -207,7 +208,7 @@ li#announcements {
       }
       .announcement-text {
         line-height: 23px !important;
-        width: 320px;
+        width: 300px;
         margin: 0px;
         padding: 0px;
         overflow: hidden;
@@ -968,28 +969,28 @@ select.select2-styles {
   }
 
   li#head-current-school {
-    max-width: 220px; 
+    max-width: 220px;
    /**set width when sharing space with no icons**/
-    .span-container:first-child { 
-        max-width: 174px; 
-        .text-muted { 
-          max-width: 174px; 
+    .span-container:first-child {
+        max-width: 174px;
+        .text-muted {
+          max-width: 174px;
           font-size: 70%;
         }
     }
     /**set width when sharing space with two icons**/
-    .span-container:nth-child(3) { 
-        max-width: 174px; 
-        .text-muted { 
+    .span-container:nth-child(3) {
+        max-width: 174px;
+        .text-muted {
           max-width: 174px;
           font-size: 70%;
         }
     }
     /**set width when sharing space with three icons**/
-    .span-container:nth-child(4) { 
-      max-width: 166px; 
-      .text-muted { 
-        max-width: 166px; 
+    .span-container:nth-child(4) {
+      max-width: 166px;
+      .text-muted {
+        max-width: 166px;
         font-size: 70%;
       }
     }
@@ -998,47 +999,47 @@ select.select2-styles {
   li#announcements {
     width: 150px;
     overflow: scroll;
-  } 
-  li#announcements ul { 
+  }
+  li#announcements ul {
     padding: 5px;
   }
   li#announcements ul li .announcement-text {
-    width: 70px;
+    width: 50px;
     overflow: visible;
-  }  
+  }
 }
 
 @media screen and (min-width: 775px) {
   li#announcements {
     width: 200px;
     overflow: scroll;
-  } 
+  }
   li#announcements ul li .announcement-text {
-    width: 120px;
-  } 
+    width: 100px;
+  }
 }
 
-@media screen 
+@media screen
 and (min-width: 1075px) {
   #head-dashboard-selector.without-announcement {
     display: block;
   }
 }
 
-@media screen 
+@media screen
 and (min-width: 1275px) {
     #head-dashboard-selector.with-announcement {
     display: block;
-  } 
+  }
 }
 
 /* devices, Tablets (>1475px) */
 @media screen and (min-width: 1450px) {
   li#announcements {
     width: 400px;
-  } 
+  }
   li#announcements ul li .announcement-text {
-      width: 320px;
+      width: 300px;
   }
 }
 

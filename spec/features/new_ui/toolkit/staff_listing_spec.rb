@@ -100,8 +100,8 @@ describe "Staff Listing", js:true do
       @sectiony2 = FactoryBot.create :section, subject: @subject
       load_test_section_yr2(@sectiony2, @teacher)
 
-      # assert school has the flag "username_from_email" 
-      # to ensure that test_email_attribute_protected will 
+      # assert school has the flag "username_from_email"
+      # to ensure that test_email_attribute_protected will
       # be run for relevant roles.
       expect(@school[:flags]).to include("username_from_email")
 
@@ -513,7 +513,7 @@ describe "Staff Listing", js:true do
       page.all("tbody.tbody-body tr.deactivated").length.should == 1
 
       ############
-      # Test that emails are protected from being deleted in editing, 
+      # Test that emails are protected from being deleted in editing,
       # if email is required for this school.
       ############
       if @school[:flags].include?("username_from_email")
@@ -524,12 +524,12 @@ describe "Staff Listing", js:true do
       store_school_data = [@school.acronym, @school.name]
       reset_school_acronym_and_name(@school, "TEST", "Factory School")
       upload_table_columns = ['Line', 'Username', 'First Name', 'Acronym', 'Email', 'Position', 'Errors']
-      
+
       ##############################
       # Check Bulk Upload Staff is working for valid .csv file in preview mode
       # ############################
-      
-      #visit bulk upload file selection page 
+
+      #visit bulk upload file selection page
       do_bulk_upload(true) #in_preview_mode == true
 
       page.should have_content("Staff Bulk Upload")
@@ -543,10 +543,10 @@ describe "Staff Listing", js:true do
       ##############################
       # Check Bulk Upload Staff is working for valid .csv file in save mode
       # ############################
-      
+
       do_bulk_upload(false) #in_preview_mode == false
       page.find('.show_report_btn', text: "Show entered report").click
-      
+
       page.should have_content("Staff Bulk Upload")
       page.should have_css("div.upload-output#show-details .table-title")
       page.should_not have_css("#show-errors h3.ui-error.text-right")
@@ -556,16 +556,16 @@ describe "Staff Listing", js:true do
       end
 
       visit staff_listing_users_path
-      within("tr", text: "Fahmy") do 
+      within("tr", text: "Fahmy") do
         page.should have_content("Hamada")
         page.should have_content("school_administrator")
         page.should have_content("principal@stemegypt.edu.eg")
-      end 
-      within("tr", text: "Abbas Naeem") do 
+      end
+      within("tr", text: "Abbas Naeem") do
         page.should have_content("Mahmoud")
         page.should have_content("teacher")
         page.should have_content("mahmoud.abbas@stemegypt.edu.eg")
-      end 
+      end
 
       # undo setup for bulk upload tests to avoid duplicate school names and acronyms
       reset_school_acronym_and_name(@school, store_school_data[0], store_school_data[1])
@@ -592,12 +592,14 @@ describe "Staff Listing", js:true do
 
   def test_email_attribute_protected
     visit staff_listing_users_path if current_path != staff_listing_users_path
-    page.find('tbody.tbody-body', text: 'new@sample.com').find("a i.fa-edit").click
+    page.find('tbody.tbody-body', text: 'new@sample.com', wait: 10).find("a i.fa-edit").click
+    page.find("#staff_email", wait: 5)
     page.fill_in 'staff_email', :with => ''
     find("button", text: 'Save').click
-    page.should have_content('email is required')
+    page.should have_content('Email is required')
     find("button", text: 'Cancel').click
     page.driver.refresh
+    page.find("td.user-email", wait: 10)
     page.should have_content('new@sample.com')
   end
 

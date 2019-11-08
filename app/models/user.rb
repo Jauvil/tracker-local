@@ -299,6 +299,22 @@ class User < ApplicationRecord
     end
   end
 
+  def is_email_required?
+    email_error = false
+    begin
+      if self.school_id.present? && !self.parent
+        school = School.find(self.school_id)
+        if school.has_flag?(School::USERNAME_FROM_EMAIL) && self.email.blank?
+          self.errors.add(:email, 'Email is required.')
+          email_error = true
+        end
+      end
+    rescue
+      Rails.logger.error("ERROR: is_email_required? school (#{self.school_id.inspect}) find error.")
+    end
+    return email_error
+  end
+
   protected
     def role_requires_name?
       ([:system_administrator, :parent]).each do |role|
@@ -324,22 +340,6 @@ class User < ApplicationRecord
           return true if teacher.managed_subjects.size > 0
         end
         false
-    end
-
-    def is_email_required?
-      email_error = false
-      begin
-        if self.school_id.present? && !self.parent
-          school = School.find(self.school_id)
-          if school.has_flag?(School::USERNAME_FROM_EMAIL) && self.email.blank?
-            self.errors.add(:email, 'Email is required.')
-            email_error = true
-          end
-        end
-      rescue
-        Rails.logger.error("ERROR: is_email_required? school (#{self.school_id.inspect}) find error.")
-      end
-      return email_error
     end
 
     # def valid_arabic
