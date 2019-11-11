@@ -599,7 +599,7 @@ describe "Staff Listing", js:true do
 
   def test_email_attribute_protected
     visit staff_listing_users_path if current_path != staff_listing_users_path
-    within('tbody.tbody-body', text: 'new@sample.com') do
+    within('tbody.tbody-body tr', text: 'new@sample.com') do
       page.find("a i.fa-edit", wait: 5).click
     end
     page.find("#staff_email", wait: 5)
