@@ -52,7 +52,7 @@
                 %tr{id: "section_#{s.id}"}
                   %td=s.name
                   %td=s.line_number
-                  %td=''
+                  %td=s.enrollments.active_enrollment.count
                   %td
                     %a{href: "/sections/#{s.id}"}
                       %i.fa.fa-lg.fa-check
@@ -68,7 +68,7 @@
                 %tr{id: "section_#{s.id}"}
                   %td=s.name
                   %td=s.line_number
-                  %td=''
+                  %td=s.enrollments.active_enrollment.count
                   %td
                     %a{href: "/sections/#{s.id}"}
                       %i.fa.fa-lg.fa-check
