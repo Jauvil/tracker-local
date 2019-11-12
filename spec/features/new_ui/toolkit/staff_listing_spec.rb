@@ -244,6 +244,13 @@ describe "Staff Listing", js:true do
     page.should have_content("All Sections for staff member: #{@teacher.full_name}")
     within("#section_#{@section.id}") do
       page.should have_css("a[href='/sections/#{@section.id}']")
+      #third td should hold the student count for the section
+      page.find("td:nth-child(3)").should have_content('7') 
+    end
+    within("#section_#{@sectiony2.id}") do
+      page.should have_css("a[href='/sections/#{@sectiony2.id}']")
+      #third td should hold the student count for the section
+      page.find("td:nth-child(3)").should have_content('6') 
     end
     # teachers cannot see section listing or tracker pages that are not their own
     if [:teacher].include?(role)
@@ -592,14 +599,16 @@ describe "Staff Listing", js:true do
 
   def test_email_attribute_protected
     visit staff_listing_users_path if current_path != staff_listing_users_path
-    page.find('tbody.tbody-body', text: 'new@sample.com', wait: 10).find("a i.fa-edit").click
+    within('tbody.tbody-body tr', text: 'new@sample.com') do
+      page.find("a i.fa-edit", wait: 5).click
+    end
     page.find("#staff_email", wait: 5)
     page.fill_in 'staff_email', :with => ''
     find("button", text: 'Save').click
     page.should have_content('Email is required')
     find("button", text: 'Cancel').click
     page.driver.refresh
-    page.find("td.user-email", wait: 10)
+    page.find("td.user-email", text: "new@sample.com", wait: 10)
     page.should have_content('new@sample.com')
   end
 

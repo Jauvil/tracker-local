@@ -240,11 +240,15 @@ describe "User can change password", js:true do
       page.fill_in 'user_password', :with => 'newpassword'
       page.fill_in 'user_password_confirmation', :with => 'newpassword'
       page.find("input[name='commit']").click
-      assert_equal("/", current_path)
-      page.fill_in 'user_username', :with => @student_no_email.username
-      page.fill_in 'user_password', :with => 'newpassword'
-      find("input[name='commit']").click
-
+      if @school1.flags.include? School::USERNAME_FROM_EMAIL
+        assert_equal("/students/#{@student_no_email.id}", current_path)
+        page.should have_content('ERROR: ["Email Email is required."]')
+      else
+        assert_equal("/", current_path)
+        page.fill_in 'user_username', :with => @student_no_email.username
+        page.fill_in 'user_password', :with => 'newpassword'
+        find("input[name='commit']").click
+      end
       # log back in as user
       page.find("#main-container header .dropdown-toggle").click
       page.find("#main-container header .dropdown-menu-right a[href='/users/sign_out']").click
