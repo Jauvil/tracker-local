@@ -484,6 +484,7 @@ describe "Student Listing", js:true do
     page.find("form#edit_student_#{student.id}", wait: 5)
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
       within("form#edit_student_#{student.id}") do
+        page.find('#student_id').set('123581321')
         page.find('#student_first_name', wait: 5).set('Fn')
         page.find('#student_last_name', wait: 5).set('Ln')
         #page.should have_css('span.ui-error', text:'Email is required.')
@@ -502,6 +503,7 @@ describe "Student Listing", js:true do
     page.find("h2.h1 strong", text: 'View Student', wait: 5)
     page.should have_content("View Student")
     within("#modal_popup .modal-dialog .modal-content .modal-body") do
+      page.should have_content('123581321')
       page.should have_content('Fn')
       page.should have_content('Ln')
       page.should have_content('f@a.com')
@@ -544,6 +546,7 @@ describe "Student Listing", js:true do
         page.should have_css('#last-name span.ui-error', text:'["can\'t be blank"]')
         # page.should have_css('#email span.ui-error', text:'["Email is required."]')
         # page.should have_css('#grade-level span.ui-error', text:'["Grade Level is invalid"]')
+        page.find('#student_id').set('180360720')
         page.find('#student_first_name').set('NFname')
         page.find('#student_last_name').set('NLname')
         page.find('#student_email').set('new@ba.com')
@@ -559,6 +562,7 @@ describe "Student Listing", js:true do
     # expect(page.text).to match(/New\sLname/) # alternate syntax
     page.text.should match(/NLname/)
     page.should have_content('new@ba.com')
+    page.should have_content('180360720')
 
     # confirm username is sch1_new
     student_nodes = all('tbody tr.student-row')
