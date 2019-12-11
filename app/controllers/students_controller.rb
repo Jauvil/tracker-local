@@ -21,6 +21,7 @@ class StudentsController < ApplicationController
     :special_ed,
     :password,
     :temporary_password,
+    :xid,
     :active
   ]
 
