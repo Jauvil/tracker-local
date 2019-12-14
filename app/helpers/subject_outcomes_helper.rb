@@ -339,6 +339,7 @@ module SubjectOutcomesHelper
     # note: 'headers: true' uses column header as the key for the name (and hash key)
     new_los_by_rec = Hash.new
     ix = 0 # record number (ignore other subject records if matching subject)
+    Rails.logger.debug("NNNN @subject_names: #{@subject_names.inspect}")
     CSV.foreach(params['file'].path, headers: true) do |row|
       rhash = validate_csv_fields(row.to_hash.with_indifferent_access, @subject_names)
       rhash[COL_REC_ID] = ix

@@ -47,8 +47,19 @@ namespace :fix_rollover_before_curriculum do
 
     model_los = SubjectOutcome.where(subject_id: model_subject_ids)
 
+    cur_subj_id = model_los.first.id
+    puts "#{model_los.first.subject.name}, cur_subj_id: #{cur_subj_id}"
     model_los.each do |mlo|
-      puts("mlo: #{mlo.subject.name}, #{mlo.lo_code}, #{mlo.active}, #{mlo.model_lo_id}")
+      if cur_subj_id != mlo.subject_id
+        puts "#{mlo.subject.name}, cur_subj_id: #{cur_subj_id}"
+      end
+      cur_subj_id = mlo.subject_id
+      rel_lo = mlo.model_lo_id.nil? ? [] : SubjectOutcome.where(id: mlo.model_lo_id)
+      if rel_lo.count == 1
+        puts("    #{mlo.id}:#{mlo.lo_code}, #{mlo.active}, #{mlo.model_lo_id}, #{rel_lo.lo_code}, #{rel_lo.active}")
+      else
+        puts("    #{mlo.id}:#{mlo.lo_code}, #{mlo.active}")
+      end
     end
 
 
