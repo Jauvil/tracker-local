@@ -52,11 +52,11 @@
               - options = ["current", "deactivated", "graduated"]
               - options.each do |opt|
                 %label{for: "#{opt}-filter"}
-                ="#{opt}"
+                ="#{opt.capitalize}"
                 - if @filter == opt
-                  %input.submit-on-change{:type=>"radio", :name=>"student[filter]", :value=>"#{opt}", :checked=>"checked"}
+                  %input.submit-on-change{:id=>"#{opt}-filter", :type=>"radio", :name=>"student[filter]", :value=>"#{opt}", :checked=>"checked"}
                 - else
-                  %input.submit-on-change{:type=>"radio", :name=>"student[filter]", :value=>"#{opt}"}
+                  %input.submit-on-change{:id=>"#{opt}-filter", :type=>"radio", :name=>"student[filter]", :value=>"#{opt}"}
 
 
 .row
