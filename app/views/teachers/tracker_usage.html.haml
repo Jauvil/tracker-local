@@ -39,6 +39,13 @@
               %th='# LOs'
               %th='# LOs Rated'
           - @teachers.each do |t|
+            -# accumulate sector values for teacher values
+            - thash = Hash.new(0)
+              - @taHash[t.id].each do |sect_id, val_hash|
+              - thash[:eso_count] += val_hash[:eso_count]
+              - thash[:esor_count] += val_hash[:esor_count]
+              - thash[:so_count] += val_hash[:so_count]
+              - thash[:sor_count] += val_hash[:sor_count]
             %tbody.tbody-header.show-tbody{class: (true ? 'show-tbody-body' : '' ), data: {tch_id: "#{t.id}"} }
               %tr.height-30
                 %td
@@ -52,21 +59,20 @@
                       %i.fa.fa-lg.fa-check
                     %strong.pull-left.lmargin5="#{t.full_name} - #{t.email}"
 
-                %td.evid_count.text-center=t.active_evidence_section_outcomes.count
-                %td.evid_rated_count.text-center=t.rated_evidence_section_outcomes_count
-                %td.los_count.text-center=t.active_section_outcomes.count
-                %td.los_rated_count.text-center=t.rated_section_outcomes_count
+                %td.evid_count.text-center=thash[:eso_count]
+                %td.evid_rated_count.text-center=thash[:esor_count]
+                %td.los_count.text-center=thash[:so_count]
+                %td.los_rated_count.text-center=thash[:sor_count]
             %tbody.tbody-body.alt-rows{ data: {tch_id: "#{t.id}"} }
-              - t.sections.each do |s|
-                - los_count = s.section_outcomes.count
-                %tr{ data: {sect_id: "#{s.id}"} }
+              - @taHash[t.id].each do |sect_id, val_hash|
+                %tr{ data: {sect_id: "#{val_hash[:id]}"} }
                   %td
-                    %a{href: "#{class_dashboard_section_path(s.id)}"}
+                    %a{href: "#{class_dashboard_section_path(val_hash[:id])}"}
                       %i.fa.fa-dashboard.fa-lg
-                    %a{href: "#{section_path(s.id)}"}
+                    %a{href: "#{section_path(val_hash[:id])}"}
                       %i.fa.fa-check.fa-lg
-                    %span.section.text-center="#{s.name} - #{s.line_number}"
-                  %td.evid_count.text-center=s.all_evidence_section_outcomes_count
-                  %td.evid_rated_count.text-center=s.rated_evidence_section_outcomes_count
-                  %td.los_count.text-center=s.section_outcomes.count
-                  %td.los_rated_count.text-center=s.rated_section_outcomes_count
+                    %span.section.text-center="#{val_hash[:subj]} - #{val_hash[:line]}"
+                  %td.evid_count.text-center=val_hash[:eso_count]
+                  %td.evid_rated_count.text-center=val_hash[:esor_count]
+                  %td.los_count.text-center=val_hash[:so_count]
+                  %td.los_rated_count.text-center=val_hash[:sor_count]

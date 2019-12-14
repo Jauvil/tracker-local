@@ -100,7 +100,26 @@ class TeachersController < ApplicationController
   def tracker_usage
     # currently for all teacher in only one school
     @school = get_current_school
-    @teachers = Teacher.active_teachers.includes(:sections).where(school_id: @school.id)
+    current_section_ids = Section.where(school_year_id: @school.school_year_id).pluck(:id)
+    if @school.has_flag?(School::USER_BY_FIRST_LAST)
+      order_clause = "users.first_name, users.last_name"
+    else
+      order_clause = "users.last_name, users.first_name"
+    end
+    @teaching_assignments = TeachingAssignment.includes(:section, :teacher).where(section_id: current_section_ids).order("sections.line_number")
+    @teachers = Teacher.where(id: @teaching_assignments.pluck(:teacher_id).uniq).order(order_clause)
+    @taHash = Hash.new {|h,k| h[k] = {} }
+    @teaching_assignments.each do |ta|
+      sectHash = Hash.new
+      sectHash[:id] = ta.section.id
+      sectHash[:subj] = ta.section.name
+      sectHash[:line] = ta.section.line_number
+      sectHash[:eso_count] = ta.section.all_evidence_section_outcomes_count
+      sectHash[:esor_count] = ta.section.rated_evidence_section_outcomes_count
+      sectHash[:so_count] = ta.section.section_outcomes.count
+      sectHash[:sor_count] = ta.section.rated_section_outcomes_count
+      @taHash[ta.teacher_id][ta.section_id] = sectHash
+    end
     respond_to do |format|
       format.html
     end
