@@ -52,6 +52,8 @@ class Student < User
   #scopes
   default_scope { where(student: true) }# deprecate this ?
   scope :active, -> { where(active: true )} # deprecate this for active_student
+  scope :deactivated, -> { where("active = (?) AND grade_level < (?)", false, 1000) }
+  scope :graduated, -> { where("active = (?) AND grade_level > (?)", false, 1000) }
   scope :active_student, -> { where(active: true) }
   scope :special_ed_status, lambda { |statuses| where(special_ed: statuses) }
   scope :alphabetical, -> { where(active: true).order("last_name", "first_name") } # deprecate this for active_student and last_then_first
