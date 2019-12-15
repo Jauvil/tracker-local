@@ -10,9 +10,9 @@
 / Header
 .header-block
   %h1.h3.page-title
-    %strong="Student Section Listing"
+    %strong="Student Class Section Listing"
   %h2.h1.page-title
-    %strong="All Sections for student: #{@student.full_name}"
+    %strong="All Class Sections for student: #{@student.full_name}"
 
 .block-section.indent-block
   .row.height-30
@@ -37,7 +37,7 @@
           %thead.table-title
             %tr
               %th= 'Subject'
-              %th= 'Section'
+              %th= 'Class Section'
               %th= 'Teacher'
               %th{colspan: 1}= ''
             %tbody.tbody-header.show-tbody{class: (true ? 'show-tbody-body' : '' )}

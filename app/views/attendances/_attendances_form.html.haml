@@ -1,6 +1,6 @@
 
 - content_for(:title, 'Attendance Maintenance')
-- content_for(:page_name, 'Section Attendance Entry')
+- content_for(:page_name, 'Class Section Attendance Entry')
 - content_for(:page_class, 'misc')
 - content_for :layout_breadcrumbs do
   - breadcrumb :root # to ensure breadcrumbs always show
@@ -17,7 +17,7 @@
           %strong='Attendance Maintenance'
         %h2.h1.page-title
           %strong
-            ='Section Attendance Entry for: '
+            ='Class Section Attendance Entry for: '
             = @subject.name
             ,
             = @section.line_number
@@ -54,7 +54,7 @@
         .block-title.text-center
           %h2
             %i.fa.fa-bar-chart
-            ="Section Attendance for #{@attendance_date_field}"
+            ="Class Section Attendance for #{@attendance_date_field}"
         .row
           %div#attendance
             %div{:class => 'clear_fix'}

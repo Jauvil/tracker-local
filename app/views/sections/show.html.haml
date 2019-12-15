@@ -132,11 +132,11 @@
               .tracker-table-options
                 - if can? :create, Student
                   %div{style: 'position: relative;'}
-                    .tracker-remove-student{title: 'Remove student from Section'}
+                    .tracker-remove-student{title: 'Remove student from Class Section'}
                       %a#remove-student{data: {target: "#modal_popup", toggle: 'modal', url: list_enrollments_section_path(format: :js)}}
                         %i.fa.fa-lg.fa-minus-square
                   %div{style: 'position: relative;'}
-                    .tracker-add-student{title: 'Add student to Section'}
+                    .tracker-add-student{title: 'Add student to Class Section'}
                       %a#add-student{data: {target: "#modal_popup", toggle: 'modal', url: new_enrollment_section_path(format: :js)}}
                         %i.fa.fa-lg.fa-plus-square
                 / old Tracker Page options in table head

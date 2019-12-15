@@ -1,6 +1,6 @@
 
-- content_for(:title, 'Edit Section Message')
-- content_for(:page_name, 'Edit Section Message')
+- content_for(:title, 'Edit Class Section Message')
+- content_for(:page_name, 'Edit Class Section Message')
 - content_for(:page_class, 'misc')
 
 / Header
@@ -9,7 +9,7 @@
     .col-sm-1
     .col-sm-10
       %h1.h3.page-title.text-center
-        %strong='Section Message for:'
+        %strong='Class Section Message for:'
       %h2.h1.page-title.text-center
         %strong
           =@section.name
@@ -23,7 +23,7 @@
     .block.block-alt-style.full
       .block-title.text-center
         %h2
-          ='Section Message'
+          ='Class Section Message'
       .block-content-full
         =form_for(@section, remote: true, url: update_section_message_section_path(@section)) do |f|
           - @errors = @section.errors
@@ -36,5 +36,5 @@
                 =@section.message
               %span.ui-error.col-sm-2="#{@errors[:message] if @errors[:message].present?}"
             %fieldset.text-center
-              %button.btn.btn-primary{name: 'commit', type: "submit"}='Update Section Message'
+              %button.btn.btn-primary{name: 'commit', type: "submit"}='Update Class Section Message'
   .col-sm-1
