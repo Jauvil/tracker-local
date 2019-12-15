@@ -241,16 +241,16 @@ describe "Staff Listing", js:true do
       end
     end
     assert_equal("/users/#{@teacher.id}/sections_list", current_path)
-    page.should have_content("All Sections for staff member: #{@teacher.full_name}")
+    page.should have_content("All Class Sections for staff member: #{@teacher.full_name}")
     within("#section_#{@section.id}") do
       page.should have_css("a[href='/sections/#{@section.id}']")
       #third td should hold the student count for the section
-      page.find("td:nth-child(3)").should have_content('7') 
+      page.find("td:nth-child(3)").should have_content('7')
     end
     within("#section_#{@sectiony2.id}") do
       page.should have_css("a[href='/sections/#{@sectiony2.id}']")
       #third td should hold the student count for the section
-      page.find("td:nth-child(3)").should have_content('6') 
+      page.find("td:nth-child(3)").should have_content('6')
     end
     # teachers cannot see section listing or tracker pages that are not their own
     if [:teacher].include?(role)
