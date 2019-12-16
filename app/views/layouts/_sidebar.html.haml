@@ -13,7 +13,7 @@
     %i.fa.fa-cog
   %a.btn.btn-user{href: "#{destroy_user_session_path}"}
     %i.fa.fa-power-off
-  - user_guide = root_path + ((@current_user.student? || @current_user.parent?) ? "/PARLO Tracker Student and Parent User Guide-STEM Egypt.pdf" : (@current_user.teacher? ? "/PARLO Tracker Teacher User Guide-STEM Egypt.pdf" : "PARLO Tracker School Adminstrator User Guide-STEM Egypt.pdf"))
+  - user_guide = ((@current_user.student? || @current_user.parent?) ? "/PARLO Tracker Student and Parent User Guide-STEM Egypt.pdf" : (@current_user.teacher? ? "/PARLO Tracker Teacher User Guide-STEM Egypt.pdf" : "/PARLO Tracker School Adminstrator User Guide-STEM Egypt.pdf"))
   %a.btn.btn-user{href: "#{user_guide}", target: "_blank"}
     %i.fa.fa-question
 / END User Links
