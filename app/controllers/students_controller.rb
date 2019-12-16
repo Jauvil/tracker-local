@@ -101,7 +101,6 @@ class StudentsController < ApplicationController
       if @school.id.present?
         @students = @students.where(school_id: @school.id)
         format.html { render template }
-        format.js
       else
         @students
         flash[:alert] = "Please pick a school."
