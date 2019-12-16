@@ -281,6 +281,7 @@ describe "Student Listing", js:true do
         page.should have_css("i.fa-times-circle") if can_deactivate && @student.active == true
         page.should_not have_css("i.fa-times-circle") if !can_deactivate && @student.active == true
       end
+      page.find('#deactivated-filter').click
       page.should have_css("tr#student_#{@student_transferred.id}")
       page.should have_css("tr#student_#{@student_transferred.id}.deactivated")
       within("tr#student_#{@student_transferred.id}") do
@@ -294,12 +295,14 @@ describe "Student Listing", js:true do
         page.should_not have_css("i.fa-undo") if !can_deactivate && @student_transferred.active == false
       end
       # graduated student should be deactivated
+      page.find('#graduated-filter').click
       within("tr#student_#{@student_grad.id}.deactivated") do
         page.should have_content("#{@student_grad.last_name}") if can_create
         within('td.user-grade-level') do
           page.should have_content("#{@student_grad.grade_level}") if can_create
         end
       end
+      page.find('#current-filter').click
     end # within("#page-content") do
 
     can_see_student_dashboard(@student)
@@ -622,6 +625,7 @@ describe "Student Listing", js:true do
   end
 
   def can_change_graduate(student)
+    page.find("#graduated-filter").click
     within("tr#student_#{student.id}.deactivated") do
       page.should have_css("a[data-url='/students/#{student.id}/edit.js']")
       find("a[data-url='/students/#{student.id}/edit.js']").click
@@ -649,27 +653,31 @@ describe "Student Listing", js:true do
   def can_deactivate_student(student)
     visit students_path if current_path != "/students"
     #student's initial state should be active
-    confirm_student_activation_status(student, true)
+    confirm_student_activation_status(student, true, "current")
     #deactivate student
     page.should have_css("#student_#{student.id}")
     page.find("#student_#{student.id}").find('#remove-student').click
     wait_for_accept_alert
     #student's state should be deactivated
-    confirm_student_activation_status(student, false)
+    confirm_student_activation_status(student, false, "deactivated")
     #reactivate student
     page.find("#student_#{student.id} #restore-student").click
     wait_for_accept_alert
-    confirm_student_activation_status(student, true)
+    confirm_student_activation_status(student, true, "current")
   end
 
-  def confirm_student_activation_status(student, active)
+  def confirm_student_activation_status(student, active, status)
       #make sure that the student's status is correct
       #in the database
       student.reload
       assert_equal(active, student[:active])
       #make sure deactivated students are displayed with strikethrough text
       #and active students are displayed without strikethrough text
+      page.find("##{status}-filter").click
       page.should have_css("tr#student_#{student.id}#{active ? '.active' : '.deactivated'}")
+      page.should_not have_css("tr#student_#{student.id}#{active ? '.deactivated' : '.active'}")
+      page.should_not have_content("2017") if status != "graduated"
+      page.should have_content("2017") if status == "graduated"
   end
 
 end

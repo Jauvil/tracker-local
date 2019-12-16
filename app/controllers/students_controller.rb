@@ -22,6 +22,7 @@ class StudentsController < ApplicationController
     :password,
     :temporary_password,
     :xid,
+    :filter,
     :active
   ]
 
@@ -83,6 +84,7 @@ class StudentsController < ApplicationController
 
     if template == "index"
       # @students = Student.accessible_by(current_ability).active.includes(:parent).order(:grade_level, :last_name, :first_name)
+      @filter = student_params[:filter] || "current"
       if @school.has_flag?(School::USER_BY_FIRST_LAST)
         @students = Student.includes(:parent).accessible_by(current_ability).order(:first_name, :last_name) # .scoped
       else
@@ -92,6 +94,8 @@ class StudentsController < ApplicationController
       authorize! :proficiency_bars, Student
       @students = Student.accessible_by(current_ability).active.order(:last_name, :first_name) # .scoped
     end
+    @students = (@filter == "current" ? @students.active : (
+      @filter == "deactivated" ? @students.deactivated : @students.graduated))
 
     respond_to do |format|
       if @school.id.present?
@@ -485,7 +489,11 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(STUDENT_PARAMS)
+    begin
+      params.require(:student).permit(STUDENT_PARAMS)
+    rescue Exception => e
+      ActionController::Parameters.new
+    end
   end
 
   def parent_params

@@ -47,11 +47,17 @@
       #filter-options-chosen
         %ul.floating-list.btn-group.btn-group-sm
           / Listing of chosen filters
-          %li
-            %small.text-muted
-              = "Grades up through #{max_grade}"
-            %a.text-muted{href: "javascript:void(0)"}
-              %i.fa.fa-times-circle
+          %form#students-filter{method: "GET", action:"/students"}
+            %li
+              - options = ["current", "deactivated", "graduated"]
+              - options.each do |opt|
+                %label{for: "#{opt}-filter"}
+                ="#{opt.capitalize}"
+                - if @filter == opt
+                  %input.submit-on-change{:id=>"#{opt}-filter", :type=>"radio", :name=>"student[filter]", :value=>"#{opt}", :checked=>"checked"}
+                - else
+                  %input.submit-on-change{:id=>"#{opt}-filter", :type=>"radio", :name=>"student[filter]", :value=>"#{opt}"}
+
 
 .row
   .col-sm-12
