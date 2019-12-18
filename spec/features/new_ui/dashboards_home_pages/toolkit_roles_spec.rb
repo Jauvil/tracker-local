@@ -152,7 +152,8 @@ describe "Student Dashboard", js:true do
         page.should have_css('a.sidebar-nav-menu.disabled')
       end
     end
-
+    page.find(".sidebar-section .fa-power-off").click
+    page.should have_content("Signed out successfully.")
   end
   def researcher_toolkit_no_changes
     visit root_path()
