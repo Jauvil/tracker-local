@@ -706,13 +706,15 @@ describe "Rollover School Year", js:true do
       page.should have_css('td.user-grade-level', text: @student2_3.grade_level.to_s)
       page.should have_css('td.user-grade-level', text: '3')
     end
-    page.should have_css("tr#student_#{@student2_4.id}.deactivated")
+    page.find("#deactivated-filter").click
+    page.should have_css("tr#student_#{@student2_4.id}.deactivated") #this student is deactivated
     within("tr#student_#{@student2_4.id}") do
       page.should have_content(@student2_4.last_name)
       page.should have_content(@student2_4.first_name)
       page.should have_css('td.user-grade-level', text: @student2_4.grade_level.to_s)
       page.should have_css('td.user-grade-level', text: '1')
     end
+    page.find("#graduated-filter").click
     page.should have_css("tr#student_#{@student_grad.id}.deactivated")
     within("tr#student_#{@student_grad.id}") do
       page.should have_content(@student_grad.last_name)
@@ -1051,6 +1053,7 @@ describe "Rollover School Year", js:true do
     if (ServerConfig.first.try(:allow_subject_mgr) != true)
       # student > grade level 3 is listed with the graduation year for grade level and deactivated.
       # Egypt schools
+      page.find("#graduated-filter").click
       page.should have_css("tr#student_#{@student2_3.id}")
       page.should have_css("tr#student_#{@student2_3.id}.deactivated")
       within("tr#student_#{@student2_3.id}.deactivated") do
@@ -1068,6 +1071,7 @@ describe "Rollover School Year", js:true do
         page.should have_css('td.user-grade-level', text: '4')
       end
       # grade 12 rollover for US school
+      page.find("#graduated-filter").click
       page.should have_css("tr#student_#{@student2_6.id}")
       page.should have_css("tr#student_#{@student2_6.id}.deactivated")
       within("tr#student_#{@student2_6.id}.deactivated") do
@@ -1077,7 +1081,7 @@ describe "Rollover School Year", js:true do
       end
 
     end
-
+    page.find("#deactivated-filter").click
     page.should have_css("tr#student_#{@student2_4.id}")
     page.should have_css("tr#student_#{@student2_4.id}.deactivated")
     within("tr#student_#{@student2_4.id}") do
