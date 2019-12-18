@@ -8,7 +8,7 @@
 
 TRAINING_SCHOOL_ID = 2
 
-NUM_TEACHERS = 20 # number of teachers per subject
+NUM_TEACHERS = 30 # number of teachers per subject
 SECTS_PER_TEACHER = 2
 STUDENTS_PER_SECTION = 15
 NUM_ASSESSMENT_SECTIONS = 99
@@ -102,7 +102,8 @@ namespace :stem_egypt_training_data do
         sa1.first_name = 'Leadership'
         sa1.last_name = 'User'
         sa1.email = "#{acronym}.lt1@example.com"
-        sa1.set_temporary_password
+        sa1.password = "leader1"
+        sa1.password_confirmation = "leader1"
         if !sa1.save
           raise "error creating #{sa1.username}, #{sa1.email}, #{sa1.errors.full_messages}"
         end
@@ -113,7 +114,8 @@ namespace :stem_egypt_training_data do
         sa2.first_name = 'Leadership'
         sa2.last_name = 'Trainer'
         sa2.email = "#{acronym}.lt2@example.com"
-        sa2.set_temporary_password
+        sa2.password = "leader2"
+        sa2.password_confirmation = "leader2"
         if !sa2.save
           raise "error creating #{sa2.username}, #{sa2.email}, #{sa2.errors.full_messages}"
         end
@@ -529,9 +531,9 @@ namespace :stem_egypt_training_data do
     end
 
 
-    subject_names = ['Arabic', 'Biology', 'Chemistry', 'Computer Science', 'Earth Science', 'English', 'French', 'German', 'Math', 'Mechanics', 'Physics']
-    subject_lead_chars = %w(ar b ch cs es en fr ge ma me p) # characters for username
-    subj_discs = [0,2,2,2,2,0,0,0,1,2,2] # index to disciplines array
+    subject_names = ['Arabic', 'Biology', 'Chemistry', 'Computer Science', 'Earth Science', 'English', 'French', 'German', 'Math', 'Mechanics', 'Physics', 'Statistics', 'Social Studies']
+    subject_lead_chars = %w(ar b ch cs es en fr ge ma me p st ss) # characters for username
+    subj_discs = [0,2,2,2,2,0,0,0,1,2,2,1,2] # index to disciplines array
 
     if subject_names.length != subject_lead_chars.length ||
       subject_names.length != subj_discs.length
