@@ -120,8 +120,8 @@ namespace :stem_egypt_training_data do
           raise "error creating #{sa2.username}, #{sa2.email}, #{sa2.errors.full_messages}"
         end
 
-        STDOUT.puts("Leadership Training User: #{sa1.username} / #{sa1.temporary_password}")
-        STDOUT.puts("Leadership Training User: #{sa2.username} / #{sa2.temporary_password}")
+        STDOUT.puts("Leadership Training User: #{sa1.username} / leader1")
+        STDOUT.puts("Leadership Training User: #{sa2.username} / leader2")
 
       end # if valid school
     end
@@ -388,6 +388,24 @@ namespace :stem_egypt_training_data do
     end
     disciplines << science
 
+    db_disc = Discipline.where(name: "Technology")
+    if db_disc.count > 0
+      technology = db_disc.first
+    else
+      technology = Discipline.create(name: "Technology")
+      raise("Error creating Technology discipline: #{admin.errors.full_messages}") if technology.errors.count > 0
+    end
+    disciplines << technology
+
+    db_disc = Discipline.where(name: "Social and Life Sciences")
+    if db_disc.count > 0
+      social = db_disc.first
+    else
+      social = Discipline.create(name: "Social and Life Sciences")
+      raise("Error creating Social and Life Sciences discipline: #{admin.errors.full_messages}") if social.errors.count > 0
+    end
+    disciplines << social
+
 
     STDOUT.puts "create school year and users"
 
@@ -533,7 +551,7 @@ namespace :stem_egypt_training_data do
 
     subject_names = ['Arabic', 'Biology', 'Chemistry', 'Computer Science', 'Earth Science', 'English', 'French', 'German', 'Math', 'Mechanics', 'Physics', 'Statistics', 'Social Studies']
     subject_lead_chars = %w(ar b ch cs es en fr ge ma me p st ss) # characters for username
-    subj_discs = [0,2,2,2,2,0,0,0,1,2,2,1,2] # index to disciplines array
+    subj_discs = [0,2,2,3,2,0,0,0,1,2,2,1,4] # index to disciplines array
 
     if subject_names.length != subject_lead_chars.length ||
       subject_names.length != subj_discs.length
