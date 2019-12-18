@@ -115,7 +115,7 @@
     %li#side-attend
       %a{href: ( @section.nil? || @section.id.nil? ? 'javascript:void(0)' : section_attendance_attendance_path(@section) ), class: (@section.nil? || @section.id.nil? || !can?(:section_attendance, @section) ? 'disabled' : '')}
         %i.fa.fa-calendar.sidebar-nav-icon>
-        ='Section Attendance'
+        ='Class Attendance'
     %li#side-attendance-maint
       - can_see_attendance_maint = has_selected_school && can?(:update, AttendanceType)
       %a{href: ( can_see_attendance_maint ? attendance_maintenance_attendances_path : 'javascript:void(0)'), class: (can_see_attendance_maint ? '' : 'disabled')}

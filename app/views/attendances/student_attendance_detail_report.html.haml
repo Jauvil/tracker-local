@@ -55,7 +55,7 @@
                 ='Student Attendance Report'
             %tr
               %th= 'Date'
-              %th= 'Section'
+              %th= 'Class Section'
               - @attendance_types.each do |at|
                 %th=at.description
               - if deact_column == 1
@@ -90,7 +90,7 @@
               - date_by_type[a.attendance_type_id] += 1
               - detail_by_type[a.attendance_type_id] += 1
             - elsif deact_att_type_ids.include? a.attendance_type_id
-              - deact_dates << a.attendance_date if !deact_dates.include? a.attendance_date 
+              - deact_dates << a.attendance_date if !deact_dates.include? a.attendance_date
               - by_type[9999999] += 1
               - date_by_type[9999999] += 1
               - detail_by_type[9999999] += 1

@@ -118,8 +118,8 @@
               / not using select2 - no change event on first section select when placeholder showing
               .col-sm-7
                 %fieldset.input-group{id: 'ask-sections'}
-                  %select#subject-section-select.change-section-select.select2-styles{name: "enrollments_attributes[section_id]", placeholder: 'Select Section:'}
-                    %option{value: ""}= "Select Section:"
+                  %select#subject-section-select.change-section-select.select2-styles{name: "enrollments_attributes[section_id]", placeholder: 'Select Class Section:'}
+                    %option{value: ""}= "Select Class Section:"
                     - if @sections
                       - @sections.each do |sect|
                         - section_name = "#{sect.name} - #{sect.line_number}"
@@ -155,7 +155,7 @@
                 - @current_section_assignments.each do |sa|
                   %tr{class: (@selected_student_ids.include?(sa.student_id) ? 'selected': ''), data: {st_id: "#{sa.student_id}"}}
                     %td.user-assign.text-center
-                      %input.unassign-student-btn{type: "checkbox", label: 'Unassign Student from Section', name: "enrollments_attributes[id][#{sa.id}]", value: 'deact', data: {st_id: "#{sa.student_id}", enrollment_id: "#{sa.id}"}}
+                      %input.unassign-student-btn{type: "checkbox", label: 'Unassign Student from Class Section', name: "enrollments_attributes[id][#{sa.id}]", value: 'deact', data: {st_id: "#{sa.student_id}", enrollment_id: "#{sa.id}"}}
                       - if @selected_student_ids.include?(sa.student_id)
                         %input.assignment-kept{type: 'hidden', name: "enrollments_attributes[student_id][#{sa.student_id}][action]", value: 'keep'}
                     %td.user-xid="#{sa.student.xid}"

@@ -345,12 +345,12 @@ describe "Student Listing", js:true do
     within("#page-content")do
       within(".header-block")do
         within("h2.h1.page-title")do
-          page.should have_content("All Sections for student: ")
+          page.should have_content("All Class Sections for student: ")
         end
       end
       within(".table-title")do
         page.should have_content("Subject")
-        page.should have_content("Section")
+        page.should have_content("Section Class")
         page.should have_content("Teacher")
       end
       if can_see_all  #can_see_student_sections

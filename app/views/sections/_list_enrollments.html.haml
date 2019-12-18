@@ -10,7 +10,7 @@
       .col-sm-1
       .col-sm-10
         %h1.h3.page-title.text-center
-          %strong='Remove Student from Section:'
+          %strong='Remove Student from Class Section:'
         %h2.h1.page-title.text-center
           %strong
             =@section.name
@@ -39,6 +39,6 @@
                         =e.student.full_name
                 %span.ui-error.col-sm-3="#{@errors[:id] if @errors[:id].present?}"
               %fieldset.text-center
-                %button.btn.btn-primary{name: 'commit', type: "submit"}='Remove Student from Section'
+                %button.btn.btn-primary{name: 'commit', type: "submit"}='Remove Student from Class Section'
     .col-sm-1
   %br/

@@ -29,7 +29,7 @@
       .row.text-center
         %button#save.text-button{type: 'submit'}='SAVE'
       .row.text-center
-        %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SECTION, WITH NO PRE-EXISTING TEACHER ASSIGNMENTS!'
+        %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A CLASS SECTION, WITH NO PRE-EXISTING TEACHER ASSIGNMENTS!'
       .block.block-alt-style.full
         .block-title
           %h2
@@ -39,7 +39,7 @@
           %table.titled-table.table.table-bordered.table-condensed.remove-margin.expand-collapse-tbody
             %thead.table-title
               %tr
-                %th= 'Section'
+                %th= 'Class Section'
                 %th= 'Teacher'
             - row = 0
             - if @disciplines.count > 0
@@ -71,4 +71,4 @@
       .row.text-center
         %button#save.text-button{type: 'submit'}='SAVE'
       .row.text-center
-        %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SECTION, WITH NO PRE-EXISTING TEACHER ASSIGNMENTS!'
+        %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A CLASS SECTION, WITH NO PRE-EXISTING TEACHER ASSIGNMENTS!'

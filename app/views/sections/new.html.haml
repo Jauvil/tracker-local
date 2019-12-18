@@ -1,6 +1,6 @@
 
-- content_for(:title, 'Create Section Outcome')
-- content_for(:page_name, 'Create Section Outcome')
+- content_for(:title, 'Create Class Section Outcome')
+- content_for(:page_name, 'Create Class Section Outcome')
 - content_for(:page_class, 'misc')
 - content_for :layout_breadcrumbs do
   - breadcrumb :root # to ensure breadcrumbs always show
@@ -12,7 +12,7 @@
   %h1.h3.page-title
     %strong="Tracker Maintenance"
   %h2.h1.page-title
-    %strong="Create Section"
+    %strong="Create Class Section"
 .row.indent-row
   .col-sm-1
   .col-sm-10
@@ -21,7 +21,7 @@
       .block-title.text-center
         %h2
           %i.fa.fa-bar-chart
-          ='Create Section'
+          ='Create Class Section'
       .row
         %form{:action => "/sections", :method => "post"}
           - @errors = @section.errors
@@ -53,11 +53,11 @@
             %span.ui-required{title: 'Required'}='*'
             %span.ui-error="#{@errors[:subject_id] if @errors[:subject_id].present?}"
           %fieldset.input-group
-            %label.col-md-3.control-label{for: "section_identifier"}='Section Identifier:'
-            %input.col-md-5.select-select2{id: "section_identifier", name: "section[line_number]", placeholder: 'Enter Section Identifier:', type: 'text'}
+            %label.col-md-3.control-label{for: "section_identifier"}='Class Section Identifier:'
+            %input.col-md-5.select-select2{id: "section_identifier", name: "section[line_number]", placeholder: 'Enter Class Section Identifier:', type: 'text'}
             %span.ui-required{title: 'Required'}='*'
             %span.ui-error="#{@errors[:subject_id] if @errors[:subject_id].present?}"
           %fieldset.input-group
             %span.col-md-3=''
             %span.col-md-5
-              %button{:type => "submit", :value => "commit"} Add Section
+              %button{:type => "submit", :value => "commit"} Add Class Section

@@ -21,9 +21,9 @@
           - if can? :tracker_usage, Teacher
             %option{id: 'tracker_usage', value: 'tracker_usage', selected: (@generate.name == 'tracker_usage'), data: {ask_subjects: 0, ask_grade_level: 0, ask_sections: 0, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Tracker Usage / Activity'
           - if can? :section_summary_outcome, Section
-            %option{id: 'ss_by_lo', value: 'ss_by_lo', selected: (@generate.name == 'ss_by_lo'), data: {ask_subjects: 0, ask_grade_level: 0, ask_sections: 1, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Section Summary by Learning Outcome'
+            %option{id: 'ss_by_lo', value: 'ss_by_lo', selected: (@generate.name == 'ss_by_lo'), data: {ask_subjects: 0, ask_grade_level: 0, ask_sections: 1, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Class Section Summary by Learning Outcome'
           - if can? :section_summary_student, Section
-            %option{id: 'ss_by_stud', value: 'ss_by_stud', selected: (@generate.name == 'ss_by_stud'), data: { ask_subjects: 0, ask_grade_level: 0, ask_sections: 1, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Section Summary by Student'
+            %option{id: 'ss_by_stud', value: 'ss_by_stud', selected: (@generate.name == 'ss_by_stud'), data: { ask_subjects: 0, ask_grade_level: 0, ask_sections: 1, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Class Section Summary by Student'
           - if can? :nyp_outcome, Section
             %option{id: 'nyp_by_lo', value: 'nyp_by_lo', selected: (@generate.name == 'nyp_by_lo'), data: { ask_subjects: 0, ask_grade_level: 0, ask_sections: 1, ask_los: 0, ask_student: 0, ask_marking_periods: 0}}='Not Yet Proficient by Learning Outcome'
           - if can? :nyp_student, Section
@@ -59,8 +59,8 @@
         %span.ui-required{title: 'Required'}='*'
         %span.ui-error="#{@errors[:subject_id] if @errors[:subject_id].present?}"
       %fieldset.input-group.show-label-value.display-none{id: 'ask-subject-sections'}
-        %label.col-sm-4.col-lg-4.control-label='Section:'
-        %select#subject-section-select.col-sm-8.col-lg-4.select-select2{name: "generate[subject_section_id]", placeholder: 'Select Section:'}
+        %label.col-sm-4.col-lg-4.control-label='Class Section:'
+        %select#subject-section-select.col-sm-8.col-lg-4.select-select2{name: "generate[subject_section_id]", placeholder: 'Select Class Section:'}
           %option{value: "subj"}= ""
           -# @subject_sections.each do |sect|
           -#  %option{value: "#{sect.id}", selected: (@generate.section_id == sect.id)}= "#{sect.subject.name} - #{sect.line_number}"
@@ -73,8 +73,8 @@
             %option{value: "#{gl}", selected: (@generate.grade_level == gl)}= "#{gl}"
         %span.ui-error="#{@errors[:grade_level] if @errors[:grade_level].present?}"
       %fieldset.input-group.show-label-value.display-none{id: 'ask-sections'}
-        %label.col-sm-4.col-lg-4.control-label='Section:'
-        %select#subject-section.col-sm-8.col-lg-4.select-select2{name: "generate[section_id]", placeholder: 'Select Section:'}
+        %label.col-sm-4.col-lg-4.control-label='Class Section:'
+        %select#subject-section.col-sm-8.col-lg-4.select-select2{name: "generate[section_id]", placeholder: 'Select Class Section:'}
           %option{value: ""}= ""
           - @subject_sections.each do |sect|
             %option{value: "#{sect.id}", selected: (@generate.section_id == sect.id)}= "#{sect.subject.name} - #{sect.line_number}"

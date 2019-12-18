@@ -1,6 +1,6 @@
 
-- content_for(:title, 'Section Bulk Entry')
-- content_for(:page_name, 'Section Bulk Entry')
+- content_for(:title, 'Class Section Bulk Entry')
+- content_for(:page_name, 'Class Section Bulk Entry')
 - content_for(:page_class, 'misc')
 - content_for :layout_breadcrumbs do
   - breadcrumb :root # to ensure breadcrumbs always show
@@ -12,7 +12,7 @@
   %h1.h3.page-title
     %strong="Maintenance"
   %h2.h1.page-title
-    %strong="Section Bulk Entry"
+    %strong="Class Section Bulk Entry"
 
 .block-section.indent-block
   .row.height-30
@@ -30,12 +30,12 @@
           .row.text-center
             %button#save.text-button{type: 'submit'}='SAVE'
           .row.text-center
-            %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SUBJECT, WITH NO PRE-EXISTING SECTIONS.'
+            %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SUBJECT, WITH NO PRE-EXISTING CLASS SECTIONS.'
           %table.titled-table.table.table-bordered.table-condensed.remove-margin
             %thead.table-title
               %tr
                 %th= 'Subject Name'
-                %th{colspan: 20}= '* enter the section IDs that exist for each subject'
+                %th{colspan: 20}= '* enter the class section IDs that exist for each subject'
             %tbody.tbody-body
               - @subjects.each_with_index do |subj, row|
                 - prior_section_lines = @prior_sections_by_subject_id[subj.id]
@@ -49,4 +49,4 @@
           .row.text-center
             %button#save.text-button{type: 'submit'}='SAVE'
           .row.text-center
-            %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SUBJECT, WITH NO PRE-EXISTING SECTIONS.'
+            %span.ui-error='WARNING: THIS CAN BE DONE ONCE ON A SUBJECT, WITH NO PRE-EXISTING CLASS SECTIONS.'

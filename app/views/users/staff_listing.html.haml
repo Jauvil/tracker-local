@@ -52,7 +52,7 @@
                 %th= 'Family/Last Name'
                 %th= 'Given/First Name'
               %th= 'Role(s)'
-              %th= 'Sections'
+              %th= 'Class Sections'
               %th= 'Email'
               %th{colspan: 6}= ''
           - start_letter = ''
@@ -101,7 +101,7 @@
                       %i.fa.fa-lg.fa-dashboard
                   %td
                     - if can?(:sections_list, s)
-                      %a{href: "/users/#{s.id}/sections_list", title: 'Staff Sections List'}
+                      %a{href: "/users/#{s.id}/sections_list", title: 'Staff Class Sections List'}
                         %i.fa.fa-lg.fa-check
                     -#  - if can?(:sections_list, s) || (s.teacher && current_user.has_permission?('manage_subject_admin'))
                     -#   %a{href: "/users/#{s.id}/sections_list", title: 'Staff Sections List'}

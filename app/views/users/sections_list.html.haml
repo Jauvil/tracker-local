@@ -1,6 +1,6 @@
 
-- content_for(:title, 'Staff Section Listing')
-- content_for(:page_name, 'Staff Section Listing')
+- content_for(:title, 'Staff Class Section Listing')
+- content_for(:page_name, 'Staff Class Section Listing')
 - content_for(:page_class, 'misc')
 - content_for :layout_breadcrumbs do
   - breadcrumb :root # to ensure breadcrumbs always show
@@ -10,9 +10,9 @@
 / Header
 .header-block
   %h1.h3.page-title
-    %strong="Staff Section Listing"
+    %strong="Staff Class Section Listing"
   %h2.h1.page-title
-    %strong="All Sections for staff member: #{@user.full_name}"
+    %strong="All Class Sections for staff member: #{@user.full_name}"
 
 .block-section.indent-block
   .row.height-30
@@ -37,7 +37,7 @@
           %thead.table-title
             %tr
               %th= 'Subject'
-              %th= 'Section'
+              %th= 'Class Section'
               %th= 'Student Count'
               %th{colspan: 1}= ''
             %tbody.tbody-header.show-tbody{class: (true ? 'show-tbody-body' : '' )}
@@ -46,7 +46,7 @@
                   .clearfix
                     %a.toggle-tbody.pull-left{href: "javascript:void(0)"}
                       %i.fa.fa-caret-down.fa-lg
-                    %strong.pull-left.lmargin5="Current Sections"
+                    %strong.pull-left.lmargin5="Current Class Sections"
             %tbody.tbody-body
               - @current_sections.each do |s|
                 %tr{id: "section_#{s.id}"}
@@ -62,7 +62,7 @@
                   .clearfix
                     %a.toggle-tbody.pull-left{href: "javascript:void(0)"}
                       %i.fa.fa-caret-down.fa-lg
-                    %strong.pull-left.lmargin5="Previous Sections"
+                    %strong.pull-left.lmargin5="Previous Class Sections"
             %tbody.tbody-body
               - @previous_sections.each do |s|
                 %tr{id: "section_#{s.id}"}

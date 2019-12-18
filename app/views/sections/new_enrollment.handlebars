@@ -1,7 +1,7 @@
 <div id='popup_form'>
   <form id='new_enrollment' accept-charset='UTF-8' action='/enrollments' method='post'>
     {{authenticity_token}}
-    <h3>Add Student to Section</h3>
+    <h3>Add Student to Class Section</h3>
     <input name='utf8' type='hidden' value='✓'>
     <input name='enrollment[section_id]' id='enrollment_section_id' type='hidden' value='{{section_id}}'>
     <select chosen='true' name='enrollment[student_id]' id='enrollment_student_id'>
@@ -10,7 +10,7 @@
       {{/each}}
     </select>
     <br>
-    <input name='commit' type='submit' value='Enroll Student in Section'>
+    <input name='commit' type='submit' value='Enroll Student in Class Section'>
     <br>
     <p>Or, if your student isn't listed above: </p>
     <button type="button" data_template="students/new">Create Student in School</button>

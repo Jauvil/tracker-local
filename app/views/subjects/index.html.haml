@@ -1,4 +1,4 @@
-- title = 'Subjects / Sections Listing'
+- title = 'Subjects / Class Sections Listing'
 - content_for(:title, title)
 - content_for(:page_name, title)
 - content_for(:page_class, 'misc edit_subject_outcomes')
@@ -36,7 +36,7 @@
         %i.fa.fa-lg.fa-lightbulb-o
         %i.fa.fa-lg.fa-upload
     - if can? :enter_bulk, Section
-      %a#bulk-enter-sections.btn.btn-sm.btn-primary{ href: enter_bulk_sections_path(), title: 'Bulk Enter Sections'}
+      %a#bulk-enter-sections.btn.btn-sm.btn-primary{ href: enter_bulk_sections_path(), title: 'Bulk Enter Class Sections'}
         %i.fa.fa-lg.fa-th
         %i.fa.fa-lg.fa-stack-overflow
     - if can? :create, TeachingAssignment
@@ -68,7 +68,7 @@
         %table.titled-table.table.table-bordered.table-condensed.remove-margin.expand-collapse-tbody
           %thead.table-title
             %tr
-              %th= 'Section'
+              %th= 'Class Section'
               %th= 'Teacher'
               %th= 'Students'
               %th= ''
@@ -84,7 +84,7 @@
                         %strong.pull-left.lmargin5="#{disc.name} : #{subj.name}"
                   %td.text-center
                     - if can?(:create, Section)
-                      %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section'}
+                      %a.add-section{data: {target: "#modal_popup", toggle: 'modal', remote: true}, href: "/sections/new?subject_id=#{subj.id}", title: 'Add New Section Class'}
                         %i.fa.fa-lg.fa-plus
                     %a{href: subject_path(subj.id), title: 'Subject Dashboard'}
                       %i.fa.fa-dashboard.fa-lg
@@ -121,13 +121,13 @@
                       %td.sect-students=s.active_students.count
                       %td.text-center
                         - if can?(:class_dashboard, s)
-                          %a{href: "#{class_dashboard_section_path(s.id)}", title: 'Section Dashboard'}
+                          %a{href: "#{class_dashboard_section_path(s.id)}", title: 'Section Class Dashboard'}
                             %i.fa.fa-dashboard.fa-lg
                           %a{href: "#{section_path(s.id)}", title: 'Tracker Page'}
                             %i.fa.fa-check.fa-lg
                         - if can? :edit, s
-                          %a{data: {target: "#modal_popup", toggle: 'modal', url: edit_section_path(s.id, format: :js)}, title: 'Edit Section'}
+                          %a{data: {target: "#modal_popup", toggle: 'modal', url: edit_section_path(s.id, format: :js)}, title: 'Edit Class Section'}
                             %i.fa.fa-lg.fa-edit
                         - if can?(:section_outcomes, s)
-                          %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', url: section_outcomes_section_path(s.id, format: :js)}, title: 'View Section Outcomes popup'}
+                          %a.assign-los{data: {target: "#modal_popup", toggle: 'modal', url: section_outcomes_section_path(s.id, format: :js)}, title: 'View Class Section Outcomes popup'}
                             %i.fa.fa-lg.fa-lightbulb-o
