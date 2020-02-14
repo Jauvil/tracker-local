@@ -65,7 +65,7 @@ Rails.application.configure do
   config.logger = Logger.new(STDOUT)
 
   # # to see debugging statements as well as SQL statements
-  config.log_level = :debug
+  config.log_level = :info
 
   # # to hide debugging statements (and SQL statements)
   # config.log_level = :warn

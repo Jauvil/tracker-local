@@ -71,16 +71,14 @@ click the pencil icon in the upper right to edit the configuration
 - will return ERROR: Server Config did not exist, Default one Created, Please Edit!
 Please change at least the Support Email address
 click the 'Save' button
-
+```
+### Set School Years
+```
 - create the school year record for the model school
 click the _Schools_ link in the Toolkit
 click the pencil icon on the Model School row
 enter start and end dates (month and year numbers)
 click save
-
-- create the lookup records for attendance (Attendance Types and Excuses)
-click the _Attendance Maint._ link in the Toolkit
-add and save all attendance types and excuses (plus arrows in upper right of each section)
 
 - create the school year record for any additional schools
 For every school listed (with no school year)
@@ -88,6 +86,13 @@ click the pencil icon on the Model School row
 Note: start and end dates should be populated from the Model School
 click save
 ```
+### Set up Attendance Types and Excuses
+```
+- create the lookup records for attendance (Attendance Types and Excuses)
+click the _Attendance Maint._ link in the Toolkit
+add and save all attendance types and excuses (plus arrows in upper right of each section)
+```
+
 
 ### Testing
 ```
@@ -142,6 +147,17 @@ COVERAGE=true bundle exec rspec spec
 # Set up Subjects in Model School to match EG Curriculum
 ###  Note: this can be rerun if willing to recreate all subjects
 bundle exec rake stem_egypt_model_subjects:populate
+
+# To upload original curriculum, use the curriculum file named:
+#     Egypt STEM Schools Curriculum - Reviewed Coursesv1.csv
+# should return:
+# Grand total counts: Subjects Updated - 64 , Updates - 0 , Adds - 648 , Deactivates - 0 , Errors - 0
+
+
+# To upload (and update to) the updated 2019-2020 curriculum, use the curriculum file named:
+#     EgyptSTEMSchoolsCurriculum-19-20-mincols.csv
+# Grand total counts: Subjects Updated - 34 , Updates - 188 , Adds - 101 , Deactivates - 73 , Errors - 0
+# note numbers above are computed from multiple runs
 
 # Load up initial EG curriculum into model school
 Schools Listing / Model School / Upload Learning Outcomes

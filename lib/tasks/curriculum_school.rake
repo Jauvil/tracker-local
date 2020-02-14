@@ -1,77 +1,14 @@
 # curriculum_school.rake
 
+# see fix_in_class_evidence_type.rake for setup of mid-semester curriculum fix
 
-# Preparatory Procedures:
-# 1) to clear subjects and Los from model school:
-#   bundle exec rake curriculum_school:clear_model_school
-# 2) load up the curriculum subjects into the model school
-#   bundle exec rake stem_egypt_model_subjects:populate
-#   - should set school year to 2018-2019
-# 3) load in the initial curriculum (subject outcomes into model school)
-#   https:localhost:3000/schools / Model School / Upload Learning Outcomes
-#   upload the InitialEgCurriculumMinCols.csv file for all subjects
-#   - Should return:
-#     Automatically Updated Subjects counts: Updates - 0 , Adds - 647 , Deactivates - 0 , Errors - 0
-#     Grand total counts: Subjects Updated - 64 , Updates - 0 , Adds - 647 , Deactivates - 0 , Errors - 0
-
-#   - Model school listing should have LOS under Subjects Outcomes
-
-
-# To load up first year (steps may be repeated):
-# 1) if need to clear (delete) CUS school (for rerunning)
-#  bundle exec rake curriculum_school:clear
-# 2) (re)create the school and school years record
-#   https:localhost:3000/schools / + (Create) / Acronym CUS
-#   - CUS school listing should have all model school subjects with LOS under Subjects Outcomes
-# 3) Load in activity for year 1
-#      bundle exec rake curriculum_school:load
-
-# 4)
-# To simulate school year rollover without updating learning outcomes
-# load in the initial curriculum (subject outcomes into model school)
-#   https:localhost:3000/schools / Model School / Upload Learning Outcomes
-#   upload the InitialEgCurriculumMinCols.csv file for all subjects
-#   - Should return:
-#     Automatically Updated Subjects counts: Updates - 0 , Adds - 0 , Deactivates - 0 , Errors - 0
-#     Grand total counts: Subjects Updated - 0 , Updates - 0 , Adds - 0 , Deactivates - 0 , Errors - 0
-
-#
-# For a standard school year rollover without updating learning outcomes
-# load in the initial curriculum (subject outcomes into model school)
-#   https:localhost:3000/schools / Model School / Upload Learning Outcomes
-#   upload the EgyptSTEMSchoolsCurriculum-19-20-mincols.csv file for all subjects
-#   - Should return:
-
-# 5) Roll over the school years after doing appropriate updates to curriculum learning outcomes.
-#     https:localhost:3000/schools / model school / rollover to new year
-#     https:localhost:3000/schools / Curriculum Update School / rollover to new year
-
-# 6) Confirm that all sections are in the previous year
-#  Click on Check Mark for one of the teachers.  Will return the All Sections for Staff Members
-#  - there should be no sections under Current Sections, and last year sections under Previous Sections
-
-# 7) load up activity for the new year
-#      bundle exec rake curriculum_school:load
-
-
-
-
-###########################################################
-# create 4 evidences / ESOs per section outcome per student enrolled
+# Constants
 
 # For evidence Types R and BA, with no Blue rating (2/3 green, 1/3 others)
 e_ratings = ["R","Y","U","M","G","G","G","G","G","G","G","G"]
 
 # Strategic Evidence Type (ST) with Blue rating (1/3 green, 1/3 blue, 1/3 others)
 eh_ratings = ["R","Y","U","M","B","B","B","B","G","G","G","G"]
-
-# load 4 subject outcomes as section outcomes (2 sem 1, 2 sem 2)
-# los_a = [
-#   ['LO.1.01', 'Curriculum Learning Outcome 1', '1'],
-#   ['LO.1.02', 'Curriculum Learning Outcome 2', '1'],
-#   ['LO.1.03', 'Curriculum Learning Outcome 3', '2'],
-#   ['LO.1.04', 'Curriculum Learning Outcome 4', '2']
-# ]
 
 # Create Sections
 NUM_SECTIONS = 3
@@ -103,15 +40,7 @@ namespace :curriculum_school do
 
     schools = School.where(acronym: 'CUS').all
     if schools.count < 1
-      # school = School.create!(
-      #   name: "Curriculum Update School",
-      #   acronym: 'CUS',
-      #   street_address: "1 Stub Lane",
-      #   city: "Conshohocken",
-      #   state: "PA",
-      #   zip_code: "19428",
-      #   marking_periods: 2
-      # )
+      # Note: do not create school in this script, as we want the normal school creation process to be done
       raise("Curriculum School does not already exist.  Create it using website, after model school subject load and curriculum upload")
     else
       school = schools.first
@@ -339,7 +268,7 @@ namespace :curriculum_school do
   end # end create_training_ratings
 
 
-  task clear: :environment do
+  task clear_cus: :environment do
 
     # !!!!!\nWARNING: CAUTION MODIFYING THIS CODE - MISTAKE COULD DELETE LIVE DATA. !!!!!!!!
 
@@ -405,7 +334,7 @@ namespace :curriculum_school do
         school.school_year_id = sy.first.id
         school.save
       else
-        puts "cannot find 1819 school year for model school"
+        puts "cannot find 2018-2019 school year for model school"
       end
 
       puts "Done"

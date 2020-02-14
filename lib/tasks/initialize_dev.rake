@@ -128,6 +128,7 @@ namespace :initialize_dev do
     10.times do |n|
       s = SubjectOutcome.create!(
         name: "Learning Outcome #{school.id}_#{n}",
+        lo_code: "lo.#{school.id}.#{n}",
         subject_id: subject.id,
         essential: true
       )

@@ -91,6 +91,10 @@ namespace :stem_egypt_model_subjects do
         'Computer Science 1',
         'Computer Science 2',
         'Computer Science 3',
+        'Earth-Space, Advanced Lab 3',
+        'Electronics, Advanced Lab 3',
+        'Hydraulics, Advanced Lab 3',
+        'Robotics, Advanced Lab 3',
         'Fab Lab 1',
         'Fab Lab 2'
       ]}
