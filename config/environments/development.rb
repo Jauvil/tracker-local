@@ -64,11 +64,9 @@ Rails.application.configure do
   # # To adujst logger level, create a new logger
   config.logger = Logger.new(STDOUT)
 
-  # # to see debugging statements as well as SQL statements
+  # # use debug see debugging statements as well as SQL statements
   config.log_level = :info
-
-  # # to hide debugging statements (and SQL statements)
   # config.log_level = :warn
-
+  # config.log_level = :debug
 
 end
