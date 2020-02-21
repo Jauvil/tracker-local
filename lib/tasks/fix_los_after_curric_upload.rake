@@ -83,7 +83,7 @@
 
 ####################################################################
 # Run Fix of Old Learning Outcomes in Class Section for current year
-# bundle exec rake fix_rollover_before_curriculum:run
+# bundle exec rake fix_los_after_curric_upload:run
 
 
 namespace :fix_los_after_curric_upload do
@@ -145,96 +145,60 @@ namespace :fix_los_after_curric_upload do
     end
 
 
-    #################
-    # loop through Model School subjects, and resequence the subject outcomes
-    # leaving section outcome position alone (for now)
-    # modelSubjIds.each do |modSubj|
-    #   # STDOUT.puts("Subject: #{Subject.find(modSubj).name}")
-    #   loCodes = {}
-    #   modSubjos = SubjectOutcome.where(subject_id: modSubj, active: true).order(:lo_code)
-    #   modSubjos.each do |modSubjo|
-    #     # create hash with LO codes with all spaces removed
-    #     loCodes[modSubjo.lo_code.gsub(/\s+/, "")] = modSubjo
-    #   end
-    #   # Sort hash by key
-    #   sortedLoCodes = Hash[loCodes.sort_by {|key, value| key}]
-    #   # output the los in the correct order
-    #   sortedLoCodes.each_with_index do |(key, modSubjo), ix|
-    #     # STDOUT.puts("  #{ix} #{key}  #{modSubjo.lo_code}")
-
-    #     modSubjo.position = ix
-    #     modSubjo.save
-    #     modSubjo.reload
-    #     # STDOUT.puts "  #{ix} #{key} #{modSubjo.lo_code}  #{modSubjo.id} test: #{modSubjo.position} ==? #{ix}"
-    #   end
-    # end
-
-    #################
-    # Next - loop through schools, fixing the matched Model School Subject Outcomes
-    # - process the new Model School Subject Outcomes later
-
-
-    # LOOP THROUGH SCHOOLS
+    # Loop Through Schools To Fix
     schoolsToFix.each do |sch|
       # get subjects to process for this School to process
       subjectsToProcessIds = Subject.where(school_id: sch).pluck(:id)
-      # subjectsToProcessIds.count
 
       # get the School's subject outcomes from the subjects (of the school) to process
       subjosToProcess = SubjectOutcome.where(subject_id: subjectsToProcessIds)
-      # subjosToProcess.count
 
       # Get the School's current sections for this year
       # note: we do not want to touch prior year's class/sections
       currentSections = Section.where(subject_id: subjectsToProcessIds, school_year_id: sch.school_year_id)
       currentSectionIds = currentSections.pluck(:id)
-      # currentSections.count
 
-      # loop through School Subject Outcomes to process
+      #################
+      # First, fix the existing Subject and Section outcomes that have changed.
+
+      # loop through all of the School's Subject Outcomes
       subjosToProcess.each do |subjo|
         model_lo = SubjectOutcome.find(subjo.model_lo_id)
         lo_sectos = SectionOutcome.where(subject_outcome_id: subjo.id, section_id: currentSectionIds)
-        # posit = model_lo.position
+        # Fix the School Subject Outcomes (that existed already / matched Model School Subject Outcomes)
+        # if the this LO is still active in the curriculum (in the model subject outcome record), update the code and description.  This will be automatically reflected in tracker, as the section outcome references the lo_code and description from the school subject outcome record.
         if model_lo.active
           subjo.lo_code = model_lo.lo_code
           subjo.description = model_lo.description
           subjo.marking_period = model_lo.marking_period
           subjo.position = nil
           puts "subjo: #{subjo.id} - position #{subjo.position} - update - #{subjo.lo_code} to #{model_lo.lo_code}"
-          # subjo.model_lo_id = model_lo.id # should not change
-          # STDOUT.puts("  lo_sectos - #{lo_sectos.pluck(:id)}")
-
-          # leaving section outcome position alone (for now)
-          # lo_sectos.each do |secto|
-          #   STDOUT.puts "  secto id: #{secto.id} position: #{model_lo.position} subject_outcome_id: #{secto.subject_outcome_id}"
-          #   # secto.position = posit
-          #   # secto.save!
-          #   SectionOutcome.update(secto.id, position: posit)
-          #   secto.reload
-          #   STDOUT.puts "  saved secto id: #{secto.id} position: #{posit} subject_outcome_id: #{secto.subject_outcome_id}"
-          #   STDOUT.puts "save secto error: #{secto.errors.inspect}" if secto.errors.count > 0
-          # end
+          # save at end
         else
-          # loop through the sections and see if there are
-          currentSections.each do |sect|
+          # Fix the Section Outcomes for this subject outcome
+          # This LO has been deactivated in the curriculum (in the model subject outcome record).  We will need to deactivate the records in tracker.
+          #  Note: if there are any evidences on the section outcome, we do not want to deactivate the section outcome, just simply mark the lo-code and description as desactivated with a leading 'X-', and trailing '-X'.
+          # If there are no evidences, we can simply deactivate the section outcome and let it disappear from the tracker page.
+        currentSections.each do |sect|
             lo_sectos = SectionOutcome.where(subject_outcome_id: subjo.id, section_id: sect.id)
             lo_esos = EvidenceSectionOutcome.where(section_outcome_id: lo_sectos)
             if lo_esos.count != 0
+              # section LO has evidences, the section outcome must not be deactivated and must be shown in tracker as deactivated
               puts "subjo: #{subjo.id} - position #{subjo.position}  - x--x deactivate - #{subjo.lo_code} to X-#{model_lo.lo_code}-X"
               subjo.lo_code = "X-"+subjo.lo_code+"-X"
               subjo.description = "X-"+subjo.description+"-X"
             else
-              # Subject Outcome is deactivated, and we have no evidences for it in this
+              # We have no evidences for this Section LO, so it can be deactivated
               puts "#{subjo.id} - deactivate - #{subjo.lo_code} to #{model_lo.lo_code}"
-              # leaving section outcome position alone (for now)
               # Deactivate the section outcome (should only be one section outcome)
               lo_sectos.each do |secto|
                 secto.active = false
-                # subjo.position = nil
                 secto.save!
-                # secto.reload
-                STDOUT.puts "  saved secto id: #{secto.id} position: #{secto.position} subject_outcome_id: #{secto.subject_outcome_id}"
-                STDOUT.puts "save secto error: #{secto.errors.inspect}" if secto.errors.count > 0
+                if secto.errors.count > 0
+                  STDOUT.puts "save secto error: #{secto.errors.inspect}"
+                else
+                  STDOUT.puts "  saved secto id: #{secto.id} position: #{secto.position} subject_outcome_id: #{secto.subject_outcome_id}"
+                end
               end
               puts "subjo: #{subjo.id} - position #{subjo.position}  - regular deactivate - #{subjo.lo_code}"
             end
@@ -247,21 +211,6 @@ namespace :fix_los_after_curric_upload do
         puts "saved subjo: #{subjo.id} - #{subjo.lo_code} - #{subjo.position} - #{subjo.active} - #{subjo.description} "
       end
 
-      # leaving section outcome position alone (for now)
-      # SectionOutcome.where(subject_outcome_id: subjosToProcess).each do |secto|
-      #   subjecto = SubjectOutcome.find (secto.subject_outcome_id)
-      #   posit = subjecto.position
-      #   # secto.position = subjecto.position
-      #   # secto.save
-      #   # secto.reload
-      #   upd = SectionOutcome.update(secto.id, position: posit)
-      #   STDOUT.puts "error upd.errors.inspect" if upd.errors.count > 0
-      #   newsect = SectionOutcome.find secto.id
-      #   STDOUT.puts "subjecto: #{subjecto.lo_code} subjecto.id: #{subjecto.id} subjecto.position: #{subjecto.position} secto: #{secto.id} secto.position: #{secto.position} newsect.position: #{newsect.position} "
-      # end
-
-      puts("*** schoolsToFix prep for unused sectors!")
-
       # # also check counts of processed Model School Subject Outcomes
       # # Process to create new subject outcomes for school
       usedSubjoIdsFromModel = SubjectOutcome.where(subject_id: subjectsToProcessIds).pluck(:model_lo_id).uniq
@@ -269,12 +218,8 @@ namespace :fix_los_after_curric_upload do
 
       unusedModelSubjos = SubjectOutcome.where(id: unusedModelSubjoIds)
 
-      puts("*** unusedModelSubjos ids: #{unusedModelSubjos.pluck(:id)}")
-
-      # # check the Model School used counts
-      # if ((usedSubjoIdsFromModel + unusedModelSubjos).count != modelSchSubjoIds.count)
-      #   raise ("check model school used counts: #{(usedSubjoIdsFromModel + unusedModelSubjos)} 1= #{modelSchSubjoIds.count}")
-      # end
+      #################
+      # Next, fix the Section Outcomes  Subject Outcomes)
 
       # loop through unused model section outcomes
       # to create the subject outcome for this school
@@ -297,9 +242,6 @@ namespace :fix_los_after_curric_upload do
         end
 
         puts("Create #{schSubj.id}'s subject for subjo: #{subjo.id} is: #{subjo.subject_id}")
-        # puts("*** created subject #{schSubj.name}'s for school: #{schSubj.school_id} with id: #{schSubj.id}")
-
-        # schSubjos = SubjectOutcome.where(subject_id: schSubj.id)
 
         # create new school subject outcome from model school subject outcome4
         subjoSch = SubjectOutcome.new
@@ -329,6 +271,34 @@ namespace :fix_los_after_curric_upload do
           puts "Created schSecto for section: #{schSecto.section_id} for school subjo: #{schSecto.subject_outcome_id} with id: #{schSecto.id}"
         end
       end # unusedModelSubjos each
+
+    # First, fix the matched Model School Subject Outcomes
+      # Fix section outcome positions so tracker page lists outcomes in lo_code order
+      # Get all sections for this school
+      currentSections.each do |sect|
+        # get all section outcomes for this section
+        sectos = SectionOutcome.where(section_id: sect, active: true)
+        # get subject outcomes for this section
+        subjoIds = sectos.pluck(:subject_outcome_id).uniq
+        subjos = SubjectOutcome.where(id: subjoIds)
+        # create hash with LO codes with all spaces removed
+        loCodes = {}
+        subjos.each do |subjo|
+          loCodes[subjo.lo_code.gsub(/\s+/, "")] = subjo
+        end
+        # Sort hash by key
+        sortedLoCodes = Hash[loCodes.sort_by {|key, value| key}]
+        # create hash of lo_code by subject_outcome_id
+        loCodeBySubjoId = {}
+        sortedLoCodes.each_with_index do |(key, subjo), ix|
+          loCodeBySubjoId[subjo.id] = ix+1
+        end
+        SectionOutcome.where(section_id: sect).each do |secto|
+          posit = loCodeBySubjoId[secto.subject_outcome_id]
+          upd = SectionOutcome.update(secto.id, position: posit)
+          STDOUT.puts "Position update error: #{upd.errors.inspect}" if upd.errors.count > 0
+        end
+      end
 
     end # schoolsToFix.each
 

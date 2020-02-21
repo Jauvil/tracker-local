@@ -46,7 +46,7 @@ class EvidenceTypesController < ApplicationController
   end
 
   def update
-    puts "+++ evidence_type update"
+    # puts "+++ evidence_type update"
     @evidence_type = EvidenceType.find(params[:id])
     authorize! :update, @evidence_type # only let maintainers do these things
     if @evidence_type.update_attributes(evidence_type_params)
