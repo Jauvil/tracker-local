@@ -55,6 +55,6 @@ Rails.application.configure do
   # # note: this will display to console when config.logger is set to STDOUT (see above)
   config.log_level = :warn
   # config.log_level = :debug
-  
+
   Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
 end

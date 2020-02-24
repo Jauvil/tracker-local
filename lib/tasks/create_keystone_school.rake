@@ -35,22 +35,22 @@ namespace :keystone_school do
     else
       english = Discipline.create!(name: "English")
     end
-     
+
     db_disc = Discipline.where(name: "Mathematics")
     if db_disc.count > 0
       mathematics = db_disc.first
     else
       mathematics = Discipline.create!(name: "Mathematics")
-    end     
-     
+    end
+
     db_disc = Discipline.where(name: "Biology")
     if db_disc.count > 0
       biology = db_disc.first
     else
       biology = Discipline.create!(name: "Biology")
     end
-     
-     
+
+
     puts "create schools, school year and users"
 
     # This creates a Seed school with basic information for a school
@@ -64,13 +64,13 @@ namespace :keystone_school do
       zip_code: "19428",
       marking_periods: 4,
     )
-     
+
     school_year = SchoolYear.create!(
       name: "2015-16",
       school_id: school.id,
       starts_at: Date.parse("2015-09-01"),
       ends_at: Date.parse("2016-06-21")
-    ) 
+    )
 
     school.school_year_id = school_year.id
     school.save!
@@ -111,7 +111,7 @@ namespace :keystone_school do
     english_teacher.username = "khs_english_teacher"
     english_teacher.school_id = school.id
     english_teacher.save
-     
+
     biology_teacher = Teacher.new(
       first_name: "Khs_biology",
       last_name: "Teacher",
@@ -122,7 +122,7 @@ namespace :keystone_school do
     biology_teacher.username = "khs_biology_teacher"
     biology_teacher.school_id = school.id
     biology_teacher.save
-     
+
     algebra_teacher = Teacher.new(
       first_name: "Khs_algebra",
       last_name: "Teacher",
@@ -133,7 +133,7 @@ namespace :keystone_school do
     algebra_teacher.username = "khs_algebra_teacher"
     algebra_teacher.school_id = school.id
     algebra_teacher.save
-     
+
     students = []
     45.times do |n|
       s = Student.new(
@@ -183,7 +183,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     english_lit_9_2 = Section.create!(
       line_number: "Section 2",
       subject_id: english_lit_9.id,
@@ -201,7 +201,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     english_lit_9_3 = Section.create!(
       line_number: "Section 3",
       subject_id: english_lit_9.id,
@@ -219,18 +219,18 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
 
     # Biology
     puts ("Create Subjects and Sections for Biology")
-     
+
     biology_10 = Subject.create!(
       name: "9th Grade Biology",
       discipline_id: biology.id,
       school_id: school.id,
       subject_manager_id: biology_teacher.id
     )
-     
+
     biology_10_1 = Section.create!(
       line_number: "Section 1",
       subject_id: biology_10.id,
@@ -248,7 +248,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     biology_10_2 = Section.create!(
       line_number: "Section 2",
       subject_id: biology_10.id,
@@ -266,7 +266,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     biology_10_3 = Section.create!(
       line_number: "Section 3",
       subject_id: biology_10.id,
@@ -286,7 +286,7 @@ namespace :keystone_school do
     end
 
 
- 
+
     # Algebra
     puts ("Create Subjects and Sections for Algebra")
 
@@ -296,7 +296,7 @@ namespace :keystone_school do
       school_id: school.id,
       subject_manager_id: algebra_teacher.id
     )
-     
+
     algebra_I_9_1 = Section.create!(
       line_number: "Section 1",
       subject_id: algebra_I_9.id,
@@ -314,7 +314,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     algebra_I_9_2 = Section.create!(
       line_number: "Section 2",
       subject_id: algebra_I_9.id,
@@ -332,7 +332,7 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
-     
+
     algebra_I_9_3 = Section.create!(
       line_number: "Section 3",
       subject_id: algebra_I_9.id,
@@ -350,8 +350,8 @@ namespace :keystone_school do
         student_grade_level: student.grade_level
       )
     end
- 
-     
+
+
 
     ###########################################################
     # create the Learning Outcomes using the PA Common Core Assessment Anchors
@@ -359,8 +359,9 @@ namespace :keystone_school do
     # English Literature
 
     puts ("Create Learning Outcomes for English")
+    puts ("To Do - Add lo_code to Subject Outcomes")
 
-     
+
     english_los=[]
     english_los << SubjectOutcome.create!(
       name: "L.F.1.1 Use appropriate strategies to analyze an author's purpose and how it is achieved in literature.",
@@ -483,7 +484,7 @@ namespace :keystone_school do
     # create the Learning Outcomes using the PA Common Core Assessment Anchors
     #
     # Biology
-     
+
     puts ("Create Learning Outcomes for Biology")
 
     biology_los=[]
@@ -624,7 +625,7 @@ namespace :keystone_school do
     # create the Learning Outcomes using the PA Common Core Assessment Anchors
     #
     # Algebra I
-     
+
     puts ("Create Learning Outcomes for Algebra")
 
     algebra_los=[]
@@ -759,7 +760,7 @@ namespace :keystone_school do
 
       puts ("add evid, eso, and ratings for # #{so.id} - #{so.section.name} | #{so.section.line_number} @ #{so.position}")
 
-      evidence_types.each_with_index do |et, ix| 
+      evidence_types.each_with_index do |et, ix|
         e = Evidence.create!(
           section_id: so.section_id,
           name: "Sample Evidence #{evid_seq} (#{et_levels[ix]})",
@@ -791,7 +792,7 @@ namespace :keystone_school do
               )
               sorating = "H" if ["B"].include?(rating)
               sorating = "P" if ["G"].include?(rating)
-              sorating = "N" if ["Y","R"].include?(rating) 
+              sorating = "N" if ["Y","R"].include?(rating)
               sorating = "U" if ["U","M"].include?(rating)
               if ix == 3 && so.position < 5
                 SectionOutcomeRating.create!(
@@ -805,7 +806,7 @@ namespace :keystone_school do
         end
 
       end
-      
+
     end
 
     puts "Done"

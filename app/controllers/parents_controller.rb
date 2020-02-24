@@ -45,9 +45,9 @@ class ParentsController < ApplicationController
       if parent_status
         if parent_params[:password].present? && parent_params[:temporary_password].present?
           UserMailer.changed_user_password(@parent, @school, get_server_config).deliver_now # deliver_now_now after save
-          puts " +++ UserMailer"
+          # puts " +++ UserMailer"
         end
-        puts " +++  format.js"
+        # puts " +++  format.js"
         format.js
       else
         format.js { render js: "alert('Parent could not be updated.');" }
