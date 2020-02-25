@@ -184,12 +184,15 @@ namespace :fix_los_after_curric_upload do
             lo_esos = EvidenceSectionOutcome.where(section_outcome_id: lo_sectos)
             if lo_esos.count != 0
               # section LO has evidences, the section outcome must not be deactivated and must be shown in tracker as deactivated
-              # note: if was pseudo deactivated already, reset it before deactivating again.
-              newCode = subjo.lo_code.split('-').select{|str| str if str != "X"}.join('-')
-              newDesc = subjo.description.split('-').select{|str| str if str != "X"}.join('-')
-              puts "subjo: #{subjo.id} - position #{subjo.position}  - X--X deactivate - #{subjo.lo_code} to X-#{newCode}-X"
-              subjo.lo_code = "X-"+newCode+"-X"
-              subjo.description = "X-"+newDesc+"-X"
+              # note: if was pseudo deactivated already, prevent it from doing it again to avoid X-X-....
+              codeA = subjo.lo_code.split('')
+              wasDeactivated = false
+              wasDeactivated = true if codeA[0] == 'X' && codeA[1] == '-' && codeA[codeA.length-2] == '-' && codeA[codeA.length-1] == 'X'
+              if !wasDeactivated
+                puts "subjo: #{subjo.id} - position #{subjo.position}  - X--X deactivate - #{subjo.lo_code} to X-#{subjo.lo_code}-X"
+                subjo.lo_code = "X-"+subjo.lo_code+"-X"
+                subjo.description = "X-"+subjo.description+"-X"
+              end
             else
               # We have no evidences for this Section LO, so it can be deactivated
               puts "#{subjo.id} - deactivate - #{subjo.lo_code} to #{model_lo.lo_code}"
@@ -304,6 +307,8 @@ namespace :fix_los_after_curric_upload do
       end
 
     end # schoolsToFix.each
+
+    STDOUT.puts "Fix LOs is Done!"
 
   end # task run:
 end # namespace :fix_rollover_before_curriculum
