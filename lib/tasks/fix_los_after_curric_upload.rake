@@ -184,9 +184,12 @@ namespace :fix_los_after_curric_upload do
             lo_esos = EvidenceSectionOutcome.where(section_outcome_id: lo_sectos)
             if lo_esos.count != 0
               # section LO has evidences, the section outcome must not be deactivated and must be shown in tracker as deactivated
-              puts "subjo: #{subjo.id} - position #{subjo.position}  - x--x deactivate - #{subjo.lo_code} to X-#{model_lo.lo_code}-X"
-              subjo.lo_code = "X-"+subjo.lo_code+"-X"
-              subjo.description = "X-"+subjo.description+"-X"
+              # note: if was pseudo deactivated already, reset it before deactivating again.
+              newCode = subjo.lo_code.split('-').select{|str| str if str != "X"}.join('-')
+              newDesc = subjo.description.split('-').select{|str| str if str != "X"}.join('-')
+              puts "subjo: #{subjo.id} - position #{subjo.position}  - X--X deactivate - #{subjo.lo_code} to X-#{newCode}-X"
+              subjo.lo_code = "X-"+newCode+"-X"
+              subjo.description = "X-"+newDesc+"-X"
             else
               # We have no evidences for this Section LO, so it can be deactivated
               puts "#{subjo.id} - deactivate - #{subjo.lo_code} to #{model_lo.lo_code}"
