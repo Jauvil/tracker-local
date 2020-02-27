@@ -73,12 +73,12 @@
 # Development Setup - Mid semester/year curriculum change
 # load in the updated curriculum (subject outcomes into model school)
 #   https:localhost:3000/schools / Model School / Upload Learning Outcomes
-#   upload the Egypt STEM Schools Curriculum - Reviewed Coursesv3.csv file for all subjects
+#   - use the upload file:
+#      FixLOsMidSemesterCurriculumUploadCurriculum-2020-02-24.csv file for all subjects
 #   - Use the Mapping spreadsheet to map unmatched new learning outcomes to the old ones.
-#     Note: filter the Old LO Option Code to only show fields with * (fields requiring input to Tracker):
-#     EgyptSTEMSchoolsCurriculumMatchedOldLOs.xlsx
+#       Note: filter the Old LO Option Code to only show fields with * (fields requiring input to Tracker):
+#       FixLOsMidSemesterCurriculumUploadMapping-2020-02-24.xlsx
 #   - After all matching is done, the following should(?) be shown:
-# ???
 
 
 ####################################################################
@@ -235,12 +235,12 @@ namespace :fix_los_after_curric_upload do
         schSubjs = Subject.where(name: modSubj.name, school_id: sch.id)
         if schSubjs.count == 0
           # new subject, create it
-          raise "SYSTEM ERROR: missing school subject for : #{modSubj.name}"
+          # raise "SYSTEM ERROR: missing school subject for : #{modSubj.name}"
           schSubj = Subject.new
           schSubj.name = modSubj.name
           schSubj.discipline_id = modSubj.discipline_id
           schSubj.school_id = sch.id
-          # schSubj.save
+          schSubj.save
         elsif schSubjs.count == 1
           schSubj = schSubjs.first
         else
@@ -278,12 +278,13 @@ namespace :fix_los_after_curric_upload do
         end
       end # unusedModelSubjos each
 
-    # First, fix the matched Model School Subject Outcomes
+      # First, fix the matched Model School Subject Outcomes
       # Fix section outcome positions so tracker page lists outcomes in lo_code order
       # Get all sections for this school
       currentSections.each do |sect|
+        STDOUT.puts "Position updating for section: #{sch.name} - #{sect.subject.name} - #{sect.line_number}"
         # get all section outcomes for this section
-        sectos = SectionOutcome.where(section_id: sect, active: true)
+        sectos = SectionOutcome.where(section_id: sect.id, active: true)
         # get subject outcomes for this section
         subjoIds = sectos.pluck(:subject_outcome_id).uniq
         subjos = SubjectOutcome.where(id: subjoIds)
