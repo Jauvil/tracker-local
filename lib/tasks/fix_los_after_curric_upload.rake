@@ -191,7 +191,8 @@ namespace :fix_los_after_curric_upload do
               if !wasDeactivated
                 puts "subjo: #{subjo.id} - position #{subjo.position}  - X--X deactivate - #{subjo.lo_code} to X-#{subjo.lo_code}-X"
                 subjo.lo_code = "X-"+subjo.lo_code+"-X"
-                subjo.description = "X-"+subjo.description+"-X"
+                # prevent mysql error - field too large
+                subjo.description = ("X-"+subjo.description+"-X").truncate(255)
               end
             else
               # We have no evidences for this Section LO, so it can be deactivated
