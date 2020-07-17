@@ -62,7 +62,7 @@ Rails.application.routes.draw do
   resources :disciplines
   resources :evidence_types, except: [:destroy]
   resources :researchers
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' } 
 
   match "users/bulk_update_staff" => "home#index", via: :get
   resources :users do
