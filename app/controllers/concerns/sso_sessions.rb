@@ -1,11 +1,10 @@
 module SsoSessions
 
  def create
-    user = User.find_by_username(params[:user][:username])    
+    user = User.find_by_username(params[:user][:username])
     body = { email: user.email, password: params[:user][:password]}
     response = HTTParty.post('http://localhost:3000/users/sign_in', body: body).parsed_response
     session[:jwt_token] = response['token']
-    user = User.find_by_email(params[:user][:username] + "@21pstem.org")
     if user && response['token']
       sign_in user
       respond_with user, location: after_sign_in_path_for(user)
