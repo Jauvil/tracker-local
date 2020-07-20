@@ -2,7 +2,6 @@ module SsoRegistrations
 
   def create
     super { |user| perform_sso_signup if SSO_ENABLED && user.persisted? }
-    
   end
 
   # This method performs the sign up action on the SSO application

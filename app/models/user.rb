@@ -24,7 +24,6 @@ class User < ApplicationRecord
   validates_confirmation_of :password, if: :password_required?
   validates_length_of       :password, within: 6..128, if: :password_required?
   validates_inclusion_of    :race, in: RACES, allow_blank: true
-  validates_presence_of     :first_name, :last_name, if: :role_requires_name?
   validates                 :first_name, presence: { message: 'Given/First Name is required'}, if: :role_requires_name?
   validates                 :last_name, presence: { message: 'Family/Last Name is required'}, if: :role_requires_name?
   validates_presence_of     :username
