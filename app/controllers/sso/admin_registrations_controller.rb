@@ -48,7 +48,7 @@ class Sso::AdminRegistrationsController < ApplicationController
 
     if @user.save
       UserMailer.welcome_system_user(@user, get_server_config).deliver_now
-      yield @user, user_params[:password] if block_given?
+      yield @user if block_given?
     end
 
     respond_to do |format|
