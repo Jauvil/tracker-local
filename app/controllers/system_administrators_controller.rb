@@ -2,18 +2,7 @@
 # see license.txt in this software package
 #
 class SystemAdministratorsController < ApplicationController
-
-  USER_PARAMS = [
-    :first_name,
-    :last_name,
-    :email,
-    :street_address,
-    :city,
-    :state,
-    :zip_code,
-    :system_administrator,
-    :researcher
-  ]
+  include Sso::SystemAdminRegistrations
 
   # New UI - System Administrator Dashboard
   def show
@@ -55,37 +44,17 @@ class SystemAdministratorsController < ApplicationController
   def create_system_user
     authorize! :sys_admin_links, User
     @model_school = School.find(1)
-    @user = User.new
-
-    if user_params[:system_administrator] == 'on'
-      user_params[:system_administrator] = true
-      # set_role(@user, 'system_administrator', true)
-      # set_role(@user, 'researcher', false)
-    elsif user_params[:researcher] == 'on'
-      user_params[:researcher] = true
-      # set_role(@user, 'researcher', true)
-      # set_role(@user, 'system_administrator', false)
-    else
-      @user.errors.add(:base, 'Role is required!')
-    end
-    @user.assign_attributes(user_params)
+    @user = User.new(user_params)
+    @user.errors.add(:base, 'Role is required!') if defined_role.nil?
+    defined_role == 'researcher' ?
+     @user.researcher = true : @user.system_administrator = true
+    
     @user.set_unique_username
     @user.set_temporary_password
-    if user_params[:first_name].blank?
-      @user.errors.add(:first_name, "Given/First Name is required")
-    end
-    if user_params[:last_name].blank?
-      @user.errors.add(:last_name, "Family/Last Name is required")
-    end
-    if user_params[:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
-      @user.errors.add(:email, "Email is required")
-    end
 
-    if @user.errors.count == 0
-      if @user.save
-         # deliver_now after successful save
-        UserMailer.welcome_system_user(@user, get_server_config).deliver_now
-      end
+    if @user.save
+      UserMailer.welcome_system_user(@user, get_server_config).deliver_now 
+      yield @user, user_params[:password] if block_given?
     end
 
     respond_to do |format|
@@ -150,7 +119,25 @@ class SystemAdministratorsController < ApplicationController
   private
 
   def user_params
-    params.require('user').permit(USER_PARAMS)
+    params
+      .require('user')
+      .permit(
+        :first_name,
+        :last_name,
+        :email,
+        :street_address,
+        :city,
+        :state,
+        :zip_code,
+        :system_administrator,
+        :researcher
+      )
+  end
+
+  def defined_role
+    return 'system_administrator' if user_params[:system_administrator] == 'on'
+    return 'researcher' if user_params[:researcher] == 'on'
+    nil
   end
 
 end

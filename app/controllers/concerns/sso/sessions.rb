@@ -1,4 +1,4 @@
-module SsoSessions
+module Sso::Sessions
 
  def create
     user = User.find_by_username(params[:user][:username])

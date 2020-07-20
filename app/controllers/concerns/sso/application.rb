@@ -1,4 +1,4 @@
-module SsoApplication 
+module Sso::Application 
   # before_action :set_token_data, unless: -> { is_intercomponent_request? }
   # before_action :verify_token, unless: -> { is_intercomponent_request? }
   # before_action :handle_intercomponent_request, if: -> { is_intercomponent_request? }

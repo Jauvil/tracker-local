@@ -1,5 +1,5 @@
 class RegistrationsController < Devise::RegistrationsController
-  include SsoRegistrations
+  include Sso::Registrations
 
 
 end

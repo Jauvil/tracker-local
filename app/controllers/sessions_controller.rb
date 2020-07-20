@@ -1,3 +1,3 @@
 class SessionsController < Devise::SessionsController
-  include SsoSessions
+  include Sso::Sessions
 end

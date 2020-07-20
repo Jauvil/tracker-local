@@ -3,7 +3,7 @@
 #
 
 class ApplicationController < ActionController::Base
-  include SsoApplication
+  include Sso::Application
 
   protect_from_forgery
   around_action :hide_student_names,    if:     :current_researcher
