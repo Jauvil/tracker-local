@@ -22,7 +22,7 @@
         %h2
           =@student.full_name
       .block-content-full
-        =form_for(@student, remote: true) do |f|
+        =form_for(@student, url: create_student_create_users_path, remote: true) do |f|
           - @errors = @student.errors
           .page-form
             = render 'students/form'
