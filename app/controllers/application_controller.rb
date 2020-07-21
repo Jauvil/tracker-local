@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   before_action :set_current_school
   before_action :set_current_role
   before_action :toolkit_instances
-  
+
   before_action :set_token_data, unless: -> { is_intercomponent_request? }
   before_action :verify_token, unless: -> { is_intercomponent_request? }
   before_action :handle_intercomponent_request, if: -> { is_intercomponent_request? }
@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   # replacement for ExceptionNotification gem (which uses a hard coded email address)
   rescue_from Exception, :with => :handle_fatal_error
 
-  # removed this, as it interferes with debugging 
+  # removed this, as it interferes with debugging
   # (Added Note: as of Rails 5, before_filter is deprecated)
   # # prepend_before_filter :set_school,    if:     :enforce_context?
   # around_filter :profile               if Rails.env == 'development'
@@ -79,14 +79,15 @@ class ApplicationController < ActionController::Base
     else
       school_id = current_user.school_id ? current_user.school_id : 0
     end
-    return school_id
+
+    school_id
   end
 
   def get_current_school
     begin
-      school = School.find(current_school_id)
+      School.find(current_school_id)
     rescue => e
-      school = School.new
+      School.new
     end
   end
 
