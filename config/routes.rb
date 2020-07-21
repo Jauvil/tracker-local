@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' } 
 
   match "users/bulk_update_staff" => "home#index", via: :get
-  resources :users do
+  resources :users, except: %i[create] do
     get 'new_staff', on: :new, defaults: { format: :js } # new UI
     member do
       get 'change_password'
@@ -90,9 +90,17 @@ Rails.application.routes.draw do
       patch 'update_system_user', defaults: { format: :js }
     end
     collection do
-      post 'create_system_user', defaults: { format: :js }
+      # post 'create_system_user', defaults: { format: :js }
       get 'system_maintenance'
       get 'system_users'
+    end
+  end
+
+  resources :create_users, only: %i[create], defaults: { format: :js } do
+    collection do
+      post 'create_system_user', defaults: { format: :js }
+      post 'create_staff_user', defaults: { format: :js }
+      post 'create_student', defaults: { format: :js }
     end
   end
 
@@ -178,7 +186,7 @@ Rails.application.routes.draw do
 
 
   match "students/bulk_update" => "home#index", via: :get
-  resources :students do
+  resources :students, except: %i[create] do
     member do
       get 'set_student_temporary_password'
       get 'dashboard'

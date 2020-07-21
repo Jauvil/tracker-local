@@ -1,6 +1,7 @@
 
 errors_count = <%= @student.errors.count %>
 if errors_count.toString() != '0'
+  console.log('we have an error');
   # display flash messages if any
   $('#breadcrumb-flash-msgs').html("<%= escape_javascript(render('layouts/messages')) %>")
   $('#modal-message').html("<%= escape_javascript(render('layouts/messages')) %>")
