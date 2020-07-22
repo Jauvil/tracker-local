@@ -41,6 +41,7 @@ gem 'delayed_job_active_record', '~> 4.1.4'
 gem "daemons", '~> 1.3.1' # needed to run delayed_job in production as daemon process.
 gem 'faker', '~> 2.5.0'   # Generate fake strings, names etc for populating random data.
 gem 'text'
+gem 'colorize'
 
 # Application Monitoring / performance
 gem 'newrelic_rpm'

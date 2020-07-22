@@ -4,7 +4,7 @@
 
 class ApplicationController < ActionController::Base
   include Sso::Application
-  
+
   protect_from_forgery
   around_action :hide_student_names,    if:     :current_researcher
   before_action :get_referrer,          except: [:create, :update]
@@ -14,10 +14,9 @@ class ApplicationController < ActionController::Base
   before_action :set_current_role
   before_action :toolkit_instances
 
-  before_action :set_token_data, unless: -> { is_intercomponent_request? }
-  before_action :verify_token, unless: -> { is_intercomponent_request? }
-  before_action :handle_intercomponent_request, if: -> { is_intercomponent_request? }
-
+  before_action :sso_set_token_data, unless: -> { is_intercomponent_request? }
+  before_action :sso_verify_token, unless: -> { is_intercomponent_request? }
+  before_action :sso_handle_intercomponent_request, if: -> { is_intercomponent_request? }
 
   # replacement for ExceptionNotification gem (which uses a hard coded email address)
   rescue_from Exception, :with => :handle_fatal_error

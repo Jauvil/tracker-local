@@ -22,8 +22,7 @@ module Sso
 
     def perform_sso_signup(user)
       # token = encode_token(payload)
-      response = perform_sso_post('/users', build_user_create_body(user))     
-      Rails.logger.debug("create system_user response - #{response.inspect}")
+      response = perform_sso_post('/users', build_user_create_body(user))
     end
   end
 end
