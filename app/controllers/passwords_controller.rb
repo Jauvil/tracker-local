@@ -7,7 +7,6 @@ class PasswordsController < ApplicationController
       unless @user.temporary_password == @user.password
         @user.temporary_password = nil 
         @user.save
-
       end
       UserMailer.changed_user_password(@user, @school, get_server_config).deliver_now 
       redirect_to(root_path, :notice => 'Password was successfully updated.')
