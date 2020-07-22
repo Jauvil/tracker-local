@@ -60,6 +60,7 @@ class CreateUsersBaseController < ApplicationController
 
     if @student.errors.empty?
       if @student.save
+        yield @student if block_given?
         begin
           UserMailer.welcome_user(@student, @school, get_server_config).deliver_now
         rescue => e
@@ -89,7 +90,8 @@ class CreateUsersBaseController < ApplicationController
     end
 
     flash[:alert] = err_msgs.join(', ') if err_msgs.any?
-    render js: 'create_users/create_student'
+    # render js: 'create_users/create_student'
+    render js: "window.location.reload(true);"
   end
 
   private

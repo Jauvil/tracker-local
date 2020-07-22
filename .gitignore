@@ -24,3 +24,5 @@
 **/*~
 **/.project
 **/images/login_bg.png
+
+.byebug_history
