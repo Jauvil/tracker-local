@@ -1,24 +1,14 @@
 class CreateUsersBaseController < ApplicationController
-  def create
-    if highest_permission_role == 'system_administrator' && !current_user.system_administrator?
-      return redirect_to system_users_system_administrators_path, alert: 'No sufficient permissions to create user type'
-    end
-
-    return redirect_to root_path if current_user.student?
-
-  end
-
 
   def create_system_user
     # authorize! :sys_admin_links, User
     # @user.errors.add(:base, 'No sufficient permissions to create user type') unless current_user.system_administrator
     @model_school = School.find(1)
     @user = User.new(system_user_params)
-    @user.errors.add(:base, 'Role is required!') if defined_role.nil?
-    defined_role == 'researcher' ?
-        @user.researcher = true : @user.system_administrator = true
-    @user.set_unique_username
-    @user.set_temporary_password
+    @user.errors.add(:base, 'Role is required!') if no_role_defined?
+    @user.researcher = true if params[:user][:researcher] == 'on'
+    @user.system_administrator = true if params[:user][:system_administrator] == 'on'
+    @user = set_temporary_login_details(@user)
     @user.errors.add(:email, "Can't be blank") if system_user_params[:email].blank?
 
     if @user.errors.empty?
@@ -31,7 +21,6 @@ class CreateUsersBaseController < ApplicationController
     respond_to do |format|
       format.js
     end
-
   end
 
   def create_staff_user
@@ -39,9 +28,7 @@ class CreateUsersBaseController < ApplicationController
     @user = User.new(staff_user_params)
 
     @user.school_id = current_school_id
-    @user.set_unique_username
-    @user.set_temporary_password
-
+    @user = set_temporary_login_details(@user)
     @school = get_current_school
 
     if @school.has_flag?(School::USERNAME_FROM_EMAIL) && @user.email.blank?
@@ -50,7 +37,7 @@ class CreateUsersBaseController < ApplicationController
       # @user_errors added to force an error message for tests
       @user_errors = ['There are Errors']
       render js: 'users/new_staff'
-    elsif @user.errors.count == 0 && @user.save
+    elsif @user.errors.empty? && @user.save
       yield @user if block_given?
       UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
       render js: "window.location.reload(true);"
@@ -65,64 +52,43 @@ class CreateUsersBaseController < ApplicationController
   # TODO: Come back and address why page isn't auto-refreshing
   def create_student
     @school = get_current_school
-    @student = Student.new
-    @student.assign_attributes(student_params)
-    # puts("*** initial errors: #{@student.errors.full_messages}")
+    @student = Student.new(student_params)
     @student.school_id = @school.id
-    @student.set_unique_username
-    @student.set_temporary_password
-    @student.valid?
-    # puts("*** set errors: #{@student.errors.full_messages}")
-    # ensure instance variable exists, even if errors
-    # don't create parent until after successful student create
-    @parent = Parent.new
+    @student = set_temporary_login_details(@student)
+    @parent = Parent.new(parent_params)
+    err_msgs = []
 
-    @student.save if @student.errors.empty?
-    # puts("*** after no errors save, errors: #{@student.errors.full_messages}")
     if @student.errors.empty?
-      # puts("*** no student errors after save")
-      begin
-        UserMailer.welcome_user(@student, @school, get_server_config).deliver_now
-      rescue => e
-        Rails.logger.error("Error: Student Email missing ServerConfigs record with support_email address")
-        raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
+      if @student.save
+        begin
+          UserMailer.welcome_user(@student, @school, get_server_config).deliver_now
+        rescue => e
+          Rails.logger.error("Error: Student Email missing ServerConfigs record with support_email address")
+          raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
+        end
+        # use parent if created already in student create
+        # @parent = @student.parents.first
+        Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
+        # puts("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
+        Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
+        @parent.school_id = @school.id
+        @parent.child_id = @student.id
+        @parent = set_temporary_login_details(@parent)
+        @parent.save
+        begin
+          UserMailer.welcome_user(@parent, @school, get_server_config).deliver_now
+        rescue => e
+          raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
+        end
+
+        err_msgs << @student.errors.full_messages if @student.errors.any?
+        err_msgs << @parent.errors.full_messages if @parent.errors.any?
+      else
+        err_msgs << @student.errors.full_messages if @student.errors.any?
       end
-      # use parent if created already in student create
-      @parent = @student.parents.first
-      if @parent.blank?
-        @parent = Parent.new
-      end
-      Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
-      @parent.assign_attributes(parent_params)
-      # puts("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
-      Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
-      @parent.school_id = @school.id
-      @parent.set_unique_username
-      @parent.set_temporary_password
-      parent_status = @parent.save
-      # puts("*** save @parent.errors: #{@parent.errors.inspect}")
-      # Rails.logger.debug("*** save @parent.errors.count: #{@parent.errors.count}")
-      # puts("*** save parent_status: #{parent_status.inspect}")
-      begin
-        UserMailer.welcome_user(@parent, @school, get_server_config).deliver_now
-      rescue => e
-        # Rails.logger.error("Error: Parent Email missing ServerConfigs record with support_email address")
-        raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
-      end
-      err_msgs = []
-      err_msgs << @student.errors.full_messages if @student.errors.count > 0
-      err_msgs << @parent.errors.full_messages if @parent.errors.count > 0
-    else
-      err_msgs = []
-      err_msgs << @student.errors.full_messages if @student.errors.count > 0
-      # puts("*** unsuccessful before or after student save")
     end
-    # puts("*** final errors: #{@student.errors.full_messages}")
-    # puts("*** final errors count: #{@student.errors.count}")
-    flash[:alert] = err_msgs.join(', ') if err_msgs.length > 0
-    flash.each do |name, msg|
-      # Rails.logger.debug("*** flash message: #{msg}") if msg.is_a?(String)
-    end
+
+    flash[:alert] = err_msgs.join(', ') if err_msgs.any?
     render js: 'create_users/create_student'
   end
 
@@ -142,7 +108,7 @@ class CreateUsersBaseController < ApplicationController
             :system_administrator,
             :researcher,
 
-            )
+        )
   end
 
   def staff_user_params
@@ -167,12 +133,6 @@ class CreateUsersBaseController < ApplicationController
             :active,
             :school_id
         )
-  end
-
-  def defined_role
-    return 'system_administrator' if system_user_params[:system_administrator] == 'on'
-    return 'researcher' if system_user_params[:researcher] == 'on'
-    nil
   end
 
   def student_params
@@ -220,10 +180,13 @@ class CreateUsersBaseController < ApplicationController
     end
   end
 
-  def highest_permission_role
-    return 'system_administrator' if params[:system_administrator] == 'on' || params[:researcher] == 'on'
-    return 'staff' if params[:school_administrator] == 'on' || params[:counselor] == 'on' || params[:teacher] == 'on'
-    return 'student' if params[:student] == 'on'
-    nil
+  def set_temporary_login_details(user)
+    user.set_unique_username
+    user.set_temporary_password
+    user
+  end
+
+  def no_role_defined?
+    !params[:user][:system_administrator] == 'on' || !params[:user][:researcher] == 'on'
   end
 end
