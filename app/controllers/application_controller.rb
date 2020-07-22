@@ -4,7 +4,7 @@
 
 class ApplicationController < ActionController::Base
   include Sso::Application
-
+  
   protect_from_forgery
   around_action :hide_student_names,    if:     :current_researcher
   before_action :get_referrer,          except: [:create, :update]

@@ -52,57 +52,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # New UI
-  def create
-    Rails.logger.debug("*** PARAMS #{params.inspect}")
-    @user = User.new(user_params)
-
-    @user.school_id = current_school_id
-    @user.set_unique_username
-    @user.set_temporary_password
-
-    @school = get_current_school
-
-    # if user_params['school_administrator']
-    #   set_role(@user, 'school_administrator', user_params['school_administrator'])
-    #   Rails.logger.debug("*** user_params['school_administrator'] #{user_params['school_administrator'].inspect}")
-    # end
-
-    # if user_params['teacher']
-    #   set_role(@user, 'teacher', user_params['teacher'])
-    #   Rails.logger.debug("*** user_params['teacher'] #{user_params['teacher'].inspect}")
-    # end
-
-    # if user_params['counselor']
-    #   set_role(@user, 'counselor', user_params['counselor'])
-    #   Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
-    # end
-
-    # ToDo move this into case statement
-    # @user.errors.add(:base, "not allowed to update this type of user: #{@user.role_symbols.inspect}") if !can?(:update, @user)
-
-    respond_to do |format|
-      if @school.has_flag?(School::USERNAME_FROM_EMAIL) && @user.email.blank?
-        @user.errors.add(:email, "email is required")
-        # to do - find out why these @user.errors are not displaying in tests
-        # @user_errors added to force an error message for tetst
-        @user_errors = ['There are Errors']
-        format.js
-      elsif @user.errors.count == 0 && @user.save
-        yield @user if block_given?
-        UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
-        format.js {render js: "window.location.reload(true);"}
-      else
-        # to do - find out why these @user.errors are not displaying in tests
-        # @user_errors added to force an error message for tetst
-        @user_errors = ['There are Errors']
-        flash[:alert] = "ERROR: #{@user.errors.full_messages}"
-        format.js
-      end
-    end
-  end
-
-
   def edit
     @school = get_current_school
     respond_to do |format|

@@ -50,7 +50,7 @@ class CreateUsersBaseController < ApplicationController
   end
 
   # TODO: Come back and address why page isn't auto-refreshing
-  def create_student
+  def create_student_user
     @school = get_current_school
     @student = Student.new(student_params)
     @student.school_id = @school.id

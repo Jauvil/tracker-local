@@ -62,7 +62,7 @@ Rails.application.routes.draw do
   resources :disciplines
   resources :evidence_types, except: [:destroy]
   resources :researchers
-  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' } 
+  devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions', passwords: 'passwords' }
 
   match "users/bulk_update_staff" => "home#index", via: :get
   resources :users, except: %i[create] do
@@ -100,9 +100,11 @@ Rails.application.routes.draw do
     collection do
       post 'create_system_user', defaults: { format: :js }
       post 'create_staff_user', defaults: { format: :js }
-      post 'create_student', defaults: { format: :js }
+      post 'create_student_user', defaults: { format: :js }
     end
   end
+
+  resources :passwords, only: %i[update]
 
   resources :school_administrators
 
