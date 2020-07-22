@@ -22,10 +22,10 @@
         %h2
           =@student.full_name
       .block-content-full
-        =form_for(@student, remote: true) do |f|
+        =form_for(@student, url: create_student_user_create_users_path, remote: true) do |f|
           - @errors = @student.errors
           .page-form
-            = render 'form'
+            = render 'students/form'
             %fieldset.text-center
               %button.btn.btn-default{"data-dismiss" => "modal", type: "button"}='Cancel'
               %button.btn.btn-primary{name: 'commit', type: "submit"}='Save'

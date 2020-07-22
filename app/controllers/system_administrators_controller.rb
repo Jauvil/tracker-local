@@ -3,19 +3,6 @@
 #
 class SystemAdministratorsController < ApplicationController
 
-  USER_PARAMS = [
-    :first_name,
-    :last_name,
-    :email,
-    :street_address,
-    :city,
-    :state,
-    :zip_code,
-    :system_administrator,
-    :researcher
-  ]
-
-  # New UI - System Administrator Dashboard
   def show
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])
@@ -50,48 +37,6 @@ class SystemAdministratorsController < ApplicationController
     respond_to do |format|
       format.js
     end
-  end
-
-  def create_system_user
-    authorize! :sys_admin_links, User
-    @model_school = School.find(1)
-    @user = User.new
-
-    if user_params[:system_administrator] == 'on'
-      user_params[:system_administrator] = true
-      # set_role(@user, 'system_administrator', true)
-      # set_role(@user, 'researcher', false)
-    elsif user_params[:researcher] == 'on'
-      user_params[:researcher] = true
-      # set_role(@user, 'researcher', true)
-      # set_role(@user, 'system_administrator', false)
-    else
-      @user.errors.add(:base, 'Role is required!')
-    end
-    @user.assign_attributes(user_params)
-    @user.set_unique_username
-    @user.set_temporary_password
-    if user_params[:first_name].blank?
-      @user.errors.add(:first_name, "Given/First Name is required")
-    end
-    if user_params[:last_name].blank?
-      @user.errors.add(:last_name, "Family/Last Name is required")
-    end
-    if user_params[:email].blank? && @model_school.has_flag?(School::USERNAME_FROM_EMAIL)
-      @user.errors.add(:email, "Email is required")
-    end
-
-    if @user.errors.count == 0
-      if @user.save
-         # deliver_now after successful save
-        UserMailer.welcome_system_user(@user, get_server_config).deliver_now
-      end
-    end
-
-    respond_to do |format|
-      format.js
-    end
-
   end
 
   def edit_system_user
@@ -136,21 +81,39 @@ class SystemAdministratorsController < ApplicationController
   #####################################################################################
   protected
 
-    # # cloned from users_controller !!!
-    # def set_role(user_in, role, value)
-    #   Rails.logger.debug("*** set_role(#{role}, #{value}")
-    #   if !can?(:update, role.to_s.camelize.constantize)
-    #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
-    #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
-    #   else
-    #     user_in.send(role+'=', value)
-    #   end
-    # end
+  # # cloned from users_controller !!!
+  # def set_role(user_in, role, value)
+  #   Rails.logger.debug("*** set_role(#{role}, #{value}")
+  #   if !can?(:update, role.to_s.camelize.constantize)
+  #     Rails.logger.error("ERROR - Not authorized to set #{role.to_s.camelize} role")
+  #     user_in.errors.add(:base, "Not authorized to set #{role.to_s.camelize} role")
+  #   else
+  #     user_in.send(role+'=', value)
+  #   end
+  # end
 
   private
 
   def user_params
-    params.require('user').permit(USER_PARAMS)
+    params
+        .require('user')
+        .permit(
+            :first_name,
+            :last_name,
+            :email,
+            :street_address,
+            :city,
+            :state,
+            :zip_code,
+            :system_administrator,
+            :researcher
+        )
+  end
+
+  def defined_role
+    return 'system_administrator' if user_params[:system_administrator] == 'on'
+    return 'researcher' if user_params[:researcher] == 'on'
+    nil
   end
 
 end

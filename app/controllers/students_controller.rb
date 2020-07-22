@@ -7,34 +7,6 @@ class StudentsController < ApplicationController
 
   load_and_authorize_resource except: [:new, :create]
 
-  STUDENT_PARAMS = [
-    :first_name,
-    :last_name,
-    :email,
-    :grade_level,
-    :street_address,
-    :city,
-    :state,
-    :zip_code,
-    :race,
-    :gender,
-    :special_ed,
-    :password,
-    :temporary_password,
-    :xid,
-    :filter,
-    :active
-  ]
-
-  PARENT_PARAMS = [
-    :first_name,
-    :last_name,
-    :email,
-    :password,
-    :temporary_password,
-    :subscription_status,
-    :active
-  ]
 
   # skip_load_and_authorize_resource only: :index
 
@@ -139,70 +111,7 @@ class StudentsController < ApplicationController
   end
 
   # New UI
-  def create
-    @school = get_current_school
-    @student = Student.new
-    @student.assign_attributes(student_params)
-    # puts("*** initial errors: #{@student.errors.full_messages}")
-    @student.school_id = @school.id
-    @student.set_unique_username
-    @student.set_temporary_password
-    @student.valid?
-    # puts("*** set errors: #{@student.errors.full_messages}")
-    # ensure instance variable exists, even if errors
-    # don't create parent until after successful student create
-    @parent = Parent.new
-
-    respond_to do |format|
-      @student.save if @student.errors.count == 0
-      # puts("*** after no errors save, errors: #{@student.errors.full_messages}")
-      if @student.errors.count == 0
-        # puts("*** no student errors after save")
-        begin
-          UserMailer.welcome_user(@student, @school, get_server_config).deliver_now
-        rescue => e
-          Rails.logger.error("Error: Student Email missing ServerConfigs record with support_email address")
-          raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
-        end
-        # use parent if created already in student create
-        @parent = @student.parents.first
-        if @parent.blank?
-          @parent = Parent.new
-        end
-        Rails.logger.debug("*** @parent.assign_attributes(#{parent_params.inspect})")
-        @parent.assign_attributes(parent_params)
-        # puts("*** assign_attributes @parent.errors: #{@parent.errors.inspect}")
-        Rails.logger.debug("*** assign_attributes @parent.errors.count: #{@parent.errors.count}")
-        @parent.school_id = @school.id
-        @parent.set_unique_username
-        @parent.set_temporary_password
-        parent_status = @parent.save
-        # puts("*** save @parent.errors: #{@parent.errors.inspect}")
-        Rails.logger.debug("*** save @parent.errors.count: #{@parent.errors.count}")
-        # puts("*** save parent_status: #{parent_status.inspect}")
-        begin
-          UserMailer.welcome_user(@parent, @school, get_server_config).deliver_now
-        rescue => e
-          Rails.logger.error("Error: Parent Email missing ServerConfigs record with support_email address")
-          raise InvalidConfiguration, "Missing ServerConfigs record with support_email address"
-        end
-        err_msgs = []
-        err_msgs << @student.errors.full_messages if @student.errors.count > 0
-        err_msgs << @parent.errors.full_messages if @parent.errors.count > 0
-      else
-        err_msgs = []
-        err_msgs << @student.errors.full_messages if @student.errors.count > 0
-        # puts("*** unsuccessful before or after student save")
-      end
-      # puts("*** final errors: #{@student.errors.full_messages}")
-      # puts("*** final errors count: #{@student.errors.count}")
-      flash[:alert] = err_msgs.join(', ') if err_msgs.length > 0
-      flash.each do |name, msg|
-        Rails.logger.debug("*** flash message: #{msg}") if msg.is_a?(String)
-      end
-      format.js
-    end
-  end
+  
 
   # New UI
   # Students edit screen via js
@@ -490,7 +399,26 @@ class StudentsController < ApplicationController
 
   def student_params
     begin
-      params.require(:student).permit(STUDENT_PARAMS)
+      params
+      .require(:student)
+      .permit(
+        :first_name,
+        :last_name,
+        :email,
+        :grade_level,
+        :street_address,
+        :city,
+        :state,
+        :zip_code,
+        :race,
+        :gender,
+        :special_ed,
+        :password,
+        :temporary_password,
+        :xid,
+        :filter,
+        :active
+      )
     rescue Exception => e
       ActionController::Parameters.new
     end
@@ -498,7 +426,17 @@ class StudentsController < ApplicationController
 
   def parent_params
     begin
-      params.require(:parent).permit(PARENT_PARAMS)
+      params
+      .require(:parent)
+      .permit(
+        :first_name,
+        :last_name,
+        :email,
+        :password,
+        :temporary_password,
+        :subscription_status,
+        :active
+      )
     rescue
       ActionController::Parameters.new
     end

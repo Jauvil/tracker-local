@@ -59,6 +59,8 @@ gem 'fastthread', '~> 1.0.7', git: 'git://github.com/zoltankiss/fastthread.git'
 gem 'nokogiri', '~> 1.10.4'
 gem 'rack-cache', '~> 1.9.0'
 gem 'devise', '~> 4.7.1'  # Authentication
+gem 'jwt'
+gem 'httparty'
 
 # respond_with and the class-level respond_to methods have been extracted to the responders gem
 gem 'responders', '~> 3.0.0'
@@ -81,7 +83,7 @@ end
 group :development, :test do
   # gem "ruby-prof", "~> 0.13.0"
   # # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  # gem 'byebug'
+  gem 'byebug'
 
 end
 
