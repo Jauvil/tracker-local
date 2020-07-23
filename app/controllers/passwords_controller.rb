@@ -9,7 +9,6 @@ class PasswordsController < ApplicationController
       # TODO:  Get clarification on what to do when client PW update succeeds and SSO fails
       status = update_sso_password(@user.email)
       sign_in @user unless user_signed_in?
-      debugger
       redirect_to(root_path, :notice => 'Password was successfully updated.')
     else
       Rails.logger.debug("Update password failed".red)
