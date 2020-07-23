@@ -53,6 +53,13 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  namespace :api do
+    namespace :v1 do
+      resources :tracker_pages, only: %i[index]
+    end
+  end
+
   resources :announcements do
     member do
       get 'hide'
