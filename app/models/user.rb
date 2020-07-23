@@ -64,7 +64,12 @@ class User < ApplicationRecord
   end
 
   def self.role_symbol_to_name(role_sym)
-    case role_sym.to_sym
+    begin
+      rs = role_sym.to_sym
+    rescue
+      rs = ''
+    end
+    case rs
     when :system_administrator
       return 'Sys Admin'
     when :researcher

@@ -68,10 +68,6 @@ class UsersController < ApplicationController
   def update
     Rails.logger.debug("*** params: #{params.inspect}")
     Rails.logger.debug("*** user_params: #{user_params.inspect}")
-    if user_params[:password].blank? || user_params[:password_confirmation].blank?
-      user_params.delete(:password)
-      user_params.delete(:password_confirmation)
-    end
     # prevent clearing out email address if blank
     if user_params[:email].blank?
       user_params.delete(:email)
@@ -100,7 +96,6 @@ class UsersController < ApplicationController
     #     Rails.logger.debug("*** user_params['counselor'] #{user_params['counselor'].inspect}")
     #   end
 
-    doResetPwd = @user.password && @user.password_confirmation
     doSetActive = params[:commit] == 'active'
 
     respond_to do |format|
@@ -110,25 +105,13 @@ class UsersController < ApplicationController
       @user.valid?
       # do not update attributes until manual check for is_email_required?
       Rails.logger.error("*** @user.valid? errors: #{@user.errors.inspect}")
-      if !doResetPwd && !doSetActive && @user.is_email_required?
+      if !doSetActive && @user.is_email_required?
         @user_errors = ['There are Errors']
         Rails.logger.error("*** @user.errors: #{@user.errors.inspect}")
       end
-      if @user.errors.count == 0 && @user.update_attributes(user_params)
+      if @user.errors.empty? && @user.update_attributes(user_params)
         if params[:commit] == 'active'
           format.js
-        elsif @user.password and @user.password_confirmation
-          Rails.logger.debug("*** change password.")
-          if @user.reset_password(@user.password, @user.password_confirmation)
-            @user.temporary_password = nil unless @user.temporary_password == @user.password
-            @user.save
-            if user_params[:password].present? && user_params[:temporary_password].present?
-              UserMailer.changed_user_password(@user, @school, get_server_config).deliver_now # deliver after save
-            end
-            format.html {redirect_to(root_path, :notice => 'Password was successfully updated.')}
-          else
-            format.html {render :action => "change_password"}
-          end
         else
           # failed update attributes.  Be sure to add missing email error message here
           @user.is_email_required?
@@ -158,9 +141,6 @@ class UsersController < ApplicationController
         elsif params[:commit] == 'update_staff'
           Rails.logger.debug("*** update staff errors.")
           format.js
-        else
-          Rails.logger.debug("*** redo change password.")
-          format.html {render :action => "change_password"}
         end
       end
     end
@@ -501,8 +481,6 @@ class UsersController < ApplicationController
             :school_administrator,
             :counselor,
             :teacher,
-            :password,
-            :password_confirmation,
             :active,
             :school_id
         )
