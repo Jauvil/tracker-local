@@ -1,5 +1,4 @@
 module Sso::Application
-
   def sso_handle_intercomponent_request
     session[:jwt_token] = params[:jwt_token]
     sso_set_token_data
