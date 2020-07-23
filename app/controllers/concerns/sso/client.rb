@@ -1,14 +1,8 @@
 module Sso
   module Client
-    BASE_URL = 'http://localhost:3000'
+    include Headers
 
-    def sso_headers(token=nil)
-      headers = {}
-      headers['Authorization'] = token if token.present?
-      headers['Content-Type'] = 'application/json'
-      headers['Accept'] = 'application/json'
-      headers
-    end
+    BASE_URL = 'http://localhost:3000'
 
     def perform_sso_get(path, token=nil)
       HTTParty.get(BASE_URL + path, headers: sso_headers(token)).parsed_response
@@ -19,7 +13,7 @@ module Sso
     end
 
     def perform_sso_put(path, body={}, token=nil)
-      HTTParty.patch(BASE_URL + path, body: body, headers: sso_headers(token)).parsed_response
+      HTTParty.put(BASE_URL + path, body: body, headers: sso_headers(token)).parsed_response
     end
 
     def build_user_create_body(user)

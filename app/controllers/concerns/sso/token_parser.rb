@@ -1,5 +1,0 @@
-module Sso::TokenParser
-
-  
-
-end

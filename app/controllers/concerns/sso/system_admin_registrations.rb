@@ -1,6 +1,6 @@
 module Sso
   module SystemAdminRegistrations
-  include TokenParser, Client
+  include Client
 
     def create_system_user
       super do |user|
