@@ -12,11 +12,7 @@ module Sso
           sign_in user
           respond_with user, location: after_sign_in_path_for(user)
           return
-        else
-          #TODO: research why a user can be logged in after we call sign_out method.
-          # Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
         end
-        debugger
         redirect_to new_user_session_path, alert: "Invalid Credentials"
       else
         super
@@ -36,13 +32,14 @@ module Sso
 
           reset_session
         end
-        debugger
+        
         respond_to_on_destroy
       else
         super
       end
     end
 
+    # This prevents Devise from checking for warden sessions before running the destroy controller action
     def verify_signed_out_user; end
   end
 end
