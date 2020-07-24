@@ -5,6 +5,8 @@ module Sso
     def create
       if SSO_ENABLED
         user = User.find_by_username(params[:user][:username])
+        user = User.find_by_email(params[:user][:username]) if user.nil? 
+        super if user.nil?
         body = {email: user.email, password: params[:user][:password]}
         response = HTTParty.post('http://localhost:3000/users/sign_in', body: body).parsed_response
         session[:jwt_token] = response['token']

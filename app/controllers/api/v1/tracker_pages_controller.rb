@@ -3,22 +3,26 @@ class Api::V1::TrackerPagesController < ApplicationController
   def index
     email = decoded_token['email']
     @user = User.find_by_email(email)
-    @teacher = Teacher.find(@user.id)
-    sections = []
-    @teacher.sections.each do |section|
-      sections.push({ 
-        section_name: section.name,
-        section_id: section.id,
-        section_line_number: section.line_number
-      })
-    end
     
     if @user
-      render json: {
-        success: true, 
-        message: 'tracker pages links', 
-        sections: sections
-      }
+      @teacher = Teacher.find(@user.id)
+      sections = []
+      if @teacher 
+        @teacher.sections.each do |section|
+          sections.push({ 
+            section_name: section.name,
+            section_id: section.id,
+            section_line_number: section.line_number
+          })
+        end
+        render json: {
+          success: true, 
+          message: 'tracker pages links', 
+          sections: sections
+        }
+      else
+        render json: { success: false, message: 'user has no sections' }
+      end
     else
       render json: { success: false, message: 'no user found' }
     end
