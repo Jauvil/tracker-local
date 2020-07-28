@@ -2,21 +2,22 @@ module Sso::Application
   def sso_handle_intercomponent_request
     session[:jwt_token] = params[:jwt_token]
     sso_set_token_data
+    Rails.logger.debug("WHAT THE HEY - #{@current_user.inspect}".red)
     if sso_verify_token
-      if @current_user.nil?
-        password = SecureRandom.urlsafe_base64(16)
-        @current_user = User.create(email: @payload['email'], password: password, password_confirmation: password)
-      end
+      # if @current_user.nil?
+      #   password = SecureRandom.urlsafe_base64(16)
+      #   @current_user = User.create(email: @payload['email'], password: password, password_confirmation: password)
+      # end
 
       sign_in @current_user
     end
   end
 
   def is_intercomponent_request?
-    return false if request.referer.nil?
-    port_and_path = request.referer.split(':').last
-    port = Integer(port_and_path.split('/').first)
-    port != APP_PORT && params[:jwt_token].present?
+    # return false if request.referer.nil?
+    # port_and_path = request.referer.split(':').last
+    # port = Integer(port_and_path.split('/').first)
+    params[:jwt_token].present?
   end
 
   def sso_verify_token
@@ -45,6 +46,7 @@ module Sso::Application
       token_data = nil
     end
 
+    Rails.logger.debug("TOKEN DATA - #{token_data}".green)
     @payload = token_data.nil? ? nil : token_data[0]
     @current_user = @payload.nil? ? nil : User.find_by_email(@payload['email'])
   end

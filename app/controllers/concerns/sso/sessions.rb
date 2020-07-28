@@ -1,14 +1,14 @@
 module Sso
   module Sessions
-    include Headers
+    include Client
 
     def create
       if SSO_ENABLED
         user = User.find_by_username(params[:user][:username])
-        user = User.find_by_email(params[:user][:username]) if user.nil? 
+        user = User.find_by_email(params[:user][:username]) if user.nil?
         super if user.nil?
         body = {email: user.email, password: params[:user][:password]}
-        response = HTTParty.post('http://localhost:3000/users/sign_in', body: body).parsed_response
+        response = perform_sso_post('/users/sign_in', body)
         session[:jwt_token] = response['token']
         if user && response['token']
           sign_in user
@@ -27,14 +27,14 @@ module Sso
         Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
         unless user_signed_in?
           set_flash_message! :notice, :signed_out
-          response = HTTParty.delete('http://localhost:3000/users/sign_out', headers: sso_headers(jwt_token)).parsed_response
+          response = HTTParty.delete(Client::BASE_URL + '/users/sign_out', headers: sso_headers(jwt_token)).parsed_response
           session[:jwt_token] = nil unless response['success']
 
           session[:jwt_token] = response['token']
 
           reset_session
         end
-        
+
         respond_to_on_destroy
       else
         super

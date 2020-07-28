@@ -21,7 +21,9 @@ module Sso
           user: {
               email: user.email,
               password: user.temporary_password,
-              password_confirmation: user.temporary_password
+              password_confirmation: user.temporary_password,
+              roles: JSON.parse(user.role_symbols.to_json),
+              component: 'tracker'
           }
       }.to_json
     end

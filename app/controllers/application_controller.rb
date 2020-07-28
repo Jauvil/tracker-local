@@ -18,6 +18,11 @@ class ApplicationController < ActionController::Base
   before_action :sso_verify_token, unless: -> { is_intercomponent_request? }
   before_action :sso_handle_intercomponent_request, if: -> { is_intercomponent_request? }
 
+  before_action :test_stuff
+  def test_stuff
+    Rails.logger.debug("Holy COW  - #{request.env['referer']}".red)
+  end
+
   # replacement for ExceptionNotification gem (which uses a hard coded email address)
   rescue_from Exception, :with => :handle_fatal_error
 
