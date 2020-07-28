@@ -26,10 +26,6 @@ class Api::V1::TrackerPagesController < ApplicationController
     end
   end
 
-  def index_evidence_types
-    debugger
-  end
-
   private
 
   def decoded_token
