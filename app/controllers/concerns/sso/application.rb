@@ -2,8 +2,10 @@ module Sso::Application
   def sso_handle_intercomponent_request
     session[:jwt_token] = params[:jwt_token]
     sso_set_token_data
-    Rails.logger.debug("WHAT THE HEY - #{@current_user.inspect}".red)
     if sso_verify_token
+      # TODO: I don't think we want to create a user out of nowhere just because it doesn't exist. We're assuming
+      # TODO: users will be synched but will need to write a graceful fail for the edge case of that not being so.
+
       # if @current_user.nil?
       #   password = SecureRandom.urlsafe_base64(16)
       #   @current_user = User.create(email: @payload['email'], password: password, password_confirmation: password)
@@ -14,6 +16,9 @@ module Sso::Application
   end
 
   def is_intercomponent_request?
+    # TODO: This is not working as planned. We can check for a JWT Token and it works but I'd like to find a
+    # TODO: more concrete solution.
+
     # return false if request.referer.nil?
     # port_and_path = request.referer.split(':').last
     # port = Integer(port_and_path.split('/').first)
