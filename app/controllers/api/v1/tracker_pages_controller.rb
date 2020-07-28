@@ -6,19 +6,17 @@ class Api::V1::TrackerPagesController < ApplicationController
     
     if @user
       @teacher = Teacher.find(@user.id)
-      sections = []
       if @teacher 
-        @teacher.sections.each do |section|
-          sections.push({ 
-            section_name: section.name,
-            section_id: section.id,
-            section_line_number: section.line_number
-          })
-        end
+        @sections = []
+        @evidence_types = []
+        teacher_sections
+        evidence_types
         render json: {
           success: true, 
           message: 'tracker pages links', 
-          sections: sections
+          sections: @sections,
+          tracker_link: "http://localhost:3006/teachers/#{@teacher.id}",
+          evidence_types: @evidence_types
         }
       else
         render json: { success: false, message: 'user has no sections' }
@@ -37,6 +35,25 @@ class Api::V1::TrackerPagesController < ApplicationController
       token_data[0]
     rescue JWT::DecodeError
       nil
+    end
+  end
+
+  def teacher_sections
+    @teacher.sections.each do |section|
+      @sections.push({ 
+        section_name: section.name,
+        section_id: section.id,
+        section_line_number: section.line_number
+      })
+    end
+  end
+
+  def evidence_types
+    EvidenceType.all.each do |evidence_type|
+      @evidence_types.push({
+        id: evidence_type.id,
+        name: evidence_type.name
+      })
     end
   end
 
