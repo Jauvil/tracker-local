@@ -1,19 +1,19 @@
 module Sso
+
   module Client
     include Headers
-
-    BASE_URL = 'http://localhost:3000'
+    include Constants
 
     def perform_sso_get(path, token=nil)
-      HTTParty.get(BASE_URL + path, headers: sso_headers(token)).parsed_response
+      HTTParty.get(secrets['sso_url'] + path, headers: sso_headers(token)).parsed_response
     end
 
     def perform_sso_post(path, body={}, token=nil)
-      HTTParty.post(BASE_URL + path, body: body, headers: sso_headers(token)).parsed_response
+      HTTParty.post(secrets['sso_url'] + path, body: body, headers: sso_headers(token)).parsed_response
     end
 
     def perform_sso_put(path, body={}, token=nil)
-      HTTParty.put(BASE_URL + path, body: body, headers: sso_headers(token)).parsed_response
+      HTTParty.put(secrets['sso_url'] + path, body: body, headers: sso_headers(token)).parsed_response
     end
 
     def build_user_create_body(user)

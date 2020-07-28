@@ -1,4 +1,6 @@
 module Sso::Application
+  include Sso::Constants
+
   def sso_handle_intercomponent_request
     session[:jwt_token] = params[:jwt_token]
     sso_set_token_data
@@ -49,7 +51,7 @@ module Sso::Application
 
   def sso_set_token_data
     begin
-      token_data = JWT.decode(session[:jwt_token], JWT_PASSWORD, true, algorithm: 'HS256')
+      token_data = JWT.decode(session[:jwt_token], secrets['json_api_key'], true, algorithm: 'HS256')
     rescue JWT::DecodeError
       token_data = nil
     end
