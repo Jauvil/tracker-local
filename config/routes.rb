@@ -105,7 +105,7 @@ Rails.application.routes.draw do
 
   resources :create_users, only: %i[create], defaults: { format: :js } do
     collection do
-      post 'create_system_user', defaults: { format: :js }
+      post 'create_system_user', as: 'system_user', defaults: { format: :js }
       post 'create_staff_user', defaults: { format: :js }
       post 'create_student_user', defaults: { format: :js }
     end
