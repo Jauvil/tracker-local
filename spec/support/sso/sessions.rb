@@ -9,6 +9,7 @@ module Sso
         super if user.nil?
         body = {email: user.email, password: params[:user][:password]}.to_json
         response = perform_sso_post('/users/sign_in', body)
+        debugger
         session[:jwt_token] = response['token']
         if user && response['token']
           sign_in user

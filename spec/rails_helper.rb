@@ -50,6 +50,7 @@ RSpec.configure do |config|
   config.include Features, :type => :feature
   config.include ApplicationHelper
   config.include Paperclip::Shoulda::Matchers
+  config.include Capybara::DSL
 
 
 
