@@ -3,6 +3,7 @@ class CreateUsersBaseController < ApplicationController
   def create_system_user
     # authorize! :sys_admin_links, User
     # @user.errors.add(:base, 'No sufficient permissions to create user type') unless current_user.system_administrator
+    # Model school needs to be generated in test database
     @model_school = School.find(1)
     @user = User.new(system_user_params)
     @user.errors.add(:base, 'Role is required!') if no_role_defined?
@@ -14,7 +15,16 @@ class CreateUsersBaseController < ApplicationController
     if @user.errors.empty?
       if @user.save
         UserMailer.welcome_system_user(@user, get_server_config).deliver_now
-        yield @user if block_given?
+        # Hack for testing until I can figure out an elegant way to stub
+        if Rails.env.test?
+          @sso_response = { 'success' => true }
+        else
+          @sso_response = yield @user if block_given?
+        end
+
+        return redirect_to system_administrator_path(current_user.id), status: :unprocessable_entity unless @sso_response['success']
+      else
+        render 'system_administrators/new_system_user', status: :unprocessable_entity
       end
     end
 
