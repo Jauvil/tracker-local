@@ -1,9 +1,10 @@
 module Sso
   module Sessions
     include Client
+    include Constants
 
     def create
-      if SSO_ENABLED
+       if secrets['sso_enabled']
         find_user_for_validation
         return invalid_credentials_redirect if @user.nil?
         response = get_sso_response
@@ -17,13 +18,13 @@ module Sso
     end
 
     def destroy
-      if SSO_ENABLED
+      if secrets['sso_enabled']
         jwt_token = session[:jwt_token]
         Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
         unless user_signed_in?
           set_flash_message! :notice, :signed_out
           puts sso_headers(jwt_token).to_s.green
-          response = HTTParty.delete(Client::BASE_URL + '/users/sign_out', headers: sso_headers(jwt_token)).parsed_response
+          response = HTTParty.delete(secrets['sso_url'] + '/users/sign_out', headers: sso_headers(jwt_token)).parsed_response
           session[:jwt_token] = nil unless response['success']
 
           session[:jwt_token] = response['token']

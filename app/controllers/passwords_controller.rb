@@ -1,5 +1,6 @@
 class PasswordsController < ApplicationController
   include Sso::Client
+  include Sso::Constants
 
   before_action :set_user
 
@@ -35,7 +36,7 @@ class PasswordsController < ApplicationController
               password: params[:user][:password], password_confirmation: params[:user][:password]
           }
       }.to_json
-      token = JWT.encode({email: email}, JWT_PASSWORD)
+      token = JWT.encode({email: email}, secrets['json_api_key'])
       response = perform_sso_put('/users/passwords', body, token)
       Rails.logger.debug("Response - #{response.inspect}".yellow)
       response['success']
