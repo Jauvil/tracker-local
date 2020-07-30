@@ -1,6 +1,12 @@
 module Sso
   module SystemAdminRegistrations
-  include Client
+    include Client
+
+    class ServerConnectionError < StandardError
+      def message
+        'There was a problem communicating with the single sign on server'
+      end
+    end
 
     def create_system_user
       super do |user|
@@ -21,8 +27,7 @@ module Sso
     end
 
     def perform_sso_signup(user)
-      # token = encode_token(payload)
-      response = perform_sso_post('/users', build_user_create_body(user))
+      perform_sso_post('/users', build_user_create_body(user))
     end
   end
 end

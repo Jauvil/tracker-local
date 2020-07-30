@@ -4,19 +4,14 @@ module Sso
     include Constants
 
     def create
-      if secrets['sso_enabled']
-        user = User.find_by_username(params[:user][:username])
-        user = User.find_by_email(params[:user][:username]) if user.nil?
-        super if user.nil?
-        body = {email: user.email, password: params[:user][:password]}.to_json
-        response = HTTParty.post(secrets['sso_url'] + '/users/sign_in', body: body).parsed_response
+       if secrets['sso_enabled']
+        find_user_for_validation
+        return invalid_credentials_redirect if @user.nil?
+        response = get_sso_response
+        return invalid_credentials_redirect unless response['success']
         session[:jwt_token] = response['token']
-        if user && response['token']
-          sign_in user
-          respond_with user, location: after_sign_in_path_for(user)
-          return
-        end
-        redirect_to new_user_session_path, alert: "Invalid Credentials"
+        sign_in @user
+        respond_with @user, location: after_sign_in_path_for(@user)
       else
         super
       end
@@ -44,6 +39,24 @@ module Sso
     end
 
     # This prevents Devise from checking for warden sessions before running the destroy controller action
-    def verify_signed_out_user; end
+    def verify_signed_out_user;
+    end
+
+    private
+
+    def invalid_credentials_redirect
+      Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+      redirect_to new_user_session_path, alert: "Invalid Credentials"
+    end
+
+    def find_user_for_validation
+      @user = User.find_by_username(params[:user][:username])
+      @user = User.find_by_email(params[:user][:username]) if @user.nil?
+    end
+
+    def get_sso_response
+      body = {email: @user.email, password: params[:user][:password]}.to_json
+      perform_sso_post('/users/sign_in', body)
+    end
   end
 end
