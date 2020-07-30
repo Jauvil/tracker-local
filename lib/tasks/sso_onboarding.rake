@@ -1,7 +1,7 @@
 namespace :sso_onboarding do
 
   desc 'Find a teacher from Tracker and create that teacher in curriculum'
-  
+
   task create_demo_user: :environment do
     user = nil
     User.all.each do |poss_user|
@@ -19,5 +19,9 @@ namespace :sso_onboarding do
     user.password = 'Simple123!'
     user.password_confirmation = 'Simple123!'
     user.save!
+  end
+
+  task create_system_admin_user: :environment do
+    User.create!(username: 'adminuser', email: 'admin@21pstem.org',  password: 'Simple123!', password_confirmation: 'Simple123!', system_administrator: true)
   end
 end
