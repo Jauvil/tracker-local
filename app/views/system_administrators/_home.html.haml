@@ -38,3 +38,18 @@
   .col-sm-9.col-lg-9
     - if can?(:switch, School)
       =render('schools/listing')
+.header-block
+  %h2.h1.page-title
+    %strong="Curriculums"
+    %br
+    %strong="#{@curriculums}"
+  %h2.h1.page-title
+    %br
+    %br
+    %strong="SUBJECT FOR 1 CURRICULUM"
+    %br
+    %strong="SUBJECT COUNT: #{@subjects.count}"
+    %br
+    %strong="FIRT SUBJECT FOR 1 CURRICULUM"
+    %br
+    %strong="#{@subjects.first}"
