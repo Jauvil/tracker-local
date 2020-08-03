@@ -12,7 +12,8 @@ describe CreateUsersController do
     )
     @school = FactoryBot.create(:school, name: "Example School #{rand(10000)}", acronym: "EXSCH#{rand(10000)}")
     ServerConfig.create({"district_id"=>"", "district_name"=>"", "support_email"=>"jauvil@21pstem.org", "support_team"=>"Tracker Support Team", "school_support_team"=>"School IT Support Team", "server_url"=>"", "server_name"=>"Tracker System", "web_server_name"=>"PARLO Tracker Web Server", "allow_subject_mgr"=>false})
-    @system_administrator = FactoryBot.build(:system_administrator)
+    @system_administrator = User.where(system_administrator: true).first
+    @system_administrator = FactoryBot.create(:system_administrator) if @system_administrator.nil?
   end
 
   before(:each) do

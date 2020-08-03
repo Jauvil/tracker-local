@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe SessionsController do
   before(:all) do
-    @system_administrator = create(:system_administrator, username: "RandomUser#{rand(100000)}", email: "test_admin#{rand(100000)}@abc#{rand(999)}.com", password: 'Simple123!', password_confirmation: 'Simple123!')
+    @system_administrator = User.where(system_administrator: true).first
+    @system_administrator = FactoryBot.create(:system_administrator) if @system_administrator.nil?
   end
 
   before(:each) do

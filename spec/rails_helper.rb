@@ -22,6 +22,7 @@ require 'paperclip/matchers'
 require 'coffee_script'
 require 'factory_bot_rails'
 require 'model_helper'
+require 'spec_helper'
 require "test/unit/assertions"
 
 # Requires supporting ruby files with custom matchers and macros, etc,
