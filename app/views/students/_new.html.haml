@@ -22,7 +22,7 @@
         %h2
           =@student.full_name
       .block-content-full
-        =form_for(@student, url: create_student_create_users_path, remote: true) do |f|
+        =form_for(@student, url: map_student_create_route_for_user_role, remote: true) do |f|
           - @errors = @student.errors
           .page-form.alternate-highlight
             = render 'students/form'

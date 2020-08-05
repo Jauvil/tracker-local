@@ -22,7 +22,7 @@
         %h2
           =@user.full_name
       .block-content-full
-        =form_for(@user, url: url_for(controller: 'create_users', action: 'create_system_user'), remote: true) do |f|
+        =form_for(@user, url: url_for(controller: 'sys_admin/create_users', action: 'system_administrator'), remote: true) do |f|
           - @errors = @user.errors
           = render 'system_administrators/form'
   .col-sm-1

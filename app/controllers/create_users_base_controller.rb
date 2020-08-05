@@ -1,8 +1,8 @@
 class CreateUsersBaseController < ApplicationController
   before_action :verify_system_admin
 
-  def create_system_user
 
+  def system_administrator
     # authorize! :sys_admin_links, User
     # @user.errors.add(:base, 'No sufficient permissions to create user type') unless current_user.system_administrator
     # Model school needs to be generated in test database
@@ -37,7 +37,7 @@ class CreateUsersBaseController < ApplicationController
     end
   end
 
-  def create_staff_user
+  def staff
     Rails.logger.debug("*** PARAMS #{params.inspect}")
     @user = User.new(staff_user_params)
     @user.school_id = current_school_id
@@ -66,7 +66,7 @@ class CreateUsersBaseController < ApplicationController
     end
   end
 
-  def create_student_user
+  def student
     @school = get_current_school
     @student = Student.new(student_params)
     @student.school_id = @school.id

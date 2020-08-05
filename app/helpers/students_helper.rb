@@ -218,5 +218,8 @@ module StudentsHelper
     return parent
   end
 
-
+  def map_student_create_route_for_user_role
+    return student_sys_admin_create_users_path if current_user.system_administrator || current_user.researcher
+    student_school_staff_create_users_path
+  end
 end

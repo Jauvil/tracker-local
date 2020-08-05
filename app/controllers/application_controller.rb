@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_action :sso_handle_intercomponent_request, if: -> { is_intercomponent_request? }
 
   # replacement for ExceptionNotification gem (which uses a hard coded email address)
-  rescue_from Exception, :with => :handle_fatal_error
+  # rescue_from Exception, :with => :handle_fatal_error
 
   # removed this, as it interferes with debugging
   # (Added Note: as of Rails 5, before_filter is deprecated)
@@ -569,6 +569,7 @@ class ApplicationController < ActionController::Base
     return unless Rails.env.production?
     # you can insert logic in here too to log errors
     # or get more error info and use different templates
+    return unless Rails.env.production?
     Rails.logger.error("Error 500 Exception")
     if ex
       Rails.logger.error("Exception: #{ex.message}")
