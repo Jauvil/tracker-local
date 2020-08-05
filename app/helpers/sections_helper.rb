@@ -43,6 +43,10 @@ module SectionsHelper
     # @section = @section.where(section_outcomes: {id: [params[:so_ids]]}) if params[:so_ids]
     @section = @section.find(params[:id])
 
+    @section.section_outcomes.each do |section_outcome|
+      section_outcome.subject_outcome.curriculum_tree_id = 4
+    end
+
     @marking_periods = Range::new(1,@section.school.marking_periods) #for when we want to set value in the school
 
     @students = @section.active_students(subsection: params[:subsection], by_first_last: @section.school.has_flag?(School::USER_BY_FIRST_LAST))
