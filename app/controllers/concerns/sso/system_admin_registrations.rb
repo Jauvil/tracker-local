@@ -27,7 +27,7 @@ module Sso
     end
 
     def perform_sso_signup(user)
-      perform_sso_post('/users', build_user_create_body(user))
+      perform_sso_post('/users', build_user_create_body(user), session[:jwt_token])
     end
   end
 end

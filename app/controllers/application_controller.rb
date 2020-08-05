@@ -566,6 +566,7 @@ class ApplicationController < ActionController::Base
   # end
 
   def handle_fatal_error(ex)
+    return unless Rails.env.production?
     # you can insert logic in here too to log errors
     # or get more error info and use different templates
     Rails.logger.error("Error 500 Exception")
@@ -592,6 +593,8 @@ class ApplicationController < ActionController::Base
     rescue => e
       # send to user root path
     end
+
+    puts 'HELLO'.red
 
     if redirectToError
       redirect_to('/500')

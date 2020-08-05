@@ -1,6 +1,8 @@
 class CreateUsersBaseController < ApplicationController
+  before_action :verify_system_admin
 
   def create_system_user
+
     # authorize! :sys_admin_links, User
     # @user.errors.add(:base, 'No sufficient permissions to create user type') unless current_user.system_administrator
     # Model school needs to be generated in test database
@@ -26,6 +28,8 @@ class CreateUsersBaseController < ApplicationController
       else
         render 'system_administrators/new_system_user', status: :unprocessable_entity
       end
+    else
+      render 'system_administrators/new_system_user', alert: @user.errors.full_messages.join(', '), status: :unprocessable_entity
     end
 
     respond_to do |format|
@@ -36,26 +40,29 @@ class CreateUsersBaseController < ApplicationController
   def create_staff_user
     Rails.logger.debug("*** PARAMS #{params.inspect}")
     @user = User.new(staff_user_params)
-
     @user.school_id = current_school_id
     @user = set_temporary_login_details(@user)
     @school = get_current_school
+
+
 
     if @school.has_flag?(School::USERNAME_FROM_EMAIL) && @user.email.blank?
       @user.errors.add(:email, "email is required")
       # to do - find out why these @user.errors are not displaying in tests
       # @user_errors added to force an error message for tests
       @user_errors = ['There are Errors']
-      render js: 'users/new_staff'
-    elsif @user.errors.empty? && @user.save
-      yield @user if block_given?
-      UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
-      render js: "window.location.reload(true);"
+      render js: 'users/new_staff', status: :unprocessable_entity
+    elsif @user.errors.empty?
+      if @user.save
+        yield @user if block_given?
+        UserMailer.welcome_user(@user, @school, get_server_config).deliver_now # deliver after save
+        render js: "window.location.reload(true);"
+      end
     else
       # to do - find out why these @user.errors are not displaying in tests
       # @user_errors added to force an error message for tests
       @user_errors = ['There are Errors']
-      flash[:alert] = "ERROR: #{@user.errors.full_messages}"
+      flash[:alert] = "ERROR: #{@user.errors.full_messages.join(', ')}"
     end
   end
 
@@ -199,5 +206,9 @@ class CreateUsersBaseController < ApplicationController
 
   def no_role_defined?
     !params[:user][:system_administrator] == 'on' || !params[:user][:researcher] == 'on'
+  end
+
+  def verify_system_admin
+    redirect_to root_path, alert: "You don't have permission to perform this action" unless current_user.system_administrator
   end
 end

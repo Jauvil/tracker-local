@@ -235,7 +235,14 @@ FactoryBot.define do
   end
 
   factory :system_administrator do
-    user_common_attributes
+    gender                  { "F" }
+    first_name              { Faker::Name.first_name }
+    last_name               { Faker::Name.last_name }
+    password                { "password" }
+    password_confirmation   { "password" }
+    active                  { true }
+    sequence(:username)     { |n| "user#{n}" }
+    sequence(:email)        { |n| "user#{n}@example.com" }
     system_administrator { true }
   end
 
