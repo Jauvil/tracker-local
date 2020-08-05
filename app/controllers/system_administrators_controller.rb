@@ -5,8 +5,9 @@ class SystemAdministratorsController < ApplicationController
 
   def show
     @curriculums = Curriculum::Client.curriculums(session[:jwt_token])
-    # debugger
     @subjects = Curriculum::Client.subjects(session[:jwt_token], @curriculums.first['id'])
+    @learning_outcomes = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'])
+    
 
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])

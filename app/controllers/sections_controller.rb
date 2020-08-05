@@ -2,6 +2,7 @@
 # see license.txt in this software package
 #
 class SectionsController < ApplicationController
+  include Sso::Constants
   # Manually call authorize! after @section is declared because of complicated includes, etc.
   load_and_authorize_resource
   # respond_to :json
@@ -31,6 +32,7 @@ class SectionsController < ApplicationController
     params[:print_unrated] ||= 0
     params[:print_unrated] = params[:print_unrated].to_i
 
+    @base_url = secrets['curriculum_url']
     show_prep_h
 
     params[:marking_periods] ||= @marking_periods.to_a #for when we want the periods that are also changable by user selection in the UI
