@@ -45,7 +45,12 @@ gem 'colorize'
 
 # Application Monitoring / performance
 gem 'newrelic_rpm'
-#gem 'rack-mini-profiler'
+gem 'rack-mini-profiler'
+# For memory profiling
+gem 'memory_profiler'
+# For call-stack profiling flamegraphs
+gem 'flamegraph'
+gem 'stackprof'
 
 # Miscellaneous
 gem 'haml'            # Markup language to render HTML. Alternative to erb.
