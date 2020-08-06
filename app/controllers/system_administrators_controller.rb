@@ -4,11 +4,12 @@
 class SystemAdministratorsController < ApplicationController
 
   def show
-    @curriculums = Curriculum::Client.curriculums(session[:jwt_token])
-    @subjects = Curriculum::Client.subjects(session[:jwt_token], @curriculums.first['id'])
-    @learning_outcomes = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'])
-    
-
+    # @curricula = Curriculum::Client.curricula(session[:jwt_token])
+    # @subjects = Curriculum::Client.subjects(session[:jwt_token], @curricula.first['id'])
+    # @learning_outcomes = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'])
+    @curricula = []
+    @subjects = []
+    @learning_outcomes = []
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])
     @model_school = School.includes(:school_year).find(1)

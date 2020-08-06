@@ -21,8 +21,7 @@ module Sso
     end
 
     def perform_sso_signup(user)
-      resp = perform_sso_post('/users', build_user_create_body(user), session[:jwt_token])
-      puts resp.inspect.red
+      perform_sso_post('/users', build_user_create_body(user), session[:jwt_token])
     end
   end
 end

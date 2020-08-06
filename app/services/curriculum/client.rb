@@ -1,9 +1,9 @@
-class Curriculum::Client 
+class Curriculum::Client
   include Sso::Constants
 
-  def self.curriculums(jwt_token)
+  def self.curricula(jwt_token)
     klass_instance = new(jwt_token)
-    klass_instance.curriculums
+    klass_instance.curricula
   end
 
   def self.subjects(jwt_token, tree_type_id)
@@ -23,7 +23,7 @@ class Curriculum::Client
     @base_url = secrets['curriculum_url']
   end
 
-  def curriculums
+  def curricula
     response = HTTParty.get(@base_url + '/api/v1/curriculums', headers: headers).parsed_response
     if response['success']
       return Curriculum::ResponseParser.parse_curriculums(response['curriculums'])
@@ -39,7 +39,7 @@ class Curriculum::Client
     end
     response
   end
-  
+
   def learning_outcomes
     body = { subject_id: @subject_id, tree_type_id: @tree_type_id }.to_json
     response = HTTParty.get(@base_url + '/api/v1/subject_learning_outcomes', body: body, headers: headers).parsed_response
