@@ -47,7 +47,7 @@
                       %a.dim.arrow-cursor{id: "rollover-#{school.id}", href: 'javascript:void(0)', title: 'Rollover to New Year'}
                         %i.fa.fa-lg.fa-forward
                 %td.text-center
-                  - if school.acronym == 'MOD' && can?(:switch, school) && can?(:upload_lo_file, SubjectOutcome) && school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
-                    %a{href: upload_lo_file_subject_outcomes_path, title: 'Upload Learning Outcomes'}
+                  - if school.acronym == 'MOD' && can?(:switch, school) && can?(:edit_curric_los, SubjectOutcome) && school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
+                    %a{href: edit_curric_los_subject_outcomes_path, title: 'Upload Learning Outcomes'}
                       %i.fa.fa-lg.fa-lightbulb-o
                       %i.fa.fa-lg.fa-upload
