@@ -20,7 +20,6 @@ class CreateUsersBaseController < ApplicationController
         else
           @sso_response = yield @user if block_given?
         end
-        # TODO: PICK UP HERE NO @SSO_RESPONSE VAR
         return redirect_to system_administrator_path(current_user.id), status: :unprocessable_entity unless @sso_response['success']
       else
         render 'system_administrators/new_system_user', status: :unprocessable_entity

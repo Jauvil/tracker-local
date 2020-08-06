@@ -1,4 +1,3 @@
-console.log('THIS FIRES FO SHIZZY')
 errors_count = <%= @student.errors.count %>
 if errors_count.toString() != '0'
   console.log('we have an error');
