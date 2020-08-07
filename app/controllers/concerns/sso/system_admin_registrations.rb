@@ -8,22 +8,16 @@ module Sso
       end
     end
 
-    def create_system_user
-      super do |user|
-        perform_sso_signup(user)
-      end
+    def system_administrator
+      super { |user| perform_sso_signup(user) }
     end
 
-    def create_staff_user
-      super do |user|
-        perform_sso_signup(user)
-      end
+    def staff
+      super { |user| perform_sso_signup(user) }
     end
 
-    def create_student_user
-      super do |user|
-        perform_sso_signup(user)
-      end
+    def student
+      super { |user| perform_sso_signup(user) }
     end
 
     def perform_sso_signup(user)

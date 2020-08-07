@@ -103,11 +103,22 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :create_users, only: %i[create], defaults: { format: :js } do
-    collection do
-      post 'create_system_user', as: 'system_user', defaults: { format: :js }
-      post 'create_staff_user', defaults: { format: :js }
-      post 'create_student_user', defaults: { format: :js }
+  namespace :school_staff do
+    resources :create_users, only: [], defaults: { format: :js } do
+      collection do
+        post 'staff'
+        post 'student'
+      end
+    end
+  end
+
+  namespace :sys_admin do
+    resources :create_users, only: [], defaults: { format: :js } do
+      collection do
+        post 'system_administrator'
+        post 'staff'
+        post 'student'
+      end
     end
   end
 

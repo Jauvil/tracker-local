@@ -1,4 +1,4 @@
-class Curriculum::Client 
+class Curriculum::Client
   include Sso::Constants
 
   def self.curriculums(jwt_token)
@@ -39,7 +39,7 @@ class Curriculum::Client
     end
     response
   end
-  
+
   def learning_outcomes
     body = { subject_id: @subject_id, tree_type_id: @tree_type_id }.to_json
     response = HTTParty.get(@base_url + '/api/v1/subject_learning_outcomes', body: body, headers: headers).parsed_response

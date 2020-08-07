@@ -569,6 +569,7 @@ class ApplicationController < ActionController::Base
     return unless Rails.env.production?
     # you can insert logic in here too to log errors
     # or get more error info and use different templates
+    return unless Rails.env.production?
     Rails.logger.error("Error 500 Exception")
     if ex
       Rails.logger.error("Exception: #{ex.message}")

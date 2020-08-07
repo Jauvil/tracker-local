@@ -17,28 +17,28 @@ class Student < User
   # using_access_control
 
   # Relationships
-  has_many                      :parents, foreign_key: 'child_id', dependent: :destroy
-  has_one                       :parent, foreign_key: 'child_id'
+  has_many :parents, foreign_key: 'child_id', dependent: :destroy
+  has_one :parent, foreign_key: 'child_id'
   accepts_nested_attributes_for :parents
-  belongs_to                    :school
-  has_one                       :first_enrollment, class_name: "Enrollment", foreign_key: 'student_id'
-  has_many                      :enrollments, -> { where active: true },
-                                dependent: :destroy
+  belongs_to :school
+  has_one :first_enrollment, class_name: "Enrollment", foreign_key: 'student_id'
+  has_many :enrollments, -> {where active: true},
+           dependent: :destroy
   accepts_nested_attributes_for :enrollments
-  has_many                      :sections,
-                                through: :enrollments
-  has_many                      :current_sections, -> { where(enrollments: {active: true} ) },
-                                through: :enrollments,
-                                source: :section
-  has_many                      :section_outcome_ratings,
-                                dependent: :destroy
-  has_many                      :attendances,
-                                foreign_key: :user_id   # needed to eager load attendances, to prevent error: Mysql2::Error: Unknown column 'attendances.student_id' in 'where clause':  ?? todo ?? - is this still needed?
+  has_many :sections,
+           through: :enrollments
+  has_many :current_sections, -> {where(enrollments: {active: true})},
+           through: :enrollments,
+           source: :section
+  has_many :section_outcome_ratings,
+           dependent: :destroy
+  has_many :attendances,
+           foreign_key: :user_id # needed to eager load attendances, to prevent error: Mysql2::Error: Unknown column 'attendances.student_id' in 'where clause':  ?? todo ?? - is this still needed?
 
   # Validations
 
-  validates_presence_of         :grade_level
-  validates_numericality_of     :grade_level
+  validates_presence_of :grade_level
+  validates_numericality_of :grade_level
 
   validate :is_email_required?
   validate :is_grade_level_valid?
@@ -50,55 +50,55 @@ class Student < User
 
 
   #scopes
-  default_scope { where(student: true) }# deprecate this ?
-  scope :active, -> { where(active: true )} # deprecate this for active_student
-  scope :deactivated, -> { where("active = (?) AND grade_level < (?)", false, 1000) }
-  scope :graduated, -> { where("active = (?) AND grade_level > (?)", false, 1000) }
-  scope :active_student, -> { where(active: true) }
-  scope :special_ed_status, lambda { |statuses| where(special_ed: statuses) }
-  scope :alphabetical, -> { where(active: true).order("last_name", "first_name") } # deprecate this for active_student and last_then_first
-  scope :first_last, -> { order("first_name", "last_name") } # deprecate this for first_then_last
-  scope :first_then_last, -> { order("first_name", "last_name") }
-  scope :last_then_first, -> { order("last_name", "first_name") }
+  default_scope {where(student: true)} # deprecate this ?
+  scope :active, -> {where(active: true)} # deprecate this for active_student
+  scope :deactivated, -> {where("active = (?) AND grade_level < (?)", false, 1000)}
+  scope :graduated, -> {where("active = (?) AND grade_level > (?)", false, 1000)}
+  scope :active_student, -> {where(active: true)}
+  scope :special_ed_status, lambda {|statuses| where(special_ed: statuses)}
+  scope :alphabetical, -> {where(active: true).order("last_name", "first_name")} # deprecate this for active_student and last_then_first
+  scope :first_last, -> {order("first_name", "last_name")} # deprecate this for first_then_last
+  scope :first_then_last, -> {order("first_name", "last_name")}
+  scope :last_then_first, -> {order("last_name", "first_name")}
 
 
   # other definitions
   def active_sections
-   sections.where(
-      :enrollments        => {
-        :active           => true,
-        :student_id       => id
-      }
+    sections.where(
+        :enrollments => {
+            :active => true,
+            :student_id => id
+        }
     )
   end
 
   def cur_yr_active_enrollments
-   enrollments.where(
-      sections: {
-        school_year_id: school.school_year_id
-      },
-      student_id: id,
-      active: true
+    enrollments.where(
+        sections: {
+            school_year_id: school.school_year_id
+        },
+        student_id: id,
+        active: true
     )
   end
 
   def cur_yr_all_enrollments
-   enrollments.where(
-      sections: {
-        school_year_id: school.school_year_id
-      },
-      student_id: id,
-      active: [true, false]
+    enrollments.where(
+        sections: {
+            school_year_id: school.school_year_id
+        },
+        student_id: id,
+        active: [true, false]
     )
   end
 
   # TODO: Refactor so that it only pulls ratings for one section / subject.
   def active_section_outcome_ratings
     SectionOutcomeRating.joins(:section_outcome).where(
-      :section_outcomes   => {
-        :active           => true
-      },
-      :student_id         => id
+        :section_outcomes => {
+            :active => true
+        },
+        :student_id => id
     )
   end
 
@@ -117,8 +117,8 @@ class Student < User
   # New UI - Student Dashboard page
   def hash_of_section_outcome_rating_counts(options = {})
     options[:marking_periods] ||= (1..10).to_a
-    hash = Hash.new { |h,k| h[k] = { H: 0, P: 0, N: 0, U: 0 } }
-    section_outcome_ratings = SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: { active: true })
+    hash = Hash.new {|h, k| h[k] = {H: 0, P: 0, N: 0, U: 0}}
+    section_outcome_ratings = SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: {active: true})
     section_outcome_ratings.each do |section_outcome_rating|
       if (section_outcome_rating.section_outcome.marking_period_array & options[:marking_periods]).length > 0
         unless section_outcome_rating.rating.blank?
@@ -133,9 +133,9 @@ class Student < User
 
   # Oh, boy.
   def import_subject_outcome_ratings! subject_id, new_section_id
-    new_section          = Section.find new_section_id
+    new_section = Section.find new_section_id
     new_section_outcomes = new_section.section_outcomes
-    existing_sections    = sections.where(:subject_id => subject_id)
+    existing_sections = sections.where(:subject_id => subject_id)
     subject_outcome_rating_hash = {}
 
     existing_sections.each do |existing_section|
@@ -155,9 +155,9 @@ class Student < User
       rating = subject_outcome_rating_hash[new_section_outcome.subject_outcome_id]
       if subject_outcome_rating_hash[new_section_outcome.subject_outcome_id]
         new_rating = SectionOutcomeRating.new(
-          :rating     => (rating.rating[0,1] + "*"),
-          :student_id => id,
-          :section_outcome_id => new_section_outcome.id
+            :rating => (rating.rating[0, 1] + "*"),
+            :student_id => id,
+            :section_outcome_id => new_section_outcome.id
         )
         new_rating.save
       end
@@ -166,33 +166,33 @@ class Student < User
   end
 
   def section_evidence_ratings section_id
-    hash = Hash.new { |h,k| h[k] = { rating: "", comment: nil, flagged: false } }
+    hash = Hash.new {|h, k| h[k] = {rating: "", comment: nil, flagged: false}}
     EvidenceSectionOutcomeRating.joins(:evidence).where(
-      student_id: id,
-      evidences: { section_id: section_id, active: true }
-    ).map { |a| hash[a.evidence_section_outcome_id] = { rating: a.rating, comment: a.comment, flagged: a.flagged } }
+        student_id: id,
+        evidences: {section_id: section_id, active: true}
+    ).map {|a| hash[a.evidence_section_outcome_id] = {rating: a.rating, comment: a.comment, flagged: a.flagged}}
     hash
   end
 
   # New UI for Student Dashboard Summary Evidence Stats
   def missing_evidences_by_section
     # hash of sections by enrollment id
-    hash = Hash.new{ |h,k| h[k] = { enroll_id: nil, subject: '', section: '', evid_hash: nil, count: 0} }
+    hash = Hash.new {|h, k| h[k] = {enroll_id: nil, subject: '', section: '', evid_hash: nil, count: 0}}
     # hash of evidences by sequence of evidences for section
     Enrollment.includes(:section).current.where(student_id: id).each do |ae|
       enroll_id = ae.id
       subject = ae.section.name
       section = ae.section.line_number
-      evid_hash = Hash.new{ |h,k| h[k] = { evid_name: '', type: '', date: '' } }
+      evid_hash = Hash.new {|h, k| h[k] = {evid_name: '', type: '', date: ''}}
       # get all missing evidences for section
       section_evidence_ratings_of_rating(ae.section_id, 'M').each_with_index do |esor, eix|
         # get evidence_id to ensure that only one entry is saved per Evidence
         # - we dont want the evidence duplicated if it is in multiple LOs
         evidence_id = esor.evidence_section_outcome.evidence_id
         evid_hash[evidence_id] = {
-          evid_name: esor.evidence_section_outcome.name,
-          type: esor.evidence_section_outcome.evidence_type.name,
-          date: esor.evidence_section_outcome.assignment_date
+            evid_name: esor.evidence_section_outcome.name,
+            type: esor.evidence_section_outcome.evidence_type.name,
+            date: esor.evidence_section_outcome.assignment_date
         }
       end
       has_teach = ae.section && ae.section.teachers && ae.section.teachers.first
@@ -207,18 +207,18 @@ class Student < User
   # should this be refactored to pull all ratings?
   def section_evidence_ratings_of_rating(section_id, rating)
     EvidenceSectionOutcomeRating.includes(:evidence).where(
-      student_id: id,
-      rating: rating,
-      evidences: { section_id: section_id, active: true }
+        student_id: id,
+        rating: rating,
+        evidences: {section_id: section_id, active: true}
     )
   end
 
   # New UI for Student Dashboard Summary Evidence Stats
-  def count_section_evidence_ratings section_id, start_date=nil
+  def count_section_evidence_ratings section_id, start_date = nil
     hash = {'B' => 0, 'G' => 0, 'Y' => 0, 'R' => 0, 'M' => 0, 'U' => 0}
     query = EvidenceSectionOutcomeRating.joins(:evidence).where(
-      student_id: id,
-      evidences: { section_id: section_id, active: true }
+        student_id: id,
+        evidences: {section_id: section_id, active: true}
     )
     if start_date.present?
       as_date = start_date.to_date
@@ -239,11 +239,11 @@ class Student < User
   end
 
   # New UI for Student Dashboard Summary Evidence Stats
-  def overall_current_evidence_ratings start_date=nil
+  def overall_current_evidence_ratings start_date = nil
     hash = {'B' => 0, 'G' => 0, 'Y' => 0, 'R' => 0, 'M' => 0, 'U' => 0}
     ty_sections ||= current_sections.where(school_year_id: school.school_year_id)
     ty_sections.each do |tys|
-      hash.merge!(count_section_evidence_ratings(tys, start_date)){ |key, oldval, newval| oldval + newval}
+      hash.merge!(count_section_evidence_ratings(tys, start_date)) {|key, oldval, newval| oldval + newval}
     end
     hash
   end
@@ -251,12 +251,12 @@ class Student < User
   def section_grade section_id
     section = Section.find(section_id)
     ratings = section_section_outcome_ratings(section_id)
-    h = ratings.count { |a| a[1] == "H" }
-    p = ratings.count { |a| a[1] == "P" }
-    n = ratings.count { |a| a[1] == "N" }
-    t = ratings.count { |a| a[1] != "U" }
+    h = ratings.count {|a| a[1] == "H"}
+    p = ratings.count {|a| a[1] == "P"}
+    n = ratings.count {|a| a[1] == "N"}
+    t = ratings.count {|a| a[1] != "U"}
     algorithm = section.grading_algorithm
-    scale     = section.grading_scale.sort
+    scale = section.grading_scale.sort
 
     algorithm.gsub!("H", "#{h}.to_f")
     algorithm.gsub!("P", "#{p}.to_f")
@@ -285,34 +285,34 @@ class Student < User
   def section_outcomes_by_rating rating, section_id
     array = []
     SectionOutcomeRating.joins(
-      :section_outcome
+        :section_outcome
     ).where(
-      rating: rating,
-      student_id: id,
-      section_outcomes: {
-        section_id: section_id,
-        active: true
-      }
-    ).order("section_outcomes.position").map { |a|
-      array << { id: a.section_outcome.id, name: a.section_outcome.name } if a.rating[0] == rating
+        rating: rating,
+        student_id: id,
+        section_outcomes: {
+            section_id: section_id,
+            active: true
+        }
+    ).order("section_outcomes.position").map {|a|
+      array << {id: a.section_outcome.id, name: a.section_outcome.name} if a.rating[0] == rating
     }
     array
   end
 
   def section_section_outcome_ratings section_id
-    hash = Hash.new { |h,k| h[k] = "U" }
+    hash = Hash.new {|h, k| h[k] = "U"}
     SectionOutcomeRating.joins(:section_outcome).where(
-      student_id: id,
-      section_outcomes: { active: true, section_id: section_id }
-    ).map { |a| hash[a.section_outcome_id] = a.rating }
+        student_id: id,
+        section_outcomes: {active: true, section_id: section_id}
+    ).map {|a| hash[a.section_outcome_id] = a.rating}
     hash
   end
 
   def count_of_section_evidence_section_outcome_ratings section_id
-    hash = Hash.new { |h,k| h[k] = 0 }
+    hash = Hash.new {|h, k| h[k] = 0}
     EvidenceSectionOutcomeRating.joins(
-      evidence_section_outcome: :evidence
-    ).where(evidences: {section_id: section_id, active: true}, student_id: id).map { |a|
+        evidence_section_outcome: :evidence
+    ).where(evidences: {section_id: section_id, active: true}, student_id: id).map {|a|
       hash[a.rating] += 1
     }
     hash
@@ -321,14 +321,14 @@ class Student < User
   def ratings_count rating
     section_ids ||= current_sections.where(school_year_id: school.school_year_id).pluck("sections.id")
     if ["H", "P", "N", "U"].include? rating
-      SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: { active: true, section_id: section_ids }, rating: ["#{rating}", "#{rating}*"]).count
+      SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: {active: true, section_id: section_ids}, rating: ["#{rating}", "#{rating}*"]).count
     end
   end
 
   def learning_outcomes_by_rating rating, section_ids = nil
     section_ids ||= current_sections.where(school_year_id: school.school_year_id).pluck("sections.id")
     if ["H", "P", "N", "U"].include? rating
-      SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: { active: true, section_id: section_ids }, rating: ["#{rating}", "#{rating}*"]).map { |a| a.section_outcome }
+      SectionOutcomeRating.joins(:section_outcome).where(student_id: id, section_outcomes: {active: true, section_id: section_ids}, rating: ["#{rating}", "#{rating}*"]).map {|a| a.section_outcome}
     end
   end
 
@@ -350,48 +350,18 @@ class Student < User
   end
 
   def is_email_required?
-    email_error = false
-    begin
-      if self.school_id.present?
-        school = School.find(self.school_id)
-        if school.has_flag?(School::USERNAME_FROM_EMAIL) && self.email.blank?
-          self.errors.add(:email, 'Email is required.')
-          email_error = true
-        end
-      end
-    rescue
-      Rails.logger.error("ERROR: is_email_required? school (#{self.school_id.inspect}) find error.")
+    school = School.find(self.school_id)
+    if school.has_flag?(School::USERNAME_FROM_EMAIL) && self.email.blank?
+      self.errors.add(:email, 'Email is required.')
     end
-    return email_error
   end
 
   def is_grade_level_valid?
-    grade_level_error = false
-    begin
-      if self.school_id.present?
-        school = School.find(self.school_id)
-        max_grade = 12
-        max_grade = 3 if school.has_flag?(School::USER_BY_FIRST_LAST)
-        # make sure grade level is set and less than the max if not set to graduation year
-        if self.grade_level.blank? || (self.grade_level > max_grade && self.grade_level < 2000)
-          self.errors.add(:grade_level, 'Grade Level is invalid')
-          grade_level_error = true
-        end
-        grade_level_error = false
-        if self.grade_level.blank?
-          # no blank grade levels allowed
-          self.errors.add(:grade_level, 'Grade Level is blank')
-          grade_level_error = true
-        elsif (self.grade_level > max_grade_level && self.grade_level < MIN_GRADUATION_YEAR)
-          # grade levels are valid (allowing for grade level to also be year of graduation year)
-          self.errors.add(:grade_level, 'Grade level is too large')
-          grade_level_error = true
-        end
-      end
-    rescue
-      Rails.logger.error("ERROR: is_grade_level_valid? school (#{self.school_id.inspect}) find error.")
+    school = School.find(self.school_id)
+    max_grade = school.has_flag?(School::USER_BY_FIRST_LAST) ? 3 : 12
+    # make sure grade level is set and less than the max if not set to graduation year
+    if self.grade_level.blank? || self.grade_level < 0 || (self.grade_level < MIN_GRADUATION_YEAR && self.grade_level > max_grade)
+      self.errors.add(:grade_level, 'Grade Level is invalid')
     end
-    return grade_level_error
   end
-
 end
