@@ -25,9 +25,6 @@ class Curriculum::Client
 
   def curriculums
     response = HTTParty.get(@base_url + '/api/v1/curriculums', headers: headers).parsed_response
-    puts '---------------------- CURRICULUMS RESP --------------------'.green
-    puts response.inspect.yellow
-    puts '---------------------- CURRICULUMS RESP --------------------'.green
     if response['success']
       return Curriculum::ResponseParser.parse_curriculums(response['curriculums'])
     end
