@@ -1,4 +1,4 @@
-class Api::V1::TrackerPagesController < ApplicationController
+class Api::V1::TrackerPagesController < Api::V1::BaseController
   include Sso::Constants
 
   def index
