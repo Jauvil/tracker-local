@@ -4,9 +4,16 @@
 class SystemAdministratorsController < ApplicationController
 
   def show
+    # TODO: Methods should only return one type of object. The client methods called here can return a hash if
+    # the call fails, or an array if the call succeeds.
     @curriculums = Curriculum::Client.curriculums(session[:jwt_token])
-    @subjects = Curriculum::Client.subjects(session[:jwt_token], @curriculums.first['id'])
-    @learning_outcomes = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'])
+    if @curriculums.is_a?(Array)
+      @subjects = Curriculum::Client.subjects(session[:jwt_token], @curriculums.first['id'])
+      @learning_outcomes = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'])
+    else
+      @subjects = []
+      @learning_outcomes = []
+    end
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])
     @model_school = School.includes(:school_year).find(1)
