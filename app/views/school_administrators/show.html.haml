@@ -13,6 +13,11 @@
     %strong='Dashboard'
   %h2.h1.page-title
     %strong="School Administrator: #{@school_administrator.full_name}"
+
+  %p.alert-danger.some(style='padding: 10px; border-radius: .25em;')
+    ="All users should be assigned an email. Check "
+    %a=link_to 'here', users_with_missing_emails_school_staff_administrators_path
+    ="to determine what users those are for your school."
   - si_time = (@school_administrator.current_sign_in_at.nil?) ? 'Never' : @school_administrator.current_sign_in_at.strftime('%d-%b-%Y %I:%M:%S %p')+' GMT'
   %span="(Latest signin time at: #{si_time})"
 

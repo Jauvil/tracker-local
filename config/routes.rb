@@ -110,6 +110,16 @@ Rails.application.routes.draw do
         post 'student'
       end
     end
+
+    resources :administrators, only: [] do
+      collection do
+        get :users_with_missing_emails
+      end
+      member do
+        get :edit_user_email
+        put :update_user_email
+      end
+    end
   end
 
   namespace :sys_admin do
@@ -124,7 +134,11 @@ Rails.application.routes.draw do
 
   resources :passwords, only: %i[update]
 
-  resources :school_administrators
+  resources :school_administrators do
+    member do
+      get :users_with_missing_emails
+    end
+  end
 
   match "schools/new_year_rollover" => "home#index", via: :get
   resources :schools do

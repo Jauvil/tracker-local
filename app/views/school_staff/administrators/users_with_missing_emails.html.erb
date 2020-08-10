@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12 text-center" style="margin-top: 15px;">
+      <h5>
+        PARLO/Tracker will be enforcing new constraints on users in order to better serve you.
+      </h5>
+      <h5 style="margin-top: 10px;">
+        Please check the list of users below and update their emails as needed.
+      </h5>
+    </div>
+    <div class="col-12" style="margin-top: 10px;">
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Roles</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users_with_missing_emails.each do |user| %>
+            <tr>
+              <td><%= user.first_name %></td>
+              <td><%= user.last_name %></td>
+              <td><%= user.role_symbols.collect(&:to_s).join(', ') %></td>
+              <td>
+                <%= link_to 'Add email', edit_user_email_school_staff_administrator_path(user), class: 'btn btn-success' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  h5 {
+    font-size: 2em !important;
+  }
+</style>

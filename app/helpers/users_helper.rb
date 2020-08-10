@@ -187,5 +187,8 @@ module UsersHelper
     return work_username
   end
 
-
+  def map_staff_create_route_for_user_role
+    return staff_sys_admin_create_users_path if current_user.system_administrator
+    staff_school_staff_create_users_path
+  end
 end
