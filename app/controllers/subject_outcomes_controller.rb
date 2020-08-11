@@ -64,6 +64,13 @@ class SubjectOutcomesController < ApplicationController
   # get all (active) Tracker subjects, in the standard listing order
     @subjects = Subject.where(school_id: @school.id).includes(:discipline).order('disciplines.name, subjects.name')
     Rails.logger.debug("*** @subjects: #{@subjects.pluck(:name)}")
+
+    # ToDo: get all curriculum versions from curriculum for this curriculum code.
+    # ToDo: let users select the version of the curriculum that they wish to use.
+    #    Note: dropdown should have current version as the pre-selected default value.
+    #    Note: Confirm with user (javascript) if version number changes.
+    #    Note: If no version Change, Are you sure you wish to do a mid year update (not available yet)
+    # ToDo:
   end
 
 
@@ -74,7 +81,6 @@ class SubjectOutcomesController < ApplicationController
     authorize! :update_curric_los, SubjectOutcome # only system admins can do this ?
     Rails.logger.debug("*** authorized!")
     Rails.logger.debug("*** params: #{params.inspect}")
-    Rails.logger.debug("*** params: #{params.inspect}")
     @rollback = false
     # begin
 
@@ -82,15 +88,10 @@ class SubjectOutcomesController < ApplicationController
       @school = lo_get_model_school(params)
       Rails.logger.debug("*** @school: #{@school.inspect}")
       # get the subjects for the model school
-      # ToDo: Set Subject.active to true on all subjects (currently all are nil) - to allow deactivating subjects
-      # Note: This depends upon Tracker Subject file having the 5 curriculum fields in it
-      #   pre-populated for the model school
-      #   (curr_tree_type_code, curr_tree_type_id, curr_subject_code, curr_subj_id, curr_gb_id)
-      # Note: this should normally be part of creating a new system's model school.
-      # get all (active) Tracker subjects, in the standard listing order
+      # get all (active) Tracker subjects, in the standard listing order (Discipline and Subject names)
       if params[:subject_id].present?
         # ToDo: use strong params, and validate this is an integer
-        @subjects = Subject.where(school_id: @school.id, id: params[:subject_id]).includes(:discipline).order('disciplines.name, subjects.name')
+        @subjects = Subject.where(school_id: @school.id, id: params[:subject_id]).includes(:discipline)
       else
         @subjects = Subject.where(school_id: @school.id).includes(:discipline).order('disciplines.name, subjects.name')
       end
@@ -107,86 +108,61 @@ class SubjectOutcomesController < ApplicationController
       @count_deactivates = 0
       @count_updated_subjects = 0
 
-      # # if only processing one subject
-      # # - creates/updates @match_subject, @subject_id
-      # @match_subject = @single_subject = lo_get_match_subject(params)
+      # ToDo: If curriculum version change, then update the model school record with the new version information.
+      # ToDo: If no curriculum version change, then tell user mid year update is not available yet (see rake process).
+      # ToDo: This entire update should probably be wrapped in a transaction
 
-      # if @match_subject.present?
-      #   Rails.logger.debug("*** starting update single subject: #{@match_subject.name}")
-      #   process_subject(@match_subject)
-      # else
-
-      # get the curriculum subjects for this curriculum & version
-      # Note: should this come from the model school record
-      # Note: do all model school LO records need the curriculum and version or can that be removed?
-      # ToDo: Put in Rapkat's code to pull in subjects from curriculum here
-      # 1) create a hash of all Curriculum subjects , and add a field to indicate matched to existing Tracker subject
+      # ToDo: Get the curriculum subjects for this curriculum & version from the model school record
+      #   - consider getting curriculum subjects for previous version if version change
+      # ToDo: Create a hash of all Curriculum subjects , and add a field to indicate matched to existing Tracker subject
 
 
-      Rails.logger.debug("*** Starting loop through all Model School subjects")
+      Rails.logger.debug("*** Starting loop through (chosen or all) Model School subjects")
       @subjects.each do |subj|
         Rails.logger.debug("*** Subject: #{subj.name}, #{subj.inspect}")
-
-        # match up tracker subject to curriculum subject
-        # if matching subject in curriculum:
-        #   Create a hash of Curriculum Los for this subject
-        #   loop through Tracker LOs for Subject
+        # Get Curriculum Subject and Curriculum Grade Band from Subject Record
+        # ToDo: if curriculum subject or grade band are deactivated
+        #  - deactivate Subject and its LOs in Tracker
+        #  - see update_tracker_lo(model_school_subject_outcome_id) below
+        # ToDo:  Create a hash of Curriculum Los for this subject (hash by curr_lo_tree_id)
+        #  - consider also getting the Curriculum Los for this subject for the previous version on version change
+        # Loop through Tracker LOs for Subject
         SubjectOutcome.where(subject_id: subj.id).order(:lo_code).each do |rec|
-          #     Match the Tracker Model School LO to the curriculum LO
-          #       ? Match by tree_id ?
-          #       if version change then llook up old tree id
-          #       !! tests for this !!
-          #       Call update_tracker_lo
-          #       Mark curriculum LO in hash as matched
-          #     If no match, mark the Tracker LO as deactivated?
-          #   Loop through all unmatched LOs in Curriculum hash
-          #     Call create_tracker_lo to add as new LO
-          #     Mark curriculum LO in hash as matched
-          #   Mark curriculum subject in hash as matched
-          # If no matching subject in in Curriculum:
-          #   Deactivate the subject and all of its LOs in Tracker
-          # ToDo: refactor records to also include matched curriculum fields
-          # ToDo: Make report output nicer.
-          # ToDo: give navigation at bottom of report for rerunning.
-          @records << {
-            discipline: rec.subject.discipline.name,
-            subject: "#{rec.subject.name}",
-            grade:  "grade from tracker subject name",
-            marking_period: "#{rec.marking_period_string}",
-            lo_code: "#{rec.lo_code}",
-            lo_desc: "#{rec.description}",
-            errors: "#{rec.errors.full_messages.join(', ')}"
-          }
-        end
-        # end of loop through subjects
-        # Process all unmatched Subjects in Curriculum Subjects Hash
-        #   Add new subject and its learning outcomes.
-        #     - Create a subject in Tracker and call create_tracker_lo for all LOs in curriculum
+          # ToDo: Look up Curriculum LO from SubjectOutcome curr_lo_tree_id
+          #   Note: if version changed, then be sure to determine the new LO from old_tree_id
+          #     - The list of updated LO(s) will have old_tree_id = tracker curr_lo_tree_id
+          #     - be sure to put in tests for this !!
+          # ToDo: If tracker LO is not in Curriculum (note version changing)
+          #   - mark the Tracker LO as deactivated
+          #   - Note: indicate deactivated in output report
+          update_tracker_lo(rec, nil)
+          # ToDo: Mark curriculum LO in hash as matched
+        end # end of loop through Tracker Model School Subject Outcomes for subject subj
 
-        # ?? do we need to update School Subject Outcomes and Section Outcomes
-        #   - middle of school year use mid year rake process
-        # ?? Emily - will LOs be able to be moved into another subject
-        #  - Can be moved between Grade bands.
-        #  - which is a different subject in Tracker
-        # semester is in Tree code, but not in displayed code
-        #   - what is purpose of year long and semester 1 and 2 in LO Row in tracker.
-        # full year
-        # schools synched for capstones
+        #  Loop through all unmatched LOs for subject subj (in Curriculum hash)
+        #  For each unmatched LO
+        #    - To add new LOs, Call create_tracker_lo(curriculum_tree_id)  (see below )
+        #    - Mark curriculum LO in hash as matched
 
-        # assumption: Tracker Model School Subject Outcome is prepopulated with
-        # - curriculum subject id and grade band id to know/confirm subject
-        # - curriculum LO tree_id to match the LOs
+        #   Mark curriculum subject in hash as matched
 
-        # def update_tracker_lo(model_school_subject_outcome_id)
-        #   # to deactivate or update description of a tracker LO
-        #   If curriculum deactivated the LO
-        #     Deactivate Tracker Model School LO
-        #       references will be able to see this is deactivated.
-        #     Else if Active Curriculum LO
-        #       Update the Tracker Model School LO (description & ??)
+        # If no matching subject in in Curriculum:
+        #   Deactivate the subject and all of its LOs in Tracker
+        #    - see: update_tracker_lo(rec, model_school_subject_outcome_id)
+      end # end of loop through subjects
 
-        # def create_tracker_lo(curriculum_tree_id)
-      end
+
+      # Process all unmatched Subjects in Curriculum Subjects Hash
+      #   Add new subject and its learning outcomes.
+      #     - Create a subject in Tracker and call create_tracker_lo (see below) for all LOs in curriculum
+
+      # Note: LOs can be moved into another Tracker subject (currently between grade bands in same subject)
+
+      # semester is in Tree code, but not in displayed code
+      #   - what is purpose of year long and semester 1 and 2 in LO Row in tracker.
+      # full year
+      # schools synched for capstones
+
       Rails.logger.debug("*** @errors.count #{@errors.count}")
       Rails.logger.debug("*** @count_errors #{@count_errors}")
       Rails.logger.debug("*** @count_updates #{@count_updates}")
@@ -206,6 +182,35 @@ class SubjectOutcomesController < ApplicationController
 
   def subject_outcome_params
     params.require(:subject_outcome).permit(SUBJECT_OUTCOME_PARAMS)
+  end
+
+  def update_tracker_lo(rec, model_school_subject_outcome_id)
+    # to deactivate or update description of a tracker LO
+    # If curriculum deactivated the LO
+    #   Deactivate Tracker Model School LO
+    #     references will be able to see this is deactivated.
+    #   Else if Active Curriculum LO
+    #     Update the Tracker Model School LO (description & ??)
+
+    # Output matching LO Records to output report
+    # ToDo: refactor records to also include matched curriculum fields
+    # ToDo: Make report output nicer.
+    # ToDo: give navigation at top and bottom of report for rerunning.
+    # ToDo: check deactivated flag on rec and report on deactivations.
+    @records << {
+      discipline: rec.subject.discipline.name,
+      subject: "#{rec.subject.name}",
+      grade:  "grade from tracker subject name",
+      marking_period: "#{rec.marking_period_string}",
+      lo_code: "#{rec.lo_code}",
+      lo_desc: "#{rec.description}",
+      errors: "#{rec.errors.full_messages.join(', ')}"
+    }
+
+  end
+
+  def create_tracker_lo(curriculum_tree_id)
+    # see update_tracker_lo
   end
 
 end
