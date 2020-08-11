@@ -2,24 +2,30 @@ class SchoolStaff::AdministratorsController < ApplicationController
   before_action :authorize_user
   before_action :set_school, only: %i[users_with_missing_emails]
   before_action :set_users_with_missing_emails, only: %i[users_with_missing_emails]
-  before_action :set_user, except: %i[users_with_missing_emails]
+  before_action :set_user, except: %i[users_with_missing_emails update_user_email]
 
   def users_with_missing_emails; end
 
   def edit_user_email; end
 
   def update_user_email
-    if SchoolAdministrators::UpdateUserEmail.perform(@user, user_params)
-      redirect_to users_with_missing_emails_school_administrator_path, notice: 'Successfully updated user email'
-    else
-      redirect_to edit_user_email_school_staff_administrator_path(@user), alert: 'Error updating user email'
+    user_id = user_params.delete(:id)
+    @user = User.find(user_id)
+    begin
+      if UpdateUserEmail.perform(@user, user_params)
+        redirect_to users_with_missing_emails_school_staff_administrators_path, notice: 'Successfully updated user email'
+      else
+        redirect_to edit_user_email_school_staff_administrator_path(@user), alert: 'Error updating user email'
+      end
+    rescue UpdateUserEmail::EmailsNotMatchingError, UpdateUserEmail::InvalidEmailError => e
+      redirect_to edit_user_email_school_staff_administrator_path(@user), alert: e.message
     end
   end
 
   private
 
   def user_params
-    params.require(:user).permit(:email, :email_confirmation)
+    params.require(:user).permit(:id, :email, :email_confirmation)
   end
 
   def set_user

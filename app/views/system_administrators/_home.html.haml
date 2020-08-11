@@ -24,6 +24,12 @@
     %strong='Home Page'
   %h2.h1.page-title
     %strong="System Administrator: #{@system_administrator.full_name}"
+
+  - if current_user.system_administrator
+    %p.alert-danger.some(style='padding: 10px; border-radius: .25em;')
+      ="All users should be assigned an email. Check "
+      %a=link_to 'here', users_with_missing_emails_system_administrators_path
+      ="to determine what users those are for your system."
   - si_time = (@system_administrator.current_sign_in_at.nil?) ? 'Never' : @system_administrator.current_sign_in_at.strftime('%d-%b-%Y %I:%M:%S %p')+' GMT'
   %span.height-30="(Latest signin time at: #{si_time})"
 

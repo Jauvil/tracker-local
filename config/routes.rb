@@ -100,7 +100,10 @@ Rails.application.routes.draw do
       # post 'create_system_user', defaults: { format: :js }
       get 'system_maintenance'
       get 'system_users'
+      get 'users_with_missing_emails'
+      put 'update_user_email'
     end
+    get 'edit_user_email/:user_id', to: 'system_administrators#edit_user_email', as: 'edit_user_email'
   end
 
   namespace :school_staff do
@@ -134,11 +137,7 @@ Rails.application.routes.draw do
 
   resources :passwords, only: %i[update]
 
-  resources :school_administrators do
-    member do
-      get :users_with_missing_emails
-    end
-  end
+  resources :school_administrators
 
   match "schools/new_year_rollover" => "home#index", via: :get
   resources :schools do

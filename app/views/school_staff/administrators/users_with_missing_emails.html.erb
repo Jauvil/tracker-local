@@ -25,7 +25,8 @@
               <td><%= user.last_name %></td>
               <td><%= user.role_symbols.collect(&:to_s).join(', ') %></td>
               <td>
-                <%= link_to 'Add email', edit_user_email_school_staff_administrator_path(user), class: 'btn btn-success' %>
+                <% route = current_user.system_administrator ? system_administrator_edit_user_email_path(system_administrator_id: current_user.id, user_id: user.id) : edit_user_email_school_staff_administrator_path(user) %>
+                <%= link_to 'Add email', route, class: 'btn btn-success' %>
               </td>
             </tr>
           <% end %>
