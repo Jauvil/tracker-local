@@ -242,10 +242,12 @@ Rails.application.routes.draw do
   match "subject_outcomes/lo_matching_update" => "home#index", via: :get
   resources :subject_outcomes, except: [:show, :destroy] do
     collection do
-      get 'upload_lo_file'
-      post 'upload_lo_file'
-      post 'lo_matching'
-      post 'lo_matching_update'
+      get 'edit_curric_los'
+      post 'update_curric_los'
+      # get 'upload_lo_file'
+      # post 'upload_lo_file'
+      # post 'lo_matching'
+      # post 'lo_matching_update'
     end
   end
 
