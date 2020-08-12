@@ -100,7 +100,10 @@ Rails.application.routes.draw do
       # post 'create_system_user', defaults: { format: :js }
       get 'system_maintenance'
       get 'system_users'
+      get 'users_with_missing_emails'
+      put 'update_user_email'
     end
+    get 'edit_user_email/:user_id', to: 'system_administrators#edit_user_email', as: 'edit_user_email'
   end
 
   namespace :school_staff do
@@ -108,6 +111,16 @@ Rails.application.routes.draw do
       collection do
         post 'staff'
         post 'student'
+      end
+    end
+
+    resources :administrators, only: [] do
+      collection do
+        get :users_with_missing_emails
+      end
+      member do
+        get :edit_user_email
+        put :update_user_email
       end
     end
   end
