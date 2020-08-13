@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126155532) do
+ActiveRecord::Schema.define(version: 20200813201732) do
 
   create_table "announcements", force: :cascade do |t|
     t.text     "content"
@@ -249,6 +249,9 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.string   "flags"
     t.integer  "min_grade"
     t.integer  "max_grade"
+    t.integer  "curr_tree_type_id"
+    t.string   "curr_version_code"
+    t.string   "curriculum_code"
     t.index ["school_year_id"], name: "index_schools_on_school_year_id"
   end
 
@@ -336,11 +339,12 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.integer  "subject_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "essential",      default: false
+    t.boolean  "essential",          default: false
     t.integer  "marking_period"
-    t.string   "lo_code",        default: ""
-    t.boolean  "active",         default: true
+    t.string   "lo_code",            default: ""
+    t.boolean  "active",             default: true
     t.integer  "model_lo_id"
+    t.integer  "curriculum_tree_id"
     t.index ["subject_id", "description"], name: "subject_outcomes_multi"
     t.index ["subject_id"], name: "index_subject_outcomes_on_subject_id"
   end
@@ -355,6 +359,12 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.string   "bulk_lo_seq_year"
     t.datetime "bulk_lo_seq_timestamp"
     t.boolean  "active"
+    t.integer  "curr_tree_type_id"
+    t.string   "curr_subject_code"
+    t.integer  "curr_subject_id"
+    t.integer  "curr_grade_band_id"
+    t.integer  "curr_grade_band_code"
+    t.integer  "curr_grade_band_number"
     t.index ["discipline_id"], name: "index_subjects_on_discipline_id"
     t.index ["school_id"], name: "index_subjects_on_school_id"
     t.index ["subject_manager_id"], name: "index_subjects_on_subject_manager_id"

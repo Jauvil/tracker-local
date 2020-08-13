@@ -37,8 +37,23 @@
                 %option{value: ""}= "All Subjects"
                 - @subjects.each do |subj|
                   %option{value: "#{subj.id}"}= "#{subj.name}"
-          #show-upload
-            .row.text-center
-              %button#upload.btn.btn-primary{type: 'submit', name: 'upload'}='Upload'
+          #ask-version
+            %fieldset.input-group
+              %label.col-sm-4.control-label='Curriculum Version:'
+              %select{name: "version"}
+                -# %option{value: "#{@school.curr_version_code}", class: 'version-selector'}= "#{@school.curr_version_code}"
+                - @curriculum_versions.each do |version|
+                  %option{value: "#{version}", selected: (version == @school.curr_version_code)}= "#{version}"
+          #version_errors
+            %fieldset.input-group
+              %div.ui-error.text-center=@version_errors[0]
+          - if @version_errors.empty?
+            #show-upload
+              .row.text-center
+                %button#upload.btn.btn-primary{type: 'submit', name: 'upload', data: {confirm: 'Are you sure you want the selected version?'}}='Upload'
+          - if @version_errors.length >= 1
+            #show-upload
+              .row.text-center
+                %button#upload.btn.btn-primary{type: 'submit', name: 'upload', data: {confirm: 'Mid year update is not available yet'}}='Upload'
   .col-sm-1
 

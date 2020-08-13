@@ -11,22 +11,29 @@ class Curriculum::Client
     klass_instance.subjects
   end
 
-  def self.learning_outcomes(jwt_token, tree_type_id, subject_id)
-    klass_instance = new(jwt_token, tree_type_id, subject_id)
+  def self.learning_outcomes(jwt_token, tree_type_id, subject_id, grade_band_id)
+    klass_instance = new(jwt_token, tree_type_id, subject_id, nil, grade_band_id)
     klass_instance.learning_outcomes
   end
 
-  def initialize(jwt_token, tree_type_id=nil, subject_id=nil)
+  def self.get_curriculum_versions(jwt_token, curriculum_code)
+    klass_instance = new(jwt_token, '', '', curriculum_code)
+    klass_instance.get_curriculum_versions
+  end
+
+  def initialize(jwt_token, tree_type_id=nil, subject_id=nil, curriculum_code=nil, grade_band_id=nil)
     @jwt_token = jwt_token
     @tree_type_id = tree_type_id
     @subject_id = subject_id
+    @curriculum_code = curriculum_code
+    @grade_band_id = grade_band_id
     @base_url = secrets['curriculum_url']
   end
 
   def curriculums
     response = HTTParty.get(@base_url + '/api/v1/curriculums', headers: headers).parsed_response
     if response['success']
-      return Curriculum::ResponseParser.parse_curriculums(response['curriculums'])
+      return Curriculum::ResponseParser.parse_curriculums(response)
     end
     response
   end
@@ -35,17 +42,23 @@ class Curriculum::Client
     body = { tree_type_id: @tree_type_id }.to_json
     response = HTTParty.get(@base_url + '/api/v1/curriculum_subjects', body: body, headers: headers).parsed_response
     if response['success']
-      return Curriculum::ResponseParser.parse_curriculum_subjects(response['subjects'])
+      return Curriculum::ResponseParser.parse_curriculum_subjects(response)
     end
     response
   end
 
   def learning_outcomes
-    body = { subject_id: @subject_id, tree_type_id: @tree_type_id }.to_json
+    body = { subject_id: @subject_id, tree_type_id: @tree_type_id, grade_band_id: @grade_band_id }.to_json
     response = HTTParty.get(@base_url + '/api/v1/subject_learning_outcomes', body: body, headers: headers).parsed_response
     if response['success']
-      return Curriculum::ResponseParser.parse_subject_learning_outcomes(response['learning_outcomes'])
+      return Curriculum::ResponseParser.parse_subject_learning_outcomes(response)
     end
+    response
+  end
+
+  def get_curriculum_versions
+    body = { curriculum_code: @curriculum_code}.to_json
+    response = HTTParty.get(@base_url + '/api/v1/curriculum_versions', body: body, headers: headers).parsed_response
     response
   end
 
