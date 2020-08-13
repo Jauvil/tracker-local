@@ -65,12 +65,21 @@ class SubjectOutcomesController < ApplicationController
     @subjects = Subject.where(school_id: @school.id).includes(:discipline).order('disciplines.name, subjects.name')
     Rails.logger.debug("*** @subjects: #{@subjects.pluck(:name)}")
 
-    # ToDo: get all curriculum versions from curriculum for this curriculum code.
-    # ToDo: let users select the version of the curriculum that they wish to use.
+    # get all curriculum versions from curriculum for this curriculum code.
+    get_curriculum_versions
+    @version_errors = []
+
+    # let users select the version of the curriculum that they wish to use.
     #    Note: dropdown should have current version as the pre-selected default value.
     #    Note: Confirm with user (javascript) if version number changes.
     #    Note: If no version Change, Are you sure you wish to do a mid year update (not available yet)
-    # ToDo:
+    if @curriculum_versions_response['success']
+      @curriculum_versions = @curriculum_versions_response['versions']
+      @curriculum_versions.push('v02') # This is a hack for developement purposes.
+      if @curriculum_versions.length <= 1 && @school['curr_version_code'] == @curriculum_versions.first
+        @version_errors = ['Are you sure you wish to do a mid year update, there are no new Curriculum versions']
+      end
+    end
   end
 
 
@@ -111,50 +120,90 @@ class SubjectOutcomesController < ApplicationController
       # ToDo: If curriculum version change, then update the model school record with the new version information.
       # ToDo: If no curriculum version change, then tell user mid year update is not available yet (see rake process).
       # ToDo: This entire update should probably be wrapped in a transaction
+      if @school['curr_version_code'] == params['version']
+        @version_errors = ['Mid year update is not available yet']
+      else
+        @version_errors = ['Updating Model School Record with the New Curriculum Version']
+      end
 
-      # ToDo: Get the curriculum subjects for this curriculum & version from the model school record
+
+      # Get the curriculum subjects for this curriculum & version from the model school record
       #   - consider getting curriculum subjects for previous version if version change
-      # ToDo: Create a hash of all Curriculum subjects , and add a field to indicate matched to existing Tracker subject
-
-
+      get_curriculum_subjects
+      count = 0
       Rails.logger.debug("*** Starting loop through (chosen or all) Model School subjects")
       @subjects.each do |subj|
         Rails.logger.debug("*** Subject: #{subj.name}, #{subj.inspect}")
         # Get Curriculum Subject and Curriculum Grade Band from Subject Record
-        # ToDo: if curriculum subject or grade band are deactivated
-        #  - deactivate Subject and its LOs in Tracker
-        #  - see update_tracker_lo(model_school_subject_outcome_id) below
-        # ToDo:  Create a hash of Curriculum Los for this subject (hash by curr_lo_tree_id)
-        #  - consider also getting the Curriculum Los for this subject for the previous version on version change
-        # Loop through Tracker LOs for Subject
-        SubjectOutcome.where(subject_id: subj.id).order(:lo_code).each do |rec|
-          # ToDo: Look up Curriculum LO from SubjectOutcome curr_lo_tree_id
-          #   Note: if version changed, then be sure to determine the new LO from old_tree_id
-          #     - The list of updated LO(s) will have old_tree_id = tracker curr_lo_tree_id
-          #     - be sure to put in tests for this !!
-          # ToDo: If tracker LO is not in Curriculum (note version changing)
-          #   - mark the Tracker LO as deactivated
-          #   - Note: indicate deactivated in output report
-          update_tracker_lo(rec, nil)
-          # ToDo: Mark curriculum LO in hash as matched
-        end # end of loop through Tracker Model School Subject Outcomes for subject subj
-
-        #  Loop through all unmatched LOs for subject subj (in Curriculum hash)
-        #  For each unmatched LO
-        #    - To add new LOs, Call create_tracker_lo(curriculum_tree_id)  (see below )
-        #    - Mark curriculum LO in hash as matched
-
-        #   Mark curriculum subject in hash as matched
-
-        # If no matching subject in in Curriculum:
-        #   Deactivate the subject and all of its LOs in Tracker
-        #    - see: update_tracker_lo(rec, model_school_subject_outcome_id)
+        matching_curriculum_subject = @curriculum_subjects_hash[subj.curr_subject_id]
+        subject_matched = subject_matched?(matching_curriculum_subject, subj)
+        if subject_matched
+          if !matching_curriculum_subject['active']
+            # ToDo: if curriculum subject or grade band are deactivated
+            #  - deactivate Subject and its LOs in Tracker
+            #  - see update_tracker_lo(model_school_subject_outcome_id) below
+          else
+            # Create a hash of Curriculum Los for this subject (hash by curr_lo_tree_id)
+            #  - consider also getting the Curriculum Los for this subject for the previous version on version change
+            get_curriculum_learning_outcomes(matching_curriculum_subject, subj.curr_grade_band_id)
+            # Loop through Tracker LOs for Subject
+            SubjectOutcome.where(subject_id: subj.id).order(:lo_code).each do |rec|
+              # Look up Curriculum LO from SubjectOutcome (curriculum_tree_id)
+              #   Note: if version changed, then be sure to determine the new LO from old_tree_id
+              #     - The list of updated LO(s) will have old_tree_id = tracker curriculum_tree_id
+              #     - be sure to put in tests for this !!
+              matched_curriculum_lo = @curriculum_learning_outcomes_hash[rec.curriculum_tree_id]
+              if matched_curriculum_lo
+                ### If the LO is matched, we update it!
+                # Mark curriculum LO in hash as matched
+                rec.update(
+                  curriculum_tree_id: matched_curriculum_lo['tree_id'],
+                  description: matched_curriculum_lo['lo_description']['en'],
+                  lo_code: matched_curriculum_lo['lo_code']
+                )
+                matched_curriculum_lo['matched'] = true #is this the right place?
+                update_tracker_lo(rec, rec.id)
+                count += 1
+              else
+                # ToDo: If tracker LO is not in Curriculum (note version changing)
+                #   - mark the Tracker LO as deactivated
+                #   - Note: indicate deactivated in output report
+              end
+            end # end of loop through Tracker Model School Subject Outcomes for subject subj
+          end
+          #  Loop through all unmatched LOs for subject subj (in Curriculum hash)
+          #  For each unmatched LO
+          #    - To add new LOs, Call create_tracker_lo(curriculum_tree_id)  (see below )
+          #    - Mark curriculum LO in hash as matched
+          @curriculum_learning_outcomes_hash.values.each do |curriculum_learning_outcome|
+            if !curriculum_learning_outcome['matched']
+              create_tracker_lo(curriculum_learning_outcome, subj.id)
+              count += 1
+              curriculum_learning_outcome['matched'] = true
+              matching_curriculum_subject['matched'] = true
+            end
+          end
+        else
+          ### Deactivate subj and all its LOs
+          # If no matching subject in in Curriculum:
+          #   Deactivate the subject and all of its LOs in Tracker
+          #    - see: update_tracker_lo(rec, model_school_subject_outcome_id)
+        end
+        
+        
+        
+        
       end # end of loop through subjects
-
+      puts "count: #{count}".red
 
       # Process all unmatched Subjects in Curriculum Subjects Hash
       #   Add new subject and its learning outcomes.
       #     - Create a subject in Tracker and call create_tracker_lo (see below) for all LOs in curriculum
+      @curriculum_subjects_hash.values.each do |curriculum_subject|
+        if !curriculum_subject['matched']
+          ### Create this subject in Tracker, and create all its LOs in Tracker.
+        end
+      end
 
       # Note: LOs can be moved into another Tracker subject (currently between grade bands in same subject)
 
@@ -200,7 +249,7 @@ class SubjectOutcomesController < ApplicationController
     @records << {
       discipline: rec.subject.discipline.name,
       subject: "#{rec.subject.name}",
-      grade:  "grade from tracker subject name",
+      grade:  "#{rec.subject.name.last}",
       marking_period: "#{rec.marking_period_string}",
       lo_code: "#{rec.lo_code}",
       lo_desc: "#{rec.description}",
@@ -209,8 +258,71 @@ class SubjectOutcomesController < ApplicationController
 
   end
 
-  def create_tracker_lo(curriculum_tree_id)
-    # see update_tracker_lo
+  def create_tracker_lo(curriculum_learning_outcome, subject_id)
+    learning_outcome = SubjectOutcome.new
+    learning_outcome.subject_id = subject_id
+    learning_outcome.curriculum_tree_id = curriculum_learning_outcome['tree_id']
+    learning_outcome.description = curriculum_learning_outcome['lo_description']['en']
+    learning_outcome.lo_code = curriculum_learning_outcome['lo_code']
+    learning_outcome.save
+    update_tracker_lo(learning_outcome, learning_outcome.id)
+  end
+
+  def get_curriculum_versions
+    @curriculum_versions_response = Curriculum::Client.get_curriculum_versions(encode_token, @school['curriculum_code'])
+  end
+
+  def get_curriculum_subjects
+    @curriculum_subjects_response = Curriculum::Client.subjects(encode_token, @school['curr_tree_type_id'])
+    hash_curriculum_subjects
+  end
+
+  def hash_curriculum_subjects
+    if @curriculum_subjects_response['success']
+      @curriculum_subjects = @curriculum_subjects_response['subjects']
+      # Create a hash of all Curriculum subjects , and add a field to indicate matched to existing Tracker subject
+      @curriculum_subjects_hash = {}
+      @curriculum_subjects.each do |curriculum_subject|
+        curriculum_subject['matched'] = false
+        @curriculum_subjects_hash[curriculum_subject['id']] = curriculum_subject
+      end
+    else
+      @curriculum_subjects_hash = {}
+    end
+  end
+
+  def get_curriculum_learning_outcomes(subject, grade_band_id)
+    @curriculum_learning_outcomes_response = Curriculum::Client.learning_outcomes(encode_token, subject['tree_type_id'], subject['id'], grade_band_id)
+    hash_curriculum_subject_learning_outcomes
+  end
+
+  def hash_curriculum_subject_learning_outcomes
+    if @curriculum_learning_outcomes_response['success']
+      @curriculum_learning_outcomes = @curriculum_learning_outcomes_response['learning_outcomes']
+      @curriculum_learning_outcomes_hash = {}
+      @curriculum_learning_outcomes.each do |curriculum_learning_outcome|
+        curriculum_learning_outcome['matched'] = false
+        @curriculum_learning_outcomes_hash[curriculum_learning_outcome['tree_id']] = curriculum_learning_outcome
+      end
+    else
+      @curriculum_learning_outcomes_hash = {}
+    end
+  end
+
+  def encode_token
+    JWT.encode({email: current_user.email}, secrets['json_api_key'])
+  end
+
+  def subject_matched?(curriculum_subject, tracker_subject)
+    subject_matched = false
+    if curriculum_subject
+      curriculum_subject['grade_bands'].each do |grade_band|
+        if "#{curriculum_subject['versioned_name']['en']}" + " #{grade_band['code']}" == tracker_subject.name
+          subject_matched = true
+        end
+      end
+    end
+    subject_matched
   end
 
 end

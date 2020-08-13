@@ -249,6 +249,9 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.string   "flags"
     t.integer  "min_grade"
     t.integer  "max_grade"
+    t.integer  "curr_tree_type_id"
+    t.string   "curr_version_code"
+    t.string   "curriculum_code"
     t.index ["school_year_id"], name: "index_schools_on_school_year_id"
   end
 
@@ -355,6 +358,12 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.string   "bulk_lo_seq_year"
     t.datetime "bulk_lo_seq_timestamp"
     t.boolean  "active"
+    t.integer  "curr_tree_type_id"
+    t.string   "curr_subject_code"
+    t.integer  "curr_subject_id"
+    t.integer  "curr_grade_band_id"
+    t.integer  "curr_grade_band_code"
+    t.integer  "curr_grade_band_number"
     t.index ["discipline_id"], name: "index_subjects_on_discipline_id"
     t.index ["school_id"], name: "index_subjects_on_school_id"
     t.index ["subject_manager_id"], name: "index_subjects_on_subject_manager_id"
