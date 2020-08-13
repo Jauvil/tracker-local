@@ -194,7 +194,7 @@ class SubjectOutcomesController < ApplicationController
         
         
       end # end of loop through subjects
-      puts "count: #{count}".red
+      puts "LOs count: #{count}".green
 
       # Process all unmatched Subjects in Curriculum Subjects Hash
       #   Add new subject and its learning outcomes.

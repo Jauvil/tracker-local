@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181126155532) do
+ActiveRecord::Schema.define(version: 20200813201732) do
 
   create_table "announcements", force: :cascade do |t|
     t.text     "content"
@@ -339,11 +339,12 @@ ActiveRecord::Schema.define(version: 20181126155532) do
     t.integer  "subject_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "essential",      default: false
+    t.boolean  "essential",          default: false
     t.integer  "marking_period"
-    t.string   "lo_code",        default: ""
-    t.boolean  "active",         default: true
+    t.string   "lo_code",            default: ""
+    t.boolean  "active",             default: true
     t.integer  "model_lo_id"
+    t.integer  "curriculum_tree_id"
     t.index ["subject_id", "description"], name: "subject_outcomes_multi"
     t.index ["subject_id"], name: "index_subject_outcomes_on_subject_id"
   end
