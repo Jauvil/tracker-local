@@ -6,17 +6,7 @@ namespace :update_model_school do
   
   task update: :environment do
     include Sso::Constants
-    user = nil
-    User.all.each do |poss_user|
-      if poss_user.teacher?
-        teacher = Teacher.find(poss_user.id)
-        if teacher.sections.count > 1
-          user = poss_user
-          break
-        end
-      end
-      break if user.present?
-    end
+    user = user = User.where(system_administrator: true).last
     token = JWT.encode({email: user.email, code: 'egstem'}, secrets['json_api_key'])
     egstem_curr = Curriculum::Client.curriculums(token)['curriculums'].first
     puts "egstem curriculum :#{egstem_curr}".green
