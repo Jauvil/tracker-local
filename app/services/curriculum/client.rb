@@ -11,6 +11,11 @@ class Curriculum::Client
     klass_instance.subjects
   end
 
+  def self.subject(jwt_token, tree_type_id, subject_id)
+    klass_instance = new(jwt_token, tree_type_id, subject_id)
+    klass_instance.subject
+  end
+
   def self.learning_outcomes(jwt_token, tree_type_id, subject_id, grade_band_id)
     klass_instance = new(jwt_token, tree_type_id, subject_id, nil, grade_band_id)
     klass_instance.learning_outcomes
@@ -40,6 +45,15 @@ class Curriculum::Client
 
   def subjects
     body = { tree_type_id: @tree_type_id }.to_json
+    response = HTTParty.get(@base_url + '/api/v1/curriculum_subjects', body: body, headers: headers).parsed_response
+    if response['success']
+      return Curriculum::ResponseParser.parse_curriculum_subjects(response)
+    end
+    response
+  end
+
+  def subject
+    body = { tree_type_id: @tree_type_id, subject_id: @subject_id }.to_json
     response = HTTParty.get(@base_url + '/api/v1/curriculum_subjects', body: body, headers: headers).parsed_response
     if response['success']
       return Curriculum::ResponseParser.parse_curriculum_subjects(response)

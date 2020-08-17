@@ -75,6 +75,7 @@
                 %th= 'Grade'
                 %th= 'Semester'
                 %th= 'LO Code:'
+                %th= 'Old Learning Outcome:'
                 %th= 'Learning Outcome'
                 %th= 'Errors'
                 %th= 'Success?'
@@ -86,6 +87,7 @@
                   %td=rx[:grade]
                   %td=rx[:marking_period]
                   %td=rx[:lo_code]
+                  %td=rx[:old_lo_desc]
                   %td=rx[:lo_desc]
                   %td= (rx[:errors].blank?) ? '' : rx[:errors].truncate(50, omission: '...')
                   - if !@rollback
