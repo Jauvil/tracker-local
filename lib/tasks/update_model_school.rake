@@ -1,4 +1,3 @@
-# require ''
 
 namespace :update_model_school do
   
@@ -21,21 +20,9 @@ namespace :update_model_school do
 
     count = 0
     curriculum_subjects.each do |subject|
-      # if subject['code'] == 'che'
-      #   subject['versioned_name']['en'] = 'Chemistry'
-      # end
-      # if subject['code'] == 'mat'
-      #   subject['versioned_name']['en'] = 'Math'
-      # end
       subject['grade_bands'].each do |grade_band|
         if grade_band['min_grade'] == grade_band['max_grade']
-          begin
-            tracker_subject = Subject.where(school_id: model_school.id, name: "#{subject['versioned_name']['en']} #{grade_band['code']}")
-            # puts "Curriculum Subject: #{subject['code']}: #{subject['versioned_name']['en']} #{grade_band['code']}"
-            count += 1
-          rescue
-            abort("couldn't find a Tracker subject with the subject name: #{subject['versioned_name']['en']} #{grade_band['code']}")
-          end
+          tracker_subject = Subject.where(school_id: model_school.id, name: "#{subject['versioned_name']['en']} #{grade_band['code']}")
           if tracker_subject.present?
             tracker_subject.update(
               active: true, 
@@ -47,14 +34,12 @@ namespace :update_model_school do
               curr_grade_band_number: grade_band['min_grade']
             )
           end
-        else
-          abort("min_grade and max_grade not same")
         end
       end
     end
     puts "#{count} subjects have been updated"
-    puts "Curriculum Subject: #{curriculum_subjects[2]}"
-    puts "Updated Tracker Subject: #{Subject.where(school_id: 1, name: 'Chemistry 1').first.attributes}".green
+    puts "Curriculum Subject: #{curriculum_subjects[6]}"
+    puts "Updated Tracker Subject: #{Subject.where(school_id: 1, name: 'Math 1').first.attributes}".green
     # learning_outcomes = Curriculum::Client.learning_outcomes(token, subjects.first['tree_type_id'], subjects.first['id'])
 
   end
