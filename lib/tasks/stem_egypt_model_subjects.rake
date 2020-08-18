@@ -125,9 +125,11 @@ namespace :stem_egypt_model_subjects do
         end
         @curriculum_subjects_hash[subject.name]['matched'] = true
         count2 += 1
+        # puts "Matched Tracker Subject: #{subject.name}"
       else
         count1 += 1
         subject.update(active: false)
+        # puts "Mis-Matched Tracker Subject: #{subject.name}"
       end
     end
 
@@ -150,11 +152,14 @@ def create_tracker_subjects(subject)
       subject_name = "#{subject['versioned_name']['en']} #{grade_band['code']}"
       if !@curriculum_subjects_hash[subject_name]['matched']
         create_tracker_subject(subject, subject_name, grade_band)
+        # puts "SUbject Created : #{subject_name}"
+        
       else
         tracker_subject = Subject.where(school_id: 1, name: subject_name)
         if tracker_subject.empty?
           curriculum_subject = @curriculum_subjects_hash[subject_name]
           create_tracker_subject(subject, subject_name, grade_band)
+          # puts "SUbject Created : #{subject_name}"
         end
       end
     end

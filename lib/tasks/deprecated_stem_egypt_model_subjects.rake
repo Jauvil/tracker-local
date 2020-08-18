@@ -7,7 +7,7 @@
 
 # Depricated
 
-namespace :depricated_stem_egypt_model_subjects do
+namespace :deprecated_stem_egypt_model_subjects do
   desc "Create initial set of model school subjects."
 
   task populate: :environment do
