@@ -334,11 +334,11 @@ class SubjectOutcomesController < ApplicationController
   end
 
   def deactivate_tracker_subject_and_its_los(tracker_subject)
-    tracker_subject.active = false
+    tracker_subject.update(active: false)
     tracker_subject_los = tracker_subject.subject_outcomes
     if !tracker_subject_los.empty?
       tracker_subject_los.each do |tracker_lo|
-        tracker_lo.active = false
+        tracker_lo.update(active: false)
       end
     end
   end
