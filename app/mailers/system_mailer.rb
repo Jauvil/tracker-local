@@ -10,6 +10,6 @@ class SystemMailer < ActionMailer::Base
   def onboarding_report(data)
     @data = data
     # TODO: Find out actual emails needed for status report
-    mail(from: 'tracker_system@21pstem.org', to: 'justinauvil15@gmail.com', subject: "SSO User Enrollment Report")
+    mail(from: 'tracker_system@21pstem.org', to: 'TrackerSupport@21pstem.org', subject: 'SSO User Enrollment Report')
   end
 end
