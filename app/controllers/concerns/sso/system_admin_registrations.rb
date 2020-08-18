@@ -20,8 +20,8 @@ module Sso
       super { |user| perform_sso_signup(user) }
     end
 
-    def perform_sso_signup(user)
-      perform_sso_post('/users', build_user_create_body(user), session[:jwt_token])
+    def perform_sso_signup(user, token=session[:jwt_token])
+      perform_sso_post('/users', build_user_create_body(user), token)
     end
   end
 end

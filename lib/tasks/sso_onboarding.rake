@@ -24,4 +24,32 @@ namespace :sso_onboarding do
   task create_system_admin_user: :environment do
     User.create!(username: 'adminuser', email: 'admin@21pstem.org',  password: 'Simple123!', password_confirmation: 'Simple123!', system_administrator: true)
   end
+
+  task enroll_users: :environment do
+    include Sso::SystemAdminRegistrations
+
+    system_token = JWT.encode({email: 'system@21pstem.org', expires_at: Time.now + 1.hour}, Rails.application.secrets.json_api_key)
+    total_users_count = User.count
+    users_enrolled_count = 0
+    users_without_emails = []
+    User.all.each do |user|
+      if user.email.blank?
+        users_without_emails << user
+        next
+      end
+      user.set_temporary_password
+      user.save!
+      perform_sso_signup(user, system_token)
+      users_enrolled_count += 1
+      UserMailer.enrolled_in_sso(user.id).deliver_now
+    end
+
+    data = {
+        total_users_count: total_users_count,
+        users_enrolled_count: users_enrolled_count,
+        users_without_emails: users_without_emails
+    }
+
+    SystemMailer.onboarding_report(data).deliver_now
+  end
 end
