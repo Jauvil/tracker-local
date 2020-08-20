@@ -57,6 +57,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :tracker_pages, only: %i[index]
+      resources :users, only: %i[create update]
+      resources :schools, only: %i[index]
     end
   end
 
@@ -100,14 +102,38 @@ Rails.application.routes.draw do
       # post 'create_system_user', defaults: { format: :js }
       get 'system_maintenance'
       get 'system_users'
+      get 'users_with_missing_emails'
+      put 'update_user_email'
+    end
+    get 'edit_user_email/:user_id', to: 'system_administrators#edit_user_email', as: 'edit_user_email'
+  end
+
+  namespace :school_staff do
+    resources :create_users, only: [], defaults: { format: :js } do
+      collection do
+        post 'staff'
+        post 'student'
+      end
+    end
+
+    resources :administrators, only: [] do
+      collection do
+        get :users_with_missing_emails
+      end
+      member do
+        get :edit_user_email
+        put :update_user_email
+      end
     end
   end
 
-  resources :create_users, only: %i[create], defaults: { format: :js } do
-    collection do
-      post 'create_system_user', as: 'system_user', defaults: { format: :js }
-      post 'create_staff_user', defaults: { format: :js }
-      post 'create_student_user', defaults: { format: :js }
+  namespace :sys_admin do
+    resources :create_users, only: [], defaults: { format: :js } do
+      collection do
+        post 'system_administrator'
+        post 'staff'
+        post 'student'
+      end
     end
   end
 
@@ -231,10 +257,12 @@ Rails.application.routes.draw do
   match "subject_outcomes/lo_matching_update" => "home#index", via: :get
   resources :subject_outcomes, except: [:show, :destroy] do
     collection do
-      get 'upload_lo_file'
-      post 'upload_lo_file'
-      post 'lo_matching'
-      post 'lo_matching_update'
+      get 'edit_curric_los'
+      post 'update_curric_los'
+      # get 'upload_lo_file'
+      # post 'upload_lo_file'
+      # post 'lo_matching'
+      # post 'lo_matching_update'
     end
   end
 

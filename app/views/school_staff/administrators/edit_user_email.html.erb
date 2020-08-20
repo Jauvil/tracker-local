@@ -1,0 +1,12 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h3>
+        Editing user: <%= @user.first_name %> <%= @user.last_name %> - <%= @user.role_symbols.collect(&:to_s).join(', ') %>
+      </h3>
+    </div>
+    <div class="col-12" style="margin-top: 20px;">
+      <%= render partial: 'edit_email_form', locals: { user: @user } %>
+    </div>
+  </div>
+</div>

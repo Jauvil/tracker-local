@@ -1,0 +1,20 @@
+<div>
+  <h2>
+    Hello, <%= @user.full_name %>!
+  </h2>
+
+  <p>
+    In order to enroll you in a single sign on service, the PARLO/Tracker system has reset your password.
+  </p>
+
+  <p>Your temporary password is: <strong><%= @user.temporary_password %></strong></p>
+
+  <p>You will be asked to change your temporary password on the next login.</p>
+
+  <p>
+    Thanks,
+    <br>
+    PARLO/Tracker System
+  </p>
+
+</div>

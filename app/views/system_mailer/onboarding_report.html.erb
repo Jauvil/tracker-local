@@ -1,0 +1,27 @@
+<div>
+  <h4>User Enrollment Process Complete For PARLO/Tracker</h4>
+
+  <p>Total users: <strong><%= @data[:total_users_count] %></strong></p>
+  <p>Users enrolled: <strong><%= @data[:users_enrolled_count] %></strong></p>
+
+  <h5>The following users do not have an e-mail and are unable to be enrolled</h5>
+  <table>
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>School</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @data[:users_without_emails].each do |user| %>
+        <tr>
+          <td><%= user.first_name %></td>
+          <td><%= user.last_name %></td>
+          <td><%= user.inspect %></td>
+        </tr>
+      <% end %>
+
+    </tbody>
+  </table>
+</div>

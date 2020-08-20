@@ -1,0 +1,51 @@
+#
+# This file configures the New Relic Agent.  New Relic monitors Ruby, Java,
+# .NET, PHP, Python, Node, and Go applications with deep visibility and low
+# overhead.  For more information, visit www.newrelic.com.
+#
+# Generated July 31, 2020
+#
+# This configuration file is custom generated for The 21st Century Partnership for STEM Education
+#
+# For full documentation of agent configuration options, please refer to
+# https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration
+
+common: &default_settings
+  # Required license key associated with the techinfo@21pstem.org New Relic developer account.
+  # license_key: 1685a442a6f13ead30642cd09459db822004NRAL
+  license_key: 1685a442a6f13ead30642cd09459db822004NRAL
+
+  # Your application name. Renaming here affects where data displays in New
+  # Relic.  For more details, see https://docs.newrelic.com/docs/apm/new-relic-apm/maintenance/renaming-applications
+  app_name: Tracker with SSO
+
+  # To disable the agent regardless of other settings, uncomment the following:
+  # agent_enabled: false
+
+  # Logging level for log/newrelic_agent.log
+  log_level: info
+
+
+# Environment-specific settings are in this section.
+# RAILS_ENV or RACK_ENV (as appropriate) is used to determine the environment.
+# If your application has other named environments, configure them here.
+development:
+  <<: *default_settings
+  app_name: Tracker with SSO devname@21pstem.org
+  # Developer Licence key for devname@21pstem.org
+  license_key: theNewRelicLicenseKeyforDeveloper
+
+test:
+  <<: *default_settings
+  # It doesn't make sense to report to New Relic from automated test runs.
+  monitor_mode: false
+
+staging:
+  <<: *default_settings
+  app_name: Tracker with SSO (Staging)
+
+production:
+  <<: *default_settings
+# Developer license does not cover production environments
+  monitor_mode: false
+

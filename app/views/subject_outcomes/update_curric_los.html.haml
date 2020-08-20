@@ -1,0 +1,95 @@
+
+- content_for(:title, 'Upload Learning Outcomes from Curriculum')
+- content_for(:page_name, 'Upload Learning Outcomes from Curriculum')
+- content_for(:page_class, 'misc')
+
+/ Header
+.header-block
+  .row
+    .col-sm-1
+    .col-sm-10
+      #version_errors
+        %fieldset.input-group
+          %div.ui-error.text-center=@version_errors[0]
+      %h1.h3.page-title.text-center
+        %strong='Maintenance'
+      %h2.h1.page-title.text-center
+        %strong='Upload Learning Outcomes from Curriculum'
+    .col-sm-1
+- if !@school.acronym == 'MOD'
+  .row 'This is only allowed for the Model School'
+- if !can?(:switch, School)
+  .row 'This is only allowed for users who can see multiple schools'
+- if !can?(:upload_lo_file, SubjectOutcome)
+  .row 'You are not allowed to Bulk Upload Learning Outcomes'
+- if !@school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
+  .row 'This school is not configured for Bulk Uploading Learning Outcomes'
+.row{class: (@school.acronym == 'MOD' && can?(:switch, School) && can?(:upload_lo_file, SubjectOutcome) && @school.has_flag?(School::GRADE_IN_SUBJECT_NAME) ? '' : 'display-none')}
+  .col-sm-1
+  .col-sm-10
+    .block.block-alt-style.full
+      .block-title.text-center
+        %h3
+          ='Upload Curriculum / LOs File'
+      .block-content-full
+        = form_tag(update_curric_los_subject_outcomes_path) do
+          / display any errors
+          - if @errors && @errors[:base]
+            #form-errors.ui-error.text-center=@errors[:base]
+          - if @subject.present? && @subject.name.present?
+            // ToDo: cleanly indicate subject name if single subject run, else indicate all subjects
+            ="Subject: #{@subject.name}"
+  .col-sm-1
+
+- if @error_list && @error_list.length > 0
+  .row.upload-output
+    .col-sm-1
+    .col-sm-10
+      .block.block-alt-style.full
+        .block-content-full.rounded-title-container
+          %table.titled-table.table.table-bordered.table-condensed.remove-margin
+            %thead.table-title
+              %tr
+                %th{colspan: 2}= 'Duplicated LO Codes'
+              %tr
+                %th= 'LO Code'
+                %th= 'Lines with duplicates'
+            %tbody.tbody-body
+              - @error_list.each do |k, v|
+                %tr.ui-error
+                  %td="#{v[0]}"
+                  %td="#{v[1]}"
+    .col-sm-1
+
+- if @records
+  .row.upload-output
+    .col-sm-1
+    .col-sm-10
+      .block.block-alt-style.full
+        .block-content-full.rounded-title-container
+          %table.titled-table.table.table-bordered.table-condensed.remove-margin
+            %thead.table-title
+              %tr
+                %th= 'Discipline'
+                %th= 'Subject'
+                %th= 'Grade'
+                %th= 'Semester'
+                %th= 'LO Code:'
+                %th= 'Old Learning Outcome:'
+                %th= 'Learning Outcome'
+                %th= 'Errors'
+                %th= 'Success?'
+            %tbody.tbody-body
+              - @records.each do |rx|
+                %tr
+                  %td=rx[:discipline]
+                  %td=rx[:subject]
+                  %td=rx[:grade]
+                  %td=rx[:marking_period]
+                  %td=rx[:lo_code]
+                  %td=rx[:old_lo_desc]
+                  %td=rx[:lo_desc]
+                  %td= (rx[:errors].blank?) ? '' : rx[:errors].truncate(50, omission: '...')
+                  - if !@rollback
+                    %td= 'Success!'
+    .col-sm-1

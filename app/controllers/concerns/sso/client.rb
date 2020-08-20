@@ -1,5 +1,4 @@
 module Sso
-
   module Client
     include Headers
     include Constants
@@ -22,6 +21,8 @@ module Sso
               email: user.email,
               password: user.temporary_password,
               password_confirmation: user.temporary_password,
+              first_name: user.first_name,
+              last_name: user.last_name,
               roles: JSON.parse(user.role_symbols.to_json),
               component: 'tracker'
           }

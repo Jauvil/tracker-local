@@ -22,6 +22,7 @@ require 'paperclip/matchers'
 require 'coffee_script'
 require 'factory_bot_rails'
 require 'model_helper'
+require 'spec_helper'
 require "test/unit/assertions"
 
 # Requires supporting ruby files with custom matchers and macros, etc,
@@ -92,3 +93,90 @@ ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 # # Set the test log to just show warnings and above.
 # # replace with code in config/environments/test.rb
 # Rails.logger.level = 2
+
+
+# SSO LOGIN HELPER METHODS
+
+def create_token_and_sign_in(user)
+  school = FactoryBot.create(:school)
+  token = JWT.encode({email: user.email, expires_at: Time.now + 20.minutes}, Rails.secrets.json_api_key)
+  session[:jwt_token] = token
+  session[:school_context] = school.id
+  sign_in user
+end
+
+def create_token_and_sign_in_system_administrator
+  user = User.where(system_administrator: true).first || FactoryBot.create(:system_administrator)
+  create_token_and_sign_in(user)
+end
+
+def create_token_and_sign_in_student
+  user = User.where(student: true).first || FactoryBot.create(:student)
+  create_token_and_sign_in(user)
+end
+
+def create_token_and_sign_in_teacher
+  user = User.where(teacher: true).first || FactoryBot.create(:teacher)
+  create_token_and_sign_in(user)
+end
+
+def create_token_and_sign_in_school_administrator
+  user = User.where(school_administrator: true).first || FactoryBot.create(:school_administrator)
+  create_token_and_sign_in(user)
+end
+
+def model_school_attributes
+  {
+      name: 'Model School',
+      acronym: 'MOD',
+      marking_periods: '2',
+      city: 'Cairo',
+      flags: 'use_family_name,user_by_first,grade_in_subject_name'
+  }
+end
+
+def server_config_attributes
+  {
+      district_id: "",
+      district_name: "",
+      support_email: "jauvil@21pstem.org",
+      support_team: "Tracker Support Team",
+      school_support_team: "School IT Support Team",
+      server_url: "", server_name: "Tracker System",
+      web_server_name: "PARLO Tracker Web Server",
+      allow_subject_mgr: false
+  }
+end
+
+def base_user_attributes
+  {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      email: Faker::Internet.unique.email,
+      street_address: Faker::Address.street_address,
+      city: Faker::Address.city,
+      state: Faker::Address.state,
+      zip_code: Faker::Address.zip
+  }
+end
+
+def system_user_params(valid=true)
+  attrs = base_user_attributes
+  attrs['system_administrator'] = 'on' if valid
+  attrs['researcher'] = 'on' if valid
+  attrs
+end
+
+def staff_user_params(valid=true)
+  attrs = base_user_attributes
+  attrs['counselor'] = 'on' if valid
+  attrs['school_administrator'] = 'on' if valid
+  attrs
+end
+
+def student_user_params(valid=true)
+  attrs = base_user_attributes
+  attrs['student'] = 'on' if valid
+  attrs['grade_level'] = '10' if valid
+  attrs
+end

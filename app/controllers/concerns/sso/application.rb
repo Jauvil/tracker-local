@@ -8,7 +8,6 @@ module Sso::Application
       # TODO: I don't think we want to create a user out of nowhere just because it doesn't exist. We're assuming
       # TODO: users will be synched but will need to write a graceful fail for the edge case of that not being so.
 
-
       if @current_user.nil?
         Rails.logger.error("Current user was nil when queried by email: #{@payload['email']}")
         # password = SecureRandom.urlsafe_base64(16)
