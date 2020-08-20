@@ -1,5 +1,7 @@
   source 'http://rubygems.org'
 
+  ruby "2.5.6"
+
   gem 'rails', '5.0.7.2'
   # gem 'railties',  '~> 4.1.11'
   # gem 'passenger', '~> 3.0.21'       # Production web server.
