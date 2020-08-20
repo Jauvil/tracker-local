@@ -1,0 +1,59 @@
+
+- content_for(:title, 'Initiate the Upload of Learning Outcomes from Curriculum')
+- content_for(:page_name, 'Initiate the Upload of Learning Outcomes from Curriculum')
+- content_for(:page_class, 'misc')
+
+/ Header
+.header-block
+  .row
+    .col-sm-1
+    .col-sm-10
+      %h1.h3.page-title.text-center
+        %strong='Maintenance'
+      %h2.h1.page-title.text-center
+        %strong='Initiate the Upload of Learning Outcomes from Curriculum'
+    .col-sm-1
+- if !@school.acronym == 'MOD'
+  .row 'This is only allowed for the Model School'
+- if !can?(:switch, School)
+  .row 'This is only allowed for users who can see multiple schools'
+- if !can?(:upload_lo_file, SubjectOutcome)
+  .row 'You are not allowed to Bulk Upload Learning Outcomes'
+- if !@school.has_flag?(School::GRADE_IN_SUBJECT_NAME)
+  .row 'This school is not configured for Bulk Uploading Learning Outcomes'
+.row{class: (@school.acronym == 'MOD' && can?(:switch, School) && can?(:upload_lo_file, SubjectOutcome) && @school.has_flag?(School::GRADE_IN_SUBJECT_NAME) ? '' : 'display-none')}
+  .col-sm-1
+  .col-sm-10
+    .block.block-alt-style.full
+      .block-title.text-center
+        %h3
+          ='Update Curriculum'
+      .block-content-full
+        = form_tag(update_curric_los_subject_outcomes_path) do
+          #ask-subject
+            %fieldset.input-group
+              %label.col-sm-4.control-label='Subject:'
+              %select{name: "subject_id"}
+                %option{value: ""}= "All Subjects"
+                - @subjects.each do |subj|
+                  %option{value: "#{subj.id}"}= "#{subj.name}"
+          #ask-version
+            %fieldset.input-group
+              %label.col-sm-4.control-label='Curriculum Version:'
+              %select{name: "version"}
+                -# %option{value: "#{@school.curr_version_code}", class: 'version-selector'}= "#{@school.curr_version_code}"
+                - @curriculum_versions.each do |version|
+                  %option{value: "#{version}", selected: (version == @school.curr_version_code)}= "#{version}"
+          #version_errors
+            %fieldset.input-group
+              %div.ui-error.text-center=@version_errors[0]
+          - if @version_errors.empty?
+            #show-upload
+              .row.text-center
+                %button#upload.btn.btn-primary{type: 'submit', name: 'upload', data: {confirm: 'Are you sure you want the selected version?'}}='Upload'
+          - if @version_errors.length >= 1
+            #show-upload
+              .row.text-center
+                %button#upload.btn.btn-primary{type: 'submit', name: 'upload', data: {confirm: 'Mid year update is not available yet'}}='Upload'
+  .col-sm-1
+

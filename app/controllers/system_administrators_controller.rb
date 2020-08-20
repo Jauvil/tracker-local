@@ -4,6 +4,24 @@
 class SystemAdministratorsController < ApplicationController
 
   def show
+    curriculums_response = Curriculum::Client.curriculums(session[:jwt_token])
+    if curriculums_response['success']
+      @curriculums = curriculums_response['curriculums']
+      subjects_response = Curriculum::Client.subjects(session[:jwt_token], @curriculums.last['id'])
+      if subjects_response['success']
+        @subjects = subjects_response['subjects']
+        learning_outcomes_response = Curriculum::Client.learning_outcomes(session[:jwt_token], @subjects.first['tree_type_id'], @subjects.first['id'], nil)
+        @learning_outcomes = learning_outcomes_response['learning_outcomes']
+      else
+        @subjects = []
+        @learning_outcomes = []
+      end
+    else
+      @curriculums = []
+      @subjects = []
+      @learning_outcomes = []
+    end
+    
     authorize! :sys_admin_links, User
     @system_administrator = User.find(params[:id])
     @model_school = School.includes(:school_year).find(1)
@@ -78,6 +96,31 @@ class SystemAdministratorsController < ApplicationController
     end
   end
 
+  def users_with_missing_emails
+    redirect_to root_path, alert: "You need to login to view this page" unless current_user.present? && current_user.system_administrator
+    @users_with_missing_emails = User.where("email = '' OR email IS NULL")
+    render 'school_staff/administrators/users_with_missing_emails'
+  end
+
+  def edit_user_email
+    @user = User.find(params[:user_id])
+    render 'school_staff/administrators/edit_user_email'
+  end
+
+  def update_user_email
+    user_id = user_email_params.delete(:id)
+    @user = User.find(user_id)
+    begin
+      if UpdateUserEmail.perform(@user, user_email_params)
+        redirect_to users_with_missing_emails_system_administrators_path, notice: 'Successfully updated user email'
+      else
+        redirect_to system_administrator_edit_user_email_path(system_administrator_id: current_user.id, user_id: @user.id), alert: 'Error updating user email'
+      end
+    rescue UpdateUserEmail::EmailsNotMatchingError, UpdateUserEmail::InvalidEmailError => e
+      redirect_to system_administrator_edit_user_email_path(system_administrator_id: current_user.id, user_id: @user.id), alert: e.message
+    end
+  end
+
   #####################################################################################
   protected
 
@@ -108,6 +151,10 @@ class SystemAdministratorsController < ApplicationController
             :system_administrator,
             :researcher
         )
+  end
+
+  def user_email_params
+    params.require(:user).permit(:id, :email, :email_confirmation)
   end
 
   def defined_role

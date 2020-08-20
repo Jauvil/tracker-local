@@ -1,5 +1,7 @@
   source 'http://rubygems.org'
 
+  ruby "2.5.6"
+
   gem 'rails', '5.0.7.2'
   # gem 'railties',  '~> 4.1.11'
   # gem 'passenger', '~> 3.0.21'       # Production web server.
@@ -45,7 +47,12 @@ gem 'colorize'
 
 # Application Monitoring / performance
 gem 'newrelic_rpm'
-#gem 'rack-mini-profiler'
+gem 'rack-mini-profiler'
+# For memory profiling
+gem 'memory_profiler'
+# For call-stack profiling flamegraphs
+gem 'flamegraph'
+gem 'stackprof'
 
 # Miscellaneous
 gem 'haml'            # Markup language to render HTML. Alternative to erb.

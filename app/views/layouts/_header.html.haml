@@ -44,10 +44,10 @@
             %option{value: ''}=''
             %option{value: "#{dashboard_school_path(@current_school.id)}"}= "School Summary"
             - @toolkit_subjects.each do |s|
-              - is_sel = (current_page?(controller: 'subjects', action: 'show', id: s.id)) ? 'selected' : false
+              - is_sel = (current_page?(controller: '/subjects', action: 'show', id: s.id)) ? 'selected' : false
               %option{value: "#{subject_path(s.id)}", selected: is_sel}= "#{s.name}"
             - @toolkit_current_sections.each do |s|
-              - is_sel = (current_page?(controller: 'sections', action: 'class_dashboard', id: s.id)) ? 'selected' : false
+              - is_sel = (current_page?(controller: '/sections', action: 'class_dashboard', id: s.id)) ? 'selected' : false
               %option{value: "#{class_dashboard_section_path(s.id)}", selected: is_sel}= "#{s.subject.name} - #{s.line_number}"
   / User Dropdown
   %li#head-user-dropdown.dropdown

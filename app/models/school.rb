@@ -23,6 +23,7 @@ class School < ApplicationRecord
   has_many                      :counselors, dependent: :destroy
   has_many                      :subjects, dependent: :destroy
   has_many                      :sections, through: :subjects
+  has_many                      :users, dependent: :destroy
   has_many                      :students, -> { where active: true}, dependent: :destroy
 
   # remove this? once automated testing is set up

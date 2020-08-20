@@ -42,6 +42,11 @@ class UserMailer < ActionMailer::Base
     mail(from: get_support_email, to: @user.email, subject: "Password change for #{@school_name} #{@server_config.server_name}.") if @user.email.present?
   end
 
+  def enrolled_in_sso(user_id)
+    @user = User.find(user_id)
+    mail(from: get_support_email, to: @user.email, subject: "Password Reset By PARLO/Tracker System")
+  end
+
   private
 
   def get_support_email

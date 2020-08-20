@@ -215,7 +215,7 @@ class User < ApplicationRecord
 
   # New UI - allow student listing expand/collapse break by first initial of last name
   def last_name_initial
-    self.last_name.length > 0 ? self.last_name[0] : ''
+    self.last_name.present? && self.last_name.length > 0 ? self.last_name[0] : ''
   end
 
   # New UI - allow student listing expand/collapse break by first initial of last name

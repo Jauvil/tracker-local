@@ -1,4 +1,4 @@
-class Api::V1::TrackerPagesController < ApplicationController
+class Api::V1::TrackerPagesController < Api::V1::BaseController
   include Sso::Constants
 
   def index
@@ -6,21 +6,15 @@ class Api::V1::TrackerPagesController < ApplicationController
     @user = User.find_by_email(email)
 
     if @user
-      @teacher = Teacher.find(@user.id)
-      if @teacher
-        @sections = []
-        @evidence_types = []
-        teacher_sections
-        evidence_types
-        render json: {
-          success: true,
-          message: 'tracker pages links',
-          sections: @sections,
-          tracker_link: secrets['my_url'] + "/teachers/#{@teacher.id}",
-          evidence_types: @evidence_types
-        }
+      if @user.system_administrator
+        render json: system_administrator_response
       else
-        render json: { success: false, message: 'user has no sections' }
+        @teacher = Teacher.find(@user.id)
+        if @teacher
+          render json: teacher_response
+        else
+          render json: { success: false, message: 'user has no sections' }
+        end
       end
     else
       render json: { success: false, message: 'no user found' }
@@ -28,6 +22,29 @@ class Api::V1::TrackerPagesController < ApplicationController
   end
 
   private
+
+  def system_administrator_response
+    @evidence_types = []
+    evidence_types
+    return {
+      success: true,
+      evidence_types: @evidence_types
+    }
+  end
+
+  def teacher_response
+    @sections = []
+    @evidence_types = []
+    teacher_sections
+    evidence_types
+    return {
+      success: true,
+      message: 'tracker pages links',
+      sections: @sections,
+      tracker_link: secrets['my_url'] + "/teachers/#{@teacher.id}",
+      evidence_types: @evidence_types
+    }
+  end
 
   def decoded_token
     token = params.keys[0]

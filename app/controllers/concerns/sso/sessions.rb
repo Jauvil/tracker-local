@@ -19,12 +19,11 @@ module Sso
 
     def destroy
       if secrets['sso_enabled']
-        jwt_token = session[:jwt_token]
+        token = session[:jwt_token]
         Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
         unless user_signed_in?
           set_flash_message! :notice, :signed_out
-          puts sso_headers(jwt_token).to_s.green
-          response = HTTParty.delete(secrets['sso_url'] + '/users/sign_out', headers: sso_headers(jwt_token)).parsed_response
+          response = get_sso_delete_response(token)
           session[:jwt_token] = nil unless response['success']
 
           session[:jwt_token] = response['token']
@@ -57,6 +56,10 @@ module Sso
     def get_sso_response
       body = {email: @user.email, password: params[:user][:password]}.to_json
       perform_sso_post('/users/sign_in', body)
+    end
+
+    def get_sso_delete_response(token)
+      HTTParty.delete(secrets['sso_url'] + '/users/sign_out', headers: sso_headers(token)).parsed_response
     end
   end
 end
