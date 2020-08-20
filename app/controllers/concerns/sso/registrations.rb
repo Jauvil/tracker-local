@@ -1,4 +1,4 @@
-module SsoRegistrations
+module Sso::Registrations
   include Sso::Constants
 
   def create
