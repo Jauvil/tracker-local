@@ -73,6 +73,7 @@ gem 'responders', '~> 3.0.0'
 
 group :test do
   gem 'rspec-rails', '~> 3.8.2'
+  gem 'rails-controller-testing'
   # gem 'webdrivers'
   # gem 'chromedriver-helper'
   gem 'geckodriver-helper'
