@@ -109,6 +109,7 @@ group :development do
   gem 'spring'
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 3.7.0'
+  gem 'bullet', '~> 6.1.0'
 
 end
 

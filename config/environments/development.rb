@@ -1,6 +1,18 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.after_initialize do
+    Bullet.enable        = true # allow bullet to function
+    Bullet.alert         = false # output to popup alert
+    Bullet.bullet_logger = true # output to Rails.root/log/bullet.log
+    Bullet.console       = true # output to browser console
+    Bullet.rails_logger  = true # output to rails log
+    Bullet.add_footer    = false # output to web page footer
+    Bullet.n_plus_one_query_enable = true # Detect N+1 queries (default true)
+    Bullet.unused_eager_loading_enable = true # Detect eager-loaded associations which are not used (default true)
+    Bullet.counter_cache_enable = true # Detect unnecessary COUNT queries which could be avoided with a counter_cache (default true)
+  end
+
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
